@@ -36,59 +36,102 @@ CRM
                 </div>
             </div>
         </div>
-                        <form class="invoices-form" method="post" action="{% url 'inventory_summery_report' %}" enctype="multipart/form-data" autocomplete="off" novalidate="novalidate">
-                            {% csrf_token %}
-                            <div class="invoices-main-form">
-                                <div class="row">
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>From Date</label>
-                                                    <input class="form-control " type="date" name="start_date" id="from_date" >
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>To Date</label>
-                                                    <input class="form-control " type="date" name="end_date" id="to_date" >
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="text-end mt-4">
-                                            <button type="submit" class="btn btn-primary" id="btn_submit" name="btn_submit">Submit</button>
-                                            <a href="{% url 'inventory_date' %}" class="btn btn-primary">Cancel</a>
-                                        </div>
-                                        <div class="row col-sm-6 p-5">
-                                            <div class="success_message row"></div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+        <form class="invoices-form" method="post" action="{% url 'inventory_summery_report' %}" enctype="multipart/form-data" autocomplete="off" novalidate="novalidate">
+    {% csrf_token %}
+    <div class="invoices-main-form">
+        <div class="row">
+            <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>From Date</label>
+                    <input class="form-control" type="date" name="start_date" id="from_date">
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>To Date</label>
+                    <input class="form-control" type="date" name="end_date" id="to_date">
+                </div>
+            </div>
+
+<!-- Company Name dropdown -->
+<div class="col-xl-3 col-md-6 col-sm-12 col-12">
+    <div class="form-group">
+        <label>Company Name</label>
+        <select class="form-control" name="company_name" id="company_name">
+            <option value="">-- All Companies --</option>
+        </select>
+    </div>
+</div>
+
+
+            <div class="col-md-3">
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary" id="btn_submit" name="btn_submit">Submit</button>
+                    <a href="{% url 'inventory_date' %}" class="btn btn-primary">Cancel</a>
+                </div>
+                <div class="row col-sm-6 p-5">
+                    <div class="success_message row"></div>
+                </div>
             </div>
         </div>
-        
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-            // Get today's date
-            let today = new Date().toISOString().split('T')[0];
-        
-            // Set the value of the input field to today's date
-            document.getElementById("from_date").value = today;
-            document.getElementById("to_date").value = today;
-        
-        });
-        
-           </script>
+    </div>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let today = new Date().toISOString().split('T')[0];
+    document.getElementById("from_date").value = today;
+    document.getElementById("to_date").value = today;
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let fromDateInput = document.getElementById("from_date");
+    let toDateInput = document.getElementById("to_date");
+
+    // Set today's date only if inputs are empty (first load)
+    let today = new Date().toISOString().split('T')[0];
+    if (!fromDateInput.value) fromDateInput.value = today;
+    if (!toDateInput.value) toDateInput.value = today;
+
+    function fetchCompanies() {
+        let fromDate = fromDateInput.value;
+        let toDate = toDateInput.value;
+
+        if (fromDate && toDate) {
+            fetch(`/get_companies_by_date/?start_date=${fromDate}&end_date=${toDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    let companySelect = document.getElementById("company_name");
+                    companySelect.innerHTML = `<option value="">-- All Companies --</option>`;
+                    data.forEach(company => {
+                        let opt = document.createElement("option");
+                        opt.value = company;
+                        opt.textContent = company;
+                        companySelect.appendChild(opt);
+                    });
+
+                    // Keep the previously selected value if available
+                    let selectedCompany = "{{ selected_company|default:'' }}";
+                    if (selectedCompany) {
+                        companySelect.value = selectedCompany;
+                    }
+                })
+                .catch(error => console.error("Error fetching companies:", error));
+        }
+    }
+
+    fromDateInput.addEventListener("change", fetchCompanies);
+    toDateInput.addEventListener("change", fetchCompanies);
+
+    // Auto fetch companies on load if date is set
+    if (fromDateInput.value && toDateInput.value) {
+        fetchCompanies();
+    }
+});
+</script>
+
 
    
 {% endblock main_content %}

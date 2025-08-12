@@ -242,6 +242,7 @@ urlpatterns = [
 
     path('inventory_summery_report/', views.display_inventory_summenry_date_range, name='inventory_summery_report'),
 ### For purchase voucher report
+    path("get_companies_by_date/", views.get_companies_by_date, name="get_companies_by_date"),
 
     path('purchase_voucher_report/', views.display_purchase_register_date_range, name='purchase_voucher_report'),
 
