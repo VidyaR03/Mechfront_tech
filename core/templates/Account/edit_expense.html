@@ -1,0 +1,1038 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+Ecoway
+{% endblock %}
+
+{% block custom_css %}
+
+<style>
+    /* Inactive tab styles */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #ccc;
+        /* Faint gray color for inactive tabs */
+    }
+
+    /* Active tab style */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+        /* Black color for active tab */
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 415px;">
+    <div class="content container-fluid">
+        <div class="page-header invoices-page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title"> <a href="{% url 'expense_vendor_list'%}" style="margin-right: 10px;"><i class="fa fa-arrow-left"
+                                data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
+                                aria-label="fa fa-arrow-left"></i></a> Update Expense</h3>
+                </div>
+                <div class="col-auto"> </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card invoices-add-card">
+                    <div class="card-body">
+                        <form class="invoices-form" method="post" id="expense_form"
+                            action="{% url 'edit_expense_vendor_data' id=expense_data.id %}" enctype="multipart/form-data"
+                            autocomplete="off">
+                            {% csrf_token %}
+                            <input type="hidden" name="expense_id" id="expense_id" value="347">
+                            <div class="invoices-main-form">
+                                <div class="row">
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div>
+                                                <label>Vendor Name  <span style="color: red;">*</span></label>
+                                                <select id="ac_vendor" name="ac_vendor" value="{{expense_data.ex_vendor_name}}" class="form-control" >
+                                                    <option value="{{expense_data.ex_vendor_name.id}}">{{expense_data.ex_vendor_name.company_name}}</option>
+                                                    {% for i in vendor_name %}
+                                                    <option value="{{i.id}}">{{i.company_name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class=" ">
+                                                <span>
+                                                    <label>Invoice Date  <span style="color: red;">*</span></label>
+                                                    <input type="date" class="form-control" name="acc_date" value="{{ expense_data.ex_invoice_date|date:'Y-m-d' }}" 
+                                                        id="acc_date" placeholder="Date" required>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>GST No. <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" value="{{expense_data.ex_gst_number}}" name="acc_gst" id="acc_gst" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Freight  <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" value="{{expense_data.ex_freight}}" name="acc_freight" id="acc_freight" required>
+                                        </div>
+                                    </div>
+
+                        
+
+
+                                    <div class="rowbb">
+                                        <div class="invoice-add-table">
+                                            <div class="table-responsive">
+                                                <table class="table table-center add-table-items">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Item Code</th>
+                                                            <th width="180px">Description of Goods</th>
+                                                            <th>HSN</th>
+                                                            <th>Qty</th>
+                                                            <th>UOM</th>
+                                                            <th>Unit Price</th>
+                                                            <th>Disc(%)</th>
+                                                            <th>Tax Rate</th>
+                                                            <th>Tax Amt</th>
+                                                            <th>Total</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for j in expense_item_data %}
+                                                        <tr class="add-row">
+                                                            <td><input type="hidden" name="iid[]" class="iid" value="{{len_expense_item}}">
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="itemcode_{{ forloop.counter }}"
+                                                                    id="itemcode_{{ forloop.counter }}"
+                                                                    value="{{j.ex_item_code}}"
+                                                                    onkeyup="getitemscodedetails('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');" required>
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="item_{{ forloop.counter }}"
+                                                                    id="item_{{ forloop.counter }}"
+                                                                    onkeyup="getitemsdetails('item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}','itemcode_{{ forloop.counter }}');"
+                                                                    value="{{j.ex_description_goods}}" placeholder=" " required>
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="hsn_{{ forloop.counter }}"
+                                                                    id="hsn_{{ forloop.counter }}" value="{{j.ex_hsn}}" required>
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="qty_{{ forloop.counter }}"
+                                                                    id="qty_{{ forloop.counter }}"
+                                                                    value="{{j.ex_qantity}}"
+                                                                    onkeyup="qty('qty_{{ forloop.counter }}')" required> </td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="uom_{{ forloop.counter }}"
+                                                                    id="uom_{{ forloop.counter }}" value="{{j.ex_uom}}" required>
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="rate_{{ forloop.counter }}"
+                                                                    id="rate_{{ forloop.counter }}"
+                                                                    value="{{j.ex_unit_price}}"
+                                                                    onkeyup="rate('rate_{{ forloop.counter }}')" required></td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="discount_{{ forloop.counter }}"
+                                                                    id="discount_{{ forloop.counter }}"
+                                                                    value="{{j.ex_discount}}"
+                                                                    onkeyup="discountamt('discount_{{ forloop.counter }}')" required>
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="taxrate_{{ forloop.counter }}"
+                                                                    id="taxrate_{{ forloop.counter }}"
+                                                                    value="{{j.ex_tax_rate}}"
+                                                                    onkeyup="taxrate('taxrate_{{ forloop.counter }}')" required>
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control taxamt"
+                                                                    name="taxamt_{{ forloop.counter }}"
+                                                                    id="taxamt_{{ forloop.counter }}"
+                                                                    value="{{j.ex_tax_amount}}" required></td>
+
+                                                            <td><input type="text" class="form-control totalamt"
+                                                                    name="total_{{ forloop.counter }}"
+                                                                    id="total_{{ forloop.counter }}"
+                                                                    value="{{j.ex_total}}" required></td>
+
+                                                            <td class="add-remove text-end">
+                                                                <a href="javascript:void(0);" class="add-btn me-2"><i
+                                                                        class="fas fa-plus-circle"></i></a>
+
+                                                                <a href="javascript:void(0);" class="remove-btn "><i
+                                                                        class="fe fe-trash-2"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                        <input type="hidden" id="i_field" value="{{len_expense_item}}">
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-7 col-md-6">
+                                                <!-- <div class="form-group float-end mb-0"> <button class="btn btn-primary" type="submit">Add Item</button> </div> -->
+                                                <div class="invoice-fields">
+                                                    <h4 class="field-title">Terms and Conditions</h4> <br> <textarea
+                                                        class="form-control" name="note" value="{{expense_data.q_note}}"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-6">
+                                                <div class="invoice-total-card">
+                                                    <h4 class="invoice-total-title">Summary</h4>
+                                                    <div class="invoice-total-box">
+                                                        <div class="invoice-total-inner">
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>Sub Total </p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="subtotal billamt utrt1"
+                                                                        name="subtotal" value="{{expense_data.q_sub_total}}" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- <div class="row">
+                                                                <div class="col-lg-6"><p>Freight</p></div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1" type="text" name="freight" id="freight" value="0.00" onkeyup="getbillamt();" value="20.00">
+                                                                </div>
+                                                            </div> -->
+
+                                                            <div class="row">
+                                                                <!-- <div class="col-lg-6"><p>Tax Amt</p></div> -->
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="hidden"
+                                                                        class="totaltaxamt billamt utrt1"
+                                                                        name="total_taxamt" id="total_taxamt" value=""
+                                                                        readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>CGST @ <input type="text" name="cgstper"
+                                                                            id="cgstper" value="0%" size="1"
+                                                                            class="no-outline"></p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="utrt1" name="cgst"
+                                                                        id="cgst" value="{{expense_data.q_cgstval}}" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>SGST @ <input type="text" name="sgstper"
+                                                                            id="sgstper" value="0%" size="1"
+                                                                            class="no-outline"></p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="utrt1" name="sgst"
+                                                                        id="sgst" value="{{expense_data.q_sgstval}}" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>IGST @ <input type="text" name="igstper"
+                                                                            id="igstper" value="18%" size="1"
+                                                                            class="no-outline"></p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="utrt1" name="igst"
+                                                                        id="igst" value="{{expense_data.q_igstval}}" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>Adjustments</p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1" type="text"
+                                                                        name="adjustment" id="adjustment"
+                                                                        onkeyup="getbillamt();" value="{{expense_data.q_adjustment}}">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>TCS on Sale Of any Goods </p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1" type="text"
+                                                                        name="sale_of_good" id="sale_of_good"
+                                                                        onkeyup="getbillamt();" value="{{expense_data.q_sale_of_good}}">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="invoice-total-footer">
+                                                                <h4>Total Amount <input class="finalamt utrt1"
+                                                                        type="text" name="totalamt" value="{{expense_data.q_total}}"
+                                                                        readonly="" required></h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="upload-sign">
+                                                        <div class="form-group float-end mb-0"> <a
+                                                                href="{% url 'expense_vendor_list'%}" 
+                                                                class="btn btn-primary">Cancel</a></div>
+                                                        <div class="form-group float-end mb-0"> <button
+                                                                class="btn btn-primary" type="submit" id="btn_submit"
+                                                                name="btn_submit">Save</button> </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-6 p-5">
+                                        <div class="success_message row"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        i_field = $('#i_field').val();
+        var max_fields = 500;
+        var i = i_field;
+        var x = 1;
+
+        $(".add-table-items").on('click', '.remove-btn', function (e) {
+            //alert(i);
+            e.preventDefault(); $(this).closest('.add-row').remove(); x--;
+
+            subtotal();
+
+            getbillamt();
+
+            totaltaxamt();
+
+            return false;
+
+
+        });
+
+        $(document).on("click", ".add-btn", function () {
+            if (x < max_fields) {
+                i++;
+                x++;
+                var experiencecontent = '<tr class="add-row">' +
+                    '<td>' +
+                    '<input type="hidden" name="iid[]" class="iid" value="' + i + '">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="exgetitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'hsn_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\'); ">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" name="item_' + i + '" id="item_' + i + '" class="form-control" onkeyup="getitemsdetails(\'item_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'hsn_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'itemcode_' + i + '\'); ">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control" name="hsn_' + i + '" id="hsn_' + i + '">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control" name="qty_' + i + '" id="qty_' + i + '" onkeyup="qty(\'qty_' + i + '\');">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control" name="uom_' + i + '" id="uom_' + i + '">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control" name="rate_' + i + '" id="rate_' + i + '" onkeyup="rate(\'rate_' + i + '\');">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control" name="discount_' + i + '" id="discount_' + i + '" onkeyup="discountamt(\'discount_' + i + '\');">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="taxrate(\'taxrate_' + i + '\');">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control taxamt" name="taxamt_' + i + '" id="taxamt_' + i + '">' +
+                    '</td>' +
+
+                    '<td>' +
+                    '<input type="text" class="form-control totalamt" name="total_' + i + '" id="total_' + i + '">' +
+                    '</td>' +
+
+                    '<td class="add-remove text-end">' +
+                    '<a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a> ' +
+                    '<a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>' +
+                    '</td>' +
+
+                    '</tr>';
+
+            }
+
+
+            $(".add-table-items").append(experiencecontent);
+            return false;
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function getitemscodedetails(inputname, godown, qty, rate, hsn, uom, discount, taxrate, itemcode) {
+        //alert();return;
+        input = inputname.split("_");
+        //alert(input);return;
+
+        $('#' + inputname).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/exgetitemscodedetails/',
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: input
+                    },
+                    success: function (data) {
+                        // alert("Success")
+                        response($.map(data, function (item) {
+                            var code = item.split("|");
+                            // console.log("mangesh")
+                            // console.log(code)
+                            //alert(data);
+                            return {
+                                label: code[0],
+                                value: code[0],
+                                data: item
+                            }
+                        }));
+                    }
+                });
+            },
+            autoFocus: true,
+            minLength: 0,
+            change: function (event, ui) {
+                if (ui.item == null) {
+                }
+            },
+            select: function (event, ui) {
+                var names = ui.item.data.split("|");
+                // console.log(names)
+                // console.log(names)
+                $('#' + inputname).val(names[0]);
+                $('#' + godown).val(names[2]);
+                //$('#'+qty).val(names[3]);
+                $('#' + qty).val('1');
+                $('#' + rate).val(names[8]);
+                $('#' + hsn).val(names[5]);
+                $('#' + discount).val(names[6]);
+                $('#' + taxrate).val(names[7]);
+                $('#' + uom).val(names[10]);
+                $('#' + itemcode).val(names[11]);
+
+                discountamt(inputname);
+
+                subtotal();
+
+                totaltaxamt();
+
+                getbillamt();
+            }
+
+        });
+    }
+
+    function getitemscodedetails(inputname, item, godown, qty, rate, hsn, uom, discount, taxrate) {
+        // alert();
+        input = inputname.split("_");
+        //alert(input);return;
+
+        $('#' + inputname).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/getitemscodedetails/',
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: input
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            var code = item.split("|");
+                            //alert(data);
+                            return {
+                                label: code[0],
+                                value: code[0],
+                                data: item
+                            }
+                        }));
+                    }
+                });
+            },
+            autoFocus: true,
+            minLength: 0,
+            change: function (event, ui) {
+                if (ui.item == null) {
+                }
+            },
+            select: function (event, ui) {
+                var names = ui.item.data.split("|");
+                // console.log(names)
+                $('#' + inputname).val(names[0]);
+                $('#' + godown).val(names[2]);
+                //$('#'+qty).val(names[3]);
+                $('#' + qty).val('1');
+                $('#' + rate).val(names[8]);
+                $('#' + hsn).val(names[5]);
+                $('#' + discount).val(names[6]);
+                $('#' + taxrate).val(names[7]);
+                $('#' + uom).val(names[10]);
+                $('#' + item).val(names[11]);
+
+                discountamt(inputname);
+
+                subtotal();
+
+                totaltaxamt();
+
+                getbillamt()
+            }
+
+        });
+    }
+
+    /*function discountamt(inputname)
+    {
+        //alert(inputname);
+        input=inputname.split("_");
+        id_val= input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_'+id_val).val();
+        var discount = $('#discount_'+id_val).val();
+
+        //var discountamt = rate/100;
+        //var totalamt = rate-discountamt;
+        var totalamt = rate-(rate*discount/100);
+        $('#total_'+id_val).val(totalamt);
+
+        var taxrate = $('#taxrate_'+id_val).val();
+        var taxamt = rate*taxrate/100;
+        //alert(taxamt);
+
+        $('#taxamt_'+id_val).val((taxamt).toFixed(2));
+    }
+
+    function qty(inputname)
+    {
+        input=inputname.split("_");
+        id_val= input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_'+id_val).val();
+        var qty = $('#qty_'+id_val).val();
+        var discount = $('#discount_'+id_val).val();
+
+        //var discountamt = rate/100;
+        //var total = rate-discountamt;
+        var total = rate-(rate*discount/100);
+        var totalamt = total*qty;
+        //alert(totalamt);
+
+        $('#total_'+id_val).val((totalamt).toFixed(2));
+
+        var taxrate = $('#taxrate_'+id_val).val();
+        var taxamt = totalamt*taxrate/100;
+        //alert(taxamt);
+
+        $('#taxamt_'+id_val).val((taxamt).toFixed(2));
+
+        subtotal();
+
+        getbillamt();
+    }
+
+    function rate(inputname)
+    {
+        input=inputname.split("_");
+        id_val= input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_'+id_val).val();
+        var qty = $('#qty_'+id_val).val();
+        var discount = $('#discount_'+id_val).val();
+
+        //var discountamt = rate/100;
+        //var total = rate-discountamt;
+        var total = rate-(rate*discount/100);
+        var totalamt = total*qty;
+        //alert(totalamt);
+
+        $('#total_'+id_val).val((totalamt).toFixed(2));
+
+        var taxrate = $('#taxrate_'+id_val).val();
+        var taxamt = totalamt*taxrate/100;
+        //alert(taxamt);
+
+        $('#taxamt_'+id_val).val((taxamt).toFixed(2));
+
+        subtotal();
+
+        getbillamt();
+    }*/
+
+    function discountamt(inputname) {
+        //alert(inputname);
+        input = inputname.split("_");
+        id_val = input[1];
+        //alert(id_val);
+        var rate = $('#rate_' + id_val).val();
+        var discount = $('#discount_' + id_val).val();
+        var qty = $('#qty_' + id_val).val();
+
+        /*//var discountamt = rate/100;
+        //var totalamt = rate-discountamt;
+        var totalamt = rate-(rate*discount/100);
+        $('#total_'+id_val).val(totalamt);
+
+        var taxrate = $('#taxrate_'+id_val).val();
+        var taxamt = totalamt*taxrate/100;
+        //alert(taxamt);
+
+        $('#taxamt_'+id_val).val((taxamt).toFixed(2));*/
+
+        var item_rate = $('#item_rate').val();
+
+        if (item_rate == 'tax_exclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            $('#total_' + id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(totalamt);
+
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+
+            t = totalamt - taxamt;
+
+            $('#total_' + id_val).val((t).toFixed(2));
+        }
+
+        subtotal();
+
+        getbillamt()
+    }
+
+    function taxrate(inputname) {
+        //alert(inputname);
+        input = inputname.split("_");
+        id_val = input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_' + id_val).val();
+        var qty = $('#qty_' + id_val).val();
+        var discount = $('#discount_' + id_val).val();
+
+        /*//var discountamt = rate/100;
+        //var totalamt = rate-discountamt;
+        var totalamt = rate-(rate*discount/100);
+        $('#total_'+id_val).val(totalamt);
+
+        var taxrate = $('#taxrate_'+id_val).val();
+        var taxamt = rate*taxrate/100;
+        //alert(taxamt);
+
+        $('#taxamt_'+id_val).val((taxamt).toFixed(2));*/
+
+        var item_rate = $('#item_rate').val();
+
+        if (item_rate == 'tax_exclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            $('#total_' + id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(totalamt);
+
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+
+            t = totalamt - taxamt;
+
+            $('#total_' + id_val).val((t).toFixed(2));
+        }
+
+        subtotal();
+
+        getbillamt();
+
+        totaltaxamt()
+    }
+
+    /*function totaltaxamt()
+    {
+
+        var sum1 = 0;
+        $(".totaltaxamt").each(function()
+        {
+          sum1 += +this.value;
+        });
+
+        taxamt = sum1/2;
+
+        $('#cgst').val(taxamt);
+        $('#sgst').val(taxamt);
+    }*/
+
+    function totaltaxamt() {
+        place_of_supply = $('#place_of_supply').val();
+
+        taxrate_0 = $('#taxrate_0').val();
+        //alert(taxrate_0);
+
+        taxrate = taxrate_0 / 2;
+
+        if (place_of_supply == 23) {
+            var sum1 = 0;
+            $(".totaltaxamt").each(function () {
+                sum1 += +this.value;
+            });
+
+            taxamt = sum1 / 2;
+
+            $('#cgst').val(taxamt);
+            $('#sgst').val(taxamt);
+            $('#igst').val("0.00");
+
+            $('#cgstper').val(taxrate + '%');
+            $('#sgstper').val(taxrate + '%');
+            $('#igstper').val("0%");
+        }
+        else {
+            var sum1 = 0;
+            $(".totaltaxamt").each(function () {
+                sum1 += +this.value;
+            });
+
+            taxamt = sum1 / 2;
+
+            $('#cgst').val("0.00");
+            $('#sgst').val("0.00");
+            $('#igst').val(sum1);
+
+            $('#cgstper').val("0%");
+            $('#sgstper').val("0%");
+            $('#igstper').val(taxrate_0 + '%');
+        }
+
+    }
+
+    function qty(inputname) {
+        input = inputname.split("_");
+        id_val = input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_' + id_val).val();
+        var qty = $('#qty_' + id_val).val();
+        var discount = $('#discount_' + id_val).val();
+
+        /*//var discountamt = rate/100;
+        //var total = rate-discountamt;
+        var total = rate-(rate*discount/100);
+        var totalamt = total*qty;
+        //alert(totalamt);
+
+        $('#total_'+id_val).val((totalamt).toFixed(2));
+
+        var taxrate = $('#taxrate_'+id_val).val();
+        var taxamt = totalamt*taxrate/100;
+        //alert(taxamt);
+
+        $('#taxamt_'+id_val).val((taxamt).toFixed(2));*/
+
+        var item_rate = $('#item_rate').val();
+
+        if (item_rate == 'tax_exclusive') {
+            //var discountamt = rate/100;
+            //var total = rate-discountamt;
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            $('#total_' + id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            //var discountamt = rate/100;
+            //var total = rate-discountamt;
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+
+            t = totalamt - taxamt;
+
+            $('#total_' + id_val).val((t).toFixed(2));
+        }
+
+        subtotal();
+
+        getbillamt();
+    }
+
+    function rate(inputname) {
+        input = inputname.split("_");
+        id_val = input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_' + id_val).val();
+        var qty = $('#qty_' + id_val).val();
+        var discount = $('#discount_' + id_val).val();
+
+        /*//var discountamt = rate/100;
+        //var total = rate-discountamt;
+        var total = rate-(rate*discount/100);
+        var totalamt = total*qty;
+        //alert(totalamt);
+
+        $('#total_'+id_val).val((totalamt).toFixed(2));
+
+        var taxrate = $('#taxrate_'+id_val).val();
+        var taxamt = totalamt*taxrate/100;
+        //alert(taxamt);
+
+        $('#taxamt_'+id_val).val((taxamt).toFixed(2));*/
+
+        var item_rate = $('#item_rate').val();
+        console.log(item_rate)
+
+        if (item_rate == 'tax_exclusive') {
+            //var discountamt = rate/100;
+            //var total = rate-discountamt;
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            $('#total_' + id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            //var discountamt = rate/100;
+            //var total = rate-discountamt;
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+
+            t = totalamt - taxamt;
+
+            $('#total_' + id_val).val((t).toFixed(2));
+        }
+
+        subtotal();
+
+        getbillamt();
+
+        totaltaxamt();
+    }
+
+    /*function subtotal()
+    {
+        var sum = 0;
+        $(".totalamt").each(function()
+        {
+          sum += +this.value;
+        });
+        //alert(sum);
+
+        $('.subtotal').val((sum).toFixed(2));
+        //$('.finalamt').val(parseInt(sum));
+
+        var sum1 = 0;
+        $(".taxamt").each(function()
+        {
+          sum1 += +this.value;
+        });
+
+        $('.totaltaxamt').val(sum1);
+
+        finalamt = sum+sum1;
+        $('.finalamt').val(finalamt);
+    }*/
+
+    function subtotal() {
+        var freight = $('#freight').val();
+        //alert(freight);
+
+        var totalamt = 0;
+        $(".totalamt").each(function () {
+            totalamt += +this.value;
+        });
+        //alert(totalamt);
+
+        sub_total = parseInt(freight) + totalamt;
+
+        $('.subtotal').val(sub_total);
+        //$('.finalamt').val(parseInt(totalamt));
+
+        taxrate = $('#taxrate_0').val();
+
+        gst_amount = (sub_total * taxrate) / 100
+
+        var sum1 = 0;
+        $(".taxamt").each(function () {
+            sum1 += +this.value;
+        });
+
+        $('.totaltaxamt').val(gst_amount);
+
+        finalamt = totalamt + sum1;
+        $('.finalamt').val(finalamt);
+    }
+
+    function getbillamt() {
+        var sum = 0;
+        $(".billamt").each(function () {
+            sum += +this.value;
+        });
+        //alert(sum);
+
+        $('.finalamt').val((sum).toFixed(2));
+    }
+
+    $(document).on('change', '#item_rate', function () {
+        var item_rate = $(this).val();
+        //alert(item_rate);
+
+        for (var i = 0; i < 2; i++) {
+            //alert(i);
+
+            if (item_rate == 'tax_inclusive') {
+                qty('qty_' + i);
+                rate('rate_' + i);
+                discountamt('discount_' + i);
+            }
+
+            if (item_rate == 'tax_exclusive') {
+                qty('qty_' + i);
+                rate('rate_' + i);
+                discountamt('discount_' + i);
+            }
+        }
+
+
+    });
+
+    $(document).on('keyup', '#freight', function () {
+        subtotal();
+
+        totaltaxamt();
+        getbillamt();
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+
+{% endblock main_content %}

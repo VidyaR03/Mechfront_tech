@@ -1,0 +1,124 @@
+<!-- Navbar -->
+{% load static %}
+<nav class="main-header navbar navbar-expand navbar-white navbar-light" > 
+   
+   <!-- /.navbar -->
+  
+  <!-- /.content-header -->
+  <div class="main-wrapper">
+    <div class="header header-one">
+        <div class="header-left header-left-one">
+            {% comment %} <a href="#" class="logo">
+		    <img src="{% static 'assets/img/logo.png' %}" alt="Logo"> 
+            </a>{% endcomment %}
+            
+	    <img src="{% static 'assets/img/ecologo.png' %}" alt="logo"  style="width:160px; height:60px" >
+ 
+            <a href="#" class="white-logo">
+            <img src="#" alt="Logo">
+            </a>
+           
+            
+            
+            {% comment %} <a href="#" class="logo ">
+            <img src="../static/assets/img/logo.png" alt="Logo" style="max-height: 50px;">
+            </a> {% endcomment %}
+        </div>
+        {% comment %} <div class="top-nav-search">
+         <form>
+         <input type="text" class="form-control" placeholder="Search here">
+         <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+         </form>
+        </div>  {% endcomment %}
+       
+       
+ 
+    
+    
+    
+        <ul class="nav nav-tabs user-menu">
+            <li class="nav-item dropdown has-arrow main-drop" >
+                <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <span class="user-img">
+                <!-- <img src="../static/assets/img/adminlogo2.png" alt=""> -->
+                <span class="status online"></span>
+                </span>
+                <span>Profile</span>
+                </a>
+                <div class="dropdown-menu">
+                    {% comment %} <a class="dropdown-item" href="#"><i data-feather="user" class="me-1"></i> Profile</a> {% endcomment %}
+                    
+                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#pages_edit">
+                     <span>  <b>Profile</b></span>
+                     </a>
+                     
+                     
+                    <!-- <a class="dropdown-item" href="#"><i data-feather="key" class="me-1"></i> Change Password</a> -->
+                    <a class="dropdown-item" href="{% url 'log_out' %}"><i data-feather="log-out" class="me-1"></i><b> Logout</b></a>
+                </div>
+            </li>
+    
+        </ul>
+ 
+        
+      </nav>
+    
+    </div>
+     <a href="javascript:void(0);" id="toggle_btn">
+     <i class="fas fa-bars"></i>
+   </a> 
+ 
+  
+ 
+ <a class="mobile_btn" id="mobile_btn">
+     <i class="fas fa-bars"></i>
+ </a> 
+   {% comment %} code for pop up {% endcomment %}
+   <div class="modal custom-modal fade" id="pages_edit" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+    <div class="modal-header border-0 pb-0">
+    <div class="form-header modal-header-title text-start mb-0">
+    <h4 class="mb-0">Profile</h4>
+    </div>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+    <span class="align-center" aria-hidden="true">×</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <div class="row">
+    <div class="col-lg-12 col-md-12">
+    <div class="form-group">
+    <label>Name:</label>
+    <input type="text" class="form-control" placeholder="About Us" value="{{user.username}}">
+    </div>
+    </div>
+    <div class="col-lg-12 col-md-12">
+    <div class="form-group">
+    <label>Email:</label>
+    <input type="text" class="form-control" placeholder="about-us" value="{{user.email}}">
+    </div>
+    </div>
+    <div class="col-lg-12 col-md-12">
+      <div class="form-group">
+      <label>first Name:</label>
+      <input type="text" class="form-control" placeholder="about-us" value="{{user.first_name}}">
+      </div>
+    </div>
+    <div class="col-lg-12 col-md-12">
+      <div class="form-group">
+      <label>Last Name:</label>
+      <input type="text" class="form-control" placeholder="about-us" value="{{user.last_name}}">
+      </div>
+    </div>
+    
+    </div>
+    <div class="modal-footer">
+    <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-back me-2">Back</a>
+    <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary">Save</a>
+    </div>
+    </div>
+    </div>
+    </div>
+
+</div>

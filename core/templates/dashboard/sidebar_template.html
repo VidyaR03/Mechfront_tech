@@ -1,0 +1,577 @@
+<style>
+  .sidebar {
+      min-height: 50vh;
+      overflow-y: scroll;
+      scrollbar-width: thin; /* For Firefox */
+      scrollbar-color:  #ff0000; #f4f4f4; /* For Firefox */
+  }
+  
+  /* WebKit browsers (Chrome, Safari, etc.) */
+  .sidebar::-webkit-scrollbar {
+      width: 8px; /* Width of the scrollbar */
+  }
+  
+  .sidebar::-webkit-scrollbar-track {
+      background: #f4f4f4; /* Background color of the scrollbar track */
+      border-radius: 10px;
+  }
+  
+  .sidebar::-webkit-scrollbar-thumb {
+      background-color: #ff1100; /* Scrollbar color */
+      border-radius: 10px; /* Roundness of the scrollbar handle */
+      border: 2px solid #f4f4f4; /* Padding around the scrollbar */
+  }
+
+  /* Style for the active "Project" menu item */
+  .sidebar .submenu ul li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: rgb(37, 35, 35);
+  }
+
+  /* Style for the main menu items */
+  .sidebar ul li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: rgb(23, 23, 23);
+    /* Set default t                                                                                                                                                                                                                                                                                              ext color to white for main menu items */
+  }
+
+  .sub-menu.active {
+    display: block;
+  }
+
+  .sidebar ul li a.active,
+  .sidebar .submenu ul li a.active,
+  .nav-linkk.selected,
+  .sidebar .nav-item.has-treeview:has(.sub-menu.active)>a,
+  .sidebar .nav-item.active>a {
+    background-color: #98cbd1;
+    color: white !important;
+  }
+</style>
+
+
+<div class="sidebar" id="sidebar" style="background-color:  white;">
+
+  <div class="sidebar-inner ">
+    <div id="sidebar-menu" class="sidebar-menu">
+      <ul>
+        <li class="menu-title"><span>Main</span></li>
+        <li>
+          <a href="{% url 'admin_home' %}"><i class="fe fe-home"></i> <span>Dashboard</span></a>
+        </li>
+        <li class="menu-title"><span></span></li>
+        <!-- <li class="menu-title"><span style="color: white;">Leads</span></li>
+        <li>
+          <a href="{% url 'lead_list' %}">&nbsp;&nbsp;<i class="fe fe-file-text"></i> <span> Leads</span>
+          </a>
+        </li> -->
+        
+
+        <li class="menu-title"><span>Leads</span></li>
+        <li class="nav-item {% url 'lead_list' as lead_list %} {% url 'add_leads' as add_leads %}{% if request.path == lead_list or request.path == add_leads %}menu-open{% endif %}">
+          <a href="{{ lead_list }}" class="nav-link {% if request.path == lead_list or request.path == add_leads %}active{% endif %}">
+            &nbsp;&nbsp;<i class="fa fa-bookmark"></i> <span>Leads</span>
+          </a>
+        </li>
+
+
+
+
+
+        <li class="menu-title"><span>Contact</span></li>
+        <li
+          class="nav-item has-treeview {% if 'fn_customer_List_View' in request.path  or 'fn_vendor_List_View' in request.path or 'fn_transporter_List_View' in request.path %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class=" fe fe-users"></i> <span>Contact</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'fn_customer_List_View' in request.path or 'add_customer' in request.path or 'fn_vendor_List_View' in request.path or 'add_vendor' in request.path or 'fn_transporter_List_View' in request.path or 'add_transporter' in request.path %}active{% endif %}">
+            <li class="nav-item">
+              {% url 'fn_customer_List_View' as fn_customer_List_View %}
+              {% url 'add_customer' as add_customer %}
+
+              <a href="{{ fn_customer_List_View }}"
+                class="nav-link {% if request.path == fn_customer_List_View or request.path == add_customer %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'fn_vendor_List_View' as fn_vendor_List_View %}
+              {% url 'add_vendor' as add_vendor %}
+
+              <a href="{{ fn_vendor_List_View }}"
+                class="nav-link {% if request.path == fn_vendor_List_View or request.path == add_vendor %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vendor
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'fn_transporter_List_View' as fn_transporter_List_View %}
+              {% url 'add_transporter' as add_transporter %}
+
+              <a href="{{ fn_transporter_List_View }}"
+                class="nav-link {% if request.path == fn_transporter_List_View or request.path == add_transporter %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transporter
+              </a>
+            </li>
+
+
+          </ul>
+        </li>
+        <li class="menu-title"><span>Inventory</span></li>
+        <li
+          class="nav-item has-treeview {% if 'inventory_list_data' in request.path or 'godown_list' in request.path %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class="fe fe-package"></i> <span>Inventory</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'inventory_list_data' in request.path or 'add_inventory' in request.path or 'godown_list' in request.path or 'godown_add' in request.path %}active{% endif %}">
+            <li class="nav-item">
+              {% url 'inventory_list_data' as inventory_list_data %}
+              {% url 'add_inventory' as add_inventory %}
+
+              <a href="{{ inventory_list_data }}"
+                class="nav-link {% if request.path == inventory_list_data or request.path == add_inventory %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inventory List
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'godown_list' as godown_list %}
+              {% url 'godown_add' as godown_add %}
+
+              <a href="{{ godown_list }}" class="nav-link {% if request.path == godown_list or request.path == godown_add %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Godown
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="menu-title"><span>Master</span></li>
+        <li
+          class="nav-item has-treeview {% if 'designation_list' in request.path  or 'leave_type_list' in request.path or 'department_list' in request.path %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class="fa fa-bookmark"></i> <span>Master</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'designation_list' in request.path or 'designation_add' in request.path or 'leave_type_list' in request.path or 'department_add' in request.path or 'department_list' in request.path or 'leave_type_add' in request.path %}active{% endif %}">
+            <li class="nav-item">
+              {% url 'designation_list' as designation_list %}
+              {% url 'designation_add' as designation_add %}
+
+              <a href="{{ designation_list }}"
+                class="nav-link {% if request.path == designation_list or request.path == designation_add %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Designation
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'department_list' as department_list %}
+              {% url 'department_add' as department_add %}
+
+              <a href="{{ department_list }}"
+                class="nav-link {% if request.path == department_list or request.path == department_add %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Department
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'leave_type_list' as leave_type_list %}
+              {% url 'leave_type_add' as leave_type_add %}
+
+              <a href="{{ leave_type_list }}"
+                class="nav-link {% if request.path == leave_type_list or request.path == leave_type_add %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Leave Type
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="menu-title"><span>Report</span></li>
+        <li
+          class="nav-item has-treeview {% if 'debit_note' in request.path  or 'credit_note' in request.path or 'inventory_date' in request.path or 'invoice_display_report' in request.path or 'purchase_register_date' in request.path or 'customer_outstanding' in request.path or 'vendor_outstanding' in request.path or 'sales_order_disply' in request.path or 'cash_voucher_display_report' in request.path %} {% if 'credit_note_pdf' not in request.path %}menu-open {% endif %}{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class="fe fe-trending-up"></i> <span>Report</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'debit_note' in request.path or 'credit_note' in request.path or 'inventory_date' in request.path or 'invoice_display_report' in request.path or 'purchase_register_date' in request.path or 'customer_outstanding' in request.path or 'vendor_outstanding' in request.path or 'sales_order_disply' in request.path or 'cash_voucher_display_report' in request.path %} {% if 'credit_note_pdf' not in request.path %}active{% endif %}{% endif %}">
+            <li class="nav-item">
+              {% url 'debit_note' as debit_note %}
+              <a href="{{ debit_note }}" class="nav-link {% if request.path == debit_note %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debit Note
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'credit_note' as credit_note %}
+              <a href="{{ credit_note }}" class="nav-link {% if request.path == credit_note %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Credit Note
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'inventory_date' as inventory_date %}
+              <a href="{{ inventory_date }}" class="nav-link {% if request.path == inventory_date %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inventory Summary
+              </a>
+            </li>
+
+
+            <li class="nav-item">
+              {% url 'invoice_display_report' as invoice_display_report %}
+              <a href="{{ invoice_display_report }}"
+                class="nav-link {% if request.path == invoice_display_report %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sales Register
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'purchase_register_date' as purchase_register_date %}
+              <a href="{{ purchase_register_date }}"
+                class="nav-link {% if request.path == purchase_register_date %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Purchase Register
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'customer_outstanding' as customer_outstanding %}
+              <a href="{{ customer_outstanding }}"
+                class="nav-link {% if request.path == customer_outstanding %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer Outstanding
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'vendor_outstanding' as vendor_outstanding %}
+              <a href="{{ vendor_outstanding }}"
+                class="nav-link {% if request.path == vendor_outstanding %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vendor Outstanding
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'sales_order_disply' as sales_order_disply %}
+              <a href="{{ sales_order_disply }}"
+                class="nav-link {% if request.path == sales_order_disply %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sales Order Report
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="menu-title"><span>Sales</span></li>
+        <li
+          class="nav-item has-treeview {% if 'debitnotes_list' in request.path  or 'quotation_list' in request.path or 'sales_order_list' in request.path  or 'delivery_challan_list' in request.path or 'invoice_list' in request.path or 'creditnotes_list' in request.path or 'payment_received_list' in request.path  or 'performa_invoice_list' in request.path %} {% if 'purchase_invoice_list' not in  request.path %}menu-open {% endif %}{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class=" fe fe-clipboard"></i> <span>Sales</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'debitnotes_list' in request.path or 'add_debitnotes' in request.path or 'quotation_list' in request.path or 'add_quotation' in request.path or 'edit_quotation' in request.path or 'sales_order_list' in request.path or 'add_sales_order' in request.path or 'edit_sales_order' in request.path or 'delivery_challan_list' in request.path or 'add_delivery_challan' in request.path or 'edit_challan' in request.path or 'invoice_list' in request.path or 'add_invoice_data' in request.path or 'edit_invoice' in request.path or 'creditnotes_list' in request.path or 'add_creditnotes' in request.path or 'edit_creditnotes' in request.path or 'payment_received_list' in request.path or 'add_paymentreceived_data' in request.path or 'performa_invoice_list' in request.path  %} {% if 'purchase_invoice_list' not in  request.path %}active {% endif %}{% endif %}">
+
+
+            <li class="nav-item">
+              {% url 'quotation_list' as quotation_list %}
+              {% url 'add_quotation' as add_quotation %}
+              {% url 'edit_quotation' as edit_quotation %}
+
+
+              <a href="{{ quotation_list }}" class="nav-link {% if request.path == quotation_list or request.path == add_quotation or request.path == edit_quotation %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quotation
+              </a>
+            </li> 
+            
+
+            <li class="nav-item">
+              {% url 'sales_order_list' as sales_order_list %}
+              {% url 'add_sales_order' as add_sales_order %}
+
+              <a href="{{ sales_order_list }}"
+                class="nav-link {% if request.path == sales_order_list or request.path == add_sales_order %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sales Order
+              </a>
+            </li>
+
+
+            <li class="nav-item">
+              {% url 'delivery_challan_list' as delivery_challan_list %}
+              {% url 'add_delivery_challan' as add_delivery_challan %}
+
+              <a href="{{ delivery_challan_list }}"
+                class="nav-link {% if request.path == delivery_challan_list or request.path == add_delivery_challan %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delivery Challan
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'invoice_list' as invoice_list %}
+              {% url 'add_invoice_data' as add_invoice_data %}
+
+              <a href="{{ invoice_list }}" class="nav-link {% if request.path == invoice_list or request.path == add_invoice_data %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax Invoice
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'performa_invoice_list' as performa_invoice_list %}
+              {% url 'performa_add_invoice_data' as performa_add_invoice_data %}
+
+              <a href="{{ performa_invoice_list }}"
+                class="nav-link {% if request.path == performa_invoice_list or request.path == performa_add_invoice_data %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Proforma Invoice
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'creditnotes_list' as creditnotes_list %}
+              {% url 'add_creditnotes' as add_creditnotes %}
+
+              <a href="{{ creditnotes_list }}"
+                class="nav-link {% if request.path == creditnotes_list or request.path == add_creditnotes %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Credit Notes
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'debitnotes_list' as debitnotes_list %}
+              {% url 'add_debitnotes' as add_debitnotes %}
+
+
+              <a href="{{ debitnotes_list }}"
+                class="nav-link {% if request.path == debitnotes_list or request.path == add_debitnotes %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debit Notes
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'payment_received_list' as payment_received_list %}
+              {% url 'add_paymentreceived_data' as add_paymentreceived_data %}
+
+              <a href="{{ payment_received_list }}"
+                class="nav-link {% if request.path == payment_received_list or request.path == add_paymentreceived_data %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Payment Received
+              </a>
+            </li>
+
+
+          </ul>
+        </li>
+
+
+
+        <li class="menu-title"><span>Purchase</span></li>
+        <li
+          class="nav-item has-treeview {% if  'purchase_order_list' in request.path or 'grn_list' in request.path or 'purchase_invoice_list' in request.path %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class=" fe fe-pie-chart"></i> <span>Purchase</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'purchase_order_list' in request.path or 'add_purchase_order' in request.path or 'grn_list' in request.path or 'add_good_note' in request.path or 'purchase_invoice_list' in request.path or 'add_purchase_invoice' in request.path %}active{% endif %}">
+
+
+            <li class="nav-item">
+              {% url 'purchase_order_list' as purchase_order_list %}
+              {% url 'add_purchase_order' as add_purchase_order %}
+
+              <a href="{{ purchase_order_list }}"
+                class="nav-link {% if request.path == purchase_order_list or request.path == add_purchase_order %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Purchase Order
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'grn_list' as grn_list %}
+              {% url 'add_good_note' as add_good_note %}
+
+              <a href="{{ grn_list }}" class="nav-link {% if request.path == grn_list or request.path == add_good_note %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GRN
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'purchase_invoice_list' as purchase_invoice_list %}
+              {% url 'add_purchase_invoice' as add_purchase_invoice %}
+
+              <a href="{{ purchase_invoice_list }}"
+                class="nav-link {% if request.path == purchase_invoice_list or request.path == add_purchase_invoice %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Purchase Invoice
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+
+        <li class="menu-title"><span>HR</span></li>
+        <li
+          class="nav-item has-treeview {% if 'fn_employee_List_View' in request.path  or 'hr_leaves_List_View' in request.path or 'holiday_List_View' in request.path or 'fn_emp_salary_List' in request.path %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class=" fe fe-users"></i> <span>HR</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'fn_employee_List_View' in request.path or 'add_employee' in request.path or 'hr_leaves_List_View' in request.path or 'add_hr_leaves' in request.path or 'holiday_List_View' in request.path or 'fn_emp_salary_List' in request.path or 'add_holiday' in request.path or 'add_emp_slary' in request.path %}active{% endif %}">
+            <li class="nav-item">
+              {% url 'fn_employee_List_View' as fn_employee_List_View %}
+              {% url 'add_employee' as add_employee %}
+
+              <a href="{{ fn_employee_List_View }}"
+                class="nav-link {% if request.path == fn_employee_List_View or request.path == add_employee %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Employee
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'hr_leaves_List_View' as hr_leaves_List_View %}
+              {% url 'add_hr_leaves' as add_hr_leaves %}
+
+              <a href="{{ hr_leaves_List_View }}"
+                class="nav-link {% if request.path == hr_leaves_List_View or request.path == add_hr_leaves %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leaves
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'holiday_List_View' as holiday_List_View %}
+              {% url 'add_holiday' as add_holiday %}
+
+              <a href="{{ holiday_List_View }}"
+                class="nav-link {% if request.path == holiday_List_View or request.path == add_holiday %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Holiday
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'fn_emp_salary_List' as fn_emp_salary_List %}
+              {% url 'add_emp_slary' as add_emp_slary %}
+
+              <a href="{{ fn_emp_salary_List }}"
+                class="nav-link {% if request.path == fn_emp_salary_List or request.path == add_emp_slary %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Employee Salary
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+
+
+
+        <li class="menu-title"><span>Account</span></li>
+        <li
+          class="nav-item has-treeview {% if 'fn_cash_coucher_List_View' in request.path  or 'expense_vendor_list' in request.path or 'expense_advice_list_View' in request.path %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class=" fe fe-book"></i> <span>Account</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'fn_cash_coucher_List_View' in request.path or 'expense_vendor_list' in request.path or 'expense_advice_list_View' in request.path or 'add_expense_advice_data' in request.path or 'add_expense_vendor_data' in request.path or 'add_cash_voucher' in request.path %}active{% endif %}">
+            <li class="nav-item">
+              {% url 'fn_cash_coucher_List_View' as fn_cash_coucher_List_View %}
+              {% url 'add_cash_voucher' as add_cash_voucher %}
+
+              <a href="{{ fn_cash_coucher_List_View }}"
+                class="nav-link {% if request.path == fn_cash_coucher_List_View or request.path == add_cash_voucher  %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cash Voucher
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'expense_vendor_list' as expense_vendor_list %}
+              {% url 'add_expense_vendor_data' as add_expense_vendor_data %}
+
+              <a href="{{ expense_vendor_list }}"
+                class="nav-link {% if request.path == expense_vendor_list or request.path == add_expense_vendor_data %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expense
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'expense_advice_list_View' as expense_advice_list_View %}
+              {% url 'add_expense_advice_data' as add_expense_advice_data %}
+
+              <a href="{{ expense_advice_list_View }}"
+                class="nav-link {% if request.path == expense_advice_list_View or request.path == add_expense_advice_data %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expense Advice
+              </a>
+            </li>
+
+
+          </ul>
+        </li>
+
+
+
+        <li class="menu-title"><span>Documents</span></li>
+        <li
+          class="nav-item has-treeview {% if 'customer_doc' in request.path  or 'vendor_doc' in request.path or 'inventory_doc' in request.path %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class="fe fe-package"></i> <span>Documents</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'customer_doc' in request.path or 'vendor_doc' in request.path or 'inventory_doc' in request.path %}active{% endif %}">
+            <li class="nav-item">
+              {% url 'customer_doc' as customer_doc %}
+              <a href="{{ customer_doc }}" class="nav-link {% if request.path == customer_doc %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'vendor_doc' as vendor_doc %}
+              <a href="{{ vendor_doc }}" class="nav-link {% if request.path == vendor_doc %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vendor
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'inventory_doc' as inventory_doc %}
+              <a href="{{ inventory_doc }}" class="nav-link {% if request.path == inventory_doc %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inventory
+              </a>
+            </li>
+
+
+          </ul>
+        </li>
+
+
+        <li class="menu-title"><span>Settings</span></li>
+        <li class="nav-item has-treeview {% if 'fn_company_profile_List' in request.path  %}menu-open{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class=" fe fe-settings"></i> <span>Settings</span><span class="menu-arrow"></span>
+
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'fn_company_profile_List' in request.path %}active{% endif %}">
+            <li class="nav-item">
+              {% url 'fn_company_profile_List' as fn_company_profile_List %}
+              <a href="{{ fn_company_profile_List }}"
+                class="nav-link {% if request.path == fn_company_profile_List %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Company Profile
+              </a>
+            </li>
+
+
+
+          </ul>
+        </li>
+
+        </li>
+
+        <li class="menu-title"><span></span></li>
+        <li class="menu-title"><span style="color: white;">Logout</span></li>
+        <li>
+          <a href="{% url 'logout' %}">
+            &nbsp;&nbsp;<i class="fa fa-sign-out-alt"></i> <span> Logout</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</div>

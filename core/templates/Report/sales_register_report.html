@@ -1,0 +1,281 @@
+
+{% extends 'dashboard/base_template.html' %}
+{% block custom_css %}
+{% block page_title %}
+{% endblock page_title %}
+<style>
+    .custom-error {
+        max-width: 300px;
+        /* Adjust the width to your desired value */
+        margin: 0 auto;
+        /* Add this line to center the element */
+        text-align: center;
+        /* Add this line to center the text inside the element */
+        }
+        .input-group-text {
+        cursor: pointer;
+        }
+        .grey-card {
+        background-color:LightGray;
+    }
+    .negative-padding {
+        margin-top: -60px; 
+    }
+    
+
+
+    
+
+</style>
+<style>
+    .center-pagination .step-links {
+    text-align: center;
+}
+.center-pagination .step-links {
+    text-align: center;
+}
+/* Styles for the modal popup */
+#customPopup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+    background-color: #FEFEFE;
+    position: fixed;
+    top: 50%;           /* Center vertically */
+    left: 50%;          /* Center horizontally */
+    transform: translate(-50%, -50%);  /* Adjust for centering */
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #888;
+    width: 500px;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+textarea {
+    width: 100%;
+    height: 100px; /* Adjust the height of the textarea as per your needs */
+    margin-bottom: 10px;
+    resize: vertical;
+}
+#submitbutton{
+    width: 150px;
+    height: 40px;
+    margin-bottom: 10px;
+    resize: vertical;
+    align-items:center;
+    margin: 0 auto 10px; /* This centers the button horizontally and adds a bottom margin */
+    display: block;
+}
+.button-container {
+    display: flex;
+    gap: 5px; /* Adjust the gap between buttons as needed */
+}
+
+.button-container button {
+    flex: 1;
+}
+</style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
+    
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 341px;">
+
+    <div class="content container-fluid">
+       
+       <div class="row">
+          <div class="col-sm-12">
+             <div class="card card-table">
+                <div class="card-header">
+                   <div class="col-lg-12">
+                      <div class="row">
+                         <div class="col-lg-8">
+                            <h3>
+                            <a href="{% url 'sales_register_report_date' %}" style="margin-right: 10px;">
+                                <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i>
+                            </a>    
+                           Sales Register Reports   </h3>   
+                            <!-- <button  onclick="printDiv('printableArea')">Print</button> -->
+                        
+                        <!-- <input type="button" onclick="printDiv('printableArea')" value="Download" class="btn btn-primary"/> -->
+                        <form method="post" action="{% url 'download_sales_excel' %}">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-primary">Download Excel</button>
+                      </form>
+                        </div>
+
+                        </div>
+                         
+                      </div>
+                   </div>
+                </div>
+              <div id="printableArea">
+
+                <div class="card-body" id="customer_ledger_pdf">
+                   <div class="rport">
+                    <h2><b>M/S KEYMECH TECHNOLOGIES
+                    </b>
+                    </h2>
+                    <p style="font-size: 20px;">Sales Register Report</p> 
+                    <p>     
+                   <b> From </b>&nbsp;{{start_date}} &nbsp; <b>To</b> &nbsp; {{end_date}}
+                    
+                    <br>
+                    </div>
+                    <br>
+<div class="table-responsive">
+  <table class="table table-center">
+      <thead class="thead-dark">
+          <tr>
+              <th>SR.NO.</th>
+              <!-- <th>Date</th> -->
+              <th>CUSTOMER NAME</th>
+              <th>GST NO.</th>
+              <th>PO NO.</th>
+              <th>INVOICE NO.</th>
+              <th>INVOICE DATE</th>
+              <th>INVOICE AMOUNT</th>
+              <th>CGST</th>
+              <th>SGST</th>
+              <th>IGST</th>
+              <th>AMOUNT</th>
+              <th>REMARK</th>
+              <th>ACTION</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for item in sales_register_within_range %}
+          <tr>
+              <td>{{ forloop.counter }}</td> 
+
+              <!-- <td>{{ item.invoice_date|date:"j F Y" }}</td> -->
+              <!-- <td>{{ item.invoice_customer_name.customer }}</td> -->
+             <td><a href="{% url 'invoice_show_pdf' item.id %}" style="color:blue;">{{item.invoice_customer_name.company_name|upper}}</a></td> 
+
+              <td>{{ item.invoice_gst_no }}</td>
+              <td>{{ item.invoice_buyer_order_no }}</td>
+              <td>{{ item.id }}</td>
+              <td>{{ item.invoice_date|date:"j F Y" }}</td>
+              <td>{{ item.invoice_due }}</td>
+              <td>{{ item.invoice_cgstval }}</td>
+              <td>{{ item.invoice_sgstval }}</td>
+              <td>{{ item.invoice_igstval }}</td>
+              <td>{{ item.invoice_total }}</td>
+              <td>{{ item.inv_remark}}</td>
+              <td><button type="button" onclick="showPopup('{{ item.id }}')"
+                class="btn btn-danger">Add Remark</button></td>
+          </tr>
+          <div id="customPopup_{{ item.id }}" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closePopup('{{ item.id }}')">&times;</span>
+                <textarea id="customTextField_{{ item.id }}" name="query" placeholder="Enter your Remark..."></textarea>
+                <button type="button" id="submitbutton_{{ item.id }}" onclick="submitCustomText('{{ item.id }}')" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+        
+          {% endfor %}
+          <tr>
+              <td colspan="6"><strong>TOTAL</strong></td>
+              <td><strong>{{total_invoice}}</strong></td>
+              <td><strong>{{ total_cgst }}</strong></td>
+              <td><strong>{{ total_sgst }}</strong></td>
+              <td><strong>{{ total_igst }}</strong></td>
+              <td><strong>{{ total_amount }}</strong></td>
+          </tr>
+      </tbody>
+  </table>
+
+
+                   </div>
+                </div>
+              </div> 
+             </div>
+          </div>
+       </div>
+</div>
+ </div>
+ <script>
+  function printDiv(divId) {
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+
+</script>
+
+
+<script>
+  function submitCustomText(id) {
+    var customTextField = document.getElementById('customTextField_' + id);
+    var query = customTextField.value;
+    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch(`/sales_register_remark_ajax/${id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken
+        },
+        body: `query=${encodeURIComponent(query)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closePopup(id);
+            alert('Remark submitted successfully');
+            window.location.reload();
+        } else {
+            alert('Failed to submit remark');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the remark');
+    });
+}
+
+</script>
+<script>
+  function showPopup(id) {
+      var customPopup = document.getElementById('customPopup_' + id);
+      customPopup.style.display = 'block';
+  }
+  function closePopup(id) {
+      var customPopup = document.getElementById('customPopup_' + id);
+      customPopup.style.display = 'none';
+  }
+</script>
+{% endblock main_content %}
+
+
+
+
+

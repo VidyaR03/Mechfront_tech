@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+{% load static %}
+<head>
+    <title></title>
+    <style type="text/css">
+
+@media print {
+            @page {
+                size: A4; /* Ensure page size is set */
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 12px; /* Reduced font size for better fit */
+                font-family: 'Calibri', sans-serif;
+            }
+        }
+    p {
+/* Set some padding for overall content */
+padding: 15px;
+}
+
+.ref-no,
+.company-name {
+/* Bold text with a slight accent color */
+font-weight: bold;
+
+}
+
+
+
+
+      table {
+          border: 1px solid black;
+          border-collapse: collapse;
+          width: 95%;
+          margin: 0px auto;
+          font-size: 12px;
+          line-height: 1.2;
+          display: inline-block;
+          font-family:Calibry;
+      }
+      td span {
+      width: 120px; /* Adjust width as needed */
+      margin-right: 10px; /* Adjust margin as needed */
+      }
+      td, th {
+          border: 1px solid black;
+          padding: 2px;
+          text-align: left;
+      }
+      h1, h3, h4, h5, p {
+          margin: 0px 0;
+      }
+      h3 {
+          text-align: center;
+          font-size: 18px;
+      }
+      .header-table, .header-table td {
+      margin-bottom: 2px;
+
+      }
+      .header-table img {
+          margin-right: 5px;
+      }
+
+      .no-border {
+          border: none !important;
+      }
+      .terms p {
+          font-size: 10px;
+      }
+      .center-content-td {
+          text-align: center;
+      }
+      .footer-sign {
+          text-align: center;
+          font-size: 9px;
+          font-weight: 500;
+      }
+    table, th, td {
+color: black; /* Sets default text color to black */
+}
+  </style>
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+ 
+<body onload="window.print()">
+ 
+    <div style="padding-top: 12px;">
+        <div style="height: 1200px !important;">
+            <div><br>
+                <!-- <a href="{% url 'download_quotation_pdf' id=credit.id %}" class="btn btn-primary">
+                    <i class="fa fa-download"></i> Download
+                </a> -->
+                <h3 style="text-align:center;font-family: calibri;font-size: 24px; margin-bottom: 5px;margin-top: 5px;"> Debit Note</h3>
+            </div>
+            <table style="width: 100%;">
+
+                <tr>
+                    <td rowspan="2"colspan="2" style="font-family: calibri;font-size: 15px;font-weight: 500;"> <b>M/S KEYMECH TECHNOLOGIES </b><br>802A, TowerB, iThum <br>
+                        NOIDA Sector-62 201301 (UP)<br>PAN NO CVSPG7178L<br>
+                        STATE CODE: 09<br>STATE : Uttar Pradesh<br>
+                        GSTIN/UIN:  05AAUPG1246N1ZE<br>
+                        State Name :  Uttar Pradesh, Code : 09<br>
+                        E-Mail :mechfrontindia@gmail.com, vibhor@mechfront.com 
+                    </td>
+                    <td style="font-family: calibri;font-size: 13px;font-weight: 500;">Debit Note No.<br></td>
+                    <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;">Dated -{{ credit.cn_date}}</td>
+                </tr>
+                <tr>
+                    <td style="font-family: calibri;font-size:13px;font-weight: 500;">Supplier's Ref.</td>
+                    <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;"> Other Reference(s)            </td>
+                </tr>
+                <tr>
+                    <td  colspan="2" style="font-family: calibri;font-size: 13px;font-weight: 500;">Party : {{credit.cn_customer_name.customer}}</br>
+                   GSTIN/UIN: {{credit.cn_customer_name.gst_number}}<br>
+                   PAN NO: {{credit.cn_customer_name.pan_number}}<br> <span>state Name :{{credit.cn_customer_name.state}}    &nbsp;  state code :{{credit.cn_customer_name.pincode}}
+        
+                </td> 
+                <td colspan="6"></td>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                </tr>
+                <tr>
+                    <td style="width: 3%;font-size: 13px;">SI NO</td>
+                    <td colspan="2"style="font-size: 13px;">Description of Goods</td>
+                    <td style="font-size: 13px;">Quantity</td>
+                    <td style="font-size: 13px;">Rate </td>
+                    <td style="font-size: 13px;">per </td>
+                    <td style="font-size: 13px;">Disc. %</td>
+                    <td style="font-size: 13px;">Amount</td>
+                </tr>
+                {% for j in credit_item_data %}
+        
+                <tr>
+                    <td style="width: 3%;"">{{ forloop.counter }}</td>
+                    <td colspan="2"> {{ j.cn_description_goods }}</td>
+                    <td>{{ j.cn_qantity }}</td>
+                    <td>{{ j.cn_unit_price }}</td>
+                    <td>{{ j.cn_uom }}</td>
+                    <td>{{ j.cn_discount }}</td>
+                    <td>{{ j.cn_total }}</td>
+                </tr>
+                {% endfor %}    
+        
+                <!-- <tr>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr> -->
+                <tr>
+                    <td></td>
+                    <td colspan="2"style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">Freight & Cartage	</td>
+                    <td> </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ credit.cn_freight_percentage_amt }}</td>
+                    
+                </tr>
+                
+                <tr>
+                    <td></td>
+                    <td colspan="2" style="font-family: calibri;font-size:15px;font-weight: 600;padding-left: 140px;">IGST  </td>
+                    <td> </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                   
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="2" style="font-family: calibri;font-size:15px;font-weight: 600;padding-left: 140px;">IGST on Freight amount is not taken in original invoice </td>
+                    <td> </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                   
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;">Total</td>
+                    <td> </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ credit.cn_total }}</td>
+                    
+                </tr>
+                <tr>
+                    <td colspan="8">TERMS AND CONDITIONS:<br>
+                    {{ credit.cn_note }}
+                </td>
+                <tr>
+                   
+                    <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;border-bottom: 0px; border-right: 0px;">Amount Chargeable (in words) </td>
+                    <td colspan="6" style="font-family: calibri;font-size:13px;font-weight: 500;border-left: 0px" >E. & O.E            </td>
+                </tr>
+                <tr>
+                    
+                    <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;border-top: 0px;border-bottom: 0px"><b>{{ credit.cn_total_amt_word }} Only	</b>			
+                    </td>
+                    <td colspan="6" style="font-family: calibri;font-size:13px;font-weight: 500;">  for MechFront Tecnologies </td>
+                </tr>
+                <tr>
+                   
+                    <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500; border-top: 0px;">Company's PAN :<b style="padding-left: 2px;">CVSPG7178L</b>	
+        
+                    
+                    </td>
+                    <td colspan="6" style="font-family: calibri;font-size:13px;font-weight: 500;">  for MechFront Tecnologies  <br><p style="padding-bottom: 30px;"></p>Authorised Signatory	
+                    </td>
+        
+                </tr>
+        
+            </table>
+            </div>
+ 
+    </div>
+ 
+</body>
+ 
+</html>

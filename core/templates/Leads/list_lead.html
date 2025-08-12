@@ -1,0 +1,339 @@
+{% extends 'dashboard/base_template.html' %}
+    {% block custom_css %}
+        {% block page_title %}
+        {% endblock page_title %}
+        <style>
+
+.form-select{width: 116px;}
+            .custom-error {
+                max-width: 300px;
+                /* Adjust the width to your desired value */
+                margin: 0 auto;
+                /* Add this line to center the element */
+                text-align: center;
+                /* Add this line to center the text inside the element */
+              }
+              .input-group-text {
+                cursor: pointer;
+              }
+              .grey-card {
+                background-color:LightGray;
+            }
+            /* .negative-padding {
+              margin-top: -60px; 
+          } */
+          .toast-success {
+                background-color: darkgreen !important;
+                color: white !important;
+        }
+        #toast-container {
+            top: auto;
+            top: 60px; /* Adjust this value to move the message further down or up */
+        }
+            .toast-error {
+            background-color: red !important;
+            color: white !important;
+        }
+
+        #toast-container {
+            top: auto;
+            top: 60px; /* Adjust as needed */
+        }
+
+
+
+
+
+        </style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+{% block main_content %}
+   
+<div class="page-wrapper negative-padding">
+  <div class="content container-fluid">
+      <div class="page-header">
+          <div class="row align-items-center">
+              <div class="col">
+                  <h3 class="page-title">Leads</h3>
+              </div>
+              <div class="col-auto">
+                   <a href="{% url 'add_leads' %}" class="btn btn-primary btn-rounded"> <i class="fas fa-plus-circle"></i> Add Leads</a>
+              </div>
+          </div>
+      </div>
+    
+     
+      
+
+      <div class="row">
+          <div class="col-sm-12">
+              <div class="card card-table">
+                  <div class="card-body">
+                      <div class="table-responsive">
+                        <table id="challanTable"  class="table table-center table-hover datatable">
+                            <thead class="thead-light">
+                                  <tr>
+                                    <tr>
+                                      <th>Sr no.</th>
+                                      <!-- <th>Lead Sr.No.</th> -->
+                                      <th>Company Name</th>
+                                      <th>Contact Person</th>  
+                                      <th>Contact Number</th>    
+                                      <th>Email</th>
+                                      <th>Status</th> 
+                                      <th>Website</th> 
+                                      <th>Inquiry</th>  
+                                      <th>Source</th>                        
+                                   
+                                      <th>Actions</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {% if lead_data %}
+                                {% for t in lead_data %}
+                                <tr>
+                                  <td>
+                                    {{forloop.counter}}
+                                </td>
+                                    <!-- <td>
+                                        {{t.l_LS_NO}}
+                                    </td> -->
+                                    <td>
+                                        {{t.company_name}}
+                                    </td>
+                                    <td>
+                                        {{ t.contact_person }}
+                                    </td>
+                                    <td>
+                                        {{t.contact_number}}
+                                    </td>
+                                    <td>
+                                        {{ t.email }}
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'update_status'  %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="lead_id" value="{{ t.id }}">
+                                            <select class="form-select" name="status" onchange="this.form.submit()">
+                                                <option value="New" {% if t.status == 'New' %} selected {% endif %}>New</option>
+                                                <option value="Contacted" {% if t.status == 'Contacted' %} selected {% endif %}>Contacted</option>
+                                                <option value="Proposal Sent" {% if t.status == 'Proposal Sent' %} selected {% endif %}>Proposal Sent</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        {{ t.website }}
+                                    </td>
+                                    <td>
+                                      <a href="#" class="btn btn-sm btn-outline-success me-1 btn-rounded" data-toggle="popover" title="{{ t.inquiry }}" data-content="{{ t.inquiry }}"><i class="fas fa-eye"></i></a>
+                                      </td>
+                                    <td>
+                                      {{t.source}}
+                                  </td>
+                                          
+                               
+                                  <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'edit_lead' t.id %}" class="btn btn-sm btn-outline-success me-1 btn-rounded" role="button"><i class="far fa-edit me-1"></i></a>
+
+                                        <!-- <a class="btn btn-sm btn-outline-danger me-1"
+                                        onclick="confirmDelete('{% url 'delete_lead'  id=t.id %}')">
+                                        <i class="far fa-trash-alt me-1"></i></a> -->
+
+                                        <a class="btn btn-sm btn-outline-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                          data-url="{% url 'delete_lead' id=t.id %}">
+                                          <i class="far fa-trash-alt me-1"></i>
+                                        </a>
+                                        
+                            
+                                        <!-- Link directly to the delete view with the customer ID -->
+                                        <!-- <a class="btn btn-sm btn-outline-danger me-1" href="{% url 'delete_employee' employee_id=t.id %}">
+                                            <i class="far fa-trash-alt me-1"></i>
+                                        </a> -->
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            
+                            
+                            
+                            
+                            
+                                  {% endfor %}
+                                  {% endif %}	
+
+                                  
+                              </tbody>
+                          </table>
+                          
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this item?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+
+</script>
+
+
+<!-- Include Toastr CSS and JavaScript -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script>
+    // Function to show the toast message
+    function showToastMessage(message, type) {
+      toastr[type](message);
+    }
+  
+    // Check if a message exists and show it as a toast
+    {% if messages %}
+      {% for message in messages %}
+        showToastMessage('{{ message }}', '{{ message.tags }}');
+      {% endfor %}
+    {% endif %}
+  </script>
+
+<script>
+
+document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget;
+  var url = button.getAttribute('data-url');
+  
+  // Set the URL for the confirm button
+  var confirmButton = document.getElementById('confirmDeleteBtn');
+  confirmButton.onclick = function() {
+    window.location.href = url;
+  };
+});
+  </script>
+
+
+
+
+
+<script>
+    function submitForm(select) {
+        var leadId = select.closest('tr').querySelector('.lead-id').innerText;
+        document.getElementById('lead_id').value = leadId;
+        document.getElementById('statusForm').submit();
+    }
+</script>
+
+
+
+
+
+<!-- <script>
+  // Show the message container
+  var messageContainer = document.getElementById('message-container');
+  messageContainer.style.display = 'block';
+
+  // Automatically hide the message after 10 seconds
+  setTimeout(function() {
+    messageContainer.style.display = 'none';
+  }, 2000); // 10000 milliseconds = 10 seconds
+</script> -->
+<!-- Include DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<!-- Include DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+<script>
+  // Function to confirm the delete action
+  function confirmDelete(url) {
+    if (confirm("Are you sure you want to delete this item?")) {
+      // If the user clicks OK, redirect to the delete URL
+      window.location.href = url;
+    }
+  }
+</script>
+<!-- <script>
+  $(document).ready(function() {
+      // Initialize DataTable with ordering set to false
+      $('#challanTable').DataTable({
+          "autoWidth": false,
+          "paging": true,       // Enable pagination
+          "lengthChange": true, // Show the page length options
+          "searching": true,    // Enable search
+          "info": true,         // Show information
+          "ordering": false,    // Disable ordering
+          "scrollY": false,
+          columns: [
+          { data: 'Sno.' }, // Assuming data property for Sno. column
+          { data: 'Lead Sr.No.' },
+          { data: 'Company Name' },
+          { data: 'Contact Person' },
+          { data: 'Contact Number' },
+          { data: 'Email' },
+          { data: 'Status', width: '100px' },
+          { data: 'Website', width: '200px'},
+          { data: 'Inquiry', class: 'detailscontrol'}, // Set fixed width for Inquiry column
+          { data: 'Source' },
+          { data: 'Actions' }
+          ]
+        
+      });
+  });
+  
+</script> -->
+
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="popover"]').popover();   
+  });
+  </script>
+  <!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+      $('#challanTable').DataTable({
+          responsive: true,
+          paging: true,         // Enables pagination
+          searching: true,      // Enables the search box
+          ordering: false,       // Disables sorting for all columns
+          columnDefs: [{
+              targets: [9],     // Disables ordering for the 'Actions' column
+              orderable: false
+          }],
+          dom: 'Bfrtip',        // Optional: for adding export buttons
+          buttons: [
+              'copy', 'csv', 'excel', 'pdf', 'print'
+          ]
+      });
+  });
+  </script>
+  
+{% endblock custom_js %}
+
+

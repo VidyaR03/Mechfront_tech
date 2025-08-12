@@ -1,0 +1,150 @@
+{% extends 'dashboard/base_template.html' %}
+    {% block custom_css %}
+        {% block page_title %}
+        {% endblock page_title %}
+        <style>
+            .custom-error {
+                max-width: 300px;
+                /* Adjust the width to your desired value */
+                margin: 0 auto;
+                /* Add this line to center the element */
+                text-align: center;
+                /* Add this line to center the text inside the element */
+              }
+              .input-group-text {
+                cursor: pointer;
+              }
+              .grey-card {
+                background-color:LightGray;
+            }
+            .negative-padding {
+              margin-top: -60px; 
+          }
+          .right-aligned {
+          position: fixed;
+          top: 20px; /* Adjust the top position as needed */
+          right: 20px; /* Adjust the right position as needed */
+      }
+    
+       
+          
+
+        </style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
+  
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 341px;">
+
+    <div class="content container-fluid">
+       
+       <div class="row">
+          <div class="col-sm-12">
+             <!-- <div class="card card-table"> -->
+                <div class="card-header">
+                   <div class="col-lg-12">
+                      <div class="row">
+                          <div class="col-lg-8">
+                            <h3>
+                              <a href="{% url 'debit_note_date' %}" style="margin-right: 10px;">
+                                <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i>
+                            </a>
+                            Debit Note Report Datewise  </h3>   
+                       
+                        
+                          </div>
+                          <div class="col-lg-4 text-lg-end">
+
+                          <form method="post" action="{% url 'download_debit_note_excel' %}">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-primary">Download Excel</button>
+                          </form>
+                      
+                        </div>
+
+                        </div>
+                         
+                      </div>
+                   </div>
+                <!-- </div> -->
+              <div id="printableArea">
+
+                <div class="card-body" id="customer_ledger_pdf">
+                  <div class="rport">
+                    <h2>M/S KEYMECH TECHNOLOGIES</h2>
+                    <p style="font-size: 20px;">Debit Note</p>
+                    <p style="font-size: 14px;"><B>From</B> &nbsp;{{start_date}} &nbsp; <B>To</B> &nbsp; {{end_date}}</p>
+                  </div>
+                    <br>
+                    <div class="table-responsive">
+                     <table id="challanTable" class="table table-center table-hover datatable">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>SR.NO.</th>
+
+                                <th>CUSTOMER NAME</th>
+                                <th>DEBIT NOTE NO.</th>
+                                <th>DEBIT NOTE DATE</th>
+                                <th>INVOICE NO.</th>
+                                
+                                <th>CGST</th>
+                                <th>SGST</th>
+                                <th>IGST</th>
+                                <th>SUB TOTAL</th>
+                                <th>TOTAL AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% if items_within_range %}
+                               {% for t in items_within_range %}
+                               <tr>
+                                  <td>{{ forloop.counter }}</td> 
+                                  <td><a href="#" style="color:blue;"> {{ t.cn_customer_name.company_name|upper }} </a></td>
+
+                                  <td> {{ t.id}}</td>
+                                   <td>{{ t.cn_date|date:"j F Y" }}</td>
+                                   <td>{{ t.cn_invoice_no }}</td>
+                                   <td>{{ t.cn_cgstval }}</td>
+                                   <td>{{ t.cn_sgstval }}</td>
+                                   <td>{{ t.cn_igstval }}</td>
+                                   <td>{{ t.cn_sub_total }}</td>
+
+                                   <td>{{ t.cn_total }}</td>
+                               </tr>
+                               {% endfor %}
+                               <tr>
+                                   <td colspan="9"><strong>TOTAL</strong></td>
+                                   <td><strong>{{ total_amount|floatformat:2  }}</strong></td>
+                               </tr>
+                           {% endif %}
+                       </tbody>
+                    </table>
+                    
+                   </div>
+                </div>
+              </div> 
+             </div>
+          </div>
+       </div>
+</div>
+ </div>
+ <script>
+  function printDiv(divId) {
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+
+</script>
+{% endblock main_content %}
+
+
+
+
+

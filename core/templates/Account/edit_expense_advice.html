@@ -1,0 +1,314 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM - Edit Expense Advice
+{% endblock %}
+
+{% block custom_css %}
+<!-- Add your custom CSS here -->
+<style>
+    /* Your custom styles */
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<!-- Your main content -->
+
+<div class="page-wrapper" style="padding-top: 0px;">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-title">
+                    <a href="{% url 'expense_advice_list_View' %}" style="margin-right: 10px;">
+                        <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
+                            aria-label="fa fa-arrow-left"></i>
+                    </a>
+                    Edit Expense Advice
+                </h3>
+            </div>
+        </div>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" id="vendor_form" action="" autocomplete="off">
+                            <div class="row">
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Deposite</label>
+                                        <select class="form-select" name="ea_deposit" id="ea_deposit" required>
+                                            <option value="{{expense_advice_object.ea_deposit.id}}">{{expense_advice_object.ea_deposit.company_name}}</option>
+                                            {% for item in vendor_data %}
+                                            <option value="{{ item.id }}">{{ item.company_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Vendor</label>
+                                        <select class="form-select" name="ea_vendor" id="ea_vendor" required>
+                                            <option value="{{expense_advice_object.ea_vendor.id}}">{{expense_advice_object.ea_vendor.company_name}}</option>
+                                            {% for item in vendor_data %}
+                                            <option value="{{ item.id }}">{{item.company_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Vendor</label>
+                                <select class="form-select" name="ea_vendor" id="ea_vendor" required>
+                                    <option value="" disabled selected>Select Vendor</option>
+                                    {% for item in Expense %}
+                                    <option value="{{ item.id}}">{{ item.ex_vendor_name.company_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>  -->
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputDefault">Date</label>
+                                        <input type="date" class="form-control" name="date" placeholder="Date"
+                                            required value="{{expense_advice_object.ea_date|date:'Y-m-d' }}">
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Payment Mode</label>
+                                        <select class="form-control " name="ea_payment_mode" id="ea_payment_mode">
+                                            <option value="{{expense_advice_object.ea_payment_mode}}">{{expense_advice_object.ea_payment_mode}}</option>
+                                            <option value="cash">Cash</option>
+                                            <option value="cheque">Cheque</option>
+                                            <option value="credit_card">Credit Card</option>
+                                            <option value="bank_transfer">Bank Transfer</option>
+                                            <option value="others">Others</option>
+                                            <option value="online">Online</option>
+                                        </select>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Mobile</label>
+                                        <input type="number" name="ea_mobile" value="{{expense_advice_object.ea_mobile}}" id="ea_mobile" class="form-control"
+                                            placeholder="Mobile" >
+                                    </div>
+                                </div>
+                  
+
+                                <!-- <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Balance</label>
+                                <input type="text" class="form-control" name="ea_balance" id="ea_balance" placeholder="Balance" required>
+                            </div>
+                        </div>
+-->
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Amount</label>
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_amount}}"  name="ea_amount" id="ea_amount"
+                                            placeholder="Amount">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Expense Advice No</label>
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_expense_advice_no}}"  name="ea_expense_advice_no"
+                                            id="ea_expense_advice_no" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Bank Chargers</label>
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_bank_charges}}"  name="ea_bank_charges"
+                                            id="ea_bank_charges" >
+
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Cheque Number</label>
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_cheque_no}}"  name="ea_cheque_no" id="ea_cheque_no"
+                                            placeholder="Cheque Number" >
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputDefault">Cheque Date</label>
+                                        <input type="date" class="form-control" name="cheque_date" placeholder="Date"
+                                             >
+                                    </div>
+                                </div> -->
+                                <!-- <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Cheque Date</label>
+                                        <input type="date" class="form-control" name="ea_cheque_date"
+                                            id="ea_cheque_date"  value="{{expense_advice_object.ea_cheque_date}}"  placeholder="Cheque Date">
+                                    </div>
+                                </div> -->
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Reference</label>
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_reference}}"  name="ea_reference" id="ea_reference"
+                                            >
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>PO Number</label>
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_po_no}}"  name="ea_po_no" id="ea_po_no" >
+
+                                    </div>
+                                </div> -->
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <!-- Table headers -->
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Vendor</th>
+                                                <th>Invoice Number</th>
+                                                <th>Invoice Amount</th>
+                                                <th>Expense Advice no</th>
+                                                <th>Payment</th>
+                                                <th>Due Amount</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <!-- Table body to be populated -->
+                                        <tbody id="related_fields">
+                                            <tr>
+                                                <td>{{expense_advice_object.ea_date}}</td>
+                                                <td>{{expense_advice_object.ea_vendor.company_name}}</td>
+                                                <td>Invoice Number</td>
+                                                <td>Invoice Amount</td>
+                                                <td>{{expense_advice_object.}}</td>
+                                                <td>Payment</td>
+
+
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <hr>
+                                        </div>
+                                        <div class="col-lg-7 col-md-6 pt11">
+                                            <div class="invoice-fields">
+                                                <h4 class="field-title"> Note..</h4> <textarea class="form-control"
+                                                    name="ea_note"  id="ea_note"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-5 col-md-6 pt11">
+                                            <div class="invoice-total-card">
+                                                <div class="invoice-total-box">
+                                                    <div class="invoice-total-inner">
+
+
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <p>Total</p>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <input type="text" class="utrt1" value="{{expense_advice_object.ea_total}}" name="ea_total"
+                                                                    id="total">
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <p> Amount Received</p>
+                                                            </div>
+                                                            <div class="col-lg-6 ">
+                                                                <input type="text" class="utrt1 amount-paid"
+                                                                    name="amount_received">
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <p>Amount Used For Payments</p>
+                                                            </div>
+                                                            <div class="col-lg-6 ">
+                                                                <input type="text" class="utrt1 amount-used"
+                                                                    name="amount_used">
+
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <p>Amount in excess</p>
+                                                            </div>
+                                                            <div class="col-lg-6 ">
+                                                                <input type="text" class="utrt1 amount-excess"
+                                                                    name="amount_excess">
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- <div class="invoice-total-footer">
+                                                        <h4>Amount in excess <input type="number" class="utrt1 amount-excess" name="amount_excess"></h4>
+                                                    </h4>
+                                                    </div> -->
+                                                    </div>
+                                                </div>
+
+                                                <div class="add-customer-btns text-end">
+                                                    <a href="{% url 'expense_advice_list_View' %}"
+                                                        class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
+                                                    <button type="submit"
+                                                        class="btn btn-outline-primary me-1 btn-rounded">Update Expense
+                                                        Advice</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                                                        </div>
+
+
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+
+
+
+{% block custom_js %}
+<!-- Add your custom JavaScript here -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Your custom JavaScript code -->
+<script>
+    // Your JavaScript code here for any necessary functionalities
+</script>
+{% endblock custom_js %}
+{% endblock main_content %}

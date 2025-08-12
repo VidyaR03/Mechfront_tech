@@ -1,0 +1,279 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+
+<style type="text/css">
+    .no-outline {
+        border-top-style: hidden;
+        border-right-style: hidden;
+        border-left-style: hidden;
+        border-bottom-style: hidden;
+
+    }
+
+    .no-outline:focus {
+        display: none;
+    }
+
+    #quotation_pdf {
+        padding-right: 20px;
+    }
+
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        text-align: center;
+    }
+
+    div.brand_name {
+        text-transform: uppercase;
+    }
+
+    .vertical-line {
+        border-right: 1px solid #000;
+        /* Adjust the color and thickness as needed */
+    }
+
+    .horizontal-line th {
+        border-bottom: 1px solid #000;
+        /* Adjust the color and thickness as needed */
+    }
+</style>
+{% endblock custom_css %}
+{% block main_content %}
+
+
+<div class="col-xl-7 mx-auto text-center" style="padding-left: 200px;">
+    <div class="page-header">
+        <div class="row align-items-center" st>
+            <div class="col">
+                <h3 class="page-title">
+                    <a href="{% url 'fn_cash_coucher_List_View' %}" style="margin-right: 10px;"><i
+                            class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
+                            aria-label="fa fa-arrow-left"></i></a> View Cash Voucher
+
+                    <div class="btn-group btn-group-sm d-print-none mb-4" style="margin-left: 80px;">
+                        <!-- <a href="#" onclick="generatePDF('quotation_pdf')" class="btn btn-white text-black-50"><i class="fa fa-print"></i> Print</a> -->
+                        <input type="button" onclick="printDiv('printableArea')" value="Download"
+                            class="btn btn-primary" />
+
+                    </div>
+                </h3>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-body" style="font-family: Calibri;">
+        <div id="printableArea">
+
+            <div class="card-body" id="quotation_pdf">
+                <div class="invoice-item">
+                    <div class="invoice-item">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="invoice-info">
+                                    <table width="100%" class="invoice-table" border="1">
+                                        <tr>
+                                            <th colspan="12">
+                                                <h4 style="text-align: center;">M/S KEYMECH TECHNOLOGIES</h4>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12">
+                                                <hr style="border: 1px solid #000; margin: 1 70%;">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="12">
+                                                <p style="text-align: center;">Unit No.108, Plot No. C-56/1, Turbhe
+                                                    Industrial Park, Navi Mumbai, Thane,
+                                                    Maharashtra, India - 400710.
+                                                </p>
+                                            </th>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="12">
+                                                <hr style="border: 1px solid #000; margin: 1 70%;">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="6" class="vertical-line">
+                                                <h4 style="text-align: center;  ">CASH PAYMENT VOUCHER</h4>
+                                            </th>
+                                            <th colspan="6">
+                                                <p style="text-align: start;">Date: {{cvoucher.date}}</p>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12">
+                                                <hr style="border: 1px solid #000; margin: 1 70%;">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="6" class="vertical-line">
+                                                <p style="text-align: start;">A/c Head: </p>
+                                            </th>
+
+                                            <th colspan="6" class="horizontal-line">
+                                                <p style="text-align: start;">VOUCHER NO. {{cvoucher.voucher_number}}</p>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="6" class="vertical-line">
+                                                <p style="text-align: start;"> Pay To: {{cvoucher.pay_to}}</p>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="6" class="vertical-line">
+                                                <p style="text-align: start;">Bill No: {{cvoucher.bill_no}}</p>
+                                            </th>
+                                            <th colspan="6">
+                                                <p style="text-align: start;">Date: {{cvoucher.bill_date}}</p>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12">
+                                                <hr style="border: 2px solid #000; margin: 1 70%;">
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+
+                                            <td style="width:60%"><br></td>
+                                            <th colspan="5" class="vertical-line">
+
+
+                                            <td style="width:7%">Rs.</td>
+                                            <td style="width:3%">P.</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12">
+                                                <hr style="border: 1px solid #000; margin: 1 70%;">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{cvoucher.cost_centre}}</td>
+                                            <th colspan="5" class="vertical-line">
+
+                                                <td id="balance">{{cvoucher.balance}}</td>
+                                            </tr>
+                                        <!-- <tr>
+                                            <td colspan="12">
+                                                <hr style="border: 1px solid #000; margin: 1 70%;">
+                                            </td>
+                                        </tr> -->
+                                        <!-- <tr>
+                                            <td><br></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr> -->
+
+                                        <!-- <tr>
+                                            <th colspan="12">
+                                                <p style="text-align: start;">Rupees: <span id="amountInWords" class="res">AMOUNT IN WORDS</span></p>
+                                            </th>
+                                        </tr> -->
+
+                                        <tr>
+                                            <th style="text-align: center; border: 1px solid #000; padding: 50px; vertical-align: bottom;"
+                                                colspan="1">Prepared</th>
+                                            <th style="text-align: center; border: 1px solid #000; padding: 10px; vertical-align: bottom;"
+                                                colspan="4">Passed For Payment</th>
+                                            <th style="text-align: center; border: 1px solid #000; padding: 10px; vertical-align: bottom;"
+                                                colspan="3">Audited</th>
+                                            <th style="text-align: center; border: 1px solid #000; padding: 10px; vertical-align: bottom;"
+                                                colspan="3">Received Payment</th>
+                                        </tr>
+                                    </table>
+
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <br>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- <script src="https://olatechs.in/crm/supreeno/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://olatechs.in/crm/supreeno/assets/js/feather.min.js"></script>
+    <script src="https://olatechs.in/crm/supreeno/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="https://olatechs.in/crm/supreeno/assets/plugins/select2/js/select2.min.js"></script>
+    <script src="https://olatechs.in/crm/supreeno/assets/plugins/moment/moment.min.js"></script>
+    <script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://olatechs.in/crm/supreeno/assets/js/script.js"></script>
+
+ -->
+
+    <script>
+        const button = document.getElementById('download-button');
+
+        button.addEventListener('click', generatePDF);
+
+        function generatePDF() {
+            // Choose the element that your content will be rendered to.
+            const element = document.getElementById('quotation_pdf');
+            // Choose the element and save the PDF for your user.
+            html2pdf().from(element).save('Quotation');
+            //window.print();
+        }
+
+
+
+    </script>
+    <script>
+        function printDiv(divId) {
+           var printContents = document.getElementById(divId).innerHTML;
+        //    var originalContents = document.body.innerHTML;
+      
+           document.body.innerHTML = printContents;
+      
+           window.print();
+      
+           document.body.innerHTML = originalContents;
+      }
+      
+      </script>
+
+
+
+<td id="balance">{{cvoucher.balance}}</td>
+
+
+<script>
+    function numberToWords(num) {
+        // Your number to words conversion logic here
+    }
+
+    var balanceElement = document.getElementById("balance");
+    var amountInWordsElement = document.getElementById("amountInWords");
+
+    if (balanceElement) {
+        // Extract the dynamic value using the appropriate syntax for your template engine
+        var balanceValue = parseFloat(balanceElement.innerHTML.trim());
+
+        if (!isNaN(balanceValue)) {
+            var balanceInWords = numberToWords(balanceValue);
+            amountInWordsElement.innerHTML = balanceInWords;
+        } else {
+            console.error("Invalid balance value:", balanceElement.innerHTML);
+        }
+    } else {
+        console.error("Balance element not found.");
+    }
+</script>
+
+
+    {% endblock main_content %}

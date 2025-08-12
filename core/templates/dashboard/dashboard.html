@@ -1,0 +1,135 @@
+{% extends 'dashboard/base_template.html' %}
+{% block custom_css %}
+<style>
+  /* Media query for small screens */
+  @media (max-width: 768px) {
+      #sidebar {
+          display: none;
+          /* Hide the sidebar on small screens */
+      }
+
+      #content {
+          width: 100%;
+          /* Make the content occupy the full width */
+      }
+
+      /* Show the sidebar when the toggle button is active */
+      #sidebar.active {
+          display: block;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 250px;
+          /* Adjust the width as needed */
+      }
+  }
+</style>{% endblock custom_css %}
+
+{% block main_content %}
+    <!-- Your HTML content -->
+
+<!-- Include ApexCharts JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.1/dist/apexcharts.min.js"></script>
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/feather.min.js"></script>
+<script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="assets/plugins/apexchart/apexcharts.min.js"></script>
+<script src="assets/plugins/apexchart/chart-data.js"></script>
+<script src="assets/js/script.js"></script>
+<div id="invoice_chart"></div>
+<div id="sales_chart"></div>
+<script type="text/javascript">
+    // Chart initialization
+    if ($('#invoice_chart').length > 0) {
+        var pieCtx = document.getElementById("invoice_chart");
+        var pieConfig = {
+            colors: ['#7638ff', '#ff737b', '#fda600'],
+            series: [100, 200, 300],
+            chart: {
+                fontFamily: 'Poppins, sans-serif',
+                height: 350,
+                type: 'donut',
+            },
+            labels: ['Total Invoice', 'Paid', 'Unpaid'],
+            legend: {
+                show: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+        var pieChart = new ApexCharts(pieCtx, pieConfig);
+        pieChart.render();
+    }
+
+    if ($('#sales_chart').length > 0) {
+        var columnCtx = document.getElementById("sales_chart");
+        var columnConfig = {
+            colors: ['#7638ff', '#fda600'],
+            series: [{
+                name: "Received",
+                type: "column",
+                data: [70, 150, 80, 180, 150, 175, 201, 60, 200, 120, 190, 160, 50]
+            }, {
+                name: "Pending",
+                type: "column",
+                data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16, 80]
+            }],
+            chart: {
+                type: 'bar',
+                fontFamily: 'Poppins, sans-serif',
+                height: 350,
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '60%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+            },
+            yaxis: {
+                title: {
+                    text: '$ (thousands)'
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return "$ " + val + " thousands"
+                    }
+                }
+            }
+        };
+        var columnChart = new ApexCharts(columnCtx, columnConfig);
+        columnChart.render();
+    }
+</script>
+</body>
+</html>
+{% endblock main_content %}

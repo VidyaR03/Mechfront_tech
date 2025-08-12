@@ -1,0 +1,12 @@
+[
+    {
+		"model":"core.Login_User",
+		"pk" : 1,
+		"fields":{
+			"username" : "support",
+			"email" : "support@gmail.com",
+			"password" : "password",
+            "is_authenticate":0
+		}
+	}
+]

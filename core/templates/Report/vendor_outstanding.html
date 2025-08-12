@@ -1,0 +1,131 @@
+{% extends 'dashboard/base_template.html' %}
+    {% block custom_css %}
+        {% block page_title %}
+        {% endblock page_title %}
+        <style>
+            .custom-error {
+                max-width: 300px;
+                /* Adjust the width to your desired value */
+                margin: 0 auto;
+                /* Add this line to center the element */
+                text-align: center;
+                /* Add this line to center the text inside the element */
+              }
+              .input-group-text {
+                cursor: pointer;
+              }
+              .grey-card {
+                background-color:LightGray;
+            }
+            .negative-padding {
+              margin-top: -60px; 
+          }
+         
+    
+       
+          
+
+        </style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
+    <style>
+      .right-aligned {
+          position: fixed;
+          top: 20px; /* Adjust the top position as needed */
+          right: 20px; /* Adjust the right position as needed */
+      }
+  </style>
+{% block main_content %}<div class="page-wrapper" data-select2-id="8" style="min-height: 432px;">
+  <div class="content container-fluid" data-select2-id="7">
+      <div class="page-header invoices-page-header">
+          <div class="row align-items-center">
+              <div class="col">
+                  <h3 class="page-title"> <a href=""" style="margin-right: 10px;"><i
+                              class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
+                              aria-label="fa fa-arrow-left"></i></a> Vendor Outstanding Report Datewise</h3>
+              </div>
+              <div class="col-auto"> </div>
+          </div>
+      </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card invoices-add-card">
+                <div class="card-body">
+                    <form class="invoices-form" method="post" enctype="multipart/form-data" autocomplete="off" novalidate="novalidate">
+                      {% csrf_token %}
+                        <div class="invoices-main-form">
+                            <div class="row">
+                                
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <div class=" ">
+                                            <span>
+                                                <label>From Date</label>
+                                                <input class="form-control datetimepicker" type="text" name="from_date" id="from_date" value="23-05-2024" placeholder="23-05-2024">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <div class=" ">
+                                            <span>
+                                                <label>To Date</label>
+                                                <input class="form-control datetimepicker" type="text" name="to_date" id="to_date" value="23-05-2024" placeholder="23-05-2024">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label style="color:black">Vendor</label>
+                                        <select class="form-control" name="vendor_id" id="vendor_id">
+                                           <option value="all">All</option> 
+                                           {% for vendor in vendor_out %}
+                                           <option value='{{vendor.id}}'>{{vendor.company_name }}</option> 
+                                           {% endfor %}
+                                          </select> 
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+
+                                 <div class="text-end mt-4">
+                                    <button type="submit" class="btn btn-primary" id="btn_submit" name="btn_submit">Submit</button>
+                                    <a class="btn btn-primary">Cancel</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+ <script>
+  function printDiv(divId) {
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+
+</script>
+{% endblock main_content %}
+
+
+
+
+

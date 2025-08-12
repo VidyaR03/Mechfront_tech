@@ -1,0 +1,130 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+Ecoway
+{% endblock %}
+
+{% block custom_css %}
+
+<style>
+    /* Inactive tab styles */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #ccc;
+        /* Faint gray color for inactive tabs */
+    }
+
+    /* Active tab style */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+        /* Black color for active tab */
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+
+<div class="main-wrapper">
+    <div class="page-wrapper" style="min-height: 434px;">
+        <div class="content container-fluid">
+            <div class="page-header invoices-page-header">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h3 class="page-title">
+                            <!-- <a href="#"
+                                style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip"
+                                    title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> -->
+                            Upload Vendor Excel
+                        </h3>
+                    </div>
+                    <div class="col-lg-4" style="text-align: right;">
+                        <!-- <a href="#"
+                            class="btn btn-white text-black-50 shadow-none"><i class="fa fa-download"></i> Vendor
+                            Excel Format</a> -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card invoices-add-card">
+                        <div class="card-body">
+                            <form class="invoices-form" method="post" id="vendor_excel_form" action="{% url 'vendor_doc'%}"
+                                enctype="multipart/form-data" autocomplete="off">
+                                <div class="invoices-main-form">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-xl-4 col-md-6 col-sm-12 col-12">
+                                            <div class="form-group">
+                                                <label style="color:black">Upload Vendor Excel</label>
+                                                <input type="file" class="form-control" name="upload_vendor_excel"
+                                                    id="upload_vendor_excel">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <!-- <div class="text-end mt-4">
+                                                <button type="submit" class="btn btn-primary" id="btn_submit"
+                                                    name="btn_submit">Submit</button>
+                                            </div> -->
+                                        </div>
+
+                                        <div class="row col-sm-6 p-5">
+                                            <div class="success_message row"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+
+<script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#vendor_excel_form").ajaxForm({
+            beforeSend: function () {
+                $('#btn_submit').prop('disabled', true);
+                $('.form_error_msg').html('');
+                $('.success_message').html('<br><div class="alert alert-info">Data analyzing...please wait...</div>');
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+                //albumprogressbar.width(percentComplete + '%');
+            },
+            beforeSubmit: function () {
+                return $("#vendor_excel_form").valid(); // TRUE when form is valid, FALSE will cancel submit
+            },
+            complete: function (response) {
+                //alert('Your Proposal Id Is'+response.pi);
+                //console.log(response);return;
+                var temp = JSON.parse(response.responseText);
+                //console.log(temp);
+                if (temp.status == 'success') {
+                    $('.success_message').show().html(temp.message);
+                    setTimeout(function () {
+                        window.location.href = temp.redirect;
+                    }, 3000);
+                }
+                else if (temp.status == 'error') {
+                    $('#btn_submit').prop('disabled', false);
+                    $('.success_message').html('');
+                    $.each(temp.errors, function (key, val) {
+                        $('.' + key).html(val);
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+{% endblock main_content %}

@@ -1,0 +1,222 @@
+<!-- <!DOCTYPE html> -->
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+<style> table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 10px;
+    font-size: 13px;
+    font-family: 'Calibri';
+    margin-left: auto; /* Center the table */
+    margin-right: auto; /* Center the table */
+}
+td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 4px 10px;
+    margin-left: 20px;
+    margin-right: 130px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Calibri';
+}
+body{font-size: 13px;}
+.pdfarea{
+            padding: 100px;
+            padding-top: 0px;
+        }
+
+</style>
+{% endblock custom_css %}
+<!-- Main content -->
+{% block main_content %}
+<body>
+    <div class="page-wrapper" style="min-height: 415px;">
+        <div class="content container-fluid">
+      <div class="card card-body" style="width:90%; margin-left:0%;">
+        <div class="text-md-end">
+            <div class="btn-group btn-group-sm d-print-none mb-4">
+                <a href="{% url 'download_debit_note_pdf' id=credit.id %}" class="btn btn-primary">
+                    <i class="fa fa-download"></i> Download
+                </a>
+                
+            </div>
+        </div>  
+        <div class="pdfarea">
+        {% for count in count_page %}
+        <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;">
+
+            <img src="../../static/assets/img/logo-png.png" style="width: 150px; margin-left:20px; border-radius: 10px;" />
+            <div style="flex-grow: 1; padding-left: 100px;">
+                <span class="bold" style="font-size: 30px;">Debit Note</span>
+            </div>
+            </div><br>
+                <!-- <div>
+                    <h2 style="padding-bottom: 12px;text-align: center;">Debit Note</h2>
+                </div> -->
+                <table style="width: 100%;">
+                    <tr>
+                        <td rowspan="3" colspan="2" style="font-family: calibri;font-size: 15px;font-weight: 500;">
+                            <b>M/S KEYMECH TECHNOLOGIES</b><br>
+                            8th Floor, 802A, ITHUM Tower- B,<br>
+                            A-40, SEC-62, Noida,<br>
+                            Gautam Buddha Nagar,<br>
+                            Uttar Pradesh, 201301<br> <br>
+                           <b> PAN NO:</b> CVSPG7178L<br>
+                            <b>STATE CODE:</b> 09<br>
+                            <b>STATE:</b> Uttar Pradesh<br>
+                           <b> GSTIN/UIN:</b> 05AAUPG1246N1ZE<br>
+                           <b> State Name:</b> Uttar Pradesh, Code: 09<br>
+                           <b> E-Mail:</b> mechfrontindia@gmail.com, vibhor@mechfront.com
+                        </td>
+                        <td style="font-family: calibri;font-size: 13px;font-weight: 500;"><b>Debit Note No.</b>{{ credit.id }}</td>
+                        <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;"><b>Dated </b>- {{ credit.cn_date }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-family: calibri;font-size: 13px;font-weight: 500;"><b>Supplier's Ref.</b></td>
+                        <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;"><b>Other Reference(s)</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="font-family: calibri;font-size: 13px;font-weight: 500;">
+                            <b>Party:</b> {{ credit.cn_customer_name.customer }}<br>
+                           <b> GSTIN/UIN:</b> {{ credit.cn_customer_name.gst_number }}<br>
+                           <b> PAN NO:</b> {{ credit.cn_customer_name.pan_number }}<br>
+                            <span><b>State Name:</b> {{ credit.cn_customer_name.state }} &nbsp; State Code: {{ credit.cn_customer_name.pincode }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- <td style="width: 3%; font-size: 13px;">SR. NO</td> -->
+                        <td style="width:12%;text-align: center;font-size: 13px;">Item Code</td>
+                        <td style="font-size: 13px;">Description of Goods</td>
+                        <td style="font-size: 13px;text-align: center;">HSN/SAC</td>
+                        <td style="font-size: 13px;text-align: center;">Quantity</td>
+                        <td style="font-size: 13px;text-align: center;">Rate</td>
+                        <td style="font-size: 13px;text-align: center;">Per</td>
+                        <td style="font-size: 13px;text-align: center;">Disc. %</td>
+                        <td style="font-size: 13px;">Amount</td>
+                    </tr>
+                    {% for items in credit_item_data %}
+                    {% if forloop.counter == count %}
+                        {% for j in items %}
+                            {% if j %}
+                                <tr>
+                                    <td style="width:12%;text-align: center;">{{ j.cn_item_code }}</td>
+                                    <td style="width: 40%;">{{ j.cn_description_goods }}</td>
+                                    <td style="width: 8%;text-align: center;">{{ j.cn_hsn }}</td>
+                                    <td style="width: 8%;text-align: center;">{{ j.cn_qantity }}</td>
+                                    <td style="width: 8%;text-align: center;">{{ j.cn_unit_price }}</td>
+                                    <td style="width: 8%;text-align: center;">{{ j.cn_uom }}</td>
+                                    <td style="width: 8%;text-align: center;">{{ j.cn_discount|floatformat:0  }} %</td>
+                                    <td style="width: 10%;">{{ j.cn_total }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td style="width: 10%;"></td>
+                                    <td style="width: 40%;">&nbsp;</td>
+                                    <td style="width: 8%;">&nbsp;</td>
+                                    <td style="width: 8%;">&nbsp;</td>
+                                    <td style="width: 8%;">&nbsp;</td>
+                                    <td style="width: 8%;">&nbsp;</td>
+                                    <td style="width: 8%;">&nbsp;</td>
+                                    <td style="width: 10%;">&nbsp;</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+
+                <tr>
+                    <td></td>
+                    <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">IGST</td>
+                    <td>{{ credit.cn_igstval }}</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">CGST</td>
+                    <td>{{ credit.cn_cgstval }}</td>
+                </tr>
+
+                   
+                    <tr>
+                        <td></td>
+                        <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">SGST</td>
+                        <td>{{ credit.cn_sgstval }}</td>
+                    </tr>
+                  
+                    
+                    <!-- <tr>
+                        <td></td>
+                        <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">Freight & Cartage</td>
+
+                        <td></td>
+                    </tr> -->
+               
+
+                    <tr>
+                        <td></td>
+                        {% if credit.cn_packaging_forwording_percentage_amt != '0.00' and credit.cn_packaging_forwording_percentage_amt != '0' %}
+                        <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">Packaging & Forwarding ({{credit.cn_packaging_forwording_percentage}}%) (Including GST) <b style="text-align: end;"></b></td>
+                        <td>{{ credit.cn_packaging_forwording_percentage_amt }}</td>
+                        {% elif credit.cn_packaging_forwording_amt_amt != '0.00' and credit.cn_packaging_forwording_amt_amt != '0' %}
+                        <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">Packaging & Forwarding (Including GST) <b style="text-align: end;"></b></td>
+                        <td>{{ credit.cn_packaging_forwording_amt_amt }}</td>
+                        {% endif %}
+                    </tr>
+
+
+
+                    <tr>
+                        <td></td>
+                        {% if credit.cn_freight_percentage_amt != '0.00' and credit.cn_freight_percentage_amt != '0' %}
+                         <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">IGST PER on Freight amount is not taken in original invoice ({{ credit.cn_freight_percentage }}%) (Including GST)<b style="text-align: end;"></b></td>
+                        <td>{{ credit.cn_freight_percentage_amt }}</td>
+                        {% elif credit.cn_freight_amt_amt != '0.00' and credit.cn_freight_amt_amt != '0' and credit.cn_freight_amt_amt != 'NaN' %}
+                         <td colspan="6" style="font-family: calibri;font-size: 15px;font-weight: 600;padding-left: 140px;">IGST AMT on Freight amount is not taken in original invoice (Including GST)<b style="text-align: end;"></b></td>
+                        <td>{{ credit.cn_freight_amt_amt }}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td colspan="6" style="font-family: calibri;font-size: 13px;font-weight: 500;"></td>
+                        <td>{{ credit.cn_total }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8">TERMS AND CONDITIONS:<br>
+                        {{ credit.cn_note }}
+                    </td>
+                    <tr>
+                        <td colspan="2" style="font-family: calibri;font-size: 13px;font-weight: 500;border-bottom: 0px; border-right: 0px;"><b>Amount Chargeable (in words)</b></td>
+                        <td colspan="6" style="font-family: calibri;font-size: 13px;font-weight: 500;border-left: 0px"><b>E. & O.E</b></td>
+                    </tr>
+                   
+                    <tr>
+                        <td colspan="2" style="font-family: calibri;font-size: 13px;font-weight: 500;border-top: 0px;">Company's PAN: <b>CVSPG7178L</b></td>
+                        <td colspan="6" style="font-family: calibri;font-size: 13px;font-weight: 500;">
+                           <b> for M/S KEYMECH TECHNOLOGIES</b><br>
+                            <p style="padding-bottom: 30px;"></p>
+                           <b> Authorised Signatory</b>
+                        </td>
+                    </tr>
+                </table>
+                <div style="text-align: center;">
+                    <h5 style="font-weight: 500; font-size: 15px;">This is a Computer Generated Document </h5> 
+                </div>
+            
+        
+        {% endfor %}
+        </div>
+
+    
+        </div>
+        </div>
+        </div>
+        
+   
+</body>
+</html>
+{% endblock main_content %}

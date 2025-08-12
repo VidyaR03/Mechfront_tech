@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>Keymech Technologies</title>
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/icons/feather/feather.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="../../static/assets/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet">
+
+    <link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet">
+{% comment %} <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> {% endcomment %}
+  {% block custom_css %}
+  {% endblock custom_css %}
+  <style>
+    /* Add this CSS to your stylesheet */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+.toggle-button {
+    margin-left: auto; /* This pushes the button to the right */
+    font-size: 24px; /* Adjust the font size as needed */
+    color: #000; /* Change the color as needed */
+    text-decoration: none; /* Remove underlines if necessary */
+}
+.custom-button {
+  width: 40px; /* Adjust the size as needed */
+  height: 40px; /* Adjust the size as needed */
+  background-color: #F0F0F0; /* Light background color */
+  border: none;
+  border-radius: 50%; /* Make it round */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.green-dot {
+  color: green; /* Color for the small green dot */
+  position: absolute;
+  top: 5px; /* Adjust the dot's position as needed */
+  right: 5px; /* Adjust the dot's position as needed */
+  font-size: 8px; /* Adjust the size of the dot as needed */
+}
+</style>
+</head >
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light" >
+   <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item" >
+        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
+    <h4 style="margin-left: 10px;margin-top: 5px;"> CRM Project</h4>
+    <ul class="navbar-nav ml-auto">
+      <!-- Messages Dropdown Menu -->
+      <li class="nav-item">
+          Logout
+        </a>
+      </li>
+    </ul>
+    <!-- Right navbar links -->
+  </nav>
+  <!-- /.navbar -->
+ <!-- /.content-header -->
+ <div class="main-wrapper">
+   <div class="header header-one">
+       <div class="header-left header-left-one">
+	       <img src="{% static 'assets/img/keymech-trasparent-logo.png' %}" alt="logo"  style="width:200px; height:100px;margin-top: -15px; padding-bottom:10px;padding-right: 10px; border-radius: 15px;" >
+           <a href="#" class="white-logo">
+           <img src="#" alt="Logo">
+           </a>
+       </div>
+       <ul class="nav nav-tabs user-menu">
+           <li class="nav-item dropdown has-arrow main-drop" >
+               <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+               <span class="user-img">
+               <!-- <img src="../../static/assets/img/adminlogo2.png" alt=""> -->
+               <span class="status online"></span>
+               </span>
+               <span>Profile</span>
+               </a>
+               <div class="dropdown-menu">
+                   {% comment %} <a class="dropdown-item" href="#"><i data-feather="user" class="me-1"></i> Profile</a> {% endcomment %}
+                    <!-- <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#pages_edit">
+                    <span>  <b>Profile</b></span>
+                    </a> -->
+                   <!-- <a class="dropdown-item" href="#"><i data-feather="key" class="me-1"></i> Change Password</a> -->
+                   <a class="dropdown-item" href="{% url 'logout' %}"><i data-feather="log-out" class="me-1"></i><b> Logout</b></a>
+               </div>
+           </li>
+       </ul>
+   </div>
+    <a href="javascript:void(0);" id="toggle_btn">
+    <i class="fas fa-bars"></i>
+  </a>
+<a class="mobile_btn" id="mobile_btn">
+    <i class="fas fa-bars"></i>
+</a>
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <!-- Main Sidebar Container -->
+    {% include 'dashboard/sidebar_template.html' with user=user id=id %}
+  <!-- Content Wrapper. Contains page content -->
+</aside>
+     {% block main_content %}{% endblock main_content %}
+  </div>
+  <!-- /.content-wrapper -->
+    {% block footer %}
+    {% comment %} {% include 'dashboard/footer.html' %} {% endcomment %}
+    {% endblock footer %}
+          {% comment %} code for pop up {% endcomment %}
+          <div class="modal custom-modal fade" id="pages_edit" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+            <div class="form-header modal-header-title text-start mb-0">
+            <h4 class="mb-0">Profile</h4>
+            </div>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span class="align-center" aria-hidden="true">×</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <div class="row">
+            <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+            <label>Name:</label>
+            <input type="text" class="form-control" placeholder="About Us" value="{{user.username}}">
+            </div>
+            </div>
+            <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+            <label>Email:</label>
+            <input type="text" class="form-control" placeholder="about-us" value="{{user.email}}">
+            </div>
+            </div>
+            <div class="col-lg-12 col-md-12">
+              <div class="form-group">
+              <label>first Name:</label>
+              <input type="text" class="form-control" placeholder="about-us" value="{{user.first_name}}">
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12">
+              <div class="form-group">
+              <label>Last Name:</label>
+              <input type="text" class="form-control" placeholder="about-us" value="{{user.last_name}}">
+              </div>
+            </div>
+            </div>
+            <div class="modal-footer">
+            <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-back me-2">Back</a>
+            <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary">Save</a>
+            </div>
+            </div>
+            </div>
+            </div>
+</div>
+<!-- JavaScript to toggle the sidebar -->
+<script>
+  $(document).ready(function () {
+    $('#sidebar-toggle').click(function () {
+      $('body').toggleClass('sidebar-collapse');
+    });
+  });
+</script>
+<!-- ./wrapper -->
+<script>
+  $(document).ready(function() {
+    console.log("Document ready!"); // Add this line
+    // Toggle the sidebar when the "hamburger" icon is clicked
+    $('.navbar-toggler').on('click', function() {
+      console.log("Toggle button clicked!"); // Add this line
+      $('body').toggleClass('sidebar-collapse');
+    });
+  });
+  </script>
+<!-- jQuery -->
+    <script src="../../static/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/assets/js/feather.min.js"></script>
+    <script src="../../static/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="../../static/assets/plugins/select2/js/select2.min.js"></script>
+    <!-- <script src="../../static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../../static/assets/plugins/datatables/datatables.min.js"></script> -->
+    <script src="../../static/assets/plugins/moment/moment.min.js"></script>
+    <script src="../../static/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../../static/assets/js/script.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% block custom_js %}
+{% endblock custom_js %}
+</body>
+</html>

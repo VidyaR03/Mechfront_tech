@@ -1,0 +1,308 @@
+{% extends 'dashboard/base_template.html' %}
+{% block custom_css %}
+{% block page_title %}
+
+{% endblock page_title %}
+ 
+    <style>
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            font-size: 13px;
+            font-family: 'Calibri';
+            margin-left: auto; /* Center the table */
+            margin-right: auto; /* Center the table */
+            border-bottom: 0px;
+        }
+        th, td{padding-left: 10px;}
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+ 
+{% endblock custom_css %}
+<!-- Main content -->
+{% block main_content %}
+ 
+<div class="page-wrapper">
+  <div class="content container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-xl-9">
+              <div class="text-md-end">
+                  <div class="btn-group btn-group-sm d-print-none mb-4">
+                    <a class="btn btn-primary" href="{% url 'download_sales_order_pdf' sales.id   %}">Download</a>
+                                   
+<!--                  <input type="button" onclick="printDiv('printableArea')" value="Download" class="btn btn-primary"/>-->
+
+
+                  </div>
+              </div>
+              <div class="card" style="font-family: Calibri;">
+              <div id="printableArea">
+
+               
+                <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;">
+                    <img src="../../static/assets/img/logo-png.png" style="width: 150px; margin-left: 10px; border-radius: 10px;" />
+                    <div style="flex-grow: 1; padding-left: 100px;">
+                        <span class="bold" style="font-size: 30px;">ORDER CONFIRMATION </span>
+                    </div>
+                </div>
+
+                <br>
+                {% for count in count_page %}
+                <table style="width: 100%;">
+                    <!-- <td style="width: 30%;">
+                       <b style="font-size: 15px;">M/S KEYMECH TECHNOLOGIES</b><br>
+                       8th Floor, 802A, ITHUM Tower- B,<br>
+                       A-40, SEC-62, Noida,<br>
+                       Gautam Buddha Nagar,<br>
+                       Uttar Pradesh, 201301<br>
+                       GSTIN: 05AAUPG1246N1ZE
+                    </td>
+                    <td style="width: 20%;">
+                        EMAIL: mechfrontindia@gmail.com,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vibhor@mechfront.com<br>
+                        CONTACT: +91-8171467840  
+                    </td> -->
+                    <tr>
+                        <td colspan="2">
+                            <h5>M/S KEYMECH TECHNOLOGIES</h5>
+                            13, Jagdish Nagar, Jwalapur,<br>
+                            Haridwar,Uttarakhand-249407,<br> 
+                            GSTIN: 05AAUPG1246N1ZE
+
+                                
+                            </p>
+                        </td>
+                        <td colspan="6">
+                            <p style="font-size: 10px;margin-top: -20px;"> 
+                                <span style="font-weight: 600;width: 200px;margin-right: 25px;"> EMAIL</span>    : mechfrontindia@gmail.com,vibhor@mechfront.com</br>
+                                <span style="font-weight: 600;width: 200px;margin-right: 10px;"> CONTACT</span>  : +91-8171467840</br>
+
+                         
+                        </td>
+
+                
+                  </tr>
+                   
+                </table>
+                <table style="width: 100%;">
+                    <td style="width: 50%;vertical-align: top;padding-top: 10px;" ><b>TO: <br>{{bill_company_name|upper}}</b><br>
+                        {{street}}, {{bill_city}},<br>
+                         {{bii_com_state}}, {{bill_pincode}}<br>
+                        {{com_state}}<br>
+                        GSTIN: {{bill_gst_uin}}<br>{{contact_number}}</td>
+                     <td>
+                        <td style="width: 50%;padding-top: 30px; padding-right: 10px;">
+                       <form style="width: 80%; border: 1px solid #000;"> 
+                        <div class="demo"style="background: #bdbabaa3;">
+                       
+                            <span style="font-weight: 600;font-size: 17px;padding-left: 5px;"> 
+                                ORDER CONFIRMATION {{ sales.so_order_confirmation_no }}</span><br>
+                            <p style="padding-left: 5px;">  Print Date: {% now "d-M-Y" %} &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; Rev.: 0<br>
+                              Customer Number: 1004921</p><hr></div>
+                            <span style="padding-left: 5px;"> <b><u>Customer</u></b>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; {{ship_to_name|upper}}<br><span style="padding-left: 73px;"></span><br>
+                            <span style="padding-left: 5px;"> <b><u> Phone</u></b> &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; {{ship_to_contact_number}}</span> <br>
+                              <hr>
+                            <sapn style="padding-left: 5px;"> <b> Your Order No:</b>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;<b>Supplier No:</b> <br></sapn>
+                            <span  style="padding-left: 5px;" > {{ sales.so_buyer_order_no }} <br></span>
+                            <span  style="padding-left: 5px;"> <b>Order Date:</b>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;<b>Your Contact Person:</b><br></span> 
+                            <span  style="padding-left: 5px;">  {{sales.so_date|date:"d-m-Y"}}&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;{{sales.so_sales_person}}</span>
+                    </form>
+                    </td>
+                    <tr>
+                        <td><b>Delivery Conditions: </b> {{sales.so_delivery_type}}<br>
+                        <b> Payment Terms:    </b>    {{sales.so_payment_terms}} <br>
+                        </td>
+                        <td></td>
+                        <td style="text-align:end;padding-right: 60px;"></td>
+                    </tr>
+                </table>
+                <table style="width: 100%;">
+                    <tr>
+                        <th>Item Code</th>
+                        <th> DESCRIPTION OF GOODS</th>
+                        <th>HSN/SAC</th>
+                        <th>QUANTITY</th>
+                        <th>RATE</th>
+                        <th>UOM</th>
+                        <th>DISCOUNT%</th>
+                        <th>AMOUNT</th>
+                    </tr>
+                {% for items in item_list %}
+                {% if forloop.counter == count %}
+                {% for item in items %}
+                {% if item  %}  
+
+                    <tr>
+                        <td>
+                            {{ item.so_item_code }}
+                        </td>                                                                           
+                        
+
+                        <td>
+                        {{item.so_description_goods}}
+                        </td>
+
+                        <td >
+                        {{item.so_hsn}}
+                        </td>
+
+                        <td style="text-align: center;">{{item.so_qantity}}
+                        </td>
+                        <td style="text-align: center;">
+                            {{item.so_unit_price}}
+                            
+                        </td>
+
+                        <td style="text-align: center;">
+                        {{item.so_uom}}
+                        </td>
+                       
+
+                        <td style="text-align: center;">
+                            {{item.so_discount|floatformat:0}} %
+                        </td>
+
+                        <td style="text-align: center;">
+                        {{item.so_total}}
+                        </td>                                     
+                                                                    
+
+                    </tr>
+                    {% else %}
+                    <tr {% if forloop.last %} {%else%}class="borderless" {% endif %} style="height:16px">
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                      </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    <tr>
+                        <td colspan="8"><b>Please refer the Terms & Conditions:</b><br>
+                        {{sales.so_note}}
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 30%;font-weight: 600;"><u>Ship To</u><br>
+                            {{ship_to_name|upper}}<br>
+                             {{shipping_street}}, {{shipping_city}}, {{shipping_state}}, {{shipping_pincode}}<br>
+                               GSTIN/UIN: {{ship_to_gst_uin}}<br>
+                                 CONTACT: {{ship_to_contact_number}}<br>
+                                STATE: {{ship_to_state}}<br>
+                             </p>
+                        </td>
+                        
+                            <td style="width: 30%; font-weight: 600;"><u>Bill To</u> <br>
+                               {{bill_company_name|upper}}<br>
+                                 {{street}}, {{bill_city}}, {{bii_com_state}}, {{bill_pincode}}<br>
+                        
+                                     GSTIN/UIN :  {{bill_gst_uin}}<br>
+                                     CONTACT :  {{contact_number}}<br>
+                                     STATE :  {{com_state}}
+                                 </p>
+                        </td>
+                        <td style="width: 23%;    border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                            <b>Sub Total</b> : <br>
+                           
+                            <b>SGST</b>:<br>
+                            <b>CGST</b>:<br>
+                            <b>IGST</b>: <br>
+                            <b>
+                            {% if sales.so_freight_percentage_amt != '0.00' and sales.so_freight_percentage_amt != '0' %}
+                            Freight({{ sales.so_freight_percentage }}%)<br> (Including GST): <br> 
+                            {% elif sales.so_freight_amt_amt != '0.00' and sales.so_freight_amt_amt != '0' %}
+                            Freight <br> (Including GST):<br>
+                            {% endif %}
+                            {% if sales.so_packaging_forwording_amt_amt != '0.00' and sales.so_packaging_forwording_amt_amt != '0' and sales.so_packaging_forwording_amt_amt != 'NaN' %}
+                            packaging & Fowarding<br> (Including GST):<br>
+                            {% elif sales.so_packaging_forwording_percentage_amt != '0.00' and sales.so_packaging_forwording_percentage_amt != '0' %}
+                            packaging & Fowarding({{ sales.so_packaging_forwording_percentage }}%)<br> (Including GST):<br>
+                            {% endif %}
+                            </b>
+                            <b>Total Amount:</b></td>
+                        <td style="border-bottom: 1px solid #000;text-align: right;padding-right: 10px;"> 
+                            <b>{{total_amount|floatformat:2}} INR </b><br> 
+                            <b>{{sales.so_sgstval}} INR</b><br>
+                            <b> {{sales.so_cgstval}} INR</b><br>
+                            <b>{{sales.so_igstval}} INR</b><br>
+                            <b>
+                            {% if sales.so_freight_percentage_amt != '0.00' and sales.so_freight_percentage_amt != '0' %}
+                            {{sales.so_freight_percentage_amt}} INR<br> 
+                            {% elif sales.so_freight_amt_amt != '0.00' and sales.so_freight_amt_amt != '0' %}
+                            {{sales.so_freight_amt_amt}} INR<br> 
+                            {% endif %}
+                            {% if sales.so_packaging_forwording_amt_amt != '0.00' and sales.so_packaging_forwording_amt_amt != '0' and sales.so_packaging_forwording_amt_amt != 'NaN' %}
+                            <br>
+                            {{sales.so_packaging_forwording_amt_amt}} INR<br>
+                            {% elif sales.so_packaging_forwording_percentage_amt != '0.00' and sales.so_packaging_forwording_percentage_amt != '0' %}
+                            <br>
+                            {{sales.so_packaging_forwording_percentage_amt}} INR<br> 
+                            {% endif %}
+
+                            <b>{{sales.so_total}} INR</b></td>
+                            </b>
+                    </tr>
+                    <tr>
+                        <td ><b></b> </td>
+                        <td><b> </b></td>
+                        <td colspan="2" style="text-align: center;border-left: 1px solid #000; height: 10px;"><b>for M/S KEYMECH TECHNOLOGIES</b></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"  style="vertical-align: bottom; text-align: center;height: 20px"><b><u>Shipped By </u></b></td>
+                        <td rowspan="2" style="vertical-align: bottom; text-align: center;border-right: 1px solid #000;height: 20px"><b><u>Shipped Via</u></b></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;border-left: 1px solid #000;height: 50px; vertical-align: bottom;">Authorized Signatory</td>
+                    </tr>
+                   
+                </table>
+                <table style="width: 100%;border-bottom: 1px solid #000;">
+                    <tr>
+                        <td><b>PAN:</b> CVSPG7178L,<b> GSTIN:</b> 05AAUPG1246N1ZE</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-bottom: 20px;"><b>Phone:</b> +91-8171467840  </td>
+                    </tr>
+                    <tr>
+                        <td><b>Company's Bank Details</b><br>
+                        <b>Bank Name :</b> Axis Bank Limited <br>
+                    <b>A/c No. : </b>919020042164019<br>
+                <b> Branch & IFS Code : </b>Sector-62, Noida-201301, Uttar Pradesh & UTIB0000723<br>
+
+                        </td>
+                    </tr>
+                </table>
+
+              
+                </div>
+                {% endfor %}
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+ 
+ 
+ 
+<script>
+  function printDiv(divId) {
+      var element = document.getElementById(divId);
+ 
+      // Optional configuration options
+      var opt = {
+          // margin: [0, 0, 0, 0.1], // top, left, bottom, right
+          filename: 'DC.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+ 
+      // New Promise-based usage:
+      html2pdf().set(opt).from(element).save().catch(err => console.log(err));
+  }
+</script>
+ 
+ 
+{% endblock main_content %}

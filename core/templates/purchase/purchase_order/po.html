@@ -1,0 +1,229 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+<style>
+    p {
+/* Set some padding for overall content */
+padding: 15px;
+}
+
+.ref-no,
+.company-name {
+/* Bold text with a slight accent color */
+font-weight: bold;
+
+}
+
+
+
+
+      table {
+          border: 1px solid black;
+          border-collapse: collapse;
+          width: 95%;
+          margin: 0px auto;
+          font-size: 12px;
+          line-height: 1.2;
+          font-family:Calibry;
+      }
+      td span {
+      display: inline-block;
+      width: 120px; /* Adjust width as needed */
+      margin-right: 10px; /* Adjust margin as needed */
+      }
+      td, th {
+          border: 1px solid black;
+          padding: 2px;
+          text-align: left;
+      }
+      h1, h3, h4, h5, p {
+          margin: 0px 0;
+      }
+      h3 {
+          text-align: center;
+          font-size: 18px;
+      }
+      .header-table, .header-table td {
+      margin-bottom: 2px;
+
+      }
+      .header-table img {
+          margin-right: 5px;
+      }
+
+      .no-border {
+          border: none !important;
+      }
+      .terms p {
+          font-size: 10px;
+      }
+      .center-content-td {
+          text-align: center;
+      }
+      .footer-sign {
+          text-align: center;
+          font-size: 9px;
+          font-weight: 500;
+      }
+    table, th, td {
+color: black; /* Sets default text color to black */
+}
+  </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+
+{% endblock custom_css %}
+<!-- Main content -->
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 415px;">
+  <div class="content container-fluid">
+<div class="card card-body" style="width:70%; margin-left:10%;">
+<a class="btn btn-primary float-end mt-2" href="{% url 'purchsae_download_pdf' id=purchase_ord.id %}">download</a>
+
+  <div id="pdf">
+      <br>
+  <h3>Purchase Order</h3>
+  <table style="width:95%;">
+  <!-- 1 row -->
+  <tr>
+      <td colspan="2" style="width: 50%;padding: 10px;">
+        <p style="padding: 10px;margin-top:-20px;">
+          <h4 >M/S KEYMECH TECHNOLOGIES</h4><br>
+          NOIDA Sector-62 201301 (UP),<br>
+          PAN NO CVSPG7178L.<br>
+          STATE CODE: 09<br>
+          STATE : Uttar Pradesh <br>
+          GSTIN/UIN:  05AAUPG1246N1ZE<br>
+          State Name :  Uttar Pradesh, Code : 09 <br>
+          E-Mail :mechfrontindia@gmail.com, vibhor@mechfront.com  <br>
+
+              </p>
+      
+        </td>
+    <td colspan="6">
+
+        <div style="flex: 1; padding: 10px;">
+            <div class="invoice-info">
+                <div style="display: flex;">
+                    <div style="flex: 1; border-right: 1px solid #000; padding: 5px;">Debit Note No.:</div>
+                    <div style="flex: 1; padding: 5px;">Date: {{credit.cn_date}}</div>
+                </div>
+                <div style="display: flex;">
+                    <div style="flex: 1; border-right: 1px solid #000; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 5px;">Supplier's Ref.:</div>
+                    <div style="flex: 1; border-bottom: 1px solid #000; border-top: 1px solid #000; padding: 5px;">Other Reference(s):</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+  </td>
+</tr>
+    <!-- 2 row -->
+    <tr>
+      <td colspan="2" >
+          <p style="padding: 5px;">
+<strong class="ref-no">Party: </strong><br>
+<br>
+<strong class="company-name">{{ company_name|upper }}</strong><br>
+<span class="email">State Name :
+</span> State Code: 
+
+</p>
+      </td>
+    <td colspan="6"><p><span style="font-weight: 600;width: 200px;margin-right: 30px;">
+      
+<tr>
+    <!-- 3 -->
+
+<tr style="">
+  <td style="font-weight: 600;font-size: 11px;text-align:center;">Sr.</td>
+  <td style="font-weight: 600;font-size: 11px;text-align:center;">Description of Goods</td>
+  <td style="font-weight: 600;font-size: 11px;text-align:center;">Quantity</td>
+  <td style="font-weight: 600;font-size: 11px;text-align:center;">Rate</td>
+  <td style="font-weight: 600;font-size: 11px;text-align:center;">Per</td>
+  <td style="font-weight: 600;font-size: 11px;text-align:center;">Discount</td>
+  <td style="font-weight: 600;font-size: 11px;text-align:center;">Amount</td>
+</tr>
+<tr>
+    {% for j in credit_item_data %}
+    <tr>
+        <td width="5%" style="border: 1px solid #000; padding: 5px; text-align: center;">{{ forloop.counter }}</td>
+        <td width="45%" style="border: 1px solid #000; padding: 5px; text-align: left;">{{ j.cn_description_goods }}</td>
+        <td width="8%" style="border: 1px solid #000; padding: 5px; text-align: center;">{{ j.cn_qantity }}</td>
+        <td width="8%" style="border: 1px solid #000; padding: 5px; text-align: right;">{{ j.cn_unit_price }}</td>
+
+        <td width="8%" style="border: 1px solid #000; padding: 5px; text-align: center;">{{ j.cn_uom }}</td>
+        <td width="8%" style="border: 1px solid #000; padding: 5px; text-align: center;">{{ j.cn_discount }}</td>
+        <td width="10%" style="border: 1px solid #000; padding: 5px; text-align: right;">{{ j.cn_total }}</td>
+    </tr>
+    {% endfor %}    
+
+    <tr>
+              <td></td>
+          <td style="font-weight: 600;text-align: center;">Sub Total</td>
+          <td></td>
+          <td style="font-weight: 600;text-align:center;">{{ total_quantity }}</td>
+          <td></td>
+          <td></td>
+          <td style="font-weight: 600;text-align:right;">{{ total_amount }}</td>
+</tr>
+    <!-- 5 -->
+
+<tr >
+<td colspan="6" style="text-align: end;border:0px;">Freight & Cartage </td>
+  <td  style="font-weight: 600;font-size: 11px;text-align:right;">{{ credit.cn_freight }}</td>
+</tr>
+<tr>
+  <td colspan="6" style="text-align: end; border:0px;">IGST</td>
+    <td  style="font-weight: 600;font-size: 11px;text-align:right;">{{ credit.cn_igstval }}</td>
+  </tr>
+  <tr>
+    <td colspan="6" style="text-align: end; border:0px;">IGST on Freight amount is not taken in original invoice
+        </td>
+      <td  style="font-weight: 600;font-size: 11px;text-align:right;">{{ credit.cn_igstper }}</td>
+    </tr>
+    <!-- 8 -->
+    <tr>
+     <td colspan="6"style="font-size: 10px;
+     font-weight: 600;">Total</td>
+       <td  style="font-weight: 600;font-size: 11px;text-align:right;"> {{ credit.cn_total }}</td>
+    </tr>
+    <!-- 9 -->
+    
+
+    </tr>
+          <tr>
+            <td colspan="2">
+
+                <p style="font-size: 10px;">
+                    <span style="font-weight: bold;" >Amount Chargeable (in words)
+                    </span> : <br>
+                 <span style="font-weight: bold;" >  </span> <br>
+                 <span style="font-weight: bold;" > Company's PAN :
+                </span> : <br>
+                    </p>
+            </td>
+             <td colspan="6" class="footer-sign">
+              <p style="font-weight: bold;font-size: 11px;">E. & O.E
+            </p>             <p style="font-weight: bold;font-size: 11px;">
+                for MechFront Tecnologies 
+<br>
+              <!-- <img src="../../static/assets/img/sign.png" alt="Sign" style="width: 100px;height: 35px;"><br> -->
+              <p style="font-size: 11px;">AUTHORIZED SIGNATURE</p>
+          </td>
+
+          </tr>
+      </td>
+</table>
+This is a Computer Generated Document
+
+</div>
+          </div>
+</div>
+</div>
+
+{% endblock main_content %}

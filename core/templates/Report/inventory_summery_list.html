@@ -1,0 +1,160 @@
+
+{% extends 'dashboard/base_template.html' %}
+    {% block custom_css %}
+        {% block page_title %}
+        {% endblock page_title %}
+        <style>
+            .custom-error {
+                max-width: 300px;
+                /* Adjust the width to your desired value */
+                margin: 0 auto;
+                /* Add this line to center the element */
+                text-align: center;
+                /* Add this line to center the text inside the element */
+              }
+              .input-group-text {
+                cursor: pointer;
+              }
+              .grey-card {
+                background-color:LightGray;
+            }
+            .negative-padding {
+              margin-top: -60px; 
+          }
+         
+    
+       
+          
+
+        </style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
+    <style>
+      .right-aligned {
+          position: fixed;
+          top: 20px; /* Adjust the top position as needed */
+          right: 20px; /* Adjust the right position as needed */
+      }
+  </style>
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 341px;">
+
+    <div class="content container-fluid">
+       
+       <div class="row">
+          <div class="col-sm-12">
+             <div class="card card-table">
+                <div class="card-header">
+                   <!-- <div class="col-lg-12">
+                     <div class="row">
+                        <div class="col-lg-8">
+                            <h3>
+                            <a href="{% url 'inventory_date' %}" style="margin-right: 10px;">
+                                <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i>
+                            </a>    
+                           Inventory Summery   </h3>   
+                        
+                        <div class="col-lg-4 text-lg-end">
+
+                            <form method="post" action="{% url 'download_inventory_excel' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Download Excel</button>
+                            </form>
+                        </div>
+                        
+
+                         
+                      </div>
+                   </div> -->
+                   <div class="col-lg-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">
+                                <a href="{% url 'inventory_date' %}" style="margin-right: 10px;">
+                                    <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="fa fa-arrow-left"></i>
+                                </a>
+                                Inventory Summary
+                            </h3>
+                        </div>
+                        <div>
+                            <form method="post" action="{% url 'download_inventory_excel' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Download Excel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                </div>
+              <div id="printableArea">
+
+                <div class="card-body" id="customer_ledger_pdf">
+                   <div class="rport">
+                    <h2><b>M/S KEYMECH TECHNOLOGIES </b>
+                    </h2>
+                    <p style="font-size: 20px;">Inventory Summery</p> 
+                    <p>     
+                   <b> From </b>&nbsp;{{ start_date|date:"j F Y" }} &nbsp; <b>To</b> &nbsp; {{ end_date|date:"j F Y" }}
+                    </div>
+                    <br>
+                 
+                     <div class="table-responsive">
+                      <table class="table table-center">
+                          <thead class="thead-dark">
+                              <tr>
+                                  <th>SR.NO.</th>
+
+                                  <th>ITEM CODE</th>
+                                  <th>ITEM</th>
+                                  <th>QUANTITY</th>
+                                  <th>RATE</th>
+                                  <th>AMOUNT</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for item in filtered_items %}
+                              <tr>
+                                  <td>{{ forloop.counter }}</td> 
+
+                                  <td>{{ item.item_code }}</td>
+                                  <td> <a href="#" style="color: blue;">{{ item.inventory_name|upper}}</a></td>
+                                  <td>{{ item.opening_stock_quantity }}</td>
+                                  <td>{{ item.purchase_rate }}</td>
+                                  <td>{{ item.amount|floatformat:2 }}</td>
+                              </tr>
+                              {% endfor %}
+                              <tr>
+                                  <td colspan="5"><strong>TOTAL</strong></td>
+                                  <td><strong>{{ total_amount|floatformat:2 }}</strong></td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  
+                </div>
+              </div> 
+             </div>
+          </div>
+       </div>
+</div>
+ </div>
+ <script>
+  function printDiv(divId) {
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+
+</script>
+{% endblock main_content %}
+
+
+
+
+

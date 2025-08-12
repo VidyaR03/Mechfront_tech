@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    {% load static %}    
+    <style type="text/css">
+        @media print {
+            @page {
+                size: A4; /* Ensure page size is set */
+                margin: 1.5cm; /* Adjust margins as needed */
+            }
+            body {
+                margin: -30px;
+                padding: 0;
+                font-size: 12px; /* Reduced font size for better fit */
+                font-family: 'Calibri', sans-serif;
+            }
+        }
+
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 100%; /* Ensure table width fits the page */
+        }
+        td {
+            border: 1px solid black;
+            padding: 4px 8px; /* Reduced padding */
+            font-size: 12px; /* Reduced font size */
+            font-weight: 600;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-md-end {
+            text-align: right;
+        }
+    </style>
+<body>
+    <div class="page-wrapper" style="max-height: 500px;">
+        <div class="content container-fluid">
+      <div class="card card-body" style="width:100%; margin-left:0%;">
+        <div class="text-md-end">
+            <div class="btn-group btn-group-sm d-print-none mb-4">
+                <!-- Print Button -->
+            
+            
+                <!-- <a href="{% url 'download_credit_note_pdf' id=credit.id %}" class="btn btn-primary">
+                    <i class="fa fa-download"></i> Download
+                </a> -->
+            </div>
+        </div>  
+    <h2 style="text-align: center;">Credit Note</h2>
+    <table style="width: 100%;">
+        
+        <tr>
+            <td rowspan="5"colspan="2" style="font-family: calibri;font-size: 15px;font-weight: 500;"> <b>M/S KEYMECH TECHNOLOGIES</b> <br>802A, TowerB, iThum <br>
+                NOIDA Sector-62 201301 (UP)<br>PAN NO CVSPG7178L<br>
+                STATE CODE: 09<br>STATE : Uttar Pradesh<br>
+                GSTIN/UIN:  05AAUPG1246N1ZE<br>
+                State Name :  Uttar Pradesh, Code : 09<br>
+                E-Mail :mechfrontindia@gmail.com, vibhor@mechfront.com 
+            </td>
+            <td colspan="2" style="font-family: calibri;font-size: 13px;font-weight: 500;">Credit Note No. <br><b>MF20240001</b> </td>
+            <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;">Dated : <b>{{ credit.cn_date }}</b> </td>
+        </tr>
+        <tr>
+            <td  colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;"></td>
+            <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;"> Mode/Terms of Payment :
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;">Buyer's Ref.            </td>
+            <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;">	Other Reference(s)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;">Buyer's Order No.  :{{credit.cn_customer_name.customer}} </td>
+            <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;">	Dated :<b>{{ credit.cn_buyer_order_date }}</b></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;">Despatch Document No.	 </td>
+            <td colspan="5" style="font-family: calibri;font-size: 13px;font-weight: 500;">	Destination :{{ credit.cn_destination_supply }} </td>
+        </tr>
+        <tr>
+            <td  colspan="2" style="font-family: calibri;font-size: 13px;font-weight: 500;">Party :{{credit.cn_customer_name.customer}}</br>
+           GSTIN/UIN: {{credit.cn_customer_name.gst_number}}<br>
+           PAN NO: {{credit.cn_customer_name.pan_number}}<br> <span>state Name : {{credit.cn_customer_name.state}}   &nbsp;  state code :{{credit.cn_customer_name.pincode}}
+
+        </td>
+        <td colspan="2" style="font-weight: 500;">Despatched through	        </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        <td style="border:0px;"><span style="font-size: 12px; font-weight: 500;">Terms of Delivery	</span>
+        </td>
+    </tr>
+        <tr>
+            <td style="width: 7%;font-size: 13px;">SI NO</td>
+            <td colspan="2"style="font-size: 13px;">Description of Goods</td>
+            <td style="font-size: 13px;">HSN/SAC</td>
+            <td style="font-size: 13px;">Quantity</td>
+            <td style="font-size: 13px;">Rate </td>
+            <td style="font-size: 13px;">per </td>
+            <td style="font-size: 13px;width: 8%;">Disc.%</td>
+            <td style="font-size: 13px;">Amount</td>
+        </tr>
+        {% for j in credit_item_data %}
+
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td colspan="2"> {{ j.cn_description_goods }}</td>
+            <td> {{ j.cn_hsn }}</td>
+            <td>{{ j.cn_qantity }}</td>
+            <td>{{ j.cn_unit_price }}</td>
+            <td>{{ j.cn_uom }}</td>
+            <td>{{ j.cn_discount }}</td>
+            <td>{{ j.cn_total }}</td>
+        </tr>
+        {% endfor %}   
+        <tr>
+            <td></td>
+            <td colspan="2"><b>	Credit not Issued the following items </b>			
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+      
+        <tr>
+            <td></td>
+            <td colspan="2"style="font-family: calibri;font-size: 13px;font-weight: 600;">IGST INPUT <b style="text-align: end;">18% </b>
+            </td>
+            <td> </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+      
+        
+        <tr>
+            <td></td>
+            <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;">Total</td>
+            <td> </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{ credit.cn_total}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="font-family: calibri;font-size:13px; font-weight:500;">Amount Chargeable (in words):</td>
+            <td colspan="7" style="font-family: calibri;font-size:13px;font-weight: 500;" >E. & O.E            </td>
+        </tr>
+        <tr>
+            <td colspan="5" rowspan="2" style="font-weight: 400;"> HSN/SAC</td>
+            <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+                Taxable
+               </td>
+            <td colspan="2" style="font-family: calibri;font-size:13px;font-weight: 500;"> Integrated Tax</td>
+            <td>Total
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+                Value
+               </td>
+               <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+                Rate
+                  </td>
+               <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+                Amount
+               </td>
+               <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+                Tax Amount
+               </td>
+    </tr>
+    <tr>
+        <td colspan="5"> </td>
+        <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+          
+           </td>
+        <td  style="font-family: calibri;font-size:13px;font-weight: 500;"> </td>
+        <td>
+            <td></td>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="5"> </td>
+        <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+          
+           </td>
+        <td  style="font-family: calibri;font-size:13px;font-weight: 500;"> </td>
+        <td>
+            <td></td>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5"> Total</td>
+        <td style="font-family: calibri;font-size:13px;font-weight: 500;">	
+          
+           </td>
+        <td  style="font-family: calibri;font-size:13px;font-weight: 500;"> </td>
+        <td>
+            <td></td>
+        </td>
+    </tr>
+  
+      <tr>
+        <td colspan="9"style="font-weight:500;font-size:13px;border-bottom:0px;">Tax Amount (in words)  :		
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"style="font-weight:500;font-size:13px; border-top: 0px;border-bottom:0px;">Remarks:			
+        </td>
+        <td colspan="7">for M/S KEYMECH TECHNOLOGIES </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="font-weight:500;font-size:13px;border-top: 0px;border-bottom: 0px;">SAL
+			
+        </td>
+        <td colspan="7"> </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="font-weight:500;font-size:13px; border-top: 0px; border-bottom: 0px;">Company's PAN :<b>CVSPG7178L</b>		
+        </td>
+        <td colspan="7"><span style="margin-right: 40px;font-weight:500;font-size:13px;">Prepared by </span>  
+             <span style="margin-right: 40px;font-weight:500;font-size:13px;">Verified by  </span>    
+             <span style="font-weight:500;font-size:13px; text-align: end!important;">Authorised Signatory</span>  </td>
+      </tr>
+
+      <tr><td colspan="9" style="border-top: 0px;"></td></tr>
+    </table>
+    <h5 style="font-weight: 500; margin-left: 130px; font-size: 15px;">This is a Computer Generated Document </h5> 
+</body>
+
+    
+</html>

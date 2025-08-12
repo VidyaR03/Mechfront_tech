@@ -1,0 +1,225 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+Ecoway
+{% endblock %}
+
+{% block custom_css %}
+
+<style>
+    /* Inactive tab styles */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #ccc;
+        /* Faint gray color for inactive tabs */
+    }
+
+    /* Active tab style */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+        /* Black color for active tab */
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<div class="row" style="padding-left: 8%; padding-top: 3%;">
+    <div class="col-md-12">
+        <div class="card bg-white">
+            <div class="card-header">
+                <h5 class="card-title">{{inventory_entity_data.inventory_name}}</h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs nav-tabs-solid">
+                    <li class="nav-item"><a class="nav-link active" href="#bottom-tab1"
+                            data-bs-toggle="tab">Overview</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#bottom-tab2" data-bs-toggle="tab">Sales</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Purchase</a> -->
+                    </li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab4" data-bs-toggle="tab">Manufacturing</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#bottom-tab5" data-bs-toggle="tab">Adjustment</a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab6" data-bs-toggle="tab">Godown</a></li> -->
+                </ul>
+                <div class="tab-content ">
+
+                    <div class="tab-pane  active show mylab" id="bottom-tab1">
+
+                        <div class="row" ng-if="item.sales">
+                            <div class="col-md-12"> <b>Basic Information</b> </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Unit</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.units}}</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Type</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.type}}</label>
+                                </div>
+                                <!---->
+                                <div class="form-group row" ng-if="gstEnabled &amp;&amp; item.type == 'Goods'">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">HSN</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.hsn}}</label>
+                                </div>
+                                <!----> <!----> <!----> <!---->
+                                <!-- <div class="form-group row" ng-if="inventoryPreference.EnableSku == 1">
+                                                <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">SKU</label>
+                                                <label class="col-md-6 col-sm-6 col-xs-6 control-label"></label>
+                                             </div> -->
+                                <!----> <!----> <!----> <!----> <!---->
+                                <div class="form-group row" ng-if="gstEnabled">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Tax Type</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.tax_type}}</label>
+                                </div>
+                                <!----> <!---->
+                               
+                                <!----> <!---->
+                                <!-- <div class="form-group row" ng-if="gstEnabled &amp;&amp; item.gst.rate == 1">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label"> Interstate
+                                        GST</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">18</label>
+                                </div> -->
+                                <!----> <!---->
+                                <!-- <div class="form-group row" ng-if="item.is_trackable"> 
+                                                <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label"> Inventory Asset Account</label> 
+                                                <label class="col-md-6 col-sm-6 col-xs-6 control-label">Inventory Assets</label>
+                                             </div> -->
+                                <!---->
+                            </div>
+                            <!---->
+                            <!-- <div class="col-md-offset-1 col-md-3 col-sm-4 col-xs-6" ng-show="item.is_trackable">
+                                <div class="form-group row highlight">
+                                    <div class="col-md-12 head text-center"> Opening Stock </div>
+                                    <div class="col-md-12 sub-head text-center"></div>
+                                </div>
+                                <br>
+                               
+                            </div> -->
+                        </div>
+
+                        <div class="row" ng-if="item.sales">
+                            <br>
+                            <div class="col-md-12"> <b>Sales Information</b> </div>
+                        </div>
+                        <div class="row" ng-if="item.sales">
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group row"> <label
+                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Account</label> <label
+                                        class="col-md-6 col-sm-6 col-xs-6 control-label">Sales</label> </div>
+                                <div class="form-group row"> <label
+                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Rate</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.sales_rate}}</label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row" ng-if="item.purchase">
+                            <br>
+                            <div class="col-md-12"> <b>Purchase Information</b> </div>
+                        </div>
+                        <div class="row" ng-if="item.purchase">
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group row"> <label
+                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Account</label> <label
+                                        class="col-md-6 col-sm-6 col-xs-6 control-label">Purchase A/c</label> </div>
+                                <div class="form-group row"> <label
+                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Rate</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.purchase_rate}}</label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row" ng-if="item.purchase">
+                            <br>
+                            <div class="col-md-12"> <b>Stock Available</b> </div>
+                        </div>
+                        <div class="row" ng-if="item.purchase">
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group row"> <label
+                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Opening Stock</label> <label
+                                        class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.opening_stock_quantity}}</label> </div>
+                              
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane" id="bottom-tab2">
+                        <table class="invoice-table table table-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Customer </th>
+                                    <th>Company Name</th>
+                                    <th>Mobile</th>
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in customer_data %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ i.customer }}</td>
+                                    <td> {{ i.company_name }}</td>
+                                    <td>{{ i.mobile }}</td>
+                                    
+                                </tr>
+                                {% endfor %}
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane" id="bottom-tab3">
+                        <table class="invoice-table table table-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Voucher </th>
+                                    <th>Voucher No</th>
+                                    <th>Vendor</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th class="text-end">Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
+
+                    <div class="tab-pane" id="bottom-tab6">
+                      
+                        <table class="invoice-table table table-border">
+                            <thead>
+                                <tr>
+                                    <th>Godown</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- <script src="https://olatechs.in/crm/supreeno/assets/js/jquery-3.6.0.min.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap.bundle.min.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/feather.min.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/plugins/select2/js/select2.min.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/plugins/moment/moment.min.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap-datetimepicker.min.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/script.js"></script> -->
+
+{% endblock main_content %}

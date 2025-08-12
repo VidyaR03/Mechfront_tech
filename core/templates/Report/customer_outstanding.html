@@ -1,0 +1,113 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+
+<style>/* Inactive tab styles */
+   .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+       color: #ccc; /* Faint gray color for inactive tabs */
+   }
+   
+   /* Active tab style */
+   .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+       color: #000; /* Black color for active tab */
+   }
+   </style>
+{% endblock custom_css %}
+
+{% block main_content %}
+
+
+
+
+<div class="page-wrapper" style="padding-top: 0px;">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">
+                        <a href="{% url 'customer_outstanding' %}" style="margin-right: 10px;">
+                            <!-- <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i> -->
+                        </a>
+                        Customer Outstanding Report Datewise
+                    </h3>
+                </div>
+            </div>
+        </div>
+                        <form class="invoices-form" method="post" action="{% url 'customer_oustanding_date' %}" enctype="multipart/form-data" autocomplete="off" novalidate="novalidate">
+                            {% csrf_token %}
+                            <div class="invoices-main-form">
+                                <div class="row">
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class=" ">
+                                                <span>
+                                                    <label>From Date</label>
+                                                    <input class="form-control " type="date" name="start_date" id="from_date" >
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class=" ">
+                                                <span>
+                                                    <label>To Date</label>
+                                                    <input class="form-control " type="date" name="end_date" id="to_date" >
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                      <div class="form-group">
+                                          <div class=" ">
+                                            <label for="customer_Name_id">Customer Name</label>
+                                          
+                                            <select class="form-select" name="employee_name" id="emp_name" required>
+                                              <option value="" disabled selected>SelectCustomer Name</option>
+                                              {% for item in cust %}
+                                              <option value="{{ item.customer }}">{{ item.customer }}</option>
+                                              {% endfor %}
+                                          </select>
+                                        
+                                           
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                    <div class="col-md-3">
+                                        <div class="text-end mt-4">
+                                            <button type="submit" class="btn btn-primary" id="btn_submit" name="btn_submit">Submit</button>
+                                            <a href="{% url 'customer_outstanding' %}" class="btn btn-primary">Cancel</a>
+                                        </div>
+                                        <div class="row col-sm-6 p-5">
+                                            <div class="success_message row"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            // Get today's date
+            let today = new Date().toISOString().split('T')[0];
+        
+            // Set the value of the input field to today's date
+            document.getElementById("from_date").value = today;
+            document.getElementById("to_date").value = today;
+        
+        });
+        
+           </script>
+
+   
+{% endblock main_content %}
+
+    

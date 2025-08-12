@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Order</title>
+    <style>
+    p {
+/* Set some padding for overall content */
+padding: 15px;
+}
+
+.ref-no,
+.company-name {
+/* Bold text with a slight accent color */
+font-weight: bold;
+
+}
+
+
+      table {
+          border: 1px solid black;
+          border-collapse: collapse;
+          width: 95%;
+          margin: 0px auto;
+          font-size: 12px;
+          line-height: 1.2;
+          font-family:Calibry;
+      }
+      td span {
+      display: inline-block;
+      width: 120px; /* Adjust width as needed */
+      margin-right: 10px; /* Adjust margin as needed */
+      }
+      td, th {
+          border: 1px solid black;
+          padding: 2px;
+          text-align: left;
+      }
+      h1, h3, h4, h5, p {
+          margin: 0px 0;
+      }
+      h3 {
+          text-align: center;
+          font-size: 18px;
+      }
+      .header-table, .header-table td {
+      margin-bottom: 2px;
+
+      }
+      .header-table img {
+          margin-right: 5px;
+      }
+
+      .no-border {
+          border: none !important;
+      }
+      .terms p {
+          font-size: 10px;
+      }
+      .center-content-td {
+          text-align: center;
+      }
+      .footer-sign {
+          text-align: center;
+          font-size: 9px;
+          font-weight: 500;
+      }
+    table, th, td {
+color: black; /* Sets default text color to black */
+font-size:15px;
+padding-right: 10px;
+}
+
+        @media print {
+            @page {
+                margin: 0;
+            }
+
+            body {
+                margin: 0cm;
+                margin-top: 0cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="pdf">
+        <div class="page-wrapper">
+            <div class="content container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="text-md-end">
+                           
+                        </div>
+                        <div class="card" style="font-family: Calibri;">
+                            <div id="printableArea">
+                               
+                                  <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;margin-left: 20px;">
+                                    <img src="../../static/assets/img/logo-png.png" style="width: 150px;border-radius: 10px;" />
+                                    <div style="flex-grow: 1; text-align: center; ">
+                                        <span class="bold" style="font-size: 20px;margin-left: -176px;">PURCHASE ORDER</span>
+                                    </div>
+                                </div>
+        
+                                    <table style="width:95%;">
+                                    <!-- 1 row -->
+                                    <tr>
+                                        <td colspan="2" style="width: 50%;">
+                                            <h5><b style="ma-bottom: 20px;">M/S KEYMECH TECHNOLOGIES</b></h5><br>
+                                            13, Jagdish Nagar, Jwalapur,<br>
+                                            Haridwar,Uttarakhand-249407,<br>
+                                                
+                                            </p>
+                                        </td>
+                                        <td colspan="3">
+                                            <p style="font-size: 10px;margin-top: -20px;"> 
+                                                <span style="font-weight: 600;width: 150px;">GSTIN/UIN  </span>      : 05AAUPG1246N1ZE<br>
+                                                <span style="font-weight: 600;width: 150px;">  PAN       </span>    : CVSPG7178L<br>
+                                                <span style="font-weight: 600;width: 150px;">  CONTACT   </span>   : +91-8171467840  <br>
+                                                <span style="font-weight: 600;width: 150px;"> STATE CODE</span>    : 09</br>
+                                                <span style="font-weight: 600;width: 150px;"> MAIL</span>    :  vibhor@mechfront.com</br>
+        
+                                         
+                                        </td>
+        
+                                
+                                  </tr>
+                                      <!-- 2 row -->
+                                      <tr>
+                                        <td colspan="2"style="font-size:11px;" >
+                                            <p><span style="font-weight: 600;font-size: 11px; ">To:</span><br>
+                                    
+                                                <span style="font-weight:700;font-size: 11px;">{{purchase_ord.po_vendor_name.vendor_company_name}},</span><br>
+                                                {{purchase_ord.po_vendor_name.vendor_street}},{{purchase_ord.po_vendor_name.vendor_city}}<br>
+                        {{purchase_ord.po_vendor_name.vendor_state}},
+                        {{purchase_ord.po_vendor_name.vendor_pincode}},<br>{{purchase_ord.po_vendor_name.vendor_contact_number}}</h5><br>
+                  
+                                                
+                                               </td>
+                                
+                                      <td colspan="3"><p>
+                                        <span style="font-weight: 500;width: 150px;font-size: 11px;"><b> Purchase Order No.</b> </span><span style="font-size: 10px;">: {{purchase_ord.po_no}}  </span>  <br>
+
+                                        <span style="font-weight: 500;width: 150px;font-size: 11px;"><b> Order No.</b> </span><span style="font-size: 10px;">: 0{{purchase_ord.po_vendor_code}}-{{purchase_ord.id}} </span>  <br>
+                                        <span style="font-weight: 500;width: 150px;font-size: 11px;"> <b>Date </b> </span><span style="font-size: 10px;">: {{purchase_ord.po_date}}  </span></p>
+                                        <span style="font-weight: 500;width: 350px;font-size: 11px;margin-left: 15px;" ><b>Ref:</b>&nbsp;Your Quotation No. {{purchase_ord.po_quotation}},&nbsp;&nbsp;Date : {{purchase_ord.po_quo_date}}  </span>                                       
+                                 <tr>
+                                      <!-- 3 -->
+                                  
+                                      <tr>
+                                        <td style="font-weight: 600;text-align: center; height: 60px;font-size: 13px;">Item Code</td>
+                                        <td style="font-weight: 600;text-align: center;height: 60px;font-size: 13px;">Material Code / Model</td>
+                                        <td style="font-weight: 600;text-align: center;height: 60px;font-size: 13px;">Qty.<br>(Nos.)</td>
+                                        <td style="font-weight: 600;text-align: center;height: 60px;font-size: 13px;">Unit Price<br>(Rs.)</td>
+                                        <td style="font-weight: 600;text-align: center;height: 60px;font-size: 13px;">Total Value<br>
+                                            (Rs.)</td>
+                                    </tr>
+                                    {% for j in purchase_ord_item_data %}
+                                    <tr>
+                                        <td style="text-align: center;padding-bottom: 10px;font-size: 13px;">{{ j.po_item_code }}</td>
+                                        <td style="text-align: center;padding-bottom: 10px;font-size: 13px;">{{ j.po_description_goods }}</td>
+                                        <td style="text-align: center;padding-bottom: 10px;font-size: 13px;">{{ j.po_qantity }}</td>
+                                        <td style="text-align: center;padding-bottom: 10px;font-size: 13px;">{{ j.po_unit_price }}</td>
+                                        <td style="text-align: center;padding-bottom: 10px;font-size: 13px;">{{ j.po_total }}</td>
+                                    </tr>
+                            {% endfor %} 
+                               
+                                
+                                    
+                                <!-- new row -->
+                                      <tr>
+                                    <td>     </td>
+                                    <td  style="font-weight: 600;font-size: 13px;">	</td>
+                                    <td></td>
+                                    <td  style="font-weight: 600;font-size: 13px;text-align:center;">Sub Total</td>
+                                    
+                                    
+                                    <td  style="text-align: center;font-size: 13px;">{{sum_total}}</td>
+                                </tr>
+                                      <!-- 5 -->
+                                  <tr>
+                                        <td colspan="4" style="text-align: end; border-bottom: 0px solid #fff!important; border-top:0px solid #fff!important;font-size:11px;">Output IGST</td>
+                                          <td  style="font-size: 11px;text-align: center;">{{purchase_ord.po_igstval}}</td>
+                                  </tr>
+                                
+                                  <tr >
+                                  <td colspan="4" style="text-align: end;border-bottom:1px solid #fff!important;border-top:1px solid #fff!important;font-size:11px;">Output CGST </td>
+                                    <td  style="font-size: 11px;text-align: center;">{{purchase_ord.po_cgstval}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="4" style="text-align: end; border-bottom: 0px solid #fff!important; border-top:0px solid #fff!important;font-size:11px;">Output SGST </td>
+                                      <td  style="font-size: 11px;text-align: center;">{{purchase_ord.po_sgstval}}</td>
+                                  </tr>
+                                  
+                                  {% if purchase_ord.po_packaging_forwording_percentage_amt != '0.0' and purchase_ord.po_packaging_forwording_percentage_amt != '0.00' and purchase_ord.po_packaging_forwording_percentage_amt != '0' %}
+                                  <tr>
+                                              <td colspan="4" style="text-align: end; border-bottom: 0px solid #fff!important; border-top:0px solid #fff!important;font-size:11px;">Packaging & Forwording ({{purchase_ord.po_packaging_forwording_percentage}}%)<br>(Including GST)</td>
+                                              <td style="font-size:11px;text-align: center;">{{ purchase_ord.po_packaging_forwording_percentage_amt }}</td>
+                                          </tr>
+                                          {% elif purchase_ord.po_packaging_forwording_amt_amt != '0.0' and purchase_ord.po_packaging_forwording_amt_amt != '0.00' and purchase_ord.po_packaging_forwording_amt_amt != '0' %}
+                                          <tr>
+                                              <td colspan="4" style="text-align: end; border-bottom: 0px solid #fff!important; border-top:0px solid #fff!important;font-size:11px;">Packaging & Forwording <br>(Including GST)</td>
+                                              <td style="font-size:11px;text-align: center;">{{purchase_ord.po_packaging_forwording_amt_amt}}</td>
+                                          </tr>
+                                      {% endif %}
+        
+                                      {% if purchase_ord.po_freight_amt_amt != '0.0' and purchase_ord.po_freight_amt_amt != '0' and purchase_ord.po_freight_amt_amt != '0.00' and purchase_ord.po_freight_amt_amt != 'NaN'  %}
+                                      <tr>
+                                              <td colspan="4" style="text-align: end; border-top:1px solid #fff;font-size:11px;">Freight<br> (Including GST)</td>
+                                              <td style="font-size: 11px;text-align: center;">{{purchase_ord.po_freight_amt_amt}}</td>
+                                          </tr>
+                                          {% elif purchase_ord.po_freight_percentage_amt != '0.0' and purchase_ord.po_freight_percentage_amt != '0' and purchase_ord.po_freight_percentage_amt != '0.00'  %}
+                                          <tr>
+                                              <td colspan="4" style="text-align: end; border-bottom: 0px solid #fff!important; border-top:0px solid #fff!important;font-size:11px;">Freight  ({{ purchase_ord.po_freight_percentage }}%)<br> (Including GST)</td>
+                                              <td style="font-size: 11px;text-align: center;">{{ purchase_ord.po_freight_percentage_amt }}</td>
+                                          </tr>
+                                      {% endif %}
+        
+                                      
+                                      <!-- 8 -->
+                                      <!-- <tr>
+                                        <td colspan="4"style="font-size: 10px;
+                                font-weight: 600;text-align:end;justify-content:end;">Total Amount <span id="word_Amt" style="text-align: end;"></span> </td>
+                                          <td style="font-size:13px;text-align: center;" id="total_amt">{{ purchase_ord.po_total }}</td>
+                                       </tr> -->
+                                       <tr>
+                                        <td colspan="4" style="font-size: 10px; font-weight: 600; text-align: right; ">
+                                            Total Amount 
+                                            <span id="word_Amt"></span>
+                                        </td>
+                                        <td style="font-size: 11px; text-align: center;" id="total_amt">{{ purchase_ord.po_total }}</td>
+                                    </tr>
+                                        <tr>
+                                            <td colspan="7"><h4 style="text-align: center;font-size: 13px;">Terms & Conditions</h4></td>
+                                        </tr>
+                                        <tr>
+                                            
+                                            <td colspan="7" style="font-size: 11px;">TERMS AND CONDITIONS:<br>
+                                                {{ purchase_ord.po_note }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">Price</td>
+                                            <td colspan="7" style="padding-left: 10px;font-size: 11px"> {{ purchase_ord.po_price }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">GST</td> 
+                                            
+                                            <td colspan="7" style="padding-left: 10px;font-size: 11px">
+                                                {% if purchase_ord.po_igstval != 0 %}
+                                                    {{ purchase_ord.po_igstval }} IGST
+                                                {% elif purchase_ord.po_cgstval != 0 %}
+                                                    {{ purchase_ord.po_cgstval }} CGST
+                                                {% else %}
+                                                    {{ purchase_ord.po_sgstval }} SGST
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">Test Certificate</td>
+                                            <td colspan="7" style="padding-left: 10px;font-size: 11px"> {{ purchase_ord.po_test_certificate }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">Warranty Certificate</td>
+                                            <td colspan="7" style="padding-left: 10px;font-size: 11px">{{ purchase_ord.po_warranty_certificate }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">COC</td>
+                                            <td  colspan="7" style="padding-left: 10px;font-size: 11px">{{ purchase_ord.po_coc }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">P&F</td>
+                                            <td colspan="7" style="padding-left: 10px;font-size: 11px">Extra {%if purchase_ord.po_packaging_forwording_percentage != '0' %} @{{purchase_ord.po_packaging_forwording_percentage}}% {% else %} INR {{purchase_ord.po_packaging_forwording_amount}}{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">Freight</td>
+                                            <td colspan="7" style="padding-left: 10px;font-size: 11px">Extra {%if purchase_ord.po_freight_percentage != '0'%} @{{purchase_ord.po_freight_percentage}}% {% else %} INR {{purchase_ord.po_freight_amount}}{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px">Delivery</td>
+                                            <td  colspan="7" style="padding-left: 10px;font-size: 11px"> {{ purchase_ord.po_delivery }} <br>
+                                               <b> </b></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-left: 10px;font-size: 11px;">Payment</td>
+                                        <td colspan="7" style="padding-left: 10px;font-size: 11px;">{{ purchase_ord.po_payment }}</td></tr>
+                                        
+                                    </table>
+                                    <!-- <table style="border:0px;">
+                                    <tr><td style="border:0px;font-size: 16px;padding: 30px;">Billing & Shipment Address:</td>
+                                    <td style="border:0px;font-size: 16px;padding: 30px;padding-left: 60px;">
+                                        <u>M/S KEYMECH TECHNOLOGIES</u></h3><br>
+                                        8th Floor, 802A, ITHUM Tower- B,<br>
+                                        A-40, SEC-62, Noida,<br>
+                                        Gautam Buddha Nagar,<br>
+                                        Uttar Pradesh, 201301<br> 
+                                               GSTIN/UIN: 05AAUPG1246N1ZE,
+                                                PAN: CVSPG7178L<br>
+                                                EMAIL: mechfrontindia@gmail.com, vibhor@mechfront.com,
+                                                CONTACT: +91-8171467840,
+                                               Uttar Pradesh
+                                
+                                    </td>
+                                    </tr>
+                                    </table> -->
+                                </table>
+                                </div>
+        
+                                <br>
+        
+                            </div>
+                           
+                        </div>
+                    </div>
+                <!-- </div>
+            </div>
+        </div> -->
+      </div>
+</body>
+</html>

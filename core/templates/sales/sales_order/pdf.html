@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <style>
+        @media print {
+            @page {
+                size: A4;
+                margin: 5px;
+            }
+
+            body {
+              
+                font-size: 11px;
+                font-family: calibri;
+            }
+       
+        }
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px; 
+            margin-left: auto; /* Center the table */
+            margin-right: auto; /* Center the table */
+            border-bottom: 0px;
+        }
+        th, td{padding-left: 10px;}
+
+        .sub_total_tbl{
+            border: none;
+            width: 100%; 
+        }
+        .sub_total_tbl  tr td{
+            border: none;
+        } 
+    </style>
+
+</head>
+<body>
+    <div id="printableArea">
+        {% for count in count_page %}
+        <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;">
+            <img src="../../static/assets/img/logo-png.png" style="width: 150px; margin-left:20px; border-radius: 10px;" />
+            <div style="flex-grow: 1; padding-left: 100px;">
+                <span class="bold" style="font-size: 30px; ">ORDER CONFIRMATION</span>
+            </div>
+        </div>
+        <table style="width: 100%;">
+            <td style="width: 40%;">
+               <b style="font-size: 15px;">M/S KEYMECH TECHNOLOGIES</b><br>
+               13, Jagdish Nagar, Jwalapur,<br>
+                Haridwar,Uttarakhand-249407,<br>
+               GSTIN: 05AAUPG1246N1ZE
+            </td>
+            <td style="width: 20%;">
+            <b> EMAIL: </b>mechfrontindia@gmail.com,<br>vibhor@mechfront.com<br>
+        <b>  CONTACT:</b> +91-8171467840  
+            </td>
+            
+        </table>
+        <table style="width: 100%;">
+            <td style="width: 50%;vertical-align: top;padding-top: 10px;"><b>TO:<br>{{bill_company_name|upper}}</b><br>
+                {{street}}, {{bill_city}},<br>
+                 {{bii_com_state}}, {{bill_pincode}}<br>
+                {{com_state}}<br>
+                GSTIN: {{bill_gst_uin}}<br>{{contact_number}}<br>{{contact_number}}</td>
+             <td>
+                <td style="width: 50%;padding-top: 20px; padding-right: 10px;">
+               <form style="width: 70%; border: 1px solid #000;"> 
+                <div class="demo"style="background: #bdbabaa3;">
+               
+                    <span style="font-weight: 600;font-size: 17px;padding-left: 5px;"> 
+                        ORDER CONFIRMATION {{ sales.so_order_confirmation_no }}</span><br>
+                    <p style="padding-left: 5px;">  Print Date: {% now "d-M-Y" %} &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; Rev.: 0<br>
+                      Customer Number: 1004921</p><hr></div>
+                    <span style="padding-left: 5px;"> <b><u>Customer</u></b>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; {{ship_to_name|upper}}<br><span style="padding-left: 73px;"></span><br>
+                    <span style="padding-left: 5px;"> <b><u> Phone</u></b> &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; {{ship_to_contact_number}}</span> <br>
+                      <hr>
+                    <sapn style="padding-left: 5px;">  <b>Your Order No:</b>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;<b>Supplier No :</b><br></sapn>
+                    <span  style="padding-left: 5px;" > {{ sales.so_buyer_order_no }} <br></span>
+                    <span  style="padding-left: 5px;"> <b>Order Date:</b>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;<b>Your Contact Person:</b><br></span> 
+                    <span  style="padding-left: 5px;">  {{sales.so_date|date:"d-m-Y"}}&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;{{sales.so_sales_person}}</span>
+            </form>
+            </td>
+            <tr>
+                <td><b>Delivery Conditions: </b> {{sales.so_delivery_type}}<br>
+                <b>Payment Terms:    </b>    {{sales.so_payment_terms}} <br>
+                </td>
+                <td></td>
+                <td style="text-align:end;padding-right: 60px;"></td>
+            </tr>
+        </table>
+        <table style="width: 100%;">
+            <tr>
+                <th> Item Code</th>
+                <th> DESCRIPTION OF GOODS</th>
+                <th>HSN/SAC</th>
+                <th>QUANTITY</th>
+                <th>RATE</th>
+                <th>UOM</th>
+                <th>DISCOUNT%</th>
+                <th>AMOUNT</th>
+            </tr>
+        {% for items in item_list %}
+        {% if forloop.counter == count %}
+        {% for item in items %}
+        {% if item  %}  
+
+            <tr>
+                <td>
+                    {{ item.so_item_code }}
+                </td>                                                                           
+                
+
+                <td>
+                {{item.so_description_goods}}
+                </td>
+
+                <td>
+                {{item.so_hsn}}
+                </td>
+
+                <td style="text-align: center;">{{item.so_qantity}}
+                </td>
+                <td>
+                    {{item.so_unit_price}}
+                    
+                </td>
+
+                <td >
+                {{item.so_uom}}
+                </td>
+                
+
+                <td style="text-align: center;">
+                    {{item.so_discount|floatformat:0}} %
+                </td>
+
+                <td >
+                {{item.so_total}}
+                </td>                                     
+                                                            
+
+            </tr>
+            {% else %}
+            <tr {% if forloop.last %} {%else%}class="borderless" {% endif %} style="height:16px">
+                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+              </tr>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+            <tr>
+                <td colspan="8"><b>Please refer the Terms & Conditions:</b><br>
+                    {{sales.so_note}}
+
+                </td>
+            </tr>
+        </table>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 30%;font-weight: 600;"><u>Ship To</u><br>
+                    {{ship_to_name|upper}}<br>
+                     {{shipping_street}}, {{shipping_city}}, {{shipping_state}}, {{shipping_pincode}}<br>
+                       GSTIN/UIN: {{ship_to_gst_uin}}<br>
+                         CONTACT: {{ship_to_contact_number}}<br>
+                        STATE: {{ship_to_state}}<br>
+                     </p>
+                </td>
+                
+                    <td style="width: 30%; font-weight: 600;"><u>Bill To</u> <br>
+                       {{bill_company_name|upper}}<br>
+                         {{street}}, {{bill_city}}, {{bii_com_state}}, {{bill_pincode}}<br>
+                
+                             GSTIN/UIN :  {{bill_gst_uin}}<br>
+                             CONTACT :  {{contact_number}}<br>
+                             STATE :  {{com_state}}
+                         </p>
+                </td>
+                <td width="30%" colspan="2" style="border-left: 1px solid #000; border-bottom: 1px solid #000; padding-right: 10px;">   
+                <table class="sub_total_tbl">
+                    <tr>
+                        <td style="text-align: left;width: 23%;"><b>Sub Total</b>:</td>
+                        <td style="text-align: right;">{{total_amount|floatformat:2}} INR</td>
+                    </tr>
+                   
+                    <tr>
+                        <td style="text-align: left;width: 23%;"><b>SGST</b>:</td>
+                        <td style="text-align: right;">{{sales.so_sgstval}} INR</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;width: 23%;"><b>CGST</b>:</td>
+                        <td style="text-align: right;">{{sales.so_cgstval}} INR</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;width: 23%;"><b>IGST</b>:</td>
+                        <td style="text-align: right;">{{sales.so_igstval}} INR</td>
+                    </tr>
+                    <tr>
+                        {% if sales.so_freight_percentage_amt != '0.00' and sales.so_freight_percentage_amt != '0' %}
+                        <td style="text-align: left;width: 23%;"><b>Freight({{ sales.so_freight_percentage }}%)<br> (Including GST)</b>:</td>
+                        <td style="text-align: right;">{{sales.so_freight_percentage_amt}} INR</td>
+                        {% elif sales.so_freight_amt_amt != '0.00' and sales.so_freight_amt_amt != '0' %}
+                        <td style="text-align: left;width: 23%;"><b>Freight<br> (Including GST)</b>:</td>
+                        <td style="text-align: right;">{{sales.so_freight_amt_amt}} INR</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        {% if sales.so_packaging_forwording_amt_amt != '0.00' and sales.so_packaging_forwording_amt_amt != '0' and sales.so_packaging_forwording_amt_amt != 'NaN' %}
+                        <br>
+                        <td style="text-align: left;width: 38%;"><b>Packaging & Forwarding<br> (Including GST)</b>:</td>
+                        <td style="text-align: right;">{{sales.so_packaging_forwording_amt_amt}} INR</td>
+                        {% elif sales.so_packaging_forwording_percentage_amt != '0.00' and sales.so_packaging_forwording_percentage_amt != '0' and sales.so_packaging_forwording_percentage_amt != 0 %}
+                        <br>
+                        <td style="text-align: left;width:45%;"><b>Packaging & Forwarding({{ sales.so_packaging_forwording_percentage }}%)<br> (Including GST)</b>:</td>
+                        <td style="text-align: right;">{{sales.so_packaging_forwording_percentage_amt}} INR</td>
+                        {% endif %}
+                    </tr>
+
+                  
+                    
+
+                    <tr>
+                        <td style="text-align: left;width: 23%;"><b>Total Amount</b>:</td>
+                        <td style="text-align: right;">{{sales.so_total}} INR</td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+            <tr>
+                <td ><b>GSTIN 05AAUPG1246N1ZE</b> </td>
+                <td><b>GSTIN 05AAUPG1246N1ZE </b></td>
+                <td colspan="2" style="text-align: center;border-left: 1px solid #000; height: 10px;"><b>for M/S KEYMECH TECHNOLOGIES</b></td>
+            </tr>
+            <tr>
+                <td rowspan="2" style="vertical-align: bottom; text-align: center;height: 10px"><b><u>Shipped By </u></b></td>
+                <td rowspan="2" style="vertical-align: bottom; text-align: center;border-right: 1px solid #000;height: 10px"><b><u>Shipped Via</u></b></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;border-left: 1px solid #000;height: 50px; vertical-align: bottom;">Authorized Signatory</td>
+            </tr>
+           
+        </table>
+        <table style="width: 100%;border-bottom: 1px solid #000;">
+            <tr>
+                <td><b>PAN: </b>CVSPG7178L,<b> GSTIN:</b> 05AAUPG1246N1ZE</td>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 20px;"><b>Phone:</b> +91-8171467840  </td>
+            </tr>
+            <tr>
+                <td><b>Company's Bank Details</b><br>
+                <b>Bank Name :</b> Axis Bank Limited <br>
+            <b> A/c No. :</b> 919020042164019<br>
+        <b>  Branch & IFS Code :</b> Sector-62, Noida-201301, Uttar Pradesh & UTIB0000723<br>
+
+                </td>
+            </tr>
+        </table>
+
+      
+        </div>
+        {% endfor %}
+        </div>
+</body>
+</html>

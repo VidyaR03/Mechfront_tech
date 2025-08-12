@@ -1,0 +1,424 @@
+{% extends 'dashboard/base_template.html' %}
+{% block custom_css %}
+{% block page_title %}
+{% endblock page_title %}
+ 
+    <style>
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            margin-left: 20px;
+            margin-right: 130px;
+            margin-right: 50px;
+            font-size: 10px;
+            /* font-family: 'Calibri'; */
+            color: #000;
+        }
+ 
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 4px 10px;
+            margin-left: 20px;
+            margin-right: 130px;
+            font-size: 10px;
+            font-weight: 500;
+            /* font-family: 'calibri'; */
+            color: #000;
+        }
+        h4 {
+        font-size: 0.5rem;
+        color: #000;
+        }
+        .card {padding: 1px;
+        }
+    </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+{% endblock custom_css %}
+<!-- Main content -->
+{% block main_content %}
+ 
+<div class="page-wrapper">
+  <div class="content container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-xl-9">
+              <div class="text-md-end">
+                  <div class="btn-group btn-group-sm d-print-none mb-4">
+                      <!-- <a href="#" onclick="generatePDF('invoice_pdf')" class="btn btn-white text-black-50"><i class="fa fa-print"></i> Print</a> -->
+                      
+                      <button id="download-button" class="btn btn-white text-black-50 shadow-none"><i class="fa fa-download"></i> Download</button>
+                  </div>
+              </div>
+              <div class="card" style="font-family: Calibri;">
+                  <div class="card-body" id="bill_pdf">
+                      <div class="invoice-item">
+                      
+                          <div class="row">
+                              <div class="col-md-7" align="right">
+                                 <div class="invoice-logo" style="color: #000000 !important;">  Bill </div>
+                                  
+                              </div>
+                              
+                          </div>
+                      </div>
+                      <div class="invoice-item">
+                          <div class="row"  style="border:1px solid #333;">
+                              <div class="col-md-12" style="padding:10px;">
+                                  <div class="invoice-info"> <strong class="customer-text" style="color: #000000 !important;">M/S KEYMECH TECHNOLOGIES </strong>
+                                      
+                                  </div>
+
+                                  <div class="row col-md-12">
+                                      <div class="col-md-12 invte" style="color: #000000 !important;">UNIT NO.108, PLOT NO. C-56/1, TURBHE INDUSTRIAL PARK, NAVI MUMBAI, THANE, MAHARASHTRA, INDIA - 400710.</div>
+
+                                      <div class="col-md-2 invte" style="color: #000000 !important;"> GSTIN/UIN </div>
+                                      <div class="col-md-10 invte" style="color: #000000 !important;">: 27ADLPC6213D1ZZ</div>
+
+                                      <div class="col-md-2 invte" style="color: #000000 !important;"> PAN </div>
+                                      <div class="col-md-10 invte" style="color: #000000 !important;">: 27ADLPC6213D1ZZ</div>
+
+                                      <div class="col-md-2 invte" style="color: #000000 !important;"> EMAIL </div>
+                                      <div class="col-md-10 invte" style="color: #000000 !important;">: MDALWANI72@GMAIL.COM</div>
+
+                                      <div class="col-md-2 invte" style="color: #000000 !important;"> TEL NO.</div>
+                                      <div class="col-md-10 invte" style="color: #000000 !important;">: 9702803745</div>
+
+                                      <div class="col-md-2 invte" style="color: #000000 !important;"> STATE</div>
+                                      <div class="col-md-10 invte" style="color: #000000 !important;">: Maharashtra</div>
+
+                                      <div class="col-md-2 invte" style="color: #000000 !important;"> STATE CODE</div>
+                                      <div class="col-md-10 invte" style="color: #000000 !important;">: 27</div>
+
+                                      <div class="col-md-2 invte" style="color: #000000 !important;"> CIN</div>
+                                      <div class="col-md-10 invte" style="color: #000000 !important;">: U51909MH2021PTC362346</div>
+                                  </div>
+                              </div>
+                              
+                          </div>
+                      </div>
+                     
+                      <div class="invoice-item">
+                          <div class="row"  style="border-left:1px solid #333;border-right:1px solid #333;border-bottom:0px solid #333;   ">
+                              <div class="col-md-6" style="border-right:1px solid #333;padding:0px;">
+                                  <div class="invoice-info" style="border-bottom:0px solid #333;padding:10px;">
+                                      <p class="invoice-details invoice-details-two">
+                                          <p class="invte" style="color: #000000 !important;"> <b>BILL TO</b></p>
+                                          <p class="invte1" style="color: #000000 !important;"> <b>NEELKANTH STAINLESS STEEL</b></p>
+                                          <p class="invte" style="color: #000000 !important;">M/S KEYMECH TECHNOLOGIES </p>
+                                      </p>
+                                          <!-- <p class="invte1" style="color: red;">Terms: Net 10</p> -->
+                                          <div class="row">  
+                                              <div class="col-md-5 invte" style="color: #000000 !important;"> GSTIN/UIN </div>
+                                              <div class="col-md-7 invte" style="color: #000000 !important;">: 27ABGCS2596F1Z1</div>
+
+                                              <div class="col-md-5 invte" style="color: #000000 !important;"> CONTACT</div>
+                                              <div class="col-md-7 invte" style="color: #000000 !important;">: 8828415089</div>
+
+                                              <div class="col-md-5 invte" style="color: #000000 !important;"> STATE</div>
+                                              <div class="col-md-7 invte" style="color: #000000 !important;">: Maharashtra</div>
+                                          </div>
+                                          
+                                     
+                                  </div>
+                                  
+                                  <div class="invoice-info" style="border-top:1px solid #333;padding:10px;">
+                                      <p class="invoice-details invoice-details-two">
+                                          <p class="invte" style="color: #000000 !important;"><b>SHIP TO</b></p>
+                                          <P class="invte1" style="color: #000000 !important;"><b> BHARAT VALVE AND FITTINGS </b></P>
+
+                                          <p class="invte" style="color: #000000 !important;">BHARAT VALVE AND FITTINGS, VELKAR HOUSE, PANJARAPOLE ,2nd LANE GULALWADI GIRGOAN, MUMBAI Maharashtra 400004 </p>
+                                      </p>
+
+                                      <div class="row">  
+                                              <div class="col-md-5 invte" style="color: #000000 !important;"> GSTIN/UIN </div>
+                                              <div class="col-md-7 invte" style="color: #000000 !important;">: 27AQXPP0920D2ZO </div>
+
+                                              <div class="col-md-5 invte" style="color: #000000 !important;"> CONTACT</div>
+                                              <div class="col-md-7 invte" style="color: #000000 !important;">: 98335 28654 </div>
+                                              <div class="col-md-5 invte" style="color: #000000 !important;"> STATE</div>
+                                              <div class="col-md-7 invte" style="color: #000000 !important;">: Maharashtra</div>
+                                         </div>
+
+                                  </div>
+                              </div>
+                              <div class="col-md-6" style="border-bottom:0px solid #333;padding:0px;">
+                                  <div class="invoice-info" style="border-bottom:0px solid #333;padding:10px; line-height:24px;">
+                                      <div class="row">
+                                          <div class="col-md-4 invte" style="color: #000000 !important;"> <b>INVOICE NO.</b> </div>  
+                                          <div class="col-md-4 invte" style="color: #000000 !important;">: 180 </div> 
+                                          <div class="col-md-4 invte" style="color: #000000 !important;"> <b>DATE : </b> 2024-04-03 </div>
+
+                                          <div class="col-md-4 invte" style="color: #000000 !important;"> <b>PO NO.</b> </div>  
+                                          <div class="col-md-4 invte" style="color: #000000 !important;">: 251 </div> 
+
+                                          <div class="col-md-4 invte" style="color: #000000 !important;"> <b>DATE : </b> 03-04-2024  </div>
+
+                                          <div class="col-md-4 invte" style="color: #000000 !important;"> <b>GRN NO.</b> </div> 
+
+                                          <div class="col-md-4 invte" style="color: #000000 !important;">: 183  </div> 
+                                          <div class="col-md-4 invte" style="color: #000000 !important;"> <b>DATE : </b> 04-04-2024  </div>
+
+                                      </div>
+
+                                  </div>
+                                      
+                                  <div class="row" style="border-top:1px solid #333;padding:0px;">
+                                       <div class="col-md-12 invte" style="font-size: 11px; color: #000000 !important;"> <b> Terms of Delivery : </b> </div>  
+                                   
+                                  </div>
+                                  
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div class="invoice-item invoice-table-wrap">
+                          <div class="row">
+                              <div class="col-md-12">
+                                  <div class="table-responsive">
+                                      <table width="100%" class="invoice-table">
+                                          <thead>
+                                              <tr style="border-bottom:0px solid #333;">
+                                                  <td style="padding:0px;">
+                                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                          <tr >
+                                                              <td width="5%" align="center" valign="top" style="border-right:1px solid #333; border-bottom: 1px solid #000; color: #000000 !important;"><strong>Sr.</strong></td>
+
+                                                              <td width="45%" align="center" valign="top" style="border-right:1px solid #333; border-bottom: 1px solid #000; color: #000000 !important; padding-left: 2px;"><strong>Description of Goods</strong></td>
+
+                                                              <td width="8%" align="center" valign="top" style="border-right:1px solid #333; border-bottom: 1px solid #000; color: #000000 !important;"><strong>HSN</strong></td>
+
+                                                              <td width="8%" align="center" valign="top" style="border-right:1px solid #333; border-bottom: 1px solid #000; color: #000000 !important;"><strong>Quantity</strong></td>
+
+                                                              <td width="8%" align="center" valign="top" style="border-right:1px solid #333; border-bottom: 1px solid #000; color: #000000 !important;"><strong>UOM</strong></td>
+
+                                                              <td width="8%" align="center" valign="top" style="border-right:1px solid #333; border-bottom: 1px solid #000; color: #000000 !important;"><strong>Rate</strong></td>
+
+                                                              <td width="8%" align="center" valign="top" style="border-right:1px solid #333; border-bottom: 1px solid #000; color: #000000 !important;"><strong>Discount</strong></td>
+
+                                                              <td width="10%" align="center" valign="top" style="border-bottom: 1px solid #000; color: #000000 !important;"><strong>Amount</strong></td>
+                                                          </tr>
+                                                      </table>
+                                                  </td>
+                                              </tr>
+
+                                              <tr>
+                                                  <td align="center" valign="top" style="text-align:center;border-bottom: 0px solid #000;padding: 0px; height:150px;">
+
+                                                      <table width="100%">
+                                                          
+                                                          <tr>
+                                                              <td width="5%" align="center" valign="top" class="invte" style="color: #000000 !important;">
+                                                                  1                                                                        </td>
+
+                                                              <td width="45%" valign="top" style="text-align: left; color: #000000 !important; border-top: 0px solid #000;" class="invte">
+                                                                  SS 304 BALL VALVE FLANGE END ASA-150 4&amp;rsquo;&amp;rsquo; I-SON HEAVY                                                                        </td>
+
+                                                              <td width="8%" align="center" valign="top" class="invte" style="color: #000000 !important;">
+                                                                  8481                                                                        </td>
+
+                                                              <td width="8%" align="center" valign="top" class="invte">
+                                                                  <input style="color: #000000 !important;" type="text" class="qty no-outline" name="qty" id="qty" value="1" size="1">
+                                                              </td>
+
+                                                              <td width="8%" align="center" valign="top" class="invte" style="color: #000000 !important;">
+                                                                  NOS                                                                        </td>
+
+                                                              <td width="8%" valign="top" style="text-align: right; color: #000000 !important; padding-right: 1px;" class="invte">
+                                                                  8600.00                                                                        </td>
+
+                                                              <td width="8%" align="center" valign="top" class="invte" style="color: #000000 !important;">
+                                                                  0%
+                                                              </td>
+
+                                                              <td width="10%" valign="top" class="invte">
+                                                                  <input style="color: #000000 !important; text-align: right;" type="text" class="amount no-outline" name="amount" id="amount" value="8600.00" style="text-align: right;">
+                                                              </td>
+                                                          </tr>
+                                                                                                                            
+                                                      </table>
+                                                  </td>
+                                              </tr>
+
+
+                                              <tr>
+                                                  <td align="center" valign="top" style="border-top: 1px solid #000;border-bottom: 0px solid #000;">
+
+                                                      <table width="100%">
+                                                          <tr>
+                                                              <td width="5%" align="" valign="top" style="border-right: 1px solid #000; color: #000000 !important;" class="invte">&nbsp;</td>
+
+                                                              <td width="45%" align="center" valign="top"  style="border-right: 1px solid #000; color: #000000 !important;" class="invte">Sub Total</td>
+
+                                                              <td width="8%" align="center" valign="top"  style="border-right: 1px solid #000; color: #000000 !important;" class="invte">&nbsp;</td>
+
+                                                              <td width="8%" align="center" valign="top"  style="border-right: 1px solid #000;" class="invte">
+                                                                  <input style="color: #000000 !important;" type="text" class="total_qty no-outline" name="total_qty" id="total_qty" size="5">
+                                                              </td>
+
+                                                              <td width="8%" align="center" valign="top"  style="border-right: 1px solid #000; color: #000000 !important;" class="invte" >&nbsp;</td>
+
+                                                              <td width="8%" align="center" valign="top"  style="border-right: 1px solid #000; color: #000000 !important;" class="invte">&nbsp;</td>
+
+                                                              <td width="8%" align="center" valign="top"  style="border-right: 1px solid #000; color: #000000 !important;" class="invte">&nbsp;</td>
+
+                                                              <td width="10%" valign="top"  style="border-right: 0px solid #000; " class="invte">
+                                                                  <input style="color: #000000 !important; text-align: right;" type="text" class="subtotal total_amount no-outline" name="total_amount" id="total_amount" size="3">
+                                                              </td>
+                                                          </tr>
+                                                      </table>
+                                                  </td>
+                                              </tr>
+
+                                              <tr>
+                                                  <td height="26" align="center" valign="top" style="border-top: 1px solid #000;border-bottom: 0px solid #000;">
+
+                                                      <table width="100%">
+                                                          <tr>
+                                                              
+                                                              <td width="5%" align="center" valign="top">&nbsp;</td>
+                                                              <td width="35%" align="center" valign="top"></td>
+
+                                                              <td width="10%" align="center" valign="top">&nbsp;</td>
+
+                                                              <td width="8%" align="center" valign="top">&nbsp;</td>
+
+                                                              <td width="8%" align="center" valign="top">&nbsp;</td>
+
+                                                              <td width="8%" align="center" valign="top">&nbsp;</td>
+
+                                                              <td width="16%" align="center" valign="top" style="border-right: 1px solid #000; color: #000000 !important;" class="invte">
+                                                                  Freight Charges<br>
+
+                                                                  <span class="invte">Output CGST @ 9%<br>
+
+                                                                  Output SGST @ 9%<br>
+
+                                                                  Output IGST @ 0%<br></span>
+                                                              </td>
+
+                                                              <td width="10%" align="center" valign="top">
+                                                                  <input type="text" class="subtotal no-outline invte" name="freight" id="freight" value="200.00" style="text-align: right; color: #000000 !important;" size="5"><br>
+
+                                                                  <input type="text" class="subtotal no-outline invte" name="cgst" id="cgst" value="792.00" style="text-align: right; color: #000000 !important;" size="5"><br>
+
+                                                                  <input type="text" class="subtotal no-outline invte" name="sgst" id="sgst" value="792.00" style="text-align: right; color: #000000 !important;" size="5"><br>
+
+                                                                  <input type="text" class="subtotal no-outline invte" name="igst" id="igst" value="0.00" style="text-align: right; color: #000000 !important;" size="5">
+                                                              </td>
+                                                          </tr>
+                                                      </table>
+                                                  </td>
+                                              </tr>
+                                             
+
+                                              <tr>
+                                                  <td height="26" align="center" valign="top" style="border-top: 1px solid #000;border-bottom: 1px solid #000;">
+
+                                                      <table width="100%">
+                                                          <tr>
+                                                              
+                                                              <td class="invte res" width="90%" valign="top" style="text-align: left !important; border-right: 1px solid #000; color: #000000 !important;"></td>
+                                                              
+                                                              <td width="10%" align="center" valign="top">
+                                                                  <input style="text-align: right; color: #000000 !important;" type="text" class="total_subtotal no-outline invte" name="total_subtotal" id="total_subtotal" size="3">
+                                                              </td>
+                                                          </tr>
+                                                      </table>
+                                                  </td>
+
+                                                  
+                                              </tr>
+                                      </table>
+
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+                                          <tr>
+                                              <td style="border-right:1px solid #000; padding-left:10px; color: #000000 !important;"><strong>TERMS &amp; CONDITIONS:</strong></td>
+
+                                              <td width="33%" style="border-right:1px solid #000; padding-left:10px; color: #000000 !important;"><strong>COMPANY'S BANK DETAILS:</strong></td>
+
+                                              <td style="padding-left:10px; color: #000000 !important;"><strong>DECLARATION</strong></td>
+
+                                          </tr>
+
+                                          <tr>
+                                              <td width="33%" align="left" valign="top" style="border-right: 1px solid #000;border-top: 1px solid #000;padding-left:10px;">
+                                                  <ol class="" style="font-size: 8px; ">
+
+                                                      <li style="color: #000000 !important;">SUBJECT TO PUNE JURISDICATION. NO WARRANTY ON PHYSICAL </li>
+
+                                                      <li style="color: #000000 !important;">DAMAGE &amp; BURN PRODUCT.</li>
+
+                                                      <li style="color: #000000 !important;">WARRANTY CLAIM FROM COMPANY SERVICE CENTER AS PER COMPANY T&amp;C.</li>
+
+                                                      <li style="color: #000000 !important;">INTEREST AT 2% P.A WILL BE CHARGED AFTER DUE DATE</li>
+
+                                                      <li style="color: #000000 !important;">ONE TIME CHEQUE BOUNCING CHARGES RS.500/-PER DAY.</li>
+
+                                                  </ol>
+                                              </td>
+
+                                              <td class="invte" align="left" valign="top" style="padding-left:10px;border-right: 1px solid #000;border-top: 1px solid #000; color: #000000 !important;">
+
+                                                  BANK NAME: ICICI BANK LTD<br />
+
+                                                  ACCOUNT NUMBER: 034805007028<br />
+
+                                                  BRANCH NAME: VASHI<br />
+
+                                                  IFSC: ICIC0000348
+
+                                              </td>
+
+                                              <td align="left" valign="top">
+
+                                                  <div class="row"> 
+
+                                                      <div class="col-md-12 invte" style="padding-left:10px;border-bottom:1px solid #000;border-top: 1px solid #000; color: #000000 !important;"> THIS IS A COMPUTER GENERATED INVOICE AND HENCE DOES NOT REQUIRED SIGNATURE<br> </div>
+
+
+
+                                                      <div class="col-md-12 invte" align="center">
+                                                      <strong style="color: #000000 !important;"></strong><br>
+
+                                                          <img class="img-fluid d-inline-block" src="https://supreenometals.olatechs.in/uploads/company/signature.png" style="width: 100px; color: #000000 !important;" alt="sign" > <span class="d-block">AUTHORIZED SIGNATURE</span>
+
+                                                      </div>
+
+                                                  
+
+                                                  </div>
+
+                                              </td>
+                                          </tr>
+                                      </table>
+
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div width="100%" align="center" style="margin-top:-20px;font-size:11px; color: #000000 !important;">EXEMPTED FROM ISSUING E-INVOICE, COMPANY BELOW TURNOVER OF RS.5 CR </div>
+ 
+         <script>
+          function printDiv(divId) {
+              var element = document.getElementById(divId);
+        
+              // Optional configuration options
+              var opt = {
+                  // margin: [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right
+                  filename: 'PO.pdf',
+                  image: { type: 'jpeg', quality: 0.98 },
+                  html2canvas: { scale: 2, useCORS: true },
+                  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+              };
+        
+              // New Promise-based usage:
+              html2pdf().set(opt).from(element).save().catch(err => console.log(err));
+          }
+        </script>
+    {% endblock main_content %}
+ 

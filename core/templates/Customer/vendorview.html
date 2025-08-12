@@ -1,0 +1,150 @@
+
+{% extends 'dashboard/base_template.html' %}
+{% block custom_css %}
+    {% block page_title %}
+    {% endblock page_title %}
+    <style>
+        
+
+    </style>
+{% endblock custom_css %}
+<!-- Main content -->
+{% block main_content %}
+<div class="page-header" style="margin-left: 240px;margin-right: 10px;">
+   <div class="content-page-header">
+     <h3 class="page-title" > <a href="{% url 'vendor_list_view' %}" style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Vendor Details</h3>
+   </div>
+ </div>
+ <div class="page-wrapper" style="min-height: 394px;padding-top:5px;">
+<div class="content container-fluid">
+<div class="row justify-content-center">
+<div class="col-xl-10">
+<div class="card">
+<div class="card-body">
+<div class="invoice-item">
+<div class="row">
+<div class="col-md-6">
+<div class="invoice-logo">
+   <img src="/static/assets/img/ecologo.png" alt="logo"  style="width:200px; height:60px" >
+</div>
+</div>
+<div class="col-md-6">
+<p class="invoice-details">
+<strong>Vendor Code:</strong>{{ obj.Vendor_code }} <br>
+</p>
+</div>
+</div>
+</div>
+
+<div class="invoice-item">
+<div class="row">
+<div class="col-md-6">
+<div class="invoice-info">
+<strong class="customer-text">Vendor Personal Info</strong>
+<p class="invoice-details invoice-details-two">
+  {{ obj.Vendor_gender }} {{ obj.Vendor_name }}<br>
+{{ obj.Vendor_address1}}, {{ obj.Vendor_address2}}<br>
+{{ obj.Vendor_location}},{{ obj.Vendor_state}}<br>
+
+<strong>Tel:</strong> {{obj.Vendor_contact1}},{{obj.Vendor_contact2}}<br>
+<strong>Email:</strong> {{ obj.Vendor_email}}<br>
+<br><br>
+</p>
+</div>
+</div>
+<div class="col-md-6">
+<div class="invoice-info invoice-info2">Trade Name
+<strong class="customer-text">{{ obj.Trade_name}}</strong>
+<p class="invoice-details">Project Code
+<strong class="customer-text">{{ obj.Project_code}}</strong>
+
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+<div class="invoice-item invoice-table-wrap">
+<div class="row">
+<div class="col-md-12">
+<div class="table-responsive">
+<table class="invoice-table table table-bordered">
+<thead>
+<tr>
+<th>Account Holder Name</th>
+<th>Bank Account Details</th>
+<th>Account Number</th>
+<th>Branch </th>
+<th>IFSC code</th>
+
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{{obj.Bank_account_holder}}</td>
+<td>{{ obj.Bank_name}}</td>
+<td>{{ obj.Bank_account_number}}</td>
+<td>{{obj.Branch_name}}</td>
+<td>{{ obj.IFSC_code}}</td>
+</tr>
+
+</tbody>
+
+
+</table>
+</div>
+</div>
+<br> <br><br><br><h3></h3>
+<div class="col-md-6 col-xl-4 ms-auto">
+  <div class="table-responsive">
+  <table class="invoice-table-two table">
+  <tbody>
+  <tr>
+  <th>Total Supply Value:</th>
+  <td style="text-align: left;"><span> {{ obj.Total_supply_value}}</span></td>
+  </tr>
+  <tr>
+  <th>Maximum Payment Limit:</th>
+  <td style="text-align: left;"><span>₹ {{ obj.Maximum_payment_limit}}	</span></td>
+  </tr>
+  
+  </tbody>
+  </table>
+  </div>
+  </div>
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+    </div>
+
+    <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+     <div class="modal-dialog modal-top">
+        <div class="modal-content">
+           <div class="modal-header bg-danger">
+              <h4 class="modal-title" id="topModalLabel">Confirm Delete</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+              <h5>Are you sure want to delete this record ?</h5>
+           </div>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="btndelete">Delete</button>
+           </div>
+        </div>
+     </div>
+    </div>
+    
+  
+{% endblock main_content %}

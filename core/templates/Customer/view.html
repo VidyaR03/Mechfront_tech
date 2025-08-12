@@ -1,0 +1,195 @@
+{% extends 'dashboard/base_template.html' %}
+{% block page_title %}
+<div class="card card grey-card" style="width: 1150px;">
+    <div class="card-header">
+      <h3 class="card-title">Project Details</h3>
+    </div>
+{% endblock page_title %}
+{% block custom_css %}
+<style>
+  
+    .custom-error {
+        max-width: 300px;
+        /* Adjust the width to your desired value */
+        margin: 0 auto;
+        /* Add this line to center the element */
+        text-align: center;
+        /* Add this line to center the text inside the element */
+      }
+      .input-group-text {
+        cursor: pointer;
+      }
+      .grey-card {
+        background-color:LightGray;
+    }
+
+    /* Define a CSS class for the full-size table */
+    .full-size-table {
+        width: 100%;
+        border-collapse: collapse; /* Collapse table borders */
+    }
+
+    /* Style table header (thead) */
+    .full-size-table thead th {
+        background-color: #f2f2f2; /* Header background color */
+        border: 1px solid #ddd; /* Header border */
+        padding: 8px; /* Header cell padding */
+        text-align: left; /* Header text alignment */
+    }
+
+    /* Style table rows (tbody) */
+    .full-size-table tbody td {
+        border: 1px solid #ddd; /* Row border */
+        padding: 8px; /* Row cell padding */
+        text-align: left; /* Row text alignment */
+    }
+
+</style>
+
+{% endblock custom_css %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+  
+  <div class="container-fluid" style="width: 1000px;">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- general form elements -->
+        <div class="card card ">
+          <div class="card-header">
+            <h3 class="card-title"><b> Vendor Code: {{ obj.Project_code }}</b></h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card-body">
+              
+              <h4>Client Details:</h4>
+
+              <div class="row">
+                  <div class="col-md-6">
+                      <h5 >Client Name:</h5>
+                      <p>{{ obj.Client_name }}</p>
+                  </div>
+                  <div class="col-md-6">
+                      <h5>Type Of Organization:</h5>
+                      <p>{{ obj.Type_of_organization }}</p>
+                  </div>
+                  
+              </div>
+
+              <div class="row">
+                
+                <div class="col-md-6">
+                    <h5>Client GST Id:</h5>
+                    <p>{{ obj.Client_gst_id }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Client Pan No:</h5>
+                    <p>{{ obj.Client_pan_no }}</p>
+                </div>
+            </div>
+            <div>
+                <h4> Project Details:</h4>
+            </div>
+              
+              <div class="row">
+                <div class="col-md-4">
+                    <h5>Project Name:</h5>
+                    <p>{{ obj.Project_name }}</p>
+                </div>
+                  <div class="col-md-4">
+                      <h5>Project Type:</h5>
+                      <p>{{ obj.Project_type }}</p>
+                  </div>
+                  <div class="col-md-4">
+                      <h5>Project Location:</h5>
+                      <p>{{ obj.Project_locations }}</p>
+                  </div>
+                  
+              </div>
+              
+              <div class="row">
+                <div class="col-md-4">
+                    <h5>Size of Project:</h5>
+                    <p>{{ obj.Size_of_project }}</p>
+                </div>
+                  <div class="col-md-4">
+                      <h5>Project Value:</h5>
+                      <p>{{ obj.Project_value }}</p>
+                  </div>
+                  
+              </div>
+              
+                 
+                </div>
+
+                <h4>Client Team Details:</h4>
+                <table class="full-size-table">
+                <thead>
+                    <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Designation</th>
+                    <th>Mobile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client_detail in client_details %}
+                    <tr>
+                    <td>{{ client_detail.Name }}</td>
+                    <td>{{ client_detail.Email }}</td>
+                    <td>{{ client_detail.Designation }}</td>
+                    <td>{{ client_detail.Mobile }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table><br>
+
+                <h4>Client Bank Account Details:</h4>
+
+                <table class="full-size-table">
+                    <thead>
+                        <tr>
+                            <th>Bank Name</th>
+                            <th>Branch Name</th>
+                            <th>IFSC Code</th>
+                            <th>Bank Account Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ obj.Bank_name }}</td>
+                            <td>{{ obj.Branch_name }}</td>
+                            <td>{{ obj.IFSC_code }}</td>
+                            <td>{{ obj.Bank_account_number }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center" style="padding-bottom: 40px;">
+                    <button class="btn btn">
+                    <a href="{% url 'project_list_view' %}">Back to List</a></button>
+                </div>
+                               
+              </div>
+             
+              
+            </div>
+           
+
+            
+          </form>
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+
+{% endblock main_content %}
+{% block custom_js %}
+
+
+{% endblock custom_js %}

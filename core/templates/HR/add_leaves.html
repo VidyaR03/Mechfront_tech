@@ -1,0 +1,211 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+
+
+{% endblock custom_css %}
+
+{% block main_content %}
+
+
+<div class="page-wrapper" style="padding-top: 0px;">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <!-- {% if messages %}
+                        {% for message in messages %}
+                        <h4 class="alert-warning">{{ message }}</h4>
+                        {% endfor %}
+                    
+                {% endif %} -->
+                
+                    <h3 class="page-title">
+                        <a href="{% url 'hr_leaves_List_View' %}" style="margin-right: 10px;">
+                            <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i>
+                        </a>
+                        Add Employee Leaves
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" id="vendor_form" action="" autocomplete="off">
+                                <div class="row">
+                                    
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Employee Name</label>
+                                            <select class="form-select" name="employee_name" id="emp_name" required>
+                                                <option value="" disabled selected>Select Employee Name</option>
+                                                {% for item in employee_name %}
+                                                <option value="{{ item.name }}">{{ item.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Leaves Type </label>
+                                            <select class="form-select" name="leave_type" id="leave_type" required>                                               
+                                                <option value="">Select Leave</option>
+
+                                                <option value="earn">Earn Leave</option>
+                                                <option value="casual">Casual Leave</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Leaves Type </label>
+                                            <select class="form-select" name="selected_leave_type" id="selected_leave_type" required>
+                                                <option value="" disabled selected>Select Leaves Type</option>
+                                                {% for item in emp_leave_type %}
+                                                <option value="{{ item.name }}">{{ item.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>From Date</label>
+                                            <input type="date" placeholder="From Date" name="from_date" id="datetimepicker1" class="form-control form-input" required />
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>To Date</label>
+                                            <input type="date" placeholder="To Date" name="to_date" id="datetimepicker2" class="form-control form-input" required />
+                                        </div>
+                                    </div>
+                                 
+
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                        <label>Leave Reason</label>
+                                           <textarea type="text" class="form-control" name="leave_reason" id="leave_reason" placeholder="Leave reason " required></textarea>
+                                        </div>
+                                     </div> 
+                                  
+                                                     
+                                      
+
+                                 
+                                </div>
+                                <div class="add-customer-btns text-end">
+                                    <a href="{% url 'hr_leaves_List_View' %}" class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
+                                    <button type="submit" class="btn btn-outline-primary me-1 btn-rounded">Save Employee Leaves</button>
+                                </div>
+                                <div class="row col-sm-6 p-5">
+                                    <div class="success_message row"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+{% block custom_js %}
+
+<script>
+    var date = new Date();
+    var today = date.toISOString().substring(0, 10); // Get today's date in YYYY-MM-DD format
+    document.getElementById("datetimepicker1").min = today;
+    document.getElementById("datetimepicker2").min = today;
+
+</script>
+
+
+
+<!-- 
+<script>
+    const empNames = document.getElementById('emp_name');
+    const empEarned = document.getElementById('emp_earned');
+    const empCasual = document.getElementById('emp_casual');
+
+    empNames.addEventListener('change', () => {
+    const selectedUser = empNames.value;
+    fetch(`/get_emp_leave/${selectedUser}`)
+        .then(response => response.json())
+        .then(data => {
+        empEarned.value = data.emp_earned;
+        empCasual.value = data.emp_casual;
+        });
+    });
+</script> -->
+<!-- <script>
+// Assuming you're using AJAX to send the form data
+
+// Example AJAX request handling using jQuery
+$.ajax({
+    // ... other AJAX parameters ...
+    success: function(response) {
+        if (response.message) {
+            alert(response.message); // Display the insufficient leaves alert
+        } else if (response.redirect) {
+            window.location.href = response.redirect; // Redirect on success
+        }
+    },
+    error: function(xhr, errmsg, err) {
+        // Handle errors if any
+    }
+});
+</script> -->
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const empNameSelect = document.getElementById('emp_name');
+        const leaveTypeSelect = document.getElementById('leave_type');
+        const fromDateInput = document.getElementById('datetimepicker1');
+        const toDateInput = document.getElementById('datetimepicker2');
+
+        empNameSelect.addEventListener('change', function() {
+            // You can add logic here to dynamically update available leave days based on the selected employee
+        });
+
+        leaveTypeSelect.addEventListener('change', function() {
+            // You can add logic here to dynamically update available leave days based on the selected leave type
+        });
+
+        toDateInput.addEventListener('change', function() {
+            const fromDateValue = new Date(fromDateInput.value);
+            const toDateValue = new Date(toDateInput.value);
+
+            if (fromDateValue > toDateValue) {
+                alert('To Date cannot be earlier than From Date');
+                toDateInput.value = ''; // Reset the To Date input field
+            } else {
+                const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+                const diffDays = Math.round(Math.abs((fromDateValue - toDateValue) / oneDay)) + 1;
+
+                // Use diffDays to check if the selected date range exceeds available leaves
+                // Display a message or disable the submit button if it exceeds
+            }
+        });
+    });
+</script>
+
+
+
+
+ 
+{% endblock custom_js %}    
+{% endblock main_content %}
+
+    

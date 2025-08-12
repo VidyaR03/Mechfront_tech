@@ -1,0 +1,125 @@
+{% extends 'dashboard/base_template.html' %}
+    {% block custom_css %}
+        {% block page_title %}
+        {% endblock page_title %}
+        <style>
+            .custom-error {
+                max-width: 300px;
+                /* Adjust the width to your desired value */
+                margin: 0 auto;
+                /* Add this line to center the element */
+                text-align: center;
+                /* Add this line to center the text inside the element */
+              }
+              .input-group-text {
+                cursor: pointer;
+              }
+              .grey-card {
+                background-color:LightGray;
+            }
+            
+         
+    
+       
+          
+
+        </style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
+    <style>
+      .right-aligned {
+          position: fixed;
+          top: 20px; /* Adjust the top position as needed */
+          right: 20px; /* Adjust the right position as needed */
+      }
+  </style>
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 341px;">
+
+    <div class="content container-fluid">
+       
+       <div class="row">
+          <div class="col-sm-12">
+             <div class="card card-table">
+                <div class="card-header">
+                   <div class="col-lg-12">
+                      <div class="row">
+                         <div class="col-lg-8">
+                            <h3>
+                            <a href="{% url 'enter_date' %}" style="margin-right: 10px;">
+                                <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i>
+                            </a>    
+                            Customer Ledger   </h3>   
+                            <!-- <button  onclick="printDiv('printableArea')">Print</button> -->
+                        
+                        <input type="button" onclick="printDiv('printableArea')" value="Download" class="btn btn-primary"/>
+                        
+                        </div>
+
+                        </div>
+                         
+                      </div>
+                   </div>
+                </div>
+              <div id="printableArea">
+
+                <div class="card-body" id="customer_ledger_pdf">
+                   <div class="rport">
+                    <h2>M/S KEYMECH TECHNOLOGIES
+                    </h2>
+                    </div>
+                    <br>
+                   <div class="table-responsive">
+                      <table class="table table-center">
+                         <thead class="thead-dark">
+                            <tr>
+                                {% for field in credit_notes.first %}
+                                    <th>{{ field | title }}</th>
+                                {% endfor %}
+                            </tr>
+                         </thead>
+                         <tbody>
+                            {% for note in credit_notes %}
+                                <tr>
+                                    {% for value in note.values %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            {% for payment in payments_made %}
+                                <tr>
+                                    {% for value in payment.values %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                   </div>
+                </div>
+              </div> 
+             </div>
+          </div>
+       </div>
+</div>
+ </div>
+ <script>
+  function printDiv(divId) {
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+
+</script>
+{% endblock main_content %}
+
+
+
+
+

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        @media print {
+            @page {
+                margin: 0;
+            }
+        }
+        
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin: 10px;
+          
+            font-size: 10px;
+            font-family: 'Calibri';
+        }
+
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-family: 'Calibri';
+            height: 14px;
+        }
+
+        h5 {
+            margin: 4px 0 6px 0;
+            font-family: 'Calibri';
+        }
+
+        td, tr, p, span {
+            color: black;
+            font-family: 'Calibri';
+        }
+
+        .header, .terms {
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+{% for count in count_page %}
+  <div id="makepdf" style="height: 1500px !important;">
+    <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;">
+        <img src="../../static/assets/img/logo-png.png" style="width: 150px; margin-left:20px; border-radius: 10px;" />
+        <div style="flex-grow: 1; padding-left: 100px;">
+            <span class="bold" style="font-size: 30px; ">Quotation</span>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <td colspan="2">
+                <h4><b>M/S KEYMECH TECHNOLOGIES</b></h4>
+                13, Jagdish Nagar, Jwalapur,<br>
+                Haridwar,Uttarakhand-249407,<br>
+                    
+                </p>
+            </td>
+            <td colspan="2" style="border-right: 0px;">
+                <p class="header" style="margin-top: -20px;">
+                    GSTIN<br>
+                    PAN<br>
+                    CONTACT<br>
+                    STATE CODE<br>
+                    MAIL
+                </p>
+            </td>
+            <td colspan="4" style="border-left: 0px;">
+                <p class="header"style="margin-top: -20px;font-weight:500" >
+                    <span>: 05AAUPG1246N1ZE</span><br>
+                    <span>: CVSPG7178L</span><br>
+                    <span>: +91-8171467840 </span><br>
+                    <span>: 09</span><br>
+                    <span>: vibhor@mechfront.com</span>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <p>
+                    <span class="bold">Ref: </span><br>
+                    <span class="bold">To</span><br>
+                    <span style="font-weight:700;">{{quo.q_customer_name.company_name }},</span><br>
+                    {{ quo.q_customer_name.shipping_1_attention }},{{ quo.q_customer_name.shipping_1_street }},<br>{{ quo.q_customer_name.shipping_1_city }},
+                    {{ quo.q_customer_name.shipping_1_state }}, {{ quo.q_customer_name.shipping_1_pincode }},
+                    <br>
+                    <span class="header">GSTIN/UIN </span>: {{quo.q_customer_name.gst_number}}<br>
+                    <span class="header">EMAIL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>: {{quo.q_customer_name.cust_email}}
+                </p>
+            </td>
+            <td colspan="2" style="border-right: 0px;">
+                <p>
+                    <span class="header">QUOTATION NO.</span> <br>
+                    <span class="header">QUOTATION DATE</span>  <br>
+                    <span class="header">VALIDITY</span> <br>
+                    <span class="header">DISPATCH THROUGH </span> <br>
+                    <span class="header">PAYMENT TERM</span>  <br>
+
+                    <span class="header">PLACE OF SUPPLY</span>
+                </p>
+            </td>
+            <td colspan="4" style="border-left: 0px;font-weight: 500;">
+                <span>: {{quo.q_quotation_number}}</span><br>
+                <span>: {{quo.q_date}}</span><br>
+                <span>: {{quo.q_expiry_date}}</span><br>
+                <span>: {{quo.q_dispatch.name}}</span><br>
+                <span>: {{quo.q_payment_terms}} </span><br>
+                <span>: {{quo.q_supply_place}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="bold" style="width:12%;text-align: center;">Item Code</td>
+            <td style="width: 45%;" class="bold">Description of Goods</td>
+            <td style="width: 8%;" class="bold">HSN</td>
+            <td style="width: 8%;" class="bold">Quantity</td>
+            <td style="width: 8%;" class="bold">UOM</td>
+            <td style="width: 8%;" class="bold">Rate</td>
+            <td style="width: 8%;" class="bold">Discount</td>
+            <td style="width: 10%;" class="bold">Amount</td>
+        </tr>
+        {% for items in item_list %}
+        {% if forloop.counter == count %}
+        {% for item in items %}
+        <tr>
+            <td style="width:12%;text-align: center;">{{ item.q_item_code }}</td>
+            <td style="width: 45%;">{{ item.q_description_goods }}</td>
+            <td style="width: 8%;">{{ item.q_hsn }}</td>
+            <td style="width: 8%;text-align: center;" >{{ item.q_qantity }}</td>
+            <td style="width: 8%;">{{ item.q_uom }}</td>
+            <td style="width: 8%;">{{ item.q_unit_price }}</td>
+            <td style="width: 8%;">{{ item.q_discount }}</td>
+            <td style="width: 10%;">{{ item.q_total }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+        <tr>
+            <td style="width: 5%;"></td>
+            <td style="width: 45%;" class="header">Sub Total</td>
+            <td style="width: 8%;"></td>
+            <td style="width: 8%;"></td>
+            <td style="width: 8%;"></td>
+            <td style="width: 8%;"></td>
+            <td style="width: 8%;"></td>
+            <td style="width: 10%;" class="header">{{ quo.q_sub_total }}</td>
+        </tr>
+        <tr>
+            <td colspan="7" style="text-align: end; border: none;">Output IGST </td>
+            <td class="header">{{ quo.q_igstval }}</td>
+        </tr>
+        <tr>
+            <td colspan="7" style="text-align: end; border: none;">Output CGST </td>
+            <td class="header">{{ quo.q_cgstval }}</td>
+        </tr>
+        <tr>
+            <td colspan="7" style="text-align: end; border: none;">Output SGST </td>
+            <td class="header">{{ quo.q_sgstval }}</td>
+        </tr>
+       
+        {% if quo.q_packaging_forwording_percentage_amt != '0.00' %}
+            <tr>
+                <td colspan="7" style="text-align: end; border: none;">Packaging & Forwording ({{ quo.q_packaging_forwording_percentage }}%) <br>(Including GST)</td>
+                <td style="font-weight: 600;font-size: 11px;">{{ quo.q_packaging_forwording_percentage_amt }}</td>
+            </tr>
+        {% elif quo.q_packaging_forwording_amt_amt != '0.00' and quo.q_packaging_forwording_amt_amt != '0' %}
+            <tr>
+                <td colspan="7" style="text-align: end; border: none;">Packaging & Forwording <br>(Including GST)</td>
+                <td style="font-weight: 600;font-size: 11px;">{{ quo.q_packaging_forwording_amt_amt }}</td>
+            </tr>
+        {% endif %}
+
+        {% if quo.q_freight_percentage_amt_amt != '0.00' and quo.q_freight_percentage_amt_amt != 'NaN' %}
+            <tr>
+                <td colspan="7" style="text-align: end; border-top:1px solid #fff;">Freight <br>(Including GST)</td>
+                <td style="font-weight: 600;font-size: 11px;">{{ quo.q_freight_percentage_amt_amt }}</td>
+            </tr>
+        {% elif quo.q_freight_percentage_amt != '0.00' and quo.q_freight_percentage_amt != '0' %}
+            <tr>
+                <td colspan="7" style="text-align: end; border-bottom: 0px solid #fff!important; border-top:0px solid #fff!important;">Freight ({{quo.q_freight_percentage}}%) <br>(Including GST)</td>
+                <td style="font-weight: 600;font-size: 11px;">{{ quo.q_freight_percentage_amt }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td colspan="7" class="header">AMOUNT IN WORDS INR: <span id="word_Amt">{{quo.q_total_amt_word}}</span> </td>
+            <td class="header" id="total_amt">{{ quo.q_total }}</td>
+        </tr>
+        <tr>
+            <td colspan="8"style="font-size: 10px;
+                font-weight: 600;">
+                TERMS AND CONDITIONS:<br>
+                {{quo.q_note}}
+
+            </td>
+           </tr>
+        <tr>
+            <td colspan="2" style="">
+                <b>  COMPANY'S BANK DETAILS:</b><br>
+                    Bank Name : Axis Bank Limited <br>
+                    A/c No. : 919020042164019<br>
+                    Branch & IFS Code : Sector-62, Noida-201301, Uttar Pradesh & UTIB0000723<br>
+    
+            </td>
+            <td colspan="6" style="text-align: center;">
+                <h5 class="bold">for M/S KEYMECH TECHNOLOGIES</h5>
+                <!-- <img src="/../static/assets/img/signature.png" alt="Sign" style="width: 100px; height: 35px;"> -->
+                <h6 style="font-size: 9px; font-weight: 500;">AUTHORIZED SIGNATURE</h6>
+            </td>
+        </tr>
+    </table>
+  </div>
+{% endfor %}
+</body>
+</html>

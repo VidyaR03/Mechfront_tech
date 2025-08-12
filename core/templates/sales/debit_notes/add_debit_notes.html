@@ -1,0 +1,2006 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+
+<style>
+    /* Inactive tab styles */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #ccc;
+        /* Faint gray color for inactive tabs */
+    }
+
+    /* Active tab style */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+        /* Black color for active tab */
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 557px;">
+    <div class="content container-fluid">
+        <div class="page-header invoices-page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title"> <a href="{% url 'debitnotes_list' %}"
+                            style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title=""
+                                data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Add Debit Note
+                    </h3>
+                </div>
+                <div class="col-auto"> </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card invoices-add-card">
+                    <div class="card-body">
+                        <form class="invoices-form" method="post" id="credit_note_form"
+                            action="{% url 'add_debitnotes' %}"
+                            enctype="multipart/form-data" autocomplete="off">
+                            <div class="invoices-main-form">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label style="color:">Credit Note No.</label>
+                                            <input type="text" class="form-control" name="credit_note_no" id="credit_note_no">
+                                        </div>
+                                    </div> -->
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class=" ">
+                                                <span>
+                                                    <label >Debit Note Date <span style="color: red;">*</span></label>
+                                                    <input class="form-control datetimepicker" type="text"
+                                                        name="credit_note_date" id="credit_note_date" 
+                                                        placeholder="Date"  required readonly>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Invoice No.<span style="color: red;">*</span></label>
+                                            <input type="number" class="form-control" name="invoice_no" id="invoice_no" required>
+                                        </div>
+                                    </div>
+
+                                   
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Customer Name <span style="color: red;">*</span></label>
+                                            <div>
+                                                <select id="customer_Name_id" name="customer_id" class="form-control" required>
+                                                    <option value="">Choose...</option>
+                                                    {% for i in customer_name %}
+                                                    <option value="{{i.id}}" 
+                                                            data-shipping1="{% if i.shipping_1_attention %}{{ i.shipping_1_attention }}, {% endif %}{% if i.shipping_1_street %}{{ i.shipping_1_street }}, {% endif %}{% if i.shipping_1_city %}{{ i.shipping_1_city }}, {% endif %}{% if i.shipping_1_state %}{{ i.shipping_1_state }}, {% endif %}{% if i.shipping_1_pincode %}{{ i.shipping_1_pincode }}{% endif %}"
+                                                            data-shipping2="{% if i.shipping_2_attention %}{{ i.shipping_2_attention }}, {% endif %}{% if i.shipping_2_street %}{{ i.shipping_2_street }}, {% endif %}{% if i.shipping_2_city %}{{ i.shipping_2_city }}, {% endif %}{% if i.shipping_2_state %}{{ i.shipping_2_state }}, {% endif %}{% if i.shipping_2_pincode %}{{ i.shipping_2_pincode }}{% endif %}">
+                                                        {{i.customer}}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <label>Customer Name</label>
+                                        <div data-select2-id="4">
+                                            <div data-select2-id="4">
+                                                <select id="customer_Name_id" name="customer_Name" class="form-select" required>
+                                                    <option value="">Choose...</option>
+                                                    {% for i in customer_name %}
+                                                    <option value="{{i.id}}">{{i.customer}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+
+                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class=" ">
+                                                <span>
+                                                    <label style="color:#f00">Due Date</label>
+                                                    <input class="form-control datetimepicker" type="text" name="due_date" id="due_date" value="12-12-2023" placeholder="12-12-2023">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Place of Supply <span style="color: red;">*</span></label>
+                                            <select class="form-control" name="place_of_supply" id="place_of_supply"
+                                                onchange="totaltaxamt();" required>
+                                                <option value="">State/Province</option>
+                                                <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+
+                                                <option value="ANDHRA PRADESH (BEFORE DIVISION)">ANDHRA PRADESH (BEFORE DIVISION)</option>
+
+                                                <option value="ANDHRA PRADESH (NEW)">ANDHRA PRADESH (NEW)</option>
+
+                                                <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+
+                                                <option value="ASSAM">ASSAM</option>
+
+                                                <option value="BIHAR">BIHAR</option>
+
+                                                <option value="CHANDIGARH">CHANDIGARH</option>
+
+                                                <option value="CHHATTISGARH">CHHATTISGARH</option>
+
+                                                <option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
+
+                                                <option value="DAMAN AND DIU">DAMAN AND DIU</option>
+
+                                                <option value="DELHI">DELHI</option>
+
+                                                <option value="GOA">GOA</option>
+
+                                                <option value="GUJARAT">GUJARAT</option>
+
+                                                <option value="HARYANA">HARYANA</option>
+
+                                                <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+
+                                                <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+
+                                                <option value="JHARKHAND">JHARKHAND</option>
+
+                                                <option value="KARNATAKA">KARNATAKA</option>
+
+                                                <option value="KERALA">KERALA</option>
+
+                                                <option value="LADAKH">LADAKH</option>
+
+                                                <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+
+                                                <option value="MADHYA PRADESH">MADHYA PRADESH</option>
+
+                                                <option value="MAHARASHTRA">MAHARASHTRA</option>
+
+                                                <option value="MANIPUR">MANIPUR</option>
+
+                                                <option value="MEGHALAYA">MEGHALAYA</option>
+
+                                                <option value="MIZORAM">MIZORAM</option>
+
+                                                <option value="NAGALAND">NAGALAND</option>
+
+                                                <option value="ODISHA">ODISHA</option>
+
+                                                <option value="OTHER TERRITORY">OTHER TERRITORY</option>
+
+                                                <option value="PUDUCHERRY">PUDUCHERRY</option>
+
+                                                <option value="PUNJAB">PUNJAB</option>
+
+                                                <option value="RAJASTHAN">RAJASTHAN</option>
+
+                                                <option value="SIKKIM">SIKKIM</option>
+
+                                                <option value="TAMIL NADU">TAMIL NADU</option>
+
+                                                <option value="TELANGANA">TELANGANA</option>
+
+                                                <option value="TRIPURA">TRIPURA</option>
+
+                                                <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+
+                                                <option value="UTTARAKHAND">UTTARAKHAND</option>
+
+                                                <option value="WEST BENGAL">WEST BENGAL</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Destination of Supply <span style="color: red;">*</span></label>
+                                            <select class="form-control" name="destination_of_supply"
+                                                id="destination_of_supply" required>
+                                                <option value="">State/Province</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
+                                                </option>
+                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before
+                                                    Division)</option>
+                                                <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
+                                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar
+                                                    Haveli And Daman And Diu</option>
+                                                <option value="Daman and Diu">Daman and Diu</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Ladakh">Ladakh</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Other Territory">Other Territory</option>
+                                                <option value="Puducherry">Puducherry</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Buyer Order No. <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="buyer_order_no"
+                                                id="buyer_order_no" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Buyer Date <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control " name="buyer_date"
+                                                id="buyer_date"  placeholder="Date"  required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Dispatch Through <span style="color: red;">*</span></label>
+                                            <div data-select2-id="4">
+                                                <div data-select2-id="4">
+                                                    <select id="transporter_name" name="transporter_name" required class="form-control">
+                                                        <option value=""hidden>Choose...</option>
+                                                        {% for i in dispatch_through %}
+                                                        <option value="{{i.id}}">{{i.name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Dispatch Date <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control " name="dispatch_date"
+                                                id="dispatch_date"  placeholder="Date" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Term of Delivery</label>
+                                            <div>
+                                                <select class="form-control" name="delivery_term" id="delivery_term">
+                                                    <option value="" hidden>Term of Delivery </option>
+                                                    <option value="PAID">PAID</option>
+
+                                                    <option value="TO PAY">TO PAY</option>
+
+                                                    <option value="DOOR DELIVERY">DOOR DELIVERY</option>
+
+                                                    <option value="SELF COLLECTION">SELF COLLECTION</option>
+                                                    <option value="INVOICE FORMAT TYPE">INVOICE FORMAT TYPE</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Landing LR-RRNo</label>
+                                            <input type="text" class="form-control" name="lrno" id="lrno">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Shipping Address</label>
+                                            <select class="form-control" name="shipping_address" id="shipping_address_dropdown">
+                                                <option value="">Select Address...</option>
+                                                <!-- Options will be populated via JavaScript -->
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Freight</label>
+                                            <input type="text" class="form-control" name="freight" id="freight"
+                                                value="0.00">
+                                        </div>
+                                    </div> -->
+
+                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Service Type</label>
+                                            <select class="form-control" name="cn_ser_type" id="cn_ser_type" required>
+
+                                                <option value="" hidden>Select..</option>
+
+                                                <option value="Manufacturing">MANUFACTURING</option>
+
+                                                <option value="Lab">LAB </option>
+
+                                            </select> 
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="col-md-2 ">
+                                        <div class="form-group">
+                                           <label>GST</label>
+                                           <div>
+                                              <select class="form-control" name="gst_option" id="gst_option">
+                                                 <option value=""hidden>Select GST</option>
+                                                 <option value="Insterstate">Insterstate</option>
+                                                 <option value="Intrastate">Intrastate</option>
+                                               
+                                              </select>
+                                           </div>
+                                        </div>
+                                     </div> -->
+
+                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Freight(Amount)</label>
+                                            <input type="text" class="form-control " name="freight_amount" id="freight_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Freight(Percentage)</label>
+                                            <input type="text" class="form-control " name="freight_percentage" id="freight_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Packaging &amp; Forwading (Amount)</label>
+                                            <input type="text" class="form-control " name="packaging_forwording_amount" id="packaging_forwording_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Packaging &amp; Forwading (Percentage)</label>
+                                            <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 ">
+                                        <div class="form-group">
+                                           <label>GST <span style="color: red;">*</span></label>
+                                           <div>
+                                              <select class="form-control" name="gst_option" id="gst_option" onchange="updateTaxFields();" required>
+                                                 <option value="" hidden>Select GST</option>
+                                                 <option value="Interstate">Interstate</option>
+                                                 <option value="Intrastate">Intrastate</option>
+                                               
+                                              </select>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     
+
+                                    <div class="col-lg-2" style="visibility: hidden;">
+                                        <div class="form-group">
+                                            <label>Item Rates Are </label>
+                                            <select class="form-control" name="item_rate" id="item_rate">
+                                                <option value="tax_exclusive">Tax Exclusive</option>
+                                                <option value="tax_inclusive">Tax Inclusive </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="rowbb">
+                                        <div class="invoice-add-table">
+                                            <div class="table-responsive">
+                                                <table class="table table-center add-table-items">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="padding-left: 30px;">Items Code</th>
+                                                            <th width="180px">Description of Goods</th>
+                                                            <!-- <th>Godown</th> -->
+                                                            <th>Qty</th>
+                                                            <th>HSN</th>
+
+                                                            <th>Unit Price</th>
+                                                            <th>UOM</th>
+                                                            <th>Disc(%)</th>
+                                                            <th>Tax Rate</th>
+                                                            <th>Tax Amt</th>
+                                                            <th>Total</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <input type="hidden" name="iid[]" class="iid" value="0">
+                                                        <tr class="add-row">
+                                                            <td><input type="text" style="width: 120px;" class="form-control"
+                                                                    name="itemcode_0" id="itemcode_0"
+                                                                    onkeyup="getitemscodedetails('itemcode_0','item_0','godown_0','hsn_0','qty_0','rate_0','uom_0','discount_0','taxrate_0');">
+                                                            </td>
+
+                                                            <td><input type="text" class="form-control" name="item_0"
+                                                                    id="item_0"
+                                                                    onkeyup="getitemsdetails('item_0','godown_0','hsn_0','qty_0','rate_0','uom_0','discount_0','taxrate_0','itemcode_0');"
+                                                                    autocomplete="off" > </td>
+
+                                                            <!-- <td><input type="text" class="form-control" name="godown_0" id="godown_0"></td> -->
+
+                                                            <!-- <td width="150">
+                                                                <select class="form-control" name="godown_0"
+                                                                    id="godown_0" required>
+                                                                    <option value="">Select Godown</option>
+
+                                                                    {{j.purchase_invoice_godown}}</option>
+                                                                    {% for i in godown_list %}
+                                                                    <option value="{{i.name}}">{{i.name}}</option>
+                                                                    {% endfor %}
+
+                                                                </select>
+                                                            </td> -->
+
+                                                            <td><input type="text" class="form-control" name="qty_0"
+                                                                    id="qty_0" onkeyup="taxrate('qty_0')"> </td>
+
+                                                           <td><input type="text" class="form-control" name="hsn_0"
+                                                                id="hsn_0" onkeyup="rate('hsn_0')" ></td>
+    
+
+                                                            <td><input type="text" class="form-control" name="rate_0"
+                                                                    id="rate_0" onkeyup="rate('rate_0')"></td>
+                                                            
+                                                           
+                                                            <td><input type="text" class="form-control" name="uom_0"
+                                                                    id="uom_0" ></td>
+
+                                                            <td><input type="text" class="form-control"
+                                                                    name="discount_0" id="discount_0"
+                                                                    onkeyup="discountamt('discount_0')"></td>
+
+                                                            <td><input type="number" class="form-control taxrate_0"
+                                                                name="taxrate_0" id="taxrate_0"
+                                                                onkeyup="taxrate('taxrate_0')" required></td>
+
+
+                                                            <td><input type="text" class="form-control taxamt"
+                                                                    name="taxamt_0" id="taxamt_0" readonly></td>
+
+                                                            <td><input type="text" class="form-control totalamt"
+                                                                    name="total_0" id="total_0" readonly></td>
+
+                                                            <td class="add-remove text-end"> <a
+                                                                    href="javascript:void(0);" class="add-btn me-2"><i
+                                                                        class="fas fa-plus-circle"></i></a> <a
+                                                                    href="javascript:void(0);" class="remove-btn"><i
+                                                                        class="fe fe-trash-2"></i></a></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-7 col-md-6">
+                                                <!-- <div class="form-group float-end mb-0"> <button class="btn btn-primary" type="submit">Add Item</button> </div> -->
+                                                <div class="invoice-fields">
+                                                    <h4 class="field-title">Terms and Conditions</h4> <br> <textarea
+                                                        class="form-control" name="note"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-6">
+                                                <div class="invoice-total-card">
+                                                    <h4 class="invoice-total-title">Summary</h4>
+                                                    <div class="invoice-total-box">
+                                                        <div class="invoice-total-inner">
+
+                                                            <div class="total-tax-amt" hidden>
+                                                                <label for="total_tax_amount">Total Tax Amount:</label>
+                                                                <input type="text" id="total_tax_amount" class="form-control" readonly>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>Sub Total </p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="subtotal billamt utrt1"
+                                                                        name="subtotal" id="subtotal" value="0.00"
+                                                                        readonly="">
+                                                                </div>
+                                                            </div>
+
+
+                                                            
+
+                                                            <div class="row">
+                                                                <!-- <div class="col-lg-6"><p>Tax Amt</p></div> -->
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="hidden"
+                                                                        class="billamt utrt1"
+                                                                        name="total_taxamt" id="total_taxamt"
+                                                                        value="0.00" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- <div class="row">
+                                                                        <div class="col-lg-6"><p>Freight</p></div>
+                                                                        <div class="col-lg-6 ">
+                                                                            <input class="billamt utrt1" type="text" name="freight" id="freight" value="0.00" onkeyup=";" >
+                                                                        </div>
+                                                                    </div> -->
+
+                                                            <div class="row">
+                                                                <!-- <div class="col-lg-6"><p>Tax Amt</p></div> -->
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="hidden"
+                                                                        class="billamt utrt1"
+                                                                        name="total_taxamt" id="total_taxamt"
+                                                                        value="0.00" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>CGST 
+                                                                        <!-- @ <input type="text" name="cgstper"
+                                                                            id="cgstper" value="0%" size="1"
+                                                                            class="no-outline"> -->
+                                                                        </p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="utrt1 billamt" name="cgst"
+                                                                        id="cgst" value="0.00" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>SGST 
+                                                                        <!-- @ <input type="text" name="sgstper"
+                                                                            id="sgstper" value="0%" size="1"
+                                                                            class="no-outline"> -->
+                                                                        </p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="utrt1 billamt" name="sgst"
+                                                                        id="sgst" value="0.00" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>IGST  
+                                                                        
+                                                                        </p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input type="text" class="billamt utrt1" name="igst"
+                                                                        id="igst" value="0.00" readonly="">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>Adjustments</p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1" type="text"
+                                                                        name="adjustment" id="adjustment" value="0.00"
+                                                                        onkeyup=";" readonly>
+                                                                </div>
+                                                            </div>
+
+                                                            <div id="pfamtgst" style="display: none;">
+                                                            <div class="row" id="pfamtgst">
+                                                                <div class="col-lg-6"><p>P&F (Amount) + GST</p></div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1 " name="packaging_forwording_amt_amt" type="text" id="pf_amount" value="0.00" readonly>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+
+                                                            <div id="pfpergst" style="display: none;">
+                                                            <div class="row" id="pfpergst">
+                                                                <div class="col-lg-6" ><p>P&F (Percentage) + GST</p></div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1 " type="text" name="packaging_forwording_percentage_amt" id="pf_percentage" value="0.00" readonly >
+                                                                </div>
+                                                            </div>
+                                                            </div>
+
+                                                            <input type="hidden" id="subtotal" value="100.00"> <!-- Replace with actual subtotal -->
+                                                            <div id="freight_amount_gst_row" style="display: none;">
+                                                            <div class="row">
+                                                                <div class="col-lg-6"><p>Freight (Amount) + GST</p></div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1" type="text" name="freight_amt_amt" id="fr_amount" value="0.00" readonly>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+
+                                                            <div id="freight_percentage_gst_row" style="display: none;">
+                                                            <div class="row">
+                                                                <div class="col-lg-6"><p>Freight (Percentage) + GST</p></div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1" type="text" name="freight_percentage_amt" id="fr_percentage" value="0.00" readonly>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>TCS on Sale Of any Goods </p>
+                                                                </div>
+                                                                <div class="col-lg-6 ">
+                                                                    <input class="billamt utrt1" type="text"
+                                                                        name="sale_of_good" id="sale_of_good"
+                                                                        value="0.00" onkeyup=";" readonly>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="invoice-total-footer">
+                                                                <h4>Total Amount <input class="finalamt utrt1"
+                                                                        type="text" name="totalamt" id="totalamt"
+                                                                        value="0.00" readonly="">(Rs.)
+                                                                </h4>
+                                                            </div>
+                                                            <div class="invoice-total-footer">
+                                                                <h4>Total Amount in Word
+                                                                    -<textarea  name="totalamt_word" id="totalamt_word" readonly="" style="width: 370px; border: none;"></textarea>
+                                                                </h4>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="upload-sign">
+                                                        <div class="form-group float-end mb-0"> <a
+                                                                href="{% url 'debitnotes_list' %}"
+                                                                class="btn btn-primary">Cancel</a> </div>
+                                                        <div class="form-group float-end mb-0"> <button
+                                                                class="btn btn-primary" type="submit" id="btn_submit"
+                                                                name="btn_submit">Save</button> </div>
+                                                        <!-- <button type="reset" class="btn btn-outline-secondary me-1 btn-rounded">Reset</button> -->
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-6 p-5">
+                                        <div class="success_message row"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('customer_Name_id').addEventListener('change', function() {
+      var selectedOption = this.options[this.selectedIndex];
+      var shippingAddress1 = selectedOption.getAttribute('data-shipping1').trim();
+      var shippingAddress2 = selectedOption.getAttribute('data-shipping2').trim();
+      
+      var shippingDropdown = document.getElementById('shipping_address_dropdown');
+      shippingDropdown.innerHTML = ''; // Clear previous options
+  
+      if (shippingAddress1) {
+          var option1 = document.createElement('option');
+          option1.value = shippingAddress1;
+          option1.text =  shippingAddress1;
+          shippingDropdown.add(option1);
+      }
+  
+      if (shippingAddress2) {
+          var option2 = document.createElement('option');
+          option2.value = shippingAddress2;
+          option2.text =  shippingAddress2;
+          shippingDropdown.add(option2);
+      }
+      
+      if (!shippingAddress1 && !shippingAddress2) {
+          var defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.text = 'No shipping addresses available';
+          shippingDropdown.add(defaultOption);
+      }
+  });
+  
+  
+  </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        function toggleFreightFields() {
+            
+            const freightAmount = parseFloat(document.getElementById('freight_amount').value) || 0;
+            const freightPercentage = parseFloat(document.getElementById('freight_percentage').value) || 0;
+
+            if (freightAmount > 0) {
+                document.getElementById('freight_amount_gst_row').style.display = 'block';
+                document.getElementById('freight_percentage_gst_row').style.display = 'none';
+            } else if (freightPercentage > 0) {
+                document.getElementById('freight_amount_gst_row').style.display = 'none';
+                document.getElementById('freight_percentage_gst_row').style.display = 'block';
+            } else {
+                document.getElementById('freight_amount_gst_row').style.display = 'none';
+                document.getElementById('freight_percentage_gst_row').style.display = 'none';
+            }
+        }
+
+        document.getElementById('freight_amount').addEventListener('input', toggleFreightFields);
+        document.getElementById('freight_percentage').addEventListener('input', toggleFreightFields);
+        // document.getElementById('customer_Name').addEventListener('input', togglePfFields);
+
+        toggleFreightFields(); // Initialize the state q_freight_percentage_amt_amton page load
+
+        function togglePfFields() {
+            const pfAmount = parseFloat(document.getElementById('packaging_forwording_amount').value) || 0;
+            const pfPercentage = parseFloat(document.getElementById('packaging_forwording_percentage').value) || 0;
+
+            if (pfAmount > 0) {
+                document.getElementById('pfamtgst').style.display = 'block';
+                document.getElementById('pfpergst').style.display = 'none';
+            } else if (pfPercentage > 0) {
+                document.getElementById('pfamtgst').style.display = 'none';
+                document.getElementById('pfpergst').style.display = 'block';
+            } else {
+                document.getElementById('pfamtgst').style.display = 'none';
+                document.getElementById('pfpergst').style.display = 'none';
+            }
+        }
+
+        
+        document.getElementById('packaging_forwording_amount').addEventListener('input', togglePfFields);
+        document.getElementById('packaging_forwording_percentage').addEventListener('input', togglePfFields);
+        // document.getElementById('customer_Name').addEventListener('input', togglePfFields);
+
+        togglePfFields();
+
+        // Handle quotation selection
+        document.getElementById('customer_Name').addEventListener('change', function() {
+            // Call both functions directly on input change
+            toggleFreightFields();
+            togglePfFields();
+        });
+
+
+        
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('credit_note_date');
+        // const dateInput2 = document.getElementById('dispatch_date');
+        // const dateInput3 = document.getElementById('buyer_date');
+
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        const year = today.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
+        dateInput.value = formattedDate;
+        // dateInput2.value = formattedDate;
+        // dateInput3.value = formattedDate;
+
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dispatch_dateInput = document.getElementById("dispatch_date");
+        const buyer_dateInput = document.getElementById("buyer_date");
+
+        // Set the current date as the default value in DD-MM-YYYY format
+        const today = new Date();
+        const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
+        dispatch_dateInput.value = formattedDate;
+        buyer_dateInput.value = formattedDate;
+
+        // Initialize the datepicker with the desired format and set minDate to today
+        $(dispatch_dateInput).datepicker({
+            dateFormat: 'dd-mm-yy',
+            minDate: 0
+        });
+        $(buyer_dateInput).datepicker({
+            dateFormat: 'dd-mm-yy',
+            minDate: 0
+        });
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Hide fields initially
+        $("#pf_amount_row").hide();
+        $("#pf_percentage_row").hide();
+        $("#fr_amount_row").hide();
+        $("#fr_percentage_row").hide();
+    
+        // Show or hide P&F amount field
+        $("#packaging_forwording_amount").on("input", function() {
+            if ($(this).val() != "0" && $(this).val() != "") {
+                $("#pf_amount_row").show();
+            } else {
+                $("#pf_amount_row").hide();
+            }
+        });
+    
+        // Show or hide P&F percentage field
+        $("#packaging_forwording_percentage").on("input", function() {
+            if ($(this).val() != "0" && $(this).val() != "") {
+                $("#pf_percentage_row").show();
+                               
+                 
+            } else {
+                $("#pf_percentage_row").hide();
+            }
+        });
+    
+        // Show or hide Freight amount field
+        $("#freight_amount").on("input", function() {
+            if ($(this).val() != "0" && $(this).val() != "") {
+                $("#fr_amount_row").show();
+            } else {
+                $("#fr_amount_row").hide();
+            }
+        });
+    
+        // Show or hide Freight percentage field
+        $("#freight_percentage").on("input", function() {
+            if ($(this).val() != "0" && $(this).val() != "") {
+                $("#fr_percentage_row").show();
+            } else {
+                $("#fr_percentage_row").hide();
+            }
+        });
+    });
+    </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const freightAmount = document.getElementById('freight_amount');
+        const freightPercentage = document.getElementById('freight_percentage');
+        const packagingAmount = document.getElementById('packaging_forwording_amount');
+        const packagingPercentage = document.getElementById('packaging_forwording_percentage');
+
+        function toggleFreightInputs() {
+            if (freightAmount.value !== "0" && freightAmount.value !== "") {
+                freightPercentage.value = "0";
+                freightPercentage.disabled = true;
+            } else {
+                freightPercentage.disabled = false;
+            }
+        }
+
+        function toggleFreightPercentage() {
+            if (freightPercentage.value !== "0" && freightPercentage.value !== "") {
+                freightAmount.value = "0";
+                freightAmount.disabled = true;
+            } else {
+                freightAmount.disabled = false;
+            }
+        }
+
+        function togglePackagingInputs() {
+            if (packagingAmount.value !== "0" && packagingAmount.value !== "") {
+                packagingPercentage.value = "0";
+                packagingPercentage.disabled = true;
+            } else {
+                packagingPercentage.disabled = false;
+            }
+        }
+
+        function togglePackagingPercentage() {
+            if (packagingPercentage.value !== "0" && packagingPercentage.value !== "") {
+                packagingAmount.value = "0";
+                packagingAmount.disabled = true;
+            } else {
+                packagingAmount.disabled = false;
+            }
+        }
+
+        freightAmount.addEventListener('input', toggleFreightInputs);
+        freightPercentage.addEventListener('input', toggleFreightPercentage);
+        packagingAmount.addEventListener('input', togglePackagingInputs);
+        packagingPercentage.addEventListener('input', togglePackagingPercentage);
+    });
+</script>
+
+
+<script>
+    function updatePFPercentage() {
+        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
+        var percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value);
+        var pfAmount2 = (subtotal * percentage) / 100;
+
+        var gstAmountpf2 = (pfAmount2 * 0.18).toFixed(2);
+        var pfAmount = (pfAmount2 + parseFloat(gstAmountpf2)).toFixed(2);
+        document.getElementById('pf_percentage').value = pfAmount;
+        updateTotalInWords();
+
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('packaging_forwording_percentage').addEventListener('input', updatePFPercentage);
+    });
+
+    function updateFreightPercentage() {
+        var subtotals = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
+        var fr_percentage = parseFloat(document.getElementById('freight_percentage').value);
+        var f_Percentage3 = (subtotals * fr_percentage) / 100;
+
+        var gstAmountpf3 = (f_Percentage3 * 0.18).toFixed(2);
+        var f_Percentage = (f_Percentage3 + parseFloat(gstAmountpf3)).toFixed(2);
+
+        document.getElementById('fr_percentage').value = f_Percentage;
+        updateTotalInWords();
+
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('freight_percentage').addEventListener('input', updateFreightPercentage);
+    });
+</script>
+
+<script>
+    function updatePFAmount() {
+        var pfAmount1 = parseFloat(document.getElementById('packaging_forwording_amount').value);
+        var gstAmountpf = (pfAmount1 * 0.18).toFixed(2);
+        var pfAmount = (pfAmount1 + parseFloat(gstAmountpf)).toFixed(2);
+        document.getElementById('pf_amount').value = pfAmount;
+        updateTotalInWords();
+
+        
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('packaging_forwording_amount').addEventListener('input', updatePFAmount);
+
+        
+    });
+    // function updateFreightAmount() {
+    //     var fr_Amount = document.getElementById('freight_amount').value;
+    //     var gstAmount = fr_Amount * 0.18;
+    //     var totall = fr_Amount + gstAmount;
+    //     document.getElementById('fr_amount').value = totall;
+    //     updateTotalInWords();
+
+    // }
+
+    function updateFreightAmount() {
+    var fr_Amount = parseFloat(document.getElementById('freight_amount').value);
+    var gstAmount = (fr_Amount * 0.18).toFixed(2);
+    var totall = (fr_Amount + parseFloat(gstAmount)).toFixed(2);
+    document.getElementById('fr_amount').value = totall;
+    updateTotalInWords();
+    }
+
+    // function updateFreightAmount() {
+    //     var fr_Amount = document.getElementById('freight_amount').value;
+    //     var gstAmount = fr_Amount * 0.18;
+    //     var gstAmount = pfAmount * 0.18;
+    //     document.getElementById('pf_amount').value = (pfAmount + gstAmount).toFixed(2);
+    //     updateTotalInWords();
+
+    // }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('freight_amount').addEventListener('input', updateFreightAmount);
+
+        
+    });
+    
+</script>
+
+<script type="text/javascript">
+    $(".add-table-items").on('click', '.remove-btn', function () {
+        $(this).closest('.add-row').remove();
+        
+        subtotal();
+
+        calculateTotalTaxAmount();
+        $(document).ready(function() {
+            subtotal();
+        });
+        // 
+        updateTotalInWords();
+
+        return false;
+    });
+
+    function calculateTotalTaxAmount() {
+        let totalTaxAmount = 0;
+        $(".taxamt").each(function() {
+            let taxAmt = parseFloat($(this).val());
+            if (!isNaN(taxAmt)) {
+                totalTaxAmount += taxAmt;
+            }
+        });
+        $("#total_tax_amount").val(totalTaxAmount.toFixed(2));
+        updateTaxFields();
+}
+
+    var i = 1;
+    $(document).on("click", ".add-btn", function () {
+        var experiencecontent = '<tr class="add-row">' +
+            '<input type="hidden" name="iid[]" class="iid" value="' + i + '">' +
+
+            '<td>' +
+            '<input type="text" class="form-control" style="width: 120px;" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\');calculateTotalTaxAmount(); ">' +
+            '</td>' +
+
+            '<td>' +
+            '<input type="text" name="item_' + i + '" id="item_' + i + '" class="form-control" onkeyup="getitemsdetails(\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\',\'itemcode_' + i + '\'); " >' +
+            '</td>' +
+
+           
+
+            '<td>' +
+            '<input type="text" class="form-control" name="qty_' + i + '" id="qty_' + i + '" onkeyup="taxrate(\'qty_' + i + '\');" >' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" name="hsn_' + i + '" id="hsn_' + i + '" class="form-control" >' +
+            '</td>' +
+            
+
+            '<td>' +
+            '<input type="text" class="form-control" name="rate_' + i + '" id="rate_' + i + '" onkeyup="rate(\'rate_' + i + '\');" >' +
+            '</td>' +
+
+            '<td>' +
+            '<input type="text" class="form-control" name="uom_' + i + '" id="uom_' + i + '" >' +
+            '</td>' +
+            
+            '<td>' +
+            '<input type="text" class="form-control" name="discount_' + i + '" id="discount_' + i + '" onkeyup="discountamt(\'discount_' + i + '\');" >' +
+            '</td>' +
+
+            '<td>' +
+            '<input type="number" class="form-control taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="taxrate(\'taxrate_' + i + '\');" required>' +
+            '</td>' +
+
+            '<td>' +
+            '<input type="text" class="form-control taxamt" name="taxamt_' + i + '" id="taxamt_' + i + '" readonly>' +
+            '</td>' +
+
+            '<td>' +
+            '<input type="text" class="form-control totalamt" name="total_' + i + '" id="total_' + i + '" readonly>' +
+            '</td>' +
+
+            '<td class="add-remove text-end">' +
+            '<a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a> ' +
+            '<a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>' +
+            '</td>' +
+            '</tr>';
+        i++;
+        $(".add-table-items").append(experiencecontent);
+        return false;
+    });
+</script>
+
+<script type="text/javascript">
+    function getitemsdetails(inputname, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
+        //alert();return;
+        input = inputname.split("_");
+        //alert(input);return;
+
+        $('#' + inputname).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '#',
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: input
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            var code = item.split("|");
+                            //alert(data);
+                            return {
+                                label: code[0],
+                                value: code[0],
+                                data: item
+                            }
+                        }));
+                    }
+                });
+            },
+            autoFocus: true,
+            minLength: 0,
+            change: function (event, ui) {
+                if (ui.item == null) {
+                }
+            },
+            select: function (event, ui) {
+                var names = ui.item.data.split("|");
+                console.log(names)
+                $('#' + inputname).val(names[0]);
+                $('#' + description).val(names[1]);
+                $('#' + godown).val(names[2]);
+                //$('#'+qty).val(names[3]);
+                $('#' + qty).val('1');
+                $('#' + rate).val(names[8]);
+                $('#' + uom).val(names[10]);
+                $('#' + discount).val(names[6]);
+                $('#' + taxrate).val(names[7]);
+                $('#' + hsn).val(names[5]);
+                $('#' + itemcode).val(names[11]);
+
+                calculateTotalTaxAmount();
+                updateTaxFields();
+                discountamt(inputname);
+
+                subtotal();
+                calculatePFPercentage();
+                calculateFreightPercentage()
+
+                
+
+                
+                updateTotalInWords();
+                updatePFAmount();
+                updateFreightPercentage();
+                updatePFPercentage();
+            }
+
+        });
+    }
+
+    function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
+        //alert();return;
+        input = inputname.split("_");
+        //alert(input);return;
+        
+        $('#' + inputname).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/getitemscodedetails/',
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: input
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            var code = item.split("|");
+                            //alert(data);
+                            return {
+                                label: code[0],
+                                value: code[0],
+                                data: item
+                            }
+                        }));
+                    }
+                });
+            },
+            autoFocus: true,
+            minLength: 0,
+            change: function (event, ui) {
+                if (ui.item == null) {
+                }
+            },
+            
+            
+            select: function (event, ui) {
+                var names = ui.item.data.split("|");
+                console.log("Mangesh",names)
+                $('#' + inputname).val(names[0]);
+                $('#' + description).val(names[1]);
+                $('#' + godown).val(names[2]);
+                //$('#'+qty).val(names[3]);
+                $('#' + qty).val('1');
+                $('#' + rate).val(names[5]);
+                $('#' + uom).val(names[7]);
+                $('#' + discount).val(names[4]);
+                $('#' + taxrate).val(names[6]);
+                $('#' + hsn).val(names[2]);
+                $('#' + item).val(names[1]);
+
+                calculateTotalTaxAmount();
+                updateTaxFields();
+                discountamt(inputname);
+                subtotal();
+                calculatePFPercentage();
+                calculateFreightPercentage()
+
+                
+
+                
+                updateTotalInWords();
+                updatePFAmount();
+                updateFreightPercentage();
+
+                
+            }
+
+        });
+    }
+
+    function calculatePFPercentage() {
+        var subtotal2 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
+        var percentage2 = parseFloat(document.getElementById('packaging_forwording_percentage').value);
+        var pfAmount2 = (subtotal2 * percentage2) / 100;
+
+        var gstAmountpf2 = (pfAmount2 * 0.18).toFixed(2);
+        var pfAmount = (pfAmount2 + parseFloat(gstAmountpf2)).toFixed(2);
+        console.log(pfAmount,"pfAmount.......")
+        document.getElementById('pf_percentage').value = pfAmount;
+        updateTotalInWords();
+
+        
+    }
+    function calculateFreightPercentage() {
+        var subtotal3 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
+        var fr_percentage3 = parseFloat(document.getElementById('freight_percentage').value);
+        var f_Percentage3 = (subtotal3 * fr_percentage3) / 100;
+        document.getElementById('fr_percentage').value = f_Percentage3.toFixed(2);
+        updateTotalInWords();
+
+    }
+
+    function discountamt(inputname) {
+        //alert(inputname);
+        input = inputname.split("_");
+        id_val = input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_' + id_val).val();
+        var discount = $('#discount_' + id_val).val();
+        var qty = $('#qty_' + id_val).val();
+
+        var item_rate = $('#item_rate').val();
+
+        if (item_rate == 'tax_exclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            $('#total_' + id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(totalamt);
+
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+
+            t = totalamt - taxamt;
+
+            $('#total_' + id_val).val((t).toFixed(2));
+        }
+
+        subtotal();
+
+        calculateTotalTaxAmount();
+        $(document).ready(function() {
+            subtotal();
+        });
+        updateTotalInWords();
+    }
+
+    function taxrate(inputname) {
+
+        input = inputname.split("_");
+        id_val = input[1];
+     
+        var rate = $('#rate_' + id_val).val();
+        var qty = $('#qty_' + id_val).val();
+        var discount = $('#discount_' + id_val).val();
+
+    
+        var item_rate = "tax_exclusive";
+
+        if (item_rate == 'tax_exclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            $('#total_' + id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            var total = rate - (rate * discount / 100);
+            //alert(totalamt);
+
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+
+            t = totalamt - taxamt;
+
+            $('#total_' + id_val).val((t).toFixed(2));
+        }
+
+        subtotal();
+
+        calculateTotalTaxAmount();
+
+        $(document).ready(function() {
+            subtotal();
+        });
+        
+        updateTotalInWords();
+    }
+
+ 
+    function qty(inputname) {
+        input = inputname.split("_");
+        id_val = input[1];
+        //alert(id_val);
+
+        var rate = $('#rate_' + id_val).val();
+        var qty = $('#qty_' + id_val).val();
+        var discount = $('#discount_' + id_val).val();
+
+        var item_rate = $('#item_rate').val();
+
+        if (item_rate == 'tax_exclusive') {
+            //var discountamt = rate/100;
+            //var total = rate-discountamt;
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            $('#total_' + id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            //var discountamt = rate/100;
+            //var total = rate-discountamt;
+            var total = rate - (rate * discount / 100);
+            //alert(total);
+            var totalamt = total * qty;
+            //alert(totalamt);
+
+            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
+
+            var taxrate = $('#taxrate_' + id_val).val();
+            var taxamt = totalamt * taxrate / 100;
+            //alert(taxamt);
+
+            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
+
+            t = totalamt - taxamt;
+
+            $('#total_' + id_val).val((t).toFixed(2));
+        }
+
+        subtotal();
+
+        calculateTotalTaxAmount();
+        $(document).ready(function() {
+            subtotal();
+        });
+        updateTotalInWords();
+    }
+    function rate(inputname) {
+        // Extracting the id from inputname
+        input = inputname.split("_");
+        id_val = input[1];
+
+        // Parsing the values
+        var rate = parseFloat($('#rate_' + id_val).val()) || 0;
+        var qty = parseFloat($('#qty_' + id_val).val()) || 0;
+        var discount = parseFloat($('#discount_' + id_val).val()) || 0;
+
+        var item_rate = 'tax_exclusive'; // Assuming tax_exclusive for now.
+
+        if (item_rate == 'tax_exclusive') {
+            var total = rate - (rate * discount / 100);
+            var totalamt = total * qty;
+            $('#total_' + id_val).val(totalamt.toFixed(2));
+
+            var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
+            var taxamt = totalamt * taxrate / 100;
+            console.log(taxamt,taxrate,"taxamt.kkkkkkkk")
+
+            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
+        }
+
+        if (item_rate == 'tax_inclusive') {
+            var total = rate - (rate * discount / 100);
+            var totalamt = total * qty;
+            var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
+            var taxamt = totalamt * taxrate / 100;
+            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
+
+            var totalExclusive = totalamt - taxamt;
+            $('#total_' + id_val).val(totalExclusive.toFixed(2));
+        }
+
+        subtotal();
+        calculateTotalTaxAmount();
+        $(document).ready(function() {
+            subtotal();
+        });
+        updateTotalInWords();
+    }
+
+    function subtotal() {
+        var totalamt = 0;
+        $(".totalamt").each(function () {
+            totalamt += parseFloat($(this).val()) || 0;
+        });
+
+        var sub_total = totalamt;
+        $('.subtotal').val(sub_total.toFixed(2));
+
+        var sum1 = 0;
+        $(".taxamt").each(function () {
+            sum1 += parseFloat($(this).val()) || 0;
+        });
+        console.log(sum1,"sum1.........")
+
+        var cgst = parseFloat($('#cgst').val()) || 0;
+        var sgst = parseFloat($('#sgst').val()) || 0;
+        var igst = parseFloat($('#igst').val()) || 0;
+        var adjustment = parseFloat($('#adjustment').val()) || 0;
+        var pf_amount = parseFloat($('#pf_amount').val()) || 0;
+        var fr_amount = parseFloat($('#fr_amount').val()) || 0;
+        var pf_percentage = parseFloat($('#pf_percentage').val()) || 0;
+        var fr_percentage = parseFloat($('#fr_percentage').val()) || 0;
+        var sale_of_good = parseFloat($('#sale_of_good').val()) || 0;
+
+        
+
+        // var finalamt = sub_total + cgst + sgst + igst + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
+        var finalamt = sub_total + sum1 + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
+
+        $('.finalamt').val(finalamt.toFixed(2));
+        updatePFPercentage();
+        updateFreightPercentage();
+
+    }
+
+    
+  
+
+    $(document).on('change', '#item_rate', function () {
+        var item_rate = $(this).val();
+        //alert(item_rate);
+
+        for (var i = 0; i < 2; i++) {
+            //alert(i);
+
+            if (item_rate == 'tax_inclusive') {
+                qty('qty_' + i);
+                rate('rate_' + i);
+                discountamt('discount_' + i);
+            }
+
+            if (item_rate == 'tax_exclusive') {
+                qty('qty_' + i);
+                rate('rate_' + i);
+                discountamt('discount_' + i);
+            }
+        }
+
+
+    });
+
+    $(document).on('keyup', '#freight_amount', function () {
+        subtotal();
+
+        ;
+        updateTotalInWords();
+    });
+
+    $(document).on('keyup', '#freight_percentage', function () {
+        subtotal();
+
+        ;
+        updateTotalInWords();
+    });
+    $(document).on('keyup', '#packaging_forwording_amount', function () {
+        subtotal();
+
+        ;
+        updateTotalInWords();
+    });
+    $(document).on('keyup', '#packaging_forwording_percentage', function () {
+        subtotal();
+
+        
+        updateTotalInWords();
+    });
+    $(document).on('keyup', '#gst_option', function () {
+        subtotal();
+
+        
+        updateTotalInWords();
+    });
+
+    $(document).on('keyup', '#igst', function () {
+        subtotal();
+
+        updateTotalInWords();
+    });
+</script>
+
+<script>
+    function updateTaxFields() {
+        var gstOption = document.getElementById('gst_option').value;
+        var totalTaxAmount = parseFloat(document.getElementById('total_tax_amount').value) || 0;
+    
+        if (gstOption === 'Interstate') {
+            document.getElementById('igst').value = totalTaxAmount.toFixed(2);
+            document.getElementById('cgst').value = '0.00';
+            document.getElementById('sgst').value = '0.00';
+        } else if (gstOption === 'Intrastate') {
+            var halfTaxAmount = (totalTaxAmount / 2).toFixed(2);
+            document.getElementById('cgst').value = halfTaxAmount;
+            document.getElementById('sgst').value = halfTaxAmount;
+            document.getElementById('igst').value = '0.00';
+        } else {
+            // Handle cases where no valid option is selected
+            document.getElementById('cgst').value = '0.00';
+            document.getElementById('sgst').value = '0.00';
+            document.getElementById('igst').value = '0.00';
+        }
+    }
+    
+    // Example function to update total tax amount (for demonstration purposes)
+    function setTotalTaxAmount(amount) {
+        document.getElementById('total_tax_amount').value = amount.toFixed(2);
+        updateTaxFields();
+    }
+    </script>
+<!-- 
+<script>
+    $(document).ready(function() {
+        $('#gst_option').change(function() {
+            updateGST();
+            updateTotalInWords();
+
+        });
+    
+        // Assuming there's a trigger for the subtotal calculation
+        $('#freight_amount, .totalamt').on('input', function() {
+            subtotal();
+            updateTotalInWords();
+
+        });
+    });
+    
+    function updateGST() {
+        var gstOption = $('#gst_option').val();
+        if (gstOption === "Interstate") {
+            // Apply 18% GST and show IGST field
+            $('#cgstper').val("0%");
+            $('#sgstper').val("0%");
+            $('#igstper').val("18%");
+            $('#igst_id').show();
+        } else if (gstOption === "Intrastate") {
+            // Apply 9% CGST and 9% SGST and show fields
+            $('#cgstper').val("9%");
+            $('#sgstper').val("9%");
+            $('#igstper').val("0%");
+            $('#igst_id').hide();
+        }
+        subtotal();
+        updateTotalInWords();
+
+    }
+    
+    function subtotal() {
+        var freight = $('#freight').val() || 0;
+        var totalamt = 0;
+        $(".totalamt").each(function() {
+            totalamt += +this.value || 0;
+        });
+    
+        sub_total =  totalamt;
+        $('.subtotal').val(sub_total);
+    
+        var gstOption = $('#gst_option').val();
+        var gstRate = 0;
+        var cgstRate = 0;
+        var sgstRate = 0;
+    
+        if (gstOption === "Interstate") {
+            gstRate = 18;
+            cgstRate = 0;
+            sgstRate = 0;
+        } else if (gstOption === "Intrastate") {
+            gstRate = 0;
+            cgstRate = 9;
+            sgstRate = 9;
+        }
+    
+        var cgstAmount = (sub_total * cgstRate) / 100;
+        var sgstAmount = (sub_total * sgstRate) / 100;
+        var igstAmount = (sub_total * gstRate) / 100;
+    
+        if (gstOption === "Interstate") {
+            $('#cgst').val("0.00");
+            $('#sgst').val("0.00");
+            $('#igst').val(igstAmount.toFixed(2));
+        } else if (gstOption === "Intrastate") {
+            $('#cgst').val(cgstAmount.toFixed(2));
+            $('#sgst').val(sgstAmount.toFixed(2));
+            $('#igst').val("0.00");
+        }
+        var pf_amount=$('#packaging_forwording_amount').val();
+        var fre_amount=$('#freight_amount').val();
+        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
+        var fr_percentage = parseFloat(document.getElementById('freight_percentage').value);
+        var f_Percentage_amt = (subtotal * fr_percentage) / 100;
+
+        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
+        var percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value);
+        var pfAmount_amt = (subtotal * percentage) / 100;
+        
+
+    
+        var totalTaxAmount = cgstAmount + sgstAmount + igstAmount;
+        $('.totaltaxamt').val(totalTaxAmount.toFixed(2));
+    
+        var finalamt = sub_total + totalTaxAmount + parseInt(pf_amount) + parseInt(fre_amount) + f_Percentage_amt + pfAmount_amt;
+        $('.finalamt').val(finalamt.toFixed(2));
+        updateTotalInWords();
+    }
+    </script>
+     -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+
+
+
+<script type="text/javascript">
+    $(document).on('change', '#customer_name', function () {
+        $('#shipping_address').empty();
+        //alert();return;
+        var customer_id = $('#customer_name').val();
+        //alert(customer_id);return;
+
+        $.ajax({
+            type: 'POST',
+            url: '#',
+            data: { 'customer_id': customer_id },
+            dataType: 'json',
+            success: function (json) {
+                $('#shipping_address').append($('<option>').text("Select Shipping Address"));
+                //$('#document_uid').append($('<option>').text("Select Document"));
+                $.each(json, function (key, value) {
+                    $('#shipping_address')
+                        .append($("<option></option>")
+                            .attr("value", value.id)
+                            .text(value.shippingattention + ', ' + value.shippingstreet + ', ' + value.shippingcity + ', ' + value.shippingstate + ', ' + value.shippingpincode))
+                });
+            }
+        })
+    });
+
+    function shippingaddress() {
+        $('#shipping_address').empty();
+        //alert();return;
+        var customer_id = $('#customer_name').val();
+        //alert(customer_id);return;
+
+        $.ajax({
+            type: 'POST',
+            url: '#',
+            data: { 'customer_id': customer_id },
+            dataType: 'json',
+            success: function (json) {
+                $('#shipping_address').append($('<option>').text("Select Shipping Address"));
+                //$('#document_uid').append($('<option>').text("Select Document"));
+                $.each(json, function (key, value) {
+                    $('#shipping_address')
+                        .append($("<option></option>")
+                            .attr("value", value.id)
+                            .text(value.shippingattention + ', ' + value.shippingstreet + ', ' + value.shippingcity + ', ' + value.shippingstate + ', ' + value.shippingpincode))
+                });
+            }
+        })
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).on('keyup', '#sales_order_no', function () {
+        var sales_order_no = $('#sales_order_no').val();
+
+        if (sales_order_no != '') {
+            $.ajax({
+                type: 'POST',
+                url: '#',
+                data: { 'sales_order_no': sales_order_no },
+                dataType: 'json',
+                success: function (data) {
+                    $('#challan_date').val(data.sales_order_details.dc_date_1);
+                    $('#payment_term').val(data.sales_order_details.payment_term);
+                    $('#customer_name').val(data.sales_order_details.customer_name);
+                    //$('#challan_type').val(data.sales_order_details.challan_type);
+                    $('#place_of_supply').val(data.sales_order_details.place_of_supply);
+                    $('#transporter_name').val(data.sales_order_details.transporter_name);
+                    $('#delivery_type').val(data.sales_order_details.delivery_type);
+                    $('#buyer_order_no').val(data.sales_order_details.buyer_order_no);
+                    $('#buyer_order_date').val(data.sales_order_details.buyer_order_date);
+
+                    $('#shipping_address').val(shippingaddress(data.sales_order_details.shippingaddress));
+                    $('#lr_no').val(data.sales_order_details.lr_no);
+                    $('#destination').val(data.sales_order_details.destination);
+                    $('#sales_person').val(data.sales_order_details.sales_person);
+                    $('#freight').val(data.sales_order_details.freight);
+
+                    $.each(data.sales_order_entries, function (index, obj) {
+                        if (index == 0) {
+                            $(`#itemcode_` + index).val(obj.itemcode);
+                            $(`#item_` + index).val(obj.item);
+                            $(`#hsn_` + index).val(obj.hsn);
+                            $(`#qty_` + index).val(obj.qty);
+                            $(`#uom_` + index).val(obj.uom);
+                            $(`#rate_` + index).val(obj.rate);
+                            $(`#discount_` + index).val(obj.discount);
+                            $(`#taxrate_` + index).val(obj.taxrate);
+                            $(`#taxamt_` + index).val(obj.taxamt);
+                            $(`#total_` + index).val(obj.total);
+                        }
+                        else {
+
+                            var my_html = `<tr class="add-row">
+                                    <input type="hidden" name="iid[]" class="iid" value="`+ index + `">
+
+                                    <td><input type="text" class="form-control" name="itemcode_`+ index + `" id="itemcode_` + index + `" value="` + obj.itemcode + `"></td>
+
+                                    <td><input type="text" class="form-control" name="item_`+ index + `" id="item_` + index + `" value="` + obj.item + `" placeholder=" "> </td>
+
+                                    <td><textarea class="form-control" name="hsn_`+ index + `" id="hsn_` + index + `" placeholder=" ">` + obj.hsn + `</textarea></td>
+                                                                    
+                                    <td><input type="text" class="form-control"name="qty_`+ index + `" id="qty_` + index + `" value="` + obj.qty + `" > </td>
+
+                                    <td><input type="text" class="form-control" name="uom_`+ index + `" id="uom_` + index + `" value="` + obj.uom + `"></td>
+                                                                    
+                                    <td><input type="text" class="form-control" name="rate_`+ index + `" id="rate_` + index + `" value="` + obj.rate + `" ></td>
+
+                                    <td><input type="text" class="form-control" name="discount_`+ index + `" id="discount_` + index + `" value="` + obj.discount + `"></td>
+
+                                    <td><input type="text" class="form-control" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
+
+                                    <td><input type="text" class="form-control taxamt" name="taxamt_`+ index + `" id="taxamt_` + index + `" value="` + obj.taxamt + `"></td>
+
+                                    <td><input type="text" class="form-control totalamt" name="total_`+ index + `" id="total_` + index + `" value="` + obj.total + `"></td>
+
+                                    <td class="add-remove text-end">
+                                        <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
+
+                                        <a href="javascript:void(0);" class="remove-btn "><i class="fe fe-trash-2" ></i></a>
+                                    </td>
+                                </tr>`;
+
+                            $("#append_table > tbody ").append(my_html);
+                        }
+                    });
+
+                    $('#subtotal').val(data.sales_order_details.subtotal);
+                    $('#igstper').val(data.sales_order_details.igstper);
+                    $('#cgstper').val(data.sales_order_details.cgstper);
+                    $('#sgstper').val(data.sales_order_details.sgstper);
+                    $('#igst').val(data.sales_order_details.igst);
+                    $('#cgst').val(data.sales_order_details.cgst);
+                    $('#sgst').val(data.sales_order_details.sgst);
+                    $('#total_taxamt').val(data.sales_order_details.total_taxamt);
+                    $('#totalamt').val(data.sales_order_details.totalamt);
+                }
+            })
+        }
+        else {
+            alert("Please enter sales order no");
+        }
+
+    });
+</script>
+
+<script>
+    function test(n) {
+        if (n < 0) return false;
+        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        if (n === 0) return 'Zero Rupees';
+
+        function translate(n) {
+            let word = "";
+            if (n < 10) {
+                word = single_digit[n] + ' ';
+            } else if (n < 20) {
+                word = double_digit[n - 10] + ' ';
+            } else if (n < 100) {
+                const rem = translate(n % 10);
+                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
+            } else if (n < 1000) {
+                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
+            } else if (n < 100000) {
+                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
+            } else if (n < 10000000) {
+                word = translate(Math.floor(n / 100000)).trim() + ' Lakh ' + translate(n % 100000);
+            } else if (n < 1000000000) {
+                word = translate(Math.floor(n / 10000000)).trim() + ' Crore ' + translate(n % 10000000);
+            } else {
+                word = translate(Math.floor(n / 1000000000)).trim() + ' Arab ' + translate(n % 1000000000);
+            }
+            return word;
+        }
+
+        let [integerPart, decimalPart] = n.toString().split('.');
+
+        let result = translate(parseInt(integerPart)).trim() + ' Rupees';
+
+        if (decimalPart) {
+            decimalPart = decimalPart.padEnd(2, '0'); // Ensure it's at least 2 digits
+            result += ' and ' + translate(parseInt(decimalPart)) + ' Paise';
+        }
+
+        return result.trim() + '.';
+    }
+
+    function updateTotalInWords() {
+        const totalAmt = parseFloat(document.getElementById('totalamt').value);
+        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
+        document.getElementById('totalamt_word').value = totalAmtInWords;
+    }
+
+    window.onload = function() {
+        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
+        updateTotalInWords(); // Update on page load
+    };
+</script>
+
+<!-- 
+<script>
+    function test(n) {
+        if (n < 0) return false;
+        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        if (n === 0) return 'Zero';
+
+        function translate(n) {
+            let word = "";
+            if (n < 10) {
+                word = single_digit[n] + ' ';
+            } else if (n < 20) {
+                word = double_digit[n - 10] + ' ';
+            } else if (n < 100) {
+                const rem = translate(n % 10);
+                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
+            } else if (n < 1000) {
+                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
+            } else if (n < 1000000) {
+                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
+            } else if (n < 1000000000) {
+                word = translate(Math.floor(n / 1000000)).trim() + ' Million ' + translate(n % 1000000);
+            } else {
+                word = translate(Math.floor(n / 1000000000)).trim() + ' Billion ' + translate(n % 1000000000);
+            }
+            return word;
+        }
+
+        let [integerPart, decimalPart] = n.toString().split('.');
+
+        let result = translate(parseInt(integerPart)).trim();
+
+        if (decimalPart) {
+            result += ' and ' + translate(parseInt(decimalPart)) + ' Cents';
+        }
+
+        return result.trim() + '.';
+    }
+
+    function updateTotalInWords() {
+        const totalAmt = parseFloat(document.getElementById('totalamt').value);
+        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
+        document.getElementById('totalamt_word').value = totalAmtInWords;
+    }
+
+    window.onload = function() {
+        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
+        updateTotalInWords(); // Update on page load
+    };
+</script> -->
+
+
+<script>
+    // Function to validate email
+    function isValidEmail(email) {
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    }
+
+    // Add an event listener for input changes
+    document.getElementById('contact_person_email').addEventListener('input', validateEmail);
+
+    // Function to validate email and show/hide error message
+    function validateEmail() {
+        var emailInput = document.getElementById('contact_person_email').value;
+        var emailErrorMessage = document.getElementById('email-error-message');
+
+        // Check if the email is valid
+        var isValid = isValidEmail(emailInput);
+
+        // Display or hide the error message based on validation result
+        if (!isValid && emailInput !== "") {
+            emailErrorMessage.style.display = 'inline';
+        } else {
+            emailErrorMessage.style.display = 'none';
+        }
+    }
+</script>
+{% endblock main_content %}

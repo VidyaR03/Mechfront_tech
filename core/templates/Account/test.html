@@ -1,0 +1,548 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+
+<style>
+    /* Inactive tab styles */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #ccc;
+        /* Faint gray color for inactive tabs */
+    }
+
+    /* Active tab style */
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+        /* Black color for active tab */
+    }
+</style>
+{% endblock custom_css %}
+
+
+{% block main_content %}
+
+<div class="page-wrapper" style="min-height: 638px;" data-select2-id="11">
+    <div class="content container-fluid" data-select2-id="10">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title"> <a href="#"
+                            style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title=""
+                                data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Add Expense Advice No
+                    </h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="estimates.html">Estimate</a></li>
+                        <li class="breadcrumb-item active">Add Estimate</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row" data-select2-id="9">
+            <div class="col-md-12" data-select2-id="8">
+                <div class="card" data-select2-id="9">
+                    <div class="card-body" data-select2-id="8">
+                        <form class="invoices-form" method="post" id="invoice_form"
+                        action="{% url 'add_expense_advice_data'%}" enctype="multipart/form-data"
+                        autocomplete="off">                           
+                        <div class="row" data-select2-id="6" onautocomplete="off">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label style="color:#f00"> Deposit To </label>
+                                        <select class="form-select" name="ea_deposit" id="ea_deposit" required>
+                                            <option value="" disabled selected>Select Deposite</option>
+                                            {% for item in vendor_name %}
+                                            <option value="{{ item.company_name}}">{{ item.company_name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2" data-select2-id="7">
+                                    <div class="form-group" data-select2-id="6">
+                                        <label style="color:#f00"> Vendor </label>
+                                        <select class="form-select" name="vendor" id="vendor" required>
+                                            <option value="" disabled selected>Select Vendor</option>
+                                            {% for item in vendor_name %}
+                                            <option value="{{ item.id }}">{{item.company_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group"> <label style="color:#f00">Date</label>
+                                        <div class="form-group">
+                                            <input type="date" class="form-control" name="ea_date" placeholder="Date"
+                                                required value="{{current_date | date:'Y-m-d'}}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Payment Mode</label>
+                                        <div>
+                                            <select class="form-control " name="ea_payment_mode" id="ea_payment_mode">
+                                                <option value="cash">Cash</option>
+                                                <option value="cheque">Cheque</option>
+                                                <option value="credit_card">Credit Card</option>
+                                                <option value="bank_transfer">Bank Transfer</option>
+                                                <option value="others">Others</option>
+                                                <option value="online">Online</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label style="color:#f00">Mobile</label>
+                                        <div>
+                                            <input type="number" name="ea_mobile" id="ea_mobile" class="form-control"
+                                            placeholder="Mobile" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Is Balance Only? </label>
+                                        <div>
+                                            <input type="checkbox" name="ea_balance" id="ea_balance">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label style="color:#f00"> Amount</label>
+                                        <input type="text" class="form-control" name="ea_amount" id="ea_amount"
+                                        placeholder="Amount">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label style="color:#f00"> Expense Advice No</label>
+                                        <input type="text" class="form-control" name="ea_expense_advice_no"
+                                        id="ea_expense_advice_no" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Bank Charges (If any) </label>
+                                        <input type="text" class="form-control" name="ea_bank_charges"
+                                        id="ea_bank_charges" required>                                  
+                                    </div>
+                                </div>
+                                <div class="col-md-2 cheque_no" style="display: none;">
+                                    <div class="form-group">
+                                        <label>DD/Cheque No </label>
+                                        <input type="text" class="form-control" name="ea_cheque_no"
+                                        id="ea_cheque_no" placeholder="Cheque Number" required>                                    </div>
+                                </div>
+                                <div class="col-md-2 cheque_date" style="display: none;">
+                                    <div class="form-group">
+                                        <label>DD/Cheque Date</label>
+                                        <input type="date" class="form-control" name="ea_cheque_date"
+                                        id="ea_cheque_date" placeholder="Cheque Date">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Reference# </label>
+                                        <div>
+                                            <input type="text" class="form-control" name="ea_reference"
+                                            id="ea_reference" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>PO No. </label>
+                                        <div>
+                                            <input type="text" class="form-control" name="ea_po_no" id="ea_po_no"
+                                            required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <hr>
+                            <div class="col-lg-12 pt11">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Vendor</th>
+                                                <th>Invoice Number</th>
+                                                <th>Invoice Amount</th>
+                                                <th>Expense Advice No</th>
+                                                <th>Due Amount </th>
+                                                <th>Payment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="show_tmp_data">
+                                           
+                                        </tbody>
+                                    </table>
+                                    <div class="nobi"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <hr>
+                                        </div>
+                                        <div class="col-lg-7 col-md-6 pt11">
+                                            <div class="invoice-fields">
+                                                <h4 class="field-title"> Note..</h4> <textarea class="form-control"
+                                                    name="ea_note" id="note"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-5 col-md-6 pt11">
+                                            <div class="invoice-total-card">
+                                                <div class="invoice-total-box">
+                                                    <div class="invoice-total-inner">
+
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <p>Total </p>
+                                                            </div>
+                                                            <div class="col-lg-6 ">
+                                                                <input type="text" class="utrt1" name="ea_total" id="ea_total"
+                                                                    readonly="">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <p> Amount Paid</p>
+                                                            </div>
+                                                            <div class="col-lg-6 ">
+                                                                <input type="text" class="utrt1" name="ea_amount_received"
+                                                                    id="ea_amount_received" readonly="">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <p>Amount Used For Payments</p>
+                                                            </div>
+                                                            <div class="col-lg-6 ">
+                                                                <input class="utrt1" type="text" name="ea_amount_used"
+                                                                    id="ea_amount_used">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="invoice-total-footer">
+                                                            <h4>Amount in excess<input class="utrt1" type="text"
+                                                                    name="ea_amount_excess" id="ea_amount_excess" readonly="">
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="upload-sign">
+                                                    <div class="form-group float-end mb-0"> <button
+                                                            class="btn btn-primary" type="submit">Cancle</button> </div>
+                                                    <div class="form-group float-end mb-0"> <button
+                                                            class="btn btn-primary" type="submit" id="btn_submit"
+                                                            name="btn_submit">Save </button> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row col-sm-6 p-5">
+                                        <div class="success_message row"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).on('change', '#vendor', function () {
+            //alert();return;
+            //$('#update').removeAttr('disabled');
+            //$('.table-wrap').show();
+            var vendor = $('#vendor').val();
+            //alert(vendor);
+            //alert(divi);return;
+            var expensemadeno = $('#expensemadeno').val();
+            $.ajax({
+                type: 'ajax',
+                method: 'post',
+                url: '/getexpenseadvice/',
+                data: { 'vendor': vendor },
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data.length,'ppppppppp');
+                    var html = '';
+                    var i;
+                    $("#existing_row_count").val(data.length);
+
+                    for (i = 0; i < data.length; i++) {
+                        totalamt = data[i].totalamt;
+                        payments = data[i].payments;
+                        dueamount = totalamt - payments;
+                        html += '<tr class="tblro">' +
+                            '<td><input class="no-outline" id="invoicedate' + i + '" name= "invoicedate' + i + '" value="' + data[i].ex_invoice_date + '"></td>' +
+
+                            '<td><input class="no-outline" id="vendorname' + i + '" name= "vendorname' + i + '" value="' + data[i].ex_vendor_name + '"></td>' +
+
+                            '<td><input class="no-outline" id="invoiceno' + i + '" name= "invoiceno' + i + '" value="' + data[i].id + '"></td>' +
+
+                            '<td><input class="no-outline" id="invoiceamount' + i + '" name= "invoiceamount' + i + '" value="' + data[i].all_total + '"></td>' +
+
+                            '<td><input class="no-outline" id="expensemadeno' + i + '" name= "expensemadeno' + i + '" value="' + expensemadeno + '"></td>' +
+
+                            '<td><input class="no-outline" id="dueamount' + i + '" name= "dueamount' + i + '" value="' + dueamount + '" size="8"><span> <a style="color:blue; cursor: pointer;" onclick="dueamt(\'' + i + '\');" >(Pay Full)</a></span></td>' +
+
+                            '<td>' + '<input class="payment" name="payment' + i + '" id="payment' + i + '" onkeyup="paymenti(\'payment_' + i + '\');"></td>' +
+                            '</tr>';
+                    }
+                    $('#show_tmp_data').html(html);
+                    if (html == '') {
+                        $('.nobi').html('There is no Expense Applied For this payment');
+                    }
+                    else {
+                        $('.nobi').html('');
+                    }
+
+                    //$('.nobi').html('There is no Bill Applied For this payment');
+
+                },
+                error: function () {
+                    alert('There is no Expense Applied For this payment');
+                    $('.nobi').html('There is no Expense Applied For this payment');
+                }
+
+            });
+        });
+
+        function paymenti(inputname) {
+            var sum = 0;
+            $(".payment").each(function () {
+                sum += +this.value;
+            });
+            //alert(sum);
+
+            $('#total').val((sum).toFixed(2));
+            $('#amount_received').val((sum).toFixed(2));
+            $('#amount_used').val((sum).toFixed(2));
+
+            //alert(inputname);
+            input = inputname.split("_");
+            id_val = input[1];
+            //alert(id_val);
+
+            dueamount = Number($('#dueamount' + id_val).val());
+            //alert(dueamount);
+
+            payment = Number($('#payment' + id_val).val());
+            //alert(payment);
+            $('#amount').val(payment);
+
+            if (payment > dueamount) {
+                $('#payment' + id_val).val('0');
+                $('#amount').val('0');
+            }
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+        function dueamt(inputname) {
+            //alert(inputname);
+            i = inputname;
+            //alert(i);
+
+            dueamount = $('#dueamount' + i).val();
+            //alert(dueamount);
+
+            $('#payment' + i).val(dueamount);
+
+            var sum = 0;
+            $(".payment").each(function () {
+                sum += +this.value;
+            });
+            //alert(sum);
+
+            $('#amount').val((sum).toFixed(2));
+            $('#total').val((sum).toFixed(2));
+            $('#amount_received').val((sum).toFixed(2));
+            $('#amount_used').val((sum).toFixed(2));
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#expense_made_form").ajaxForm({
+                beforeSend: function () {
+                    $('#btn_submit').prop('disabled', true);
+                    $('.form_error_msg').html('');
+                    $('.success_message').html('<br><div class="alert alert-info">Data analyzing...please wait...</div>');
+                },
+                uploadProgress: function (event, position, total, percentComplete) {
+                    //albumprogressbar.width(percentComplete + '%');
+                },
+                beforeSubmit: function () {
+                    return $("#expense_made_form").valid(); // TRUE when form is valid, FALSE will cancel submit
+                },
+                complete: function (response) {
+                    //alert(response);
+                    var vendor = $("#vendor").val();
+                    var amount = $("#amount").val();
+
+                    if (vendor == '') {
+                        alert('please Enter vendor')
+                    }
+                    else if (amount == '') {
+                        alert('Please Enter Amount')
+                    }
+                    else {
+
+                        $('.paym').each(function (i, obj) {
+                            //alert(i);
+
+                            var deposit = $("#deposit").val();
+                            var vendor = $("#vendor").val();
+                            var date = $("#date").val();
+                            var payment_mode = $("#payment_mode").val();
+                            var mobile = $("#mobile").val();
+                            var balance = $("#balance").val();
+                            var amount = $("#amount").val();
+                            var bank_charges = $("#bank_charges").val();
+                            var cheque_no = $("#cheque_no").val();
+                            var cheque_date = $("#cheque_date").val();
+                            var reference = $("#reference").val();
+                            var note = $("#note").val();
+                            var total = $("#total").val();
+                            var amount_received = $("#amount_received").val();
+                            var amount_used = $("#amount_used").val();
+                            var amount_excess = $("#amount_excess").val();
+                            var expensemadeno = $("#expensemadeno").val();
+
+                            if ($("#balance").is(':checked')) {
+                                var balance = 'Checked';
+                            }
+                            else {
+                                var balance = 'UnChecked';
+                                //alert('unchecked');
+                            }
+
+                            //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
+
+                            $.post('#', { deposit: deposit, vendor: vendor, date: date, payment_mode: payment_mode, mobile: mobile, balance: balance, amount: amount, bank_charges: bank_charges, cheque_no: cheque_no, cheque_date: cheque_date, reference: reference, note: note, total: total, amount_received: amount_received, amount_used: amount_used, amount_excess: amount_excess, expensemadeno: expensemadeno }, function (data) {
+                                //alert('aaaa'); return;
+                            });
+
+
+                        });
+
+                        $('.tblro').each(function (i, obj) {
+                            //alert(i);
+                            var invoicedate = $("#invoicedate" + i).val();
+                            var vendorname = $("#vendorname" + i).val();
+                            var invoiceno = $('#invoiceno' + i).val();
+                            var invoiceamount = $('#invoiceamount' + i).val();
+                            var dueamount = $('#dueamount' + i).val();
+                            var payment = $('#payment' + i).val();
+                            var expensemadeno = $('#expensemadeno' + i).val();
+
+                            if ($("#balance").is(':checked')) {
+                                var balance = 'Checked';
+                            }
+                            else {
+                                var balance = 'UnChecked';
+                                //alert('unchecked');
+                            }
+
+                            //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
+
+                            $.post('#', { invoicedate: invoicedate, vendorname: vendorname, invoiceno: invoiceno, invoiceamount: invoiceamount, dueamount: dueamount, payment: payment, expensemadeno: expensemadeno }, function (data) {
+                                //alert('aaaa'); return;
+                            });
+
+
+                        });
+
+                        //alert('Payment Received SucessFull');
+
+                        var temp = 'success';
+
+                        if (temp == 'success') {
+                            //alert('success');
+                            $('.success_message').show().html('<div class="alert alert-info"><strong>Expense Made Added Successfully. </strong></div>');
+                            setTimeout(function () {
+                                window.location.href = '#';
+                            }, 3000);
+                        }
+                        else if (temp.status == 'error') {
+                            alert('error');
+                            $('#btn_submit').prop('disabled', false);
+                            $('.success_message').html('');
+                            $.each(temp.errors, function (key, val) {
+                                $('.' + key).html(val);
+                            });
+                        }
+
+                    }
+
+
+                }
+            });
+
+            $('.cheque_date').hide();
+            $('.cheque_no').hide();
+
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+
+    <script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+
+    <script type="text/javascript">
+        $("#payment_mode").on("change", function () {
+            $payment_mode = $('#payment_mode').val();
+
+            if ($payment_mode == 'Cheque') {
+                $('.cheque_no').show();
+                $('.cheque_date').show();
+            }
+            else {
+                $('.cheque_no').hide();
+                $('.cheque_date').hide();
+            }
+        })
+    </script>
+
+
+
+</div>
+</div>
+
+<div class="sidebar-overlay"></div>
+
+
+
+<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+
+<script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+
+
+</body>
+
+{% endblock main_content %}

@@ -1,0 +1,184 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+<style type="text/css">
+    .no-outline {
+        border-top-style: hidden;
+        border-right-style: hidden;
+        border-left-style: hidden;
+        border-bottom-style: hidden;
+
+    }
+
+    .no-outline:focus {
+        display: none;
+    }
+
+    #quotation_pdf {
+        padding-right: 20px;
+    }
+
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        text-align: center;
+    }
+
+    div.brand_name {
+        text-transform: uppercase;
+    }
+</style>
+{% endblock custom_css %}
+{% block main_content %}
+<body>
+    <div class="col-xl-7 mx-auto text-center" style="padding-left: 200px;">
+        <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">
+                    <a href="{% url 'payment_received_list'  %}" style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> View Payment Received
+
+                    <button id="download-button" class="btn btn-white text-black-50 shadow-none" style="float: right;"><i class="fa fa-download"></i> Download</button>
+                    
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="card" id="payment_received_pdf">
+        <div class="card-body" style="font-family: Calibri;">
+            <div class="invoice-item">
+                <div class="invoice-item">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="invoice-info"> 
+                                <table width="100%" border="0" cellspacing="0" cellpadding="5">
+                                    <tbody><tr>
+                                        <td>HDFC BANK LTD | Priority Payment </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border:1px solid #333;">You have authorised this payment</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tbody><tr>
+                                                    <td width="70%"><strong>Pay From</strong><br>
+                                                  {{deposit_name}}<br>
+                                                   </td>
+                                                    <td width="30%" valign="top">Reference number :  {{payment.payment_received_reference}}   <br>
+                                                  Transaction Type : {{payment.payment_received_payment_mode}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Pay To</strong><br>
+                                                    {{deposit_to}} <br>
+                                                    </td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                            </tbody></table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="2">
+                                                <tbody><tr>
+                                                    <td width="50%">Amount</td>
+                                                    <td width="53%" valign="top">INR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Expected Value Date</td>
+                                                    <td>{{payment.payment_received_cheque_date}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Electronic Payment Type</td>
+                                                    <td>{{payment.payment_received_payment_mode}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Beneficiary Bank Location</td>
+                                                    <td>INDIA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Reference No.</td>
+                                                    <td>{{payment.payment_received_reference}}</td>
+                                                </tr>
+                                               
+                                                <tr>
+                                                    <td>Beneficiary Bank</td>
+                                                    <td>ICICI BANK LTD </td>
+                                                </tr>
+                                               
+                                            </tbody></table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="3">
+                                              
+
+                                            <tbody><tr>
+                                                <td style="border-top:1px solid #333;"><strong>DOCUMENT</strong></td>
+                                                
+                                                <td style="border-top:1px solid #333;"><strong>PAYMENT DATE</strong></td>
+                                                <td style="border-top:1px solid #333;"><strong>PAYMENT AMOUNT</strong></td>
+                                                <td style="border-top:1px solid #333;"><strong>DUE AMOUNt</strong></td>
+                                            </tr>
+                                              <tr>
+                                                
+                                                <td style="border-top:1px solid #333;"></td>
+
+                                                <td style="border-top:1px solid #333;">{{date}}</td>
+
+                                                <td style="border-top:1px solid #333;">{{invoice_amt}}
+                                                  
+                                                </td>
+
+                                                <td style="border-top:1px solid #333;">{{dueamount|floatformat:2}}
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="border-top:1px solid #333;"><strong>SUM TOTAL </strong></td>
+                                                
+                                                <td style="border-top:1px solid #333;">&nbsp;</td>
+
+                                                <td style="border-top:1px solid #333;">{{invoice_amt}}
+                                                </td>
+
+                                                <td style="border-top:1px solid #333;">{{dueamount|floatformat:2}}                                                </td>
+                                            </tr>
+                                            </tbody>
+
+                                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+              <br>
+            </div>
+        </div>
+        
+    </div>
+</div>
+</body>
+{% endblock main_content %}

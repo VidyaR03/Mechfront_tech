@@ -1,0 +1,161 @@
+{% extends 'dashboard/base_template.html' %}
+    {% block custom_css %}
+        {% block page_title %}
+        {% endblock page_title %}
+        <style>
+            .custom-error {
+                max-width: 300px;
+                /* Adjust the width to your desired value */
+                margin: 0 auto;
+                /* Add this line to center the element */
+                text-align: center;
+                /* Add this line to center the text inside the element */
+              }
+              .input-group-text {
+                cursor: pointer;
+              }
+              .grey-card {
+                background-color:LightGray;
+            }
+            .negative-padding {
+              margin-top: -60px; 
+          }
+         
+    
+       
+          
+
+        </style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
+    <style>
+      .right-aligned {
+          position: fixed;
+          top: 20px; /* Adjust the top position as needed */
+          right: 20px; /* Adjust the right position as needed */
+      }
+  </style>
+{% block main_content %}<div class="page-wrapper" data-select2-id="8" style="min-height: 432px;">
+  <div class="content container-fluid" data-select2-id="7">
+    
+
+<div class="row">
+    <div class="col-sm-12">
+       <div class="card card-table">
+          <div class="card-header">
+             <div class="col-lg-12">
+                <div class=" row">
+                   <div class="col-lg-8">
+                      <h3 class="card-title"><a href="#" style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Account Payable Summary Details</h3>
+                   </div>
+
+                   <div class="col-lg-4" style="text-align: right;">
+                      <button id="download-button" class="btn btn-white text-black-50 shadow-none" onclick="printDiv('account_payable_summary_details_pdf')"><i class="fa fa-download"></i> Download</button>
+                   </div>
+                   
+                </div>
+             </div>
+          </div>
+
+          <div id="account_payable_summary_details_pdf">
+             <div class="card-body">
+                <div class="rport">
+                   <h2>M/S KEYMECH TECHNOLOGIES</h2>
+                   <h3>
+                     {{customer.company_name}}</h3>
+                   <h3 style="font-size: 20px;">Account Payable Summary Details</h3>
+                    <b> From </b>&nbsp;{{ from_date}} &nbsp; <b>To</b> &nbsp; {{ to_date }}
+                </div>
+             </div>
+             <div class="table-responsive">
+                <table class="table table-center table-hover  ">
+                   <thead class="thead-light">
+                      <tr role="row">
+                         <th>SR.NO.</th>
+                         <th>INVOICE NO.</th>
+                         <th>INVOICE DATE</th>
+                         <th>DUE DATE</th>
+                         <th>INVOICE AMOUNT</th>
+                         <th>DUE AMOUNT</th>
+                         <th>DUE DAYS</th>
+                      </tr>
+                   </thead>
+                   <tbody>
+                    {% for data in ven_entries %}                                 
+                    <tr>
+                     <td>{{ forloop.counter }}</td> 
+
+                            <td><a href="" style="color:blue;">{{ data.invoice_number }}</a></td>
+                            <td>{{data.date|date:"j F Y"}}</td>
+                            
+                            <td>{{data.due_date|date:"j F Y"}}</td>
+                            <td><input type="text" class="amount no-outline" name="amount" id="amount" value="{{data.amount}}" size="10" style="text-align: right;"></td>
+
+                            <td><input type="text" class="dueamount no-outline" name="dueamount" id="{{data.due_amt}}" value="0.00" size="10" style="text-align: right;"></td>
+
+                            <td>{{data.due_days}} </td>
+                         
+                      </tr>
+                      {%  endfor %}
+                                                          
+                      <tr>
+                        <td colspan="2"><strong>TOTAL</strong></td>
+                        <td></td>
+                         <td></td>
+                         <td><b><input type="text" class="total_amount no-outline" name="total_amount" id="total_amount" size="10" style="text-align: right;"></b></td>
+
+                         <td><b><input type="text" class="total_dueamount no-outline" name="total_dueamount" id="total_dueamount" size="10" style="text-align: right;"></b></td>
+                         <td></td>
+                      </tr>
+                   </tbody>
+                </table>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+</div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() 
+    {
+        var sum = 0;
+        $(".dueamount").each(function()
+        {
+          sum += +this.value;
+        });
+        //alert(sum);
+
+        $('.total_dueamount').val((sum).toFixed(2));
+
+        var sum = 0;
+        $(".amount").each(function()
+        {
+          sum += +this.value;
+        });
+        //alert(sum);
+
+        $('.total_amount').val((sum).toFixed(2));
+
+    });
+ </script>
+
+
+<script>
+
+    function printDiv(divId) {
+       var printContents = document.getElementById(divId).innerHTML;
+       var originalContents = document.body.innerHTML;
+  
+       document.body.innerHTML = printContents;
+  
+       window.print();
+  
+       document.body.innerHTML = originalContents;
+  }
+  
+  </script>
+  {% endblock main_content %}
+  

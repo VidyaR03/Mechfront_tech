@@ -1,0 +1,436 @@
+
+<style>
+
+    @media print {
+                @page {
+                    size: A4;
+                    margin: 5px;
+                }
+    
+                body {
+                  
+                    font-size: 11px;
+                    font-family: calibri;
+                }
+           
+            }
+            
+            table {
+                border: 1px solid black;
+                border-collapse: collapse;
+                
+                font-family: 'Calibri';
+                line-height: 1.2;
+            }
+            td {
+                border: 1px solid black;
+                border-collapse: collapse;
+                padding-left:5px;
+                font-family: 'calibri';
+                padding: 4px 10px;
+    
+            }
+    
+            .item_data td{
+                border-bottom: none;
+                border-top: none;
+                height: 12px;
+            }
+            table.signtbl {
+      width: 100%; /* Ensures the table takes full width */
+      border: none;
+    }
+    
+    table.signtbl tr td {
+      padding: 2px; /* Removes padding from table cells */
+      text-align: center; /* Centers text within cells */
+      border: none; /* Removes borders inside the table */
+    }
+    .other_tnx td{
+    
+    border-top: none;
+    border-bottom: none;
+    padding: 0;
+    padding-right: 5px;
+    }
+    
+    
+    
+            .pdfarea{
+                padding: 100px;
+                padding-top: 0px;
+            }
+    
+            .custom-padding {
+            padding-top: 20px; /* Adjust the padding as needed */
+            padding-bottom: 37px;
+        }
+    </style>
+    
+    <body>
+        
+    <div class="pdfarea-pdf ">
+        <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;">
+            <img src="../../static/assets/img/logo-png.png" style="width: 150px; margin-left:20px; border-radius: 10px;" />
+            <div style="flex-grow: 1; padding-left: 100px;">
+                <span class="bold" style="font-size: 30px; ">PROFORMA INVOICE</span>
+            </div>
+        </div><br>
+        {% for count in count_page %}
+        <!-- <h2 style="text-align: center;">PROFORMA INVOICE </h2> -->
+            <div> 
+                <table style="width: 100%;border-bottom: 0px;">
+            
+                <tr>
+                    <td rowspan="2"colspan="2"><strong class="customer-text" style="font-size: 18px; color: #000; font-weight: 600;padding-bottom:5px; display: block;">M/S KEYMECH TECHNOLOGIES<br>
+                    </strong>
+                    13, Jagdish Nagar Jwalapur,<br>
+                    Haridwar,Uttarakhand,249407,<br> 
+                             <span class="label"><b>GSTIN/UIN</b></span>: <span class="content">05AAUPG1246N1ZE</span><br>
+                             <span class="label"><b>PAN</b></span>: <span class="content">CVSPG7178L</span><br>
+                            <span class="label"><b>PLACE OF SUPPLY</b></span>: <span class="content">Uttarakhand</span><br>
+                             <span class="label"><b>STATE CODE</b></span>: <span class="content">09</span><br>
+                             <span class="label"><b>EMAIL</b></span>: <span class="content">mechfrontindia@gmail.com, vibhor@mechfront.com</span><br>
+                             <span class="label"><b>CONTACT</b></span>: <span class="content">+91-8171467840</span><br>
+                             
+                    </td>
+                    
+                    <td class="custom-padding" colspan="3" ><b>PROFORMA INVOICE NO:</b><br><span>{{invo.pi_number}}</span> </td>
+                    <td class="custom-padding" colspan="3"  ><b>DATED</b><br>{{invo.invoice_date|date:"d-m-Y"}}</td>
+                </tr>
+                <tr>
+                    <td class="custom-padding" colspan="3" style="vertical-align: top;"><b> DC NO: </b>{{invo.invoice_delivery_no}} <br>
+                        <!-- Date: {{invo.invoice_delivery_challan_date|date:"d-m-Y"}} -->
+                    </td>
+                    <td class="custom-padding" colspan="3" style="vertical-align: top;"><b> MODE/TERMS OF PAYMENT:</b>	<br>{{invo.invoice_payment_terms}}
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td rowspan="3" colspan="2" > <b>BILL TO</b></p>
+                        <p><b>{{company_name}}</b>
+                            {{bill_street}}{{bill_city}}{{bii_com_state}}{{bill_pincode}}</p>
+                    
+                             <span class="label"><b>GSTIN/UIN</b></span>: <span class="content">{{bill_gst_uin}}</span><br>
+                             <span class="label"><b>CONTACT</b></span>: <span class="content">{{bill_contact_number}}</span><br>
+                             <span class="label"><b>STATE</b></span>: <span class="content">{{bii_com_state}}</span><br>
+                         </p>
+                    </td>
+                    <td  colspan="3" ><b>BUYER'S ORDER N0:</b> <br> {{invo.invoice_buyer_order_no}}</td>
+                    <td colspan="3" ><b>DATED:</b> <br>{{invo.invoice_buyer_order_date|date:"d-m-Y"}}</td>
+                </tr>
+                <tr>
+                    <td  colspan="3" ><b>LR No:</b><br> {{invo.invoice_landing_LR_RR_No}}</td>
+                    <td colspan="3" ><b> DESTINATION: </b><br>{{invo.invoice_destination}}</td>
+                </tr>
+                <tr>
+                    <td  colspan="3" ><b>DISPATCHED THROUGH:</b><br>{{invo.invoice_dispatch.name}}</td>
+                    <td  colspan="3" > <br>
+                    </td>
+                </tr>
+             
+                <tr>
+                    <td colspan="2" style="border-bottom: 0px">
+                        <p><b>SHIP TO</b></p>
+                        <p>
+                            <b>{{company_name|upper}}</b>
+                     </p>
+                          <p >{{shipping_1_street}}, {{shipping_1_city}}, {{shipping_1_state}}, {{shipping_1_pincode}}</p>
+                        <p style="">
+                              <span class="label"><b>GSTIN/UIN</b></span>: <span class="content">{{shipping_1_gst_uin}}</span><br>
+                              <span class="label"><b>CONTACT</b></span>: <span class="content">{{shipping_1_contact_number}}</span><br>
+                              <span class="label"><b>STATE</b></span>: <span class="content">{{shipping_1_state}}</span><br>
+                         </p>
+                              <!-- State Name : Tamil Nadu, Code : 33<br>
+                              Place of Supply : Tamil Nadu -->
+                    </td>
+                    <td colspan="6" style="vertical-align: top;"><b>TERMS OF DELIVERY:</b> {{invo.invoice_term_of_delivery}} <br>
+                    <b> EWAY BILL NO.:</b>{{invo.invoice_eway_bill_no}}<br>
+                    <b> LANDING LR-RR NO.:</b> {{invo.invoice_landing_LR_RR_No}}<br>
+                    <b>  VEHICLE NO.:</b> {{invo.invoice_vehicle_no}}<br>
+                    </td>
+                   </tr>
+            
+                <tr>
+                    <td style="width:12%;text-align: center;font-weight: 600;" >Item Code</td>
+                    <td style="width:46.2%;text-align: center;font-weight: 600;">Description of Goods</td>
+                    <td style="text-align: center;font-weight: 600;">HSN/SAC</td>
+                    <td style="text-align: center;font-weight: 600;">Quantity</td>
+                    <td style="text-align: center;font-weight: 600;">Rate</td>
+                    <td style="text-align: center;font-weight: 600;">Per</td>
+                    <td style="text-align: center;  white-space: nowrap;font-weight: 600;">Disc. %</td>
+                    <td style="text-align: center;font-weight: 600;">Amount</td>
+                </tr>
+               
+            {% for items in item_list %}
+            {% if forloop.counter == count %}
+                {% for j in items %}
+                    {% if j %}
+        <tr class="item_data">
+        <td style="width:12%;text-align: center;">{{ j.invoice_item_code }}</td>
+        <td>{{ j.invoice_description_goods }} </td>
+        <td>{{ j.invoice_hsn}}</td>
+        <td style="text-align: center;"> {{ j.invoice_qantity}}</td></td>
+        <td style="text-align: center;">  {{ j.invoice_unit_price}}</td>
+        <td style="text-align: center;">{{ j.invoice_uom}}</td>
+        <td style="text-align: center;"> {{ j.invoice_discount|floatformat:0}} %</td>
+        <td style="text-align: end;">{{j.invoice_total}}</td>
+        </tr>
+        {% else %}
+        <tr class="item_data">
+       
+        
+    
+    
+        </tr>
+        <!-- <tr class="item_data">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        </tr> -->
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+        
+        <tr class="other_tnx">
+            <td ></td>
+            <td style="text-align: end;">IGST</td>
+            <td > <br><br></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td style="text-align: end;">{{ invo.invoice_igstval }}</td>
+        </tr>
+        <tr class="other_tnx">
+            <td ></td>
+            <td style="text-align: end;">CGST</td>
+            <td > <br><br></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td style="text-align: end;">{{ invo.invoice_cgstval }}</td>
+        </tr>
+        <tr class="other_tnx">
+            <td ></td>
+            <td style="text-align: end;">SGST</td>
+            <td > <br><br></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td style="text-align: end;">{{ invo.invoice_sgstval }}</td>
+        </tr>
+        {% if invo.cn_packaging_forwording_percentage_amt != '0.00' and invo.cn_packaging_forwording_percentage_amt != '0' %}
+    
+        <tr class="other_tnx">
+            <td ></td>
+            <td style="text-align: end;">PACKAGING & FORWORDING ({{invo.cn_packaging_forwording_percentage}}%) <br> (Including GST)</td>
+            <td > <br><br></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td style="text-align: end;">{{ invo.cn_packaging_forwording_percentage_amt }}</td>
+        </tr>
+        {% elif invo.cn_packaging_forwording_amt_amt != '0.00' and invo.cn_packaging_forwording_amt_amt != '0' %}
+    
+        <tr class="other_tnx">
+            <td ></td>
+            <td style="text-align: end;">PACKAGING & FORWORDING <br> (Including GST)</td>
+            <td > <br><br></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td style="text-align: end;">{{ invo.cn_packaging_forwording_amt_amt }}</td>
+        </tr>
+        {% endif %}
+    
+        {% if invo.cn_freight_amount != '0.00' and invo.cn_freight_amount != '0' %}
+    
+        <tr class="other_tnx">
+            <td ></td>
+            <td style="text-align: end;">FREIGHT<br> (Including GST)</td>
+            <td > <br><br></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td style="text-align: end;">{{ invo.cn_freight_amount }}</td>
+        </tr>
+        {% elif invo.cn_freight_percentage_amt != '0.00' and invo.cn_freight_percentage_amt != '0' %}
+    
+        <tr class="other_tnx">
+            <td ></td>
+            <td style="text-align: end;">FREIGHT ({{ invo.cn_freight_percentage}}%) <br> (Including GST)</td>
+            <td > <br><br></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td style="text-align: end;">{{ invo.cn_freight_percentage_amt }}</td>
+        </tr>
+        {% endif %} 
+                <tr>
+                    <td></td>
+                    <td style="text-align: center;font-weight: 600;">Total</td>
+                    <td></td>
+                    <td style="text-align: center;font-weight: 600;"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: end; white-space: nowrap;font-weight: 600;">₹{{ invo.invoice_total }}</td>
+                </tr>
+                <tr>
+                    <td colspan="7" >Amount Chargeable (in words)- {{ invo.cn_total_amt_word }} </td>
+                    <td style="text-align: end;">E. & O.E</td>
+                </tr>
+        
+            <tr>
+                <td rowspan="2" style="text-align: center;font-weight: 600;">HSN/SAC</td>
+                <td rowspan="2" style="text-align: center;font-weight: 600;">Taxable Value</td>
+        
+                <td colspan="2" style="text-align: center;font-weight: 600;">IGST</td>
+        
+                <td colspan="2" style="text-align: center;font-weight: 600;">CGST</td>
+        
+                <td colspan="2" style="text-align: center;font-weight: 600;">SGST</td>
+                   
+        
+            </tr>
+            <tr>
+                     <!-- IGST Rate and Amount -->
+                     <td style="text-align: center;font-weight: 600;">Rate</td>
+                     <td style="text-align: center;font-weight: 600;">Amount</td>
+             
+                     <!-- Central Tax Rate and Amount -->
+                     <td style="text-align: center;font-weight: 600;">Rate</td>
+                     <td style="text-align: center;font-weight: 600;">Amount</td>
+             
+                     <!-- State Tax Rate and Amount -->
+                     <td style="text-align: center;font-weight: 600;">Rate</td>
+                     <td style="text-align: center;font-weight: 600;">Amount</td>
+            </tr>
+        
+            {% for detail in items %}
+    
+            <tr>
+                <td style="text-align: center;font-weight: 600;">{{ detail.invoice_hsn }}</td>
+                    <td style="text-align: center;">{{ detail.invoice_total }}</td>
+    
+                    {% if invo.gst_option == 'Interstate' %}
+                    <td style="text-align: center;font-weight: 600;">{{ detail.half_tax_rate|floatformat:0}} %</td>
+                    <td style="text-align: center;font-weight: 600;">{{ detail.invoice_tax_amount|floatformat:2 }}</td>
+                    <!-- Central and State Tax (for IGST, set to 0) -->
+                        <td style="text-align: center;font-weight: 600;">0 %</td>
+                        <td style="text-align: center;font-weight: 600;">0.00</td>
+                        <td style="text-align: center;font-weight: 600;">0 %</td>
+                        <td style="text-align: center;font-weight: 600;">0.00</td>
+                    
+                    {% else %}
+                    <td style="text-align: center;font-weight: 600;">0 %</td> <!-- IGST is 0 for Intrastate -->
+                    <td style="text-align: center;font-weight: 600;">0.00</td>
+                    
+                    <td style="text-align: center;font-weight: 600;">{{ detail.half_tax_rate|floatformat:0 }} %</td>
+                    <td style="text-align: center;font-weight: 600;">{{ detail.half_tax_amount|floatformat:2 }}</td>
+                    <td style="text-align: center;font-weight: 600;">{{ detail.half_tax_rate|floatformat:0 }} %</td>
+                    <td style="text-align: center;font-weight: 600;">{{ detail.half_tax_amount|floatformat:2 }}</td>
+                    {% endif %}
+            </tr>
+            {% endfor %}
+            <tr>
+                <td style="  text-align: center;font-weight: 600;">TOTAL</td>
+                <td style="  text-align: center;font-weight: 600;">{{ i_total_amount|floatformat:2 }}</td>
+                <td style="text-align: center;font-weight: 600;">-</td>
+                {% if invo.gst_option == 'Interstate' %}
+                <td style="  text-align: center;font-weight: 600;">{{ invo.invoice_igstval|floatformat:2 }}</td>
+                <td style="text-align: center;font-weight: 600;">-</td>
+    
+                <td style="text-align: center;font-weight: 600;">0.00</td> <!-- CGST not applicable -->
+                <td style="text-align: center;font-weight: 600;">-</td>
+    
+                <td style="text-align: center;font-weight: 600;">0.00</td> <!-- SGST not applicable -->
+                        
+                {% else %}
+                <td  style="text-align: center;font-weight: 600;">0.00</td> <!-- SGST not applicable -->
+                <td style="text-align: center;font-weight: 600;">-</td>
+                <td style="text-align: center;font-weight: 600;">{{ invo.invoice_cgstval|floatformat:2 }}</td>
+                <td style="text-align: center;font-weight: 600;">-</td> <!-- IGST not applicable -->
+                <td style="text-align: center;font-weight: 600;">{{ invo.invoice_sgstval|floatformat:2 }}</td>
+                
+    
+                {% endif %}
+            </tr>
+            <tr>
+                <td colspan="8"style="font-size: 10px;
+                    font-weight: 600;">
+                    TERMS AND CONDITIONS:<br>
+                    {{invo.invoice_note}}
+    
+                </td>
+            </tr>
+    
+        
+            <tr>
+                <!-- <td colspan="8"  style="border-bottom: 0px;border-right: 0px;">Tax Amount (in words) :
+                    <span > Indian Rupees {{invo.inv_total_amt_word}}</span>
+                </td> -->
+            </tr>
+                <tr>
+                    <td colspan="2" style=" border-top: 0px;border-right: 0px;border-bottom: 0px;"><b> Remarks: </b><br>
+                        <span >Company's PAN <b>: CVSPG7178L</b></span>
+        
+                    </td>
+                    <td colspan="6" style="border-top: 0px;border-left: 0px;border-bottom: 0px;">Company's Bank Details<br>
+                        <span ><b>Bank Name</b>  <span style="margin-left: 37px;">: Axis Bank Limited</span><br>
+                        <span ><b>A/c No.</b> <span style="margin-left: 58px;"> : 919020042164019 </span><br>
+                        <span ><b>Branch & IFS Code  </b>  : Sector-62, Noida-201301, Uttar Pradesh & UTIB0000723</span>
+                    </td>
+                </tr>
+        
+        
+            
+                    <tr>
+                        <td colspan="2" style=" border-top: 0px;"><u> <b>Declaration </b></u><br>
+                            1. We declare that this invoice shows the actual price of the 
+                            goods described and that all particulars are true and correct<br>
+                            2 We declare that the above material are covered under <br>
+                            subject to Terms & condition of Transit Policy No. 2001/348061179/00/000 valid up to 17.06.2025
+                        </td>
+                        <td colspan="6" style="padding: 0;">
+                            <table class="signtbl">
+                                <tr>
+                                    <td colspan="3"><p style="text-align: end;"><br></p></td>
+                                </tr>
+                                <tr style="height: 20px;">
+                                    <td colspan="3"></td>
+                                </tr>
+                                <tr>
+                                    <td><b > Prepared by</b></td>
+                                    <td> <b >Verified by</b></td>
+                                    <td> <b >Authorised Signatory</b></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                  
+            </table>
+          <div>
+          <div style=" text-align: center;">
+            <span >SUBJECT TO NOIDA JURISDICTION </span> |<span>This is a Computer Generated Invoice </span>
+              
+          </div>
+           </div>
+        
+        </div>
+        {% endfor %} 
+    </div>
+    </body> 

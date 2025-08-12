@@ -1,0 +1,802 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+CRM
+{% endblock %}
+
+{% block custom_css %}
+
+
+<!-- Your HTML and form elements here -->
+
+<!-- Your HTML and form elements here -->
+
+
+
+<!-- Your remaining HTML content -->
+
+
+
+{% endblock custom_css %}
+
+{% block main_content %}
+
+
+         <div class="page-wrapper" style="padding-top:0px;">
+            <div class="content container-fluid" >
+               <div class="page-header">
+                  <div class="row">
+                     <div class="col-sm-12">
+                        <h3 class="page-title"> <a href="{% url 'fn_vendor_List_View' %}" style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a>Add Vendor</h3>
+                     </div>
+                  </div>
+               </div>
+               <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+               <div class="row">
+                  <div class="col-md-12">
+                     <div class="card">
+                        <form method="post" id="vendor_form" action="" autocomplete="off">
+                           <div class="row" style="padding-top: 5px;">
+                              <div class="col-lg-6">
+                                 <div class="card-body">
+                                    
+                                       <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Contact Person:<span style="color: red;">*</span></label>
+                                          <div class="col-lg-9">
+                                             <div class="row">
+                                                <div class="col-lg-3">
+                                                   <select class="form-control" id="gender" name="gender" required>
+                                                      <option value="">--Select--</option>
+                                                      <option value="Mr">Mr.</option>
+                                                      <option value="Mrs">Mrs.</option>
+                                                      <option value="Ms">Ms.</option>
+                                                      <option value="Miss">Miss.</option>
+                                                      <option value="Dr">Dr.</option>
+                                                   </select>
+                                                </div> 
+                                                <!-- <div class="col-lg-9">
+                                                   <input type="text" class="form-control" id="first_name" placeholder="Customer Name" name="customer">
+                                                </div> -->
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" id="first_name" placeholder="Vendor Name" name="contact_person" required>
+                                               </div>
+                                               
+                                            
+                                               
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Company Name:<span style="color: red;">*</span></label>
+                                          <div class="col-lg-9">
+                                             <input type="text" class="form-control" name="company_name" id="company_name" placeholder="Company Name"  onkeyup="displayname()" required>
+                                          </div>
+                                       </div>
+                                       <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Display Name :<span style="color: red;">*</span></label>
+                                          <div class="col-lg-9">
+                                              <!-- Input box for Display Name -->
+                                              <input type="text" name="display_name" class="form-control" id="display_name_input"  readonly>
+                                          </div>
+                                      </div>
+                                       <!-- <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Display Name :<span style="color: red;">*</span></label>
+                                        <div class="col-lg-9">
+                                        </div>
+                                      </div> -->
+                                      <div class="form-group row">
+                                       <label class="col-lg-3 col-form-label">Email Address:<span style="color: red;">*</span></label>
+                                       <div class="col-lg-9">
+                                          <input type="email" class="form-control" name="vendor_email" id="id_email" placeholder="Enter email" required>
+                                          <span id="email-error-message" style="color: red; display: none;">Invalid email address.</span>
+
+                                       </div>
+                                    </div>
+                                      <!-- <div class="form-group col-md-6">
+                                       <label>Email address</label>
+                                       <input type="email" class="form-control" name="vendor_email" placeholder="Enter email" id="id_email" autocomplete="off">
+                                       <span id="email-error-message" style="color: red; display: none;">Invalid email address.</span>
+                                     </div> -->
+
+                                       <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Phone:<span style="color: red;">*</span></label>
+                                          <div class="col-lg-9">
+                                             <div class="row">
+                                                <div class="col-lg-6">
+                                                   <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone" pattern="\d{10}" title="Enter a 10-digit number" required>
+                                                   <span id="phoneError" style="color: red;"></span>
+
+                                                </div>
+                                                <div class="col-lg-6">
+                                                   <input type="text" class="form-control" name="mobile" id="mob_no" placeholder="Mobile" pattern="\d{10}" title="Enter a 10-digit number">
+                                                   <span id="mobileError" style="color: red;"></span>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Website</label>
+                                          <div class="col-lg-9">
+                                             <input type="text" class="form-control" name="website" id="website" placeholder="Website">
+                                          </div>
+                                       </div>
+                                    
+                                       <!-- <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Has GST Registered?</label>
+                                          <div class="col-lg-9">
+                                              <label class="switch">
+                                                  <input type="checkbox" id="toggleGst" checked>
+                                                  <span class="slider round"></span>
+                                              </label>
+                                          </div>
+                                          </div>
+                                      -->
+                                    
+                                 </div>
+                              </div>
+                              <div class="col-lg-6" style=" border-left: 1px solid #ccc;">
+                                 <div class="card-body">
+                                    <ul class="nav nav-tabs nav-tabs-bottom">
+                                       <li class="nav-item"><a class="nav-link active" href="#bottom-tab1" data-bs-toggle="tab">Other Details</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="#bottom-tab2" data-bs-toggle="tab">Address</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Bank Details</a></li>
+                                   </ul>
+                                   
+                                    <!-- <ul class="nav nav-tabs nav-tabs-bottom">
+                                       <li class="nav-item"><a class="nav-link active" href="#bottom-tab1" data-bs-toggle="tab">Other Details
+                                          </a>
+                                       </li>
+                                       <li class="nav-item"><a class="nav-link" href="#bottom-tab2" data-bs-toggle="tab">Address</a></li>
+                                       <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Bank Details</a></li>
+                                    </ul> -->
+                                    <div class="tab-content">
+                                       <div class="tab-pane show active" id="bottom-tab1">
+                                          <div class="row">
+
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">GST Treatment</label>
+                                                <div class="col-lg-9">
+                                                   <select class="form-control " name="gst_treatment">
+                                                      <option value="">Select GST Treatment</option>
+                                                      <option value="Unregistered Business">Unregistered Business</option>
+                                                      <option value="Regular">Regular</option>
+                                                   </select>
+                                                </div>
+                                            </div>
+
+                                             <div class="form-group row gst_no">
+                                                <label class="col-lg-3 col-form-label">GST No.</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="gst_number" id="gst_no_input" placeholder="GST No." pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}">
+                                                   <span id="gstError" style="color: red;"></span>
+                                                </div>
+                                             </div>                       
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">State</label>
+                                                <div class="col-lg-9">            
+
+                                                <select class="form-select" name="state" id="state" aria-placeholder="state">
+                                                    <option value="">State/Province</option>
+                                                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                    <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
+                                                    <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
+                                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                    <option value="Assam">Assam</option>
+                                                    <option value="Bihar">Bihar</option>
+                                                    <option value="Chandigarh">Chandigarh</option>
+                                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                                    <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
+                                                    <option value="Daman and Diu">Daman and Diu</option>
+                                                    <option value="Delhi">Delhi</option>
+                                                    <option value="Goa">Goa</option>
+                                                    <option value="Gujarat">Gujarat</option>
+                                                    <option value="Haryana">Haryana</option>
+                                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                    <option value="Jharkhand">Jharkhand</option>
+                                                    <option value="Karnataka">Karnataka</option>
+                                                    <option value="Kerala">Kerala</option>
+                                                    <option value="Ladakh">Ladakh</option>
+                                                    <option value="Lakshadweep">Lakshadweep</option>
+                                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                    <option value="Maharashtra">Maharashtra</option>
+                                                    <option value="Manipur">Manipur</option>
+                                                    <option value="Meghalaya">Meghalaya</option>
+                                                    <option value="Mizoram">Mizoram</option>
+                                                    <option value="Nagaland">Nagaland</option>
+                                                    <option value="Odisha">Odisha</option>
+                                                    <option value="Other Territory">Other Territory</option>
+                                                    <option value="Puducherry">Puducherry</option>
+                                                    <option value="Punjab">Punjab</option>
+                                                    <option value="Rajasthan">Rajasthan</option>
+                                                    <option value="Sikkim">Sikkim</option>
+                                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                                    <option value="Telangana">Telangana</option>
+                                                    <option value="Tripura">Tripura</option>
+                                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                    <option value="Uttarakhand">Uttarakhand</option>
+                                                    <option value="West Bengal">West Bengal</option>
+                                                 </select>
+  
+                                                </div>
+                                              </div>
+                                              <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">Balance</label>
+                                                <div class="col-lg-9">
+                                                   <input type="number" class="form-control" name="balance" id="balance" placeholder="Balance"   pattern="\d{8}" title="Please enter exactly 8 digits.>
+                                                   <span id="balance" style="color: red;"></span>
+  
+                                                </div>
+                                              </div>   
+                                            
+                                                                    
+
+                                            <div class="form-group row">
+                                              <label class="col-lg-3 col-form-label">PAN Number</label>
+                                              <div class="col-lg-9">
+                                                 <input type="text" class="form-control" name="pan_number" id="pan_number_input" placeholder="PAN Number" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Please enter a valid PAN number">
+                                                 <span id="panError" style="color: red;"></span>
+
+                                              </div>
+                                            </div>
+
+                                          
+                                             
+                                          </div>
+                                       </div>
+                                       <div class="tab-pane" id="bottom-tab2">
+                                          <div class="row">
+                                             <p>
+                                            <strong>Delivery & Billing</strong>
+                                          </p>
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">Company Name:</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="delivery_company_name" id="delivery_company_name" placeholder="Company name">
+                                                </div>
+                                             </div>
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">Street:</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="street" id="street" placeholder="street">
+                                                </div>
+                                             </div>
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">City:</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="city" id="city" placeholder="city">
+                                                </div>
+                                             </div>
+                                             
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">State:</label>
+                                                <div class="col-lg-9">            
+
+                                                   <select class="form-select" name="delivery_state" id="delivery_state" aria-placeholder="state">
+                                                       <option value="">State/Province</option>
+                                                       <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                       <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
+                                                       <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
+                                                       <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                       <option value="Assam">Assam</option>
+                                                       <option value="Bihar">Bihar</option>
+                                                       <option value="Chandigarh">Chandigarh</option>
+                                                       <option value="Chhattisgarh">Chhattisgarh</option>
+                                                       <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
+                                                       <option value="Daman and Diu">Daman and Diu</option>
+                                                       <option value="Delhi">Delhi</option>
+                                                       <option value="Goa">Goa</option>
+                                                       <option value="Gujarat">Gujarat</option>
+                                                       <option value="Haryana">Haryana</option>
+                                                       <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                       <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                       <option value="Jharkhand">Jharkhand</option>
+                                                       <option value="Karnataka">Karnataka</option>
+                                                       <option value="Kerala">Kerala</option>
+                                                       <option value="Ladakh">Ladakh</option>
+                                                       <option value="Lakshadweep">Lakshadweep</option>
+                                                       <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                       <option value="Maharashtra">Maharashtra</option>
+                                                       <option value="Manipur">Manipur</option>
+                                                       <option value="Meghalaya">Meghalaya</option>
+                                                       <option value="Mizoram">Mizoram</option>
+                                                       <option value="Nagaland">Nagaland</option>
+                                                       <option value="Odisha">Odisha</option>
+                                                       <option value="Other Territory">Other Territory</option>
+                                                       <option value="Puducherry">Puducherry</option>
+                                                       <option value="Punjab">Punjab</option>
+                                                       <option value="Rajasthan">Rajasthan</option>
+                                                       <option value="Sikkim">Sikkim</option>
+                                                       <option value="Tamil Nadu">Tamil Nadu</option>
+                                                       <option value="Telangana">Telangana</option>
+                                                       <option value="Tripura">Tripura</option>
+                                                       <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                       <option value="Uttarakhand">Uttarakhand</option>
+                                                       <option value="West Bengal">West Bengal</option>
+                                                    </select>
+     
+                                                   </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">Pincode:</label>
+                                                <div class="col-lg-9">
+                                                   <input type="number" class="form-control" name="pincode" id="pincode" placeholder="pincode" placeholder="pincode" pattern="[0-9]{6}" title="Please enter a valid 6-digit PIN code">
+                                                   <span id="pincodeError_4" style="color: red;"></span>
+
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                             <label class="col-lg-3 col-form-label">GST/UIN:</label>
+                                             <div class="col-lg-9">
+                                                <input type="text" class="form-control" name="gst_uin" id="gst_uin" placeholder="gst_uin" pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}">
+                                                <span class="error-message" id="gstError_1"></span>
+
+                                             </div>
+                                         </div>
+                                         <div class="form-group row">
+                                             <label class="col-lg-3 col-form-label">Contact Number:</label>
+                                             <div class="col-lg-9">
+                                                <input type="number" class="form-control" name="contact_number" id="contact_number" placeholder="contact_number" pattern="\d{10}" title="Enter a 10-digit number">
+                                             </div>
+                                         </div>
+
+
+
+                                         <p>
+                                         <strong> Vendor </strong>
+                                         </p>
+                                         <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label">Company Name</label>
+                                            <div class="col-lg-9">
+                                               <input type="text" class="form-control" name="vendor_company_name" id="vendor_company_name" placeholder="Company Name">
+                                            </div>
+                                         </div>
+                                         <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label">Street:</label>
+                                            <div class="col-lg-9">
+                                               <input type="text" class="form-control" name="vendor_street" id="vendor_street" placeholder="street">
+                                            </div>
+                                         </div>
+                                         <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label">City:</label>
+                                            <div class="col-lg-9">
+                                               <input type="text" class="form-control" name="vendor_city" id="vendor_city" placeholder="city">
+                                            </div>
+                                         </div>
+                                         
+                                         <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label">State:</label>
+                                            <div class="col-lg-9">            
+
+                                             <select class="form-select" name="vendor_state" id="vendor_state" aria-placeholder="state">
+                                                 <option value="">State/Province</option>
+                                                 <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                 <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
+                                                 <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
+                                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                 <option value="Assam">Assam</option>
+                                                 <option value="Bihar">Bihar</option>
+                                                 <option value="Chandigarh">Chandigarh</option>
+                                                 <option value="Chhattisgarh">Chhattisgarh</option>
+                                                 <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
+                                                 <option value="Daman and Diu">Daman and Diu</option>
+                                                 <option value="Delhi">Delhi</option>
+                                                 <option value="Goa">Goa</option>
+                                                 <option value="Gujarat">Gujarat</option>
+                                                 <option value="Haryana">Haryana</option>
+                                                 <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                 <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                 <option value="Jharkhand">Jharkhand</option>
+                                                 <option value="Karnataka">Karnataka</option>
+                                                 <option value="Kerala">Kerala</option>
+                                                 <option value="Ladakh">Ladakh</option>
+                                                 <option value="Lakshadweep">Lakshadweep</option>
+                                                 <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                 <option value="Maharashtra">Maharashtra</option>
+                                                 <option value="Manipur">Manipur</option>
+                                                 <option value="Meghalaya">Meghalaya</option>
+                                                 <option value="Mizoram">Mizoram</option>
+                                                 <option value="Nagaland">Nagaland</option>
+                                                 <option value="Odisha">Odisha</option>
+                                                 <option value="Other Territory">Other Territory</option>
+                                                 <option value="Puducherry">Puducherry</option>
+                                                 <option value="Punjab">Punjab</option>
+                                                 <option value="Rajasthan">Rajasthan</option>
+                                                 <option value="Sikkim">Sikkim</option>
+                                                 <option value="Tamil Nadu">Tamil Nadu</option>
+                                                 <option value="Telangana">Telangana</option>
+                                                 <option value="Tripura">Tripura</option>
+                                                 <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                 <option value="Uttarakhand">Uttarakhand</option>
+                                                 <option value="West Bengal">West Bengal</option>
+                                              </select>
+
+                                             </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label">Pincode:</label>
+                                            <div class="col-lg-9">
+                                               <input type="text" class="form-control" name="vendor_pincode" id="vendor_pincode" placeholder="pincode" pattern="[0-9]{6}" title="Please enter a valid 6-digit PIN code">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                         <label class="col-lg-3 col-form-label">GST/UIN:</label>
+                                         <div class="col-lg-9">
+                                            <input type="text" class="form-control" name="vendor_gst_uin" id="vendor_gst_uin" placeholder="gst_uin" pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}">
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <label class="col-lg-3 col-form-label">Contact Number:</label>
+                                         <div class="col-lg-9">
+                                            <input type="text" class="form-control" name="vendor_contact_number" id="vendor_contact_number" placeholder="contact_number" pattern="\d{10}" title="Enter a 10-digit number">
+                                         </div>
+                                     </div>
+
+
+                  
+                        </div>
+                                       </div>
+                                       <div class="tab-pane" id="bottom-tab3">
+                                          <div class="row">
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label"> Bank Name</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Bank Name">
+                                                </div>
+                                             </div>
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">Account No.</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="account_number" id="account_number" placeholder="Account No." maxlength="17">
+                                                </div>
+                                             </div>
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">Branch Name</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="branch_name" id="branch_name" placeholder="Branch Name">
+                                                </div>
+                                             </div>
+                                             <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label">IFSC Code</label>
+                                                <div class="col-lg-9">
+                                                   <input type="text" class="form-control" name="ifsc_code" id="ifsc_code" placeholder="IFSC Code" pattern="[A-Z]{4}[0][0-9]{6}" title="Please enter a valid 11-character IFSC code">
+                                                   <span id="ifsc_code" style="color: red;"></span>
+
+                                                </div>
+                                             </div>
+                                           
+                                            
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 
+                              </div>
+                            
+                             <div class="add-customer-btns text-end">
+                              <a href="#" class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
+                              <button type="submit" class="btn btn-outline-primary me-1 btn-rounded">Save Vendor</button>
+                             </div>
+                              <div class="row col-sm-6 p-5">
+                                 <div class="success_message row"></div>
+                              </div>
+                              
+                              <br>
+                              </form>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+{% block custom_js %}
+
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const panInput = document.getElementById("pan_number_input");
+    const panError = document.getElementById("panError");
+
+    // Function to validate a PAN number
+    function validatePAN(pan) {
+        // ... your existing validation logic
+    }
+
+    panInput.addEventListener("input", function () {
+        const panValue = this.value.trim().toUpperCase(); // Remove whitespace and convert to uppercase
+        if (!validatePAN(panValue)) {
+            panError.textContent = 'Enter a valid PAN number (e.g., ABCDE1234F).';
+        } else {
+            panError.textContent = '';
+        }
+    });
+});
+
+</script>
+
+<script>
+   // Function to validate email
+   function isValidEmail(email) {
+     var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+     return emailPattern.test(email);
+   }
+
+   // Add an event listener for input changes
+   document.getElementById('id_email').addEventListener('input', validateEmail);
+
+   // Function to validate email and show/hide error message
+   function validateEmail() {
+     var emailInput = document.getElementById('id_email').value;
+     var emailErrorMessage = document.getElementById('email-error-message');
+
+     // Check if the email is valid
+     var isValid = isValidEmail(emailInput);
+
+     // Display or hide the error message based on validation result
+     if (!isValid && emailInput !== "") {
+       emailErrorMessage.style.display = 'inline';
+     } else {
+       emailErrorMessage.style.display = 'none';
+     }
+   }
+</script>
+
+<!-- Fot GST Number -->
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const gstNoInput = document.getElementById("gst_no_input");
+    const gstError = document.getElementById("gstError");
+
+    function validateGSTNo(gstNoValue) {
+        if (gstNoValue.trim() === '') {
+            return true;  // Allow empty value
+        }
+
+        const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
+        return gstNoRegex.test(gstNoValue);
+    }
+
+    gstNoInput.addEventListener("input", function () {
+        const gstNoValue = this.value;
+
+        if (!validateGSTNo(gstNoValue)) {
+            gstError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+        } else {
+            gstError.textContent = "";
+        }
+    });
+});
+
+</script>
+
+
+<!-- For Gst Validation -->
+
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+       const gstInputs = document.querySelectorAll('.gst-input');
+
+       gstInputs.forEach(function(gstInput) {
+           gstInput.addEventListener("input", function () {
+               const gstNoValue = this.value.trim();
+               const errorSpan = this.parentNode.querySelector('.error-message');
+
+               if (gstNoValue === '') {
+                   errorSpan.textContent = ""; // No error message for empty input
+               } else {
+                   const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
+                   if (!gstNoRegex.test(gstNoValue)) {
+                       errorSpan.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+                   } else {
+                       errorSpan.textContent = "";
+                   }
+               }
+           });
+       });
+   });
+</script>
+<!-- For Phone Number -->
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+      const mobileInput = document.getElementById("phone");
+      const mobileError = document.getElementById("phoneError");
+  
+      mobileInput.addEventListener("input", function () {
+          const mobileValue = this.value;
+          const mobileRegex = /^[0-9]{10}$/; // Regular expression for a 10-digit mobile number
+  
+          if (!mobileRegex.test(mobileValue)) {
+              mobileError.textContent = "Enter a valid 10-digit phone number.";
+          } else {
+              mobileError.textContent = "";
+          }
+      });
+  });
+  
+  </script>
+<!-- For Mobile Number -->
+<script>
+ document.addEventListener("DOMContentLoaded", function () {
+    const mobileInput = document.getElementById("mob_no");
+    const mobileError = document.getElementById("mobileError");
+
+    mobileInput.addEventListener("input", function () {
+        const mobileValue = this.value;
+        const mobileRegex = /^[0-9]{10}$/; // Regular expression for a 10-digit mobile number
+
+        if (!mobileRegex.test(mobileValue)) {
+            mobileError.textContent = "Enter a valid 10-digit mobile number.";
+        } else {
+            mobileError.textContent = "";
+        }
+    });
+});
+
+</script>
+
+<!-- Your HTML and form elements here -->
+
+{% if error_message %}
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#alertModal">
+        Launch Alert
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">Alert</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ error_message }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script>
+        // Show the modal when the page loads
+        $(document).ready(function () {
+            $('#alertModal').modal('show');
+        });
+    </script> -->
+{% endif %}
+
+<!-- Your remaining HTML content -->
+
+<!-- For Pan Number -->
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const panInput = document.getElementById("pan_number_input");
+    const panError = document.getElementById("panError");
+
+    function validatePAN(pan) {
+        if (pan.trim() === '') {
+            return true;  // Allow empty value
+        }
+
+        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/; // Regular expression for PAN
+        return panRegex.test(pan);
+    }
+
+    panInput.addEventListener("input", function () {
+        const panValue = this.value.trim().toUpperCase(); // Remove whitespace and convert to uppercase
+        if (!validatePAN(panValue)) {
+            panError.textContent = 'Enter a valid PAN number (e.g., ABCDE1234F).';
+        } else {
+            panError.textContent = '';
+        }
+    });
+});
+
+</script>
+<!-- For IFSC Code -->
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const ifscInput = document.getElementById("ifsc_code_input");
+    const ifscError = document.getElementById("ifscError");
+
+    function validateIFSC(ifsc) {
+        if (ifsc.trim() === '') {
+            return true;  // Empty value is allowed
+        }
+
+        const ifscRegex = /^[A-Za-z]{4}[0-9]{7}$/; // Regular expression for IFSC
+        return ifscRegex.test(ifsc);
+    }
+
+    ifscInput.addEventListener("input", function () {
+        const ifscValue = this.value.trim().toUpperCase(); // Remove whitespace and convert to uppercase
+        if (!validateIFSC(ifscValue)) {
+            ifscError.textContent = 'Enter a valid IFSC code (e.g., ABCD0123456).';
+        } else {
+            ifscError.textContent = '';
+        }
+    });
+});
+
+</script>
+<!-- For Account Number -->
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const accountInput = document.getElementById("account_number_input");
+    const accountError = document.getElementById("accountError");
+
+    accountInput.addEventListener("input", function () {
+        const accountValue = this.value.trim();
+
+        // Basic length-based validation (adjust the length as per your requirement)
+        const minLength = 6;
+        const maxLength = 20;
+
+        if (accountValue.length < minLength || accountValue.length > maxLength) {
+            accountError.textContent = `Account number should be between ${minLength} and ${maxLength} characters.`;
+        } else {
+            accountError.textContent = '';
+        }
+    });
+});
+
+</script>
+
+<!-- For Pin Code -->
+
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const pincodeInput = document.getElementById("pincode_input_1");
+    const pincodeError = document.getElementById("pincodeError_1");
+
+    pincodeInput.addEventListener("input", function () {
+        const pincodeValue = this.value.trim();
+
+        // Regular expression for a standard 6-digit pin code in India
+        const pincodeRegex = /^[1-9][0-9]{5}$/;
+
+        if (!pincodeRegex.test(pincodeValue)) {
+            pincodeError.textContent = "Enter a valid 6-digit pin code.";
+        } else {
+            pincodeError.textContent = "";
+        }
+    });
+});
+
+</script>
+
+
+
+
+<!-- To Disply name -->
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+   // Get references to the dropdown and input fields
+   var scustomer = document.getElementById("company_name");
+   var fromInput = document.getElementById("display_name_input");
+
+   // Add an event listener to the dropdown to update the input field when it changes
+   scustomer.addEventListener("change", function () {
+       var selectedcustomer = scustomer.value;
+       fromInput.value = selectedcustomer;
+   });
+</script>
+
+
+
+ 
+{% endblock custom_js %}    
+{% endblock main_content %}
+
+    

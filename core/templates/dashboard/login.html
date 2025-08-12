@@ -1,0 +1,165 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>
+      {% block title %}
+
+      {% endblock %}
+    </title>
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/icons/feather/feather.css">
+    <link rel="stylesheet" href="../../static/assets/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="../../static/assets/css/style.css">
+    <link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet">
+{% comment %} <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> {% endcomment %}
+
+
+  {% block custom_css %}
+  <style>
+   body {
+      background-image: url("{% static '../static/assets/img/category/img-02.jpg' %}");
+      background-size: cover;
+      background-repeat: no-repeat;
+  }
+</style>
+  {% endblock custom_css %}
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="main-wrapper login-body">
+        <div class="login-wrapper">
+           <div class="container">
+              <div class="loginbox">
+                 <div class="login-right">
+                    <div class="login-right-wrap">
+			    <img class="img-fluid logo-dark mb-2" src="{% static 'assets/img/logo.png' %}" alt="Logo" style="width:120px;">
+                        
+                       <form action="" method="post" id="kt_login_signin_form">
+                        {% csrf_token %}
+                          <div class="form-group">
+                             <label class="form-control-label">Email Address</label>
+                             <input type="email" name="email" id="email" class="form-control">
+                          </div>
+                          <div class="form-group">
+                             <label class="form-control-label">Password</label>
+                             <div class="pass-group">
+                                <input type="password" name="password" id="password" class="form-control pass-input">
+                                <span class="fas fa-eye toggle-password"></span>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <div class="row">
+                                <div class="col-6">
+                                   <div class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" id="cb1">
+                                      <label class="custom-control-label" for="cb1">Remember me</label>
+                                   </div>
+                                </div>
+                                <div class="col-6 text-end">
+                                   <a class="forgot-link" href="forgot-password.html">Forgot Password ?</a>
+                                </div>
+                             </div>
+                          </div>
+                          <div style="text-align: center; " class="success_message "></div>
+                          <button class="btn btn-lg btn-block btn-primary w-100" type="submit" name="submit" id="submit">Login</button> 
+                          {% comment %} <div class="col-auto">
+                            <a href="{% url 'admin_home' %}" class="btn btn-lg btn-block btn-primary w-100"> Login</a>
+                          </div> {% endcomment %}
+                          <div class="login-or">
+                             <span class="or-line"></span>
+                             <span class="span-or">or</span>
+                          </div>
+                          {% comment %} <div class="social-login mb-3">
+                             <span>Login with</span>
+                             <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="google"><i class="fab fa-google"></i></a>
+                          </div>  {% endcomment %}
+                          <div class="text-center dont-have">Don't have an account yet? <a href="register.html">Register</a></div>
+                       </form>
+                       {% if message %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+     </div>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
+<!-- JQVMap -->
+<script src="{% static 'plugins/jqvmap/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static 'plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+<!-- daterangepicker -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<!-- Summernote -->
+<script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'dist/js/demo.js' %}"></script>
+
+{% comment %}  {% endcomment %}
+<script src="{% static "assets/js/jquery-3.6.0.min.js" %}"></script>
+<script src="{% static "assets/js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "assets/js/feather.min.js" %}"></script>
+<script src="{% static "assets/plugins/slimscroll/jquery.slimscroll.min.js" %}"></script>
+<script src="{% static "assets/plugins/select2/js/select2.min.js" %}"></script>
+<script src="{% static "assets/plugins/select2/js/custom-select.js" %}"></script>
+<script src="{% static "assets/plugins/moment/moment.min.js" %}"></script>
+<script src="{% static "assets/js/bootstrap-datetimepicker.min.js" %}"></script>
+<script src="{% static "assets/js/script.js" %}"></script>
+
+<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
+
+<script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+
+  <script src="../static/assets/js/malsup-jquery.js"></script>
+
+
+{% block custom_js %}
+{% endblock custom_js %}
+
+</body>
+</html>
