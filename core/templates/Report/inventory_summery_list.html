@@ -104,7 +104,7 @@
                           <thead class="thead-dark">
                               <tr>
                                   <th>SR.NO.</th>
-
+                                  <th>COMPANY NAME</th>
                                   <th>ITEM CODE</th>
                                   <th>ITEM</th>
                                   <th>QUANTITY</th>
@@ -117,6 +117,7 @@
                               <tr>
                                   <td>{{ forloop.counter }}</td> 
 
+                                  <td>{{ item.vendor_name__company_name }}</td>
                                   <td>{{ item.item_code }}</td>
                                   <td> <a href="#" style="color: blue;">{{ item.inventory_name|upper}}</a></td>
                                   <td>{{ item.opening_stock_quantity }}</td>
@@ -125,7 +126,7 @@
                               </tr>
                               {% endfor %}
                               <tr>
-                                  <td colspan="5"><strong>TOTAL</strong></td>
+                                  <td colspan="6"><strong>TOTAL</strong></td>
                                   <td><strong>{{ total_amount|floatformat:2 }}</strong></td>
                               </tr>
                           </tbody>

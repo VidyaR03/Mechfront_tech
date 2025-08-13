@@ -776,7 +776,7 @@ def display_inventory_summenry_date_range(request):
 
             # Prepare result data
             filtered_items = list(items_within_range.values(
-                'item_code', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
+                'item_code','vendor_name__company_name', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
             ))
 
             for item in filtered_items:
