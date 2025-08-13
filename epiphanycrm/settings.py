@@ -80,7 +80,8 @@ WSGI_APPLICATION = 'epiphanycrm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME':'Mech_Key',
+        'NAME':'mach',
+        # 'NAME':'Mech_Key',
         'USER':'root',
         'PASSWORD':'password',
         'HOST':'localhost',
