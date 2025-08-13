@@ -417,7 +417,7 @@ Ecoway
         $('#' + inputname).autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: '/exgetitemscodedetails/',
+                    url: "{% url 'exgetitemscodedetails' %}",
                     dataType: "json",
                     type: "POST",
                     data: {
