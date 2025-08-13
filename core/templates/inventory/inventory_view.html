@@ -1,6 +1,6 @@
 {% extends 'dashboard/base_template.html' %}
 {% block title %}
-Ecoway
+crm
 {% endblock %}
 
 {% block custom_css %}
@@ -21,7 +21,15 @@ Ecoway
 {% endblock custom_css %}
 
 {% block main_content %}
-<div class="row" style="padding-left: 8%; padding-top: 3%;">
+<div class="row" style="padding-left: 8%; ">
+    <div class="col-sm-12">
+        <!-- <h3 class="page-title"> <a href="{% url 'inventory_list_data' %}" style="margin-right: 10px;"><i
+                 class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
+                 aria-label="fa fa-arrow-left"></i></a>Inventory List</h3> -->
+                 <h3 class="page-title"> <a href="#" onclick="history.back()" style="margin-right: 10px;"><i
+                    class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
+                    aria-label="fa fa-arrow-left"></i></a>Inventory List</h3>
+     </div>
     <div class="col-md-12">
         <div class="card bg-white">
             <div class="card-header">
@@ -32,8 +40,9 @@ Ecoway
                     <li class="nav-item"><a class="nav-link active" href="#bottom-tab1"
                             data-bs-toggle="tab">Overview</a></li>
                     <li class="nav-item"><a class="nav-link" href="#bottom-tab2" data-bs-toggle="tab">Sales</a></li>
-                    <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Purchase</a> -->
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Purchase</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#bottom-tab4" data-bs-toggle="tab">Sales/Purchase</a></li>
+
                     <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab4" data-bs-toggle="tab">Manufacturing</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#bottom-tab5" data-bs-toggle="tab">Adjustment</a></li> -->
                     <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab6" data-bs-toggle="tab">Godown</a></li> -->
@@ -49,96 +58,83 @@ Ecoway
                             <div class="col-md-8 col-sm-8 col-xs-12">
                                 <div class="form-group row">
                                     <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Unit</label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.units}}</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.units }}</label>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Type</label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.type}}</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.type }}</label>
                                 </div>
-                                <!---->
-                                <div class="form-group row" ng-if="gstEnabled &amp;&amp; item.type == 'Goods'">
+                                {% if gstEnabled and inventory_entity_data.type == 'Goods' %}
+                                <div class="form-group row">
                                     <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">HSN</label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.hsn}}</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.hsn }}</label>
                                 </div>
-                                <!----> <!----> <!----> <!---->
-                                <!-- <div class="form-group row" ng-if="inventoryPreference.EnableSku == 1">
-                                                <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">SKU</label>
-                                                <label class="col-md-6 col-sm-6 col-xs-6 control-label"></label>
-                                             </div> -->
-                                <!----> <!----> <!----> <!----> <!---->
-                                <div class="form-group row" ng-if="gstEnabled">
+                                {% endif %}
+                                {% if gstEnabled %}
+                                <div class="form-group row">
                                     <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Tax Type</label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.tax_type}}</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.tax_type }}</label>
                                 </div>
-                                <!----> <!---->
-                               
-                                <!----> <!---->
-                                <!-- <div class="form-group row" ng-if="gstEnabled &amp;&amp; item.gst.rate == 1">
-                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label"> Interstate
-                                        GST</label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">18</label>
-                                </div> -->
-                                <!----> <!---->
-                                <!-- <div class="form-group row" ng-if="item.is_trackable"> 
-                                                <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label"> Inventory Asset Account</label> 
-                                                <label class="col-md-6 col-sm-6 col-xs-6 control-label">Inventory Assets</label>
-                                             </div> -->
-                                <!---->
+                                {% endif %}
+                                {% if gstEnabled and inventory_entity_data.intrastate_gst %}
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Intrastate GST</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.intrastate_gst }}</label>
+                                </div>
+                                {% endif %}
+                                {% if gstEnabled and inventory_entity_data.interstate_gst %}
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Interstate GST</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.interstate_gst }}</label>
+                                </div>
+                                {% endif %}
                             </div>
-                            <!---->
-                            <!-- <div class="col-md-offset-1 col-md-3 col-sm-4 col-xs-6" ng-show="item.is_trackable">
+                            <div class="col-md-offset-1 col-md-3 col-sm-4 col-xs-6" ng-show="item.is_trackable">
                                 <div class="form-group row highlight">
                                     <div class="col-md-12 head text-center"> Opening Stock </div>
-                                    <div class="col-md-12 sub-head text-center"></div>
+                                    <div class="col-md-12 sub-head text-center">{{ opening_stock_quantity|floatformat:2 }}</div>
                                 </div>
                                 <br>
-                               
-                            </div> -->
+                                <div class="form-group row highlight">
+                                    <div class="col-md-12 head text-center"> Available </div>
+                                    <div class="col-md-12 sub-head text-center">{{ available_quantity|floatformat:2 }}</div>
+                                </div>
+                            </div>
                         </div>
-
+                        
                         <div class="row" ng-if="item.sales">
                             <br>
                             <div class="col-md-12"> <b>Sales Information</b> </div>
                         </div>
-                        <div class="row" ng-if="item.sales">
+                        <div class="row" ng-if="{{ inventory_entity_data.sales }}">
                             <div class="col-md-8 col-sm-8 col-xs-12">
-                                <div class="form-group row"> <label
-                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Account</label> <label
-                                        class="col-md-6 col-sm-6 col-xs-6 control-label">Sales</label> </div>
-                                <div class="form-group row"> <label
-                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Rate</label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.sales_rate}}</label>
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Account</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.sales }}</label>
                                 </div>
-
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Rate</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.sales_rate }}</label>
+                                </div>
                             </div>
                         </div>
+                        
 
                         <div class="row" ng-if="item.purchase">
                             <br>
                             <div class="col-md-12"> <b>Purchase Information</b> </div>
                         </div>
-                        <div class="row" ng-if="item.purchase">
+                        <div class="row" ng-if="{{ inventory_entity_data.purchase }}">
                             <div class="col-md-8 col-sm-8 col-xs-12">
                                 <div class="form-group row"> <label
                                         class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Account</label> <label
-                                        class="col-md-6 col-sm-6 col-xs-6 control-label">Purchase A/c</label> </div>
+                                        class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.purchase }}</label>
+                                    
+                                </div>
                                 <div class="form-group row"> <label
                                         class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Rate</label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.purchase_rate}}</label>
+                                    <label class="col-md-6 col-sm-6 col-xs-6 control-label">{{ inventory_entity_data.purchase_rate }}</label>
                                 </div>
-
-                            </div>
-                        </div>
-                        <div class="row" ng-if="item.purchase">
-                            <br>
-                            <div class="col-md-12"> <b>Stock Available</b> </div>
-                        </div>
-                        <div class="row" ng-if="item.purchase">
-                            <div class="col-md-8 col-sm-8 col-xs-12">
-                                <div class="form-group row"> <label
-                                        class="col-md-4 col-sm-4 col-xs-4 ml-10 control-label">Opening Stock</label> <label
-                                        class="col-md-6 col-sm-6 col-xs-6 control-label">{{inventory_entity_data.opening_stock_quantity}}</label> </div>
-                              
 
                             </div>
                         </div>
@@ -150,24 +146,41 @@ Ecoway
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Customer </th>
-                                    <th>Company Name</th>
-                                    <th>Mobile</th>
-                                   
+                                    <th>Voucher </th>
+                                    <th>Invoice No</th>
+                                    <th>Customer</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Rate</th>
+                                    <th>Discount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for i in customer_data %}
+                                {% for data in invoice_data %}
+                                
                                 <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ i.customer }}</td>
-                                    <td> {{ i.company_name }}</td>
-                                    <td>{{ i.mobile }}</td>
-                                    
+                                    <td>{{ data.invoice.invoice_date|date:"d-m-Y"  }}</td>
+                                    <td>Invoice</td>
+                                    <td><a href="{% url 'edit_invoice' id=data.invoice.id %}">{{ data.invoice.inv_number }}</a></td>
+                                    <td>{{ data.invoice.invoice_customer_name_customer.customer }}</td>
+                                    <td>{{ data.total_quantity_used|floatformat:2 }}</td>
+                                    <td>{{ data.unit }}</td>
+                                    <td>{{ data.average_rate|floatformat:2 }}</td>
+                                    <td>{{ inventory_entity_data.default_discount|floatformat:2 }}</td>
                                 </tr>
+
                                 {% endfor %}
-                               
-                            </tbody>
+                                <tr>
+                                    <td><b>Total</b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align: left;"><b>{{total_quantity}}</b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-end"></td>
+                                 </tr>
+                            </tbody>                        
                         </table>
                     </div>
 
@@ -177,19 +190,115 @@ Ecoway
                                 <tr>
                                     <th>Date</th>
                                     <th>Voucher </th>
-                                    <th>Voucher No</th>
-                                    <th>Vendor</th>
+                                    <th>Purchase Invoice No</th>
+                                    <th>Vendor Name</th>
                                     <th>Quantity</th>
                                     <th>Unit</th>
-                                    <th class="text-end">Rate</th>
+                                    <th>Rate</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for item in purchase_invoice_data %}
+                                <tr>
+                                    <!-- <td>{{ item.invoice_date }}</td> -->
+                                    <td>{{ item.invoice_date|date:"d-m-Y" }}</td>
+
+                                    <td>{{ item.voucher }}</td>
+                                    <td><a href="{% url 'edit_purchase_invoice' id=item.purchase_invoice.id %}">{{ item.purchase_invoice.purchase_invoice_PO_no }} </a></td>
+                                    <td>{{ item.vendor.company_name }}</td>
+                                    <td>{{ item.quantity|floatformat:2 }}</td>
+                                    <td>{{ item.unit }}</td>
+                                    <td>{{ item.rate|floatformat:2}}</td>
+                                </tr>
+
+                                {% endfor %}
+                                <tr>
+                                    <td><b>Total</b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>{{purchase_total_quantity}}</b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-end"></td>
+                                 </tr>
                             </tbody>
-                        </table>
+                       </table>
                     </div>
 
-                   
+                    <div class="tab-pane" id="bottom-tab4">
+                        <table class="table table-center table-hover ">
+                           <thead class="thead-light">
+                              <tr>
+                                 <th>Particular</th>
+                                 <th>Date</th>
+                                 <th>Invoice No</th>
+                                 <th>Customer</th>
+                                 <th>Rate</th>
+                                 <th>Unit</th>
+                                 <th>Qty</th>
+                                 <th>Balance</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                            <tr>
+                                <td>Opening Stock</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ opening_stock_quantity|floatformat:2 }}</td>
+                            
+                            </tr> 
+                            {% for data in combined_data %}
+                            <tr>
+                                <td>{{ data.particular }}</td>
+                                <td>{{ data.date|date:"d-m-Y"  }}</td>
+                                <td>{{ data.invoice_no }}</td>
+                                <td>{{ data.customer_vendor }}</td>
+                                <td>{{ data.rate|floatformat:2 }}</td>
+                                <td>{{ data.unit }}</td>
+                                <td>{{ data.quantity|floatformat:2 }}</td>
+                                <td>{{data.balance|floatformat:2}}</td>
+                             
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                     </div>
+
+                     <div class="tab-pane" id="bottom-tab5">
+                        <table class="invoice-table table table-center mb-0">
+                           <thead>
+                              <tr>
+                                 <th>Date</th>
+                                 <th>Note</th>
+                                 <th>Type</th>
+                                 <th>Adjustment
+                                 </th>
+                                 <th class="text-end">action</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td>24-11-2022</td>
+                                 <td><a href="" data-bs-toggle="modal" data-bs-target="#add_items">test</a></td>
+                                 <td> Increse QTY </td>
+                                 <td>1</td>
+                                 <td class="text-end"><a href="javascript:void(0);" class="btn btn-sm btn-white text-danger me-2"><i class="far fa-trash-alt me-1"></i></a></td>
+                              </tr>
+                              <tr>
+                                 <td>24-11-2022</td>
+                                 <td><a href="" data-bs-toggle="modal" data-bs-target="#add_items">test</a></td>
+                                 <td> Increse QTY </td>
+                                 <td>1</td>
+                                 <td class="text-end"><a href="javascript:void(0);" class="btn btn-sm btn-white text-danger me-2"><i class="far fa-trash-alt me-1"></i></a></td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
 
                     <div class="tab-pane" id="bottom-tab6">
                       
@@ -204,22 +313,159 @@ Ecoway
 
 
                             </tbody>
-                        </table>
-                    </div>
+                            <div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
 
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-<!-- <script src="https://olatechs.in/crm/supreeno/assets/js/jquery-3.6.0.min.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap.bundle.min.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/js/feather.min.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/plugins/select2/js/select2.min.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/plugins/moment/moment.min.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap-datetimepicker.min.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/js/script.js"></script> -->
+                                <h4>A PHP Error was encountered</h4>
+                                
+                                <p>Severity: Notice</p>
+                                <p>Message:  Undefined variable: godown_list</p>
+                                <p>Filename: admin/view_inventory.php</p>
+                                <p>Line Number: 460</p>
+                                
+                                
+                                    <p>Backtrace:</p>
+                                    
+                                        
+                                    
+                                        
+                                    
+                                        
+                                            <p style="margin-left:10px">
+                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/views/admin/view_inventory.php<br />
+                                            Line: 460<br />
+                                            Function: _error_handler			</p>
+                                
+                                        
+                                    
+                                        
+                                    
+                                        
+                                    
+                                        
+                                            <p style="margin-left:10px">
+                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/controllers/Admin.php<br />
+                                            Line: 827<br />
+                                            Function: view			</p>
+                                
+                                        
+                                    
+                                        
+                                    
+                                        
+                                            <p style="margin-left:10px">
+                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/index.php<br />
+                                            Line: 315<br />
+                                            Function: require_once			</p>
+                                
+                                        
+                                    
+                                
+                                </div>
+                                <div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+                                
+                                <h4>A PHP Error was encountered</h4>
+                                
+                                <p>Severity: Warning</p>
+                                <p>Message:  Invalid argument supplied for foreach()</p>
+                                <p>Filename: admin/view_inventory.php</p>
+                                <p>Line Number: 460</p>
+                                
+                                
+                                    <p>Backtrace:</p>
+                                    
+                                        
+                                    
+                                        
+                                    
+                                        
+                                            <p style="margin-left:10px">
+                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/views/admin/view_inventory.php<br />
+                                            Line: 460<br />
+                                            Function: _error_handler			</p>
+                                
+                                        
+                                    
+                                        
+                                    
+                                        
+                                    
+                                        
+                                            <p style="margin-left:10px">
+                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/controllers/Admin.php<br />
+                                            Line: 827<br />
+                                            Function: view			</p>
+                                
+                                        
+                                    
+                                        
+                                    
+                                        
+                                            <p style="margin-left:10px">
+                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/index.php<br />
+                                            Line: 315<br />
+                                            Function: require_once			</p>
+                                
+                                        
+                                    
+                                
+                                </div>                                          </tbody>
+                                                                       </table>
+                                                                    </div>
+                                
+                                                                 </div>
+                                                              </div>
+                                                           </div>
+                                                        </div>
+                                                      
+                                                     </div>
+                                
+                                                  </div>
+                                               </div>
+                                
+                                            </div>
+                                         </div>
+                                      </div>
+                                
+                                         </div>
+                                      </div>
+                                      </div>
+                                      </div>
+                                      <script src="https://supreenometals.olatechs.in/assets/js/jquery-3.6.0.min.js"></script>
+                                      <script src="https://supreenometals.olatechs.in/assets/js/bootstrap.bundle.min.js"></script>
+                                      <!-- <script src="https://supreenometals.olatechs.in/assets/js/feather.min.js"></script> -->
+                                      <script src="https://supreenometals.olatechs.in/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+                                      <script src="https://supreenometals.olatechs.in/assets/plugins/select2/js/select2.min.js"></script>
+                                      <script src="https://supreenometals.olatechs.in/assets/plugins/moment/moment.min.js"></script>
+                                      <script src="https://supreenometals.olatechs.in/assets/js/bootstrap-datetimepicker.min.js"></script>
+                                      <!-- <script src="https://supreenometals.olatechs.in/assets/js/script.js"></script> -->
+                                   </body>
+                                </html>
+                                
+                                <script type="text/javascript">
+                                   $(document).ready(function() 
+                                    {
+                                        var sum = 0;
+                                        $(".purchase_qty").each(function()
+                                        {
+                                          sum += +this.value;
+                                        });
+                                        //alert(sum);
+                                
+                                        $('.total_purchase_qty').val(sum);
+                                
+                                        /*************************************************/
+                                
+                                        var sum = 0;
+                                        $(".sales_qty").each(function()
+                                        {
+                                          sum += +this.value;
+                                        });
+                                        //alert(sum);
+                                
+                                        $('.total_sales_qty').val(sum);
+                                
+                                        /*************************************************/
+                                    });
+                                </script>
 
 {% endblock main_content %}

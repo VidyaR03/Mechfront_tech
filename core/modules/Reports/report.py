@@ -733,54 +733,138 @@ def display_invoice_by_date_range(request):
     return render(request, template_path.invoice_date_report)
 
 
+###@login_required
 
 
 @login_required
 def display_inventory_summenry_date_range(request):
+    vendors = vendor.objects.all().order_by('company_name')
+    selected_company = ''
+    filtered_items = []
+    total_amount = 0
+    start_date = None
+    end_date = None
+
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
         end_date_str = request.POST.get('end_date')
+        selected_company = request.POST.get('company_name', '').strip()
 
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-
-        # Store the date range in the session
+        # Save to session if you want to remember last search
         request.session['start_date'] = start_date_str
         request.session['end_date'] = end_date_str
+        request.session['company_name'] = selected_company
 
-        # Filter items within the date range and by inventory name
-        # items_within_range = inventory.objects.filter(
-        #     date__range=(start_date, end_date),
-        # ).order_by('date')  
+        # Convert date strings to date objects
+        if start_date_str and end_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
-        items_within_range = inventory.objects.filter(
-            date__range=(start_date, end_date)
-        ).annotate(
-            item_code_int=Cast('item_code', IntegerField())
-        ).order_by('item_code_int')
+            items_within_range = inventory.objects.filter(
+                date__range=(start_date, end_date)
+            )
+
+            # Filter by company if selected
+            if selected_company:
+                items_within_range = items_within_range.filter(
+                    vendor_name__company_name__icontains=selected_company
+                )
+
+            items_within_range = items_within_range.annotate(
+                item_code_int=Cast('item_code', IntegerField())
+            ).order_by('item_code_int')
+
+            # Prepare result data
+            filtered_items = list(items_within_range.values(
+                'item_code','vendor_name__company_name', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
+            ))
+
+            for item in filtered_items:
+                try:
+                    qty = float(item['opening_stock_quantity'])
+                    rate = float(item['purchase_rate'])
+                except (ValueError, TypeError):
+                    qty, rate = 0, 0
+                item['amount'] = qty * rate
+                total_amount += item['amount']
+
+    return render(request, template_path.inventory_summery_list_report, {
+        'vendors': vendors,
+        'selected_company': selected_company,
+        'filtered_items': filtered_items,
+        'total_amount': total_amount,
+        'start_date': start_date,
+        'end_date': end_date
+    })
+
+
+
+def get_companies_by_date(request):
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
+    if not start_date or not end_date:
+        return JsonResponse([], safe=False)
+
+    try:
+        start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date()
+    except ValueError:
+        return JsonResponse([], safe=False)
+
+    # Get vendor names from inventory records in the date range
+    companies = (
+        inventory.objects.filter(date__range=(start_date_obj, end_date_obj))
+        .values_list("vendor_name__company_name", flat=True)
+        .distinct()
+    )
+
+    return JsonResponse(list(companies), safe=False)
+
+
+###
+
+# @login_required
+# def display_inventory_summenry_date_range(request):
+#     if request.method == 'POST':
+#         start_date_str = request.POST.get('start_date')
+#         end_date_str = request.POST.get('end_date')
+
+#         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+#         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+
+#         # Store the date range in the session
+#         request.session['start_date'] = start_date_str
+#         request.session['end_date'] = end_date_str
+
+
+#         items_within_range = inventory.objects.filter(
+#             date__range=(start_date, end_date)
+#         ).annotate(
+#             item_code_int=Cast('item_code', IntegerField())
+#         ).order_by('item_code_int')
 
         
-        # Extract specific fields for display
-        filtered_items = list(items_within_range.values(
-            'item_code', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
-        ))
+#         # Extract specific fields for display
+#         filtered_items = list(items_within_range.values(
+#             'item_code', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
+#         ))
 
-        # Calculate the amount for each item and total amount
-        total_amount = 0
-        for item in filtered_items:
-            item['amount'] = float(item['opening_stock_quantity']) * float(item['purchase_rate'])
-            total_amount += item['amount']
+#         total_amount = 0
+#         for item in filtered_items:
+#             item['amount'] = float(item['opening_stock_quantity']) * float(item['purchase_rate'])
+#             total_amount += item['amount']
 
-        context = {
-            'filtered_items': filtered_items,
-            'total_amount': total_amount,
-            'start_date': start_date,
-            'end_date': end_date
-        }
+#         context = {
+#             'filtered_items': filtered_items,
+#             'total_amount': total_amount,
+#             'start_date': start_date,
+#             'end_date': end_date
+#         }
 
-        return render(request, template_path.inventory_summery_list_report, context)
+#         return render(request, template_path.inventory_summery_list_report, context)
 
-    return render(request, template_path.inventory_summery_date_report)
+#     return render(request, template_path.inventory_summery_date_report)
 
 
 
@@ -1235,6 +1319,7 @@ def download_sales_excel(request):
 def download_inventory_excel(request):
     start_date_str = request.session.get('start_date')
     end_date_str = request.session.get('end_date')
+    selected_company = request.session.get('company_name', '').strip()
 
     # Validate date strings
     if not start_date_str or not end_date_str:
@@ -1248,54 +1333,66 @@ def download_inventory_excel(request):
 
     # Retrieve data from the database based on the date range
     items_within_range = inventory.objects.filter(
-        date__range=(start_date, end_date),
-    ).order_by('date')
+        date__range=(start_date, end_date)
+    )
 
-    # Extract specific fields for display
+    # Filter by selected company if provided
+    if selected_company:
+        items_within_range = items_within_range.filter(
+            vendor_name__company_name__icontains=selected_company
+        )
+
+    items_within_range = items_within_range.order_by('date')
+
+    # Extract fields including company name
     filtered_items = list(items_within_range.values(
-        'item_code', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
+        'vendor_name__company_name',
+        'item_code',
+        'inventory_name',
+        'opening_stock_quantity',
+        'purchase_rate'
     ))
 
-    # Calculate the amount for each item and total amount
+    # Calculate amount
     total_amount = 0
     for item in filtered_items:
-        item['amount'] = float(item['opening_stock_quantity']) * float(item['purchase_rate'])
+        try:
+            qty = float(item['opening_stock_quantity'])
+            rate = float(item['purchase_rate'])
+        except (ValueError, TypeError):
+            qty, rate = 0, 0
+        item['amount'] = qty * rate
         total_amount += item['amount']
 
-    # Create an in-memory output file for the new workbook
+    # Create Excel
     output = BytesIO()
     workbook = openpyxl.Workbook()
     sheet = workbook.active
 
-    # Add title and date range
+    # Titles
     title = "M/S KEYMECH TECHNOLOGIES"
     subtitle = "Inventory Summary Report"
+    if selected_company:
+        subtitle += f" - {selected_company}"
     date_range = f"From {start_date_str} To {end_date_str}"
 
-    sheet.merge_cells('A1:E1')
-    sheet.merge_cells('A2:E2')
-    sheet.merge_cells('A3:E3')
+    sheet.merge_cells('A1:F1')
+    sheet.merge_cells('A2:F2')
+    sheet.merge_cells('A3:F3')
 
-    title_cell = sheet.cell(row=1, column=1)
-    subtitle_cell = sheet.cell(row=2, column=1)
-    date_range_cell = sheet.cell(row=3, column=1)
+    sheet.cell(row=1, column=1, value=title).font = Font(size=14, bold=True)
+    sheet.cell(row=2, column=1, value=subtitle).font = Font(size=12, bold=True)
+    sheet.cell(row=3, column=1, value=date_range).font = Font(size=10, bold=True)
 
-    title_cell.value = title
-    subtitle_cell.value = subtitle
-    date_range_cell.value = date_range
-
-    title_cell.font = Font(size=14, bold=True)
-    subtitle_cell.font = Font(size=12, bold=True)
-    date_range_cell.font = Font(size=10, bold=True)
-
-    # Write headers
-    headers = ['Item Code', 'Item', 'Quantity', 'Rate', 'Amount']
+    # Headers
+    headers = ['Company Name', 'Item Code', 'Item', 'Quantity', 'Rate', 'Amount']
     sheet.append([])
     sheet.append(headers)
 
-    # Write data rows
+    # Data rows
     for item in filtered_items:
         sheet.append([
+            item['vendor_name__company_name'],
             item['item_code'],
             item['inventory_name'],
             item['opening_stock_quantity'],
@@ -1303,26 +1400,117 @@ def download_inventory_excel(request):
             item['amount']
         ])
 
-    # Write total row
+    # Total row
     sheet.append([])
-    sheet.append(['', '', '', 'Total', total_amount])
+    sheet.append(['', '', '', '', 'Total', total_amount])
 
-    # Set column widths for better visibility
-    column_widths = [15, 30, 15, 15, 20]
-    for i, column_width in enumerate(column_widths, start=1):
-        sheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = column_width
+    # Column widths
+    column_widths = [30, 15, 30, 15, 15, 20]
+    for i, width in enumerate(column_widths, start=1):
+        sheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = width
 
-    # Save the workbook to the output file
     workbook.save(output)
     output.seek(0)
 
-    # Create the response
     response = HttpResponse(
         output,
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
     response['Content-Disposition'] = 'attachment; filename=inventory_summary.xlsx'
     return response
+
+# @login_required
+# def download_inventory_excel(request):
+#     start_date_str = request.session.get('start_date')
+#     end_date_str = request.session.get('end_date')
+
+#     # Validate date strings
+#     if not start_date_str or not end_date_str:
+#         return HttpResponse("Start date and end date are required.", status=400)
+
+#     try:
+#         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+#         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+#     except ValueError:
+#         return HttpResponse("Invalid date format. Please use YYYY-MM-DD.", status=400)
+
+#     # Retrieve data from the database based on the date range
+#     items_within_range = inventory.objects.filter(
+#         date__range=(start_date, end_date),
+#     ).order_by('date')
+
+#     # Extract specific fields for display
+#     filtered_items = list(items_within_range.values(
+#         'item_code', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
+#     ))
+
+#     # Calculate the amount for each item and total amount
+#     total_amount = 0
+#     for item in filtered_items:
+#         item['amount'] = float(item['opening_stock_quantity']) * float(item['purchase_rate'])
+#         total_amount += item['amount']
+
+#     # Create an in-memory output file for the new workbook
+#     output = BytesIO()
+#     workbook = openpyxl.Workbook()
+#     sheet = workbook.active
+
+#     # Add title and date range
+#     title = "M/S KEYMECH TECHNOLOGIES"
+#     subtitle = "Inventory Summary Report"
+#     date_range = f"From {start_date_str} To {end_date_str}"
+
+#     sheet.merge_cells('A1:E1')
+#     sheet.merge_cells('A2:E2')
+#     sheet.merge_cells('A3:E3')
+
+#     title_cell = sheet.cell(row=1, column=1)
+#     subtitle_cell = sheet.cell(row=2, column=1)
+#     date_range_cell = sheet.cell(row=3, column=1)
+
+#     title_cell.value = title
+#     subtitle_cell.value = subtitle
+#     date_range_cell.value = date_range
+
+#     title_cell.font = Font(size=14, bold=True)
+#     subtitle_cell.font = Font(size=12, bold=True)
+#     date_range_cell.font = Font(size=10, bold=True)
+
+#     # Write headers
+#     headers = ['Item Code', 'Item', 'Quantity', 'Rate', 'Amount']
+#     sheet.append([])
+#     sheet.append(headers)
+
+#     # Write data rows
+#     for item in filtered_items:
+#         sheet.append([
+#             item['item_code'],
+#             item['inventory_name'],
+#             item['opening_stock_quantity'],
+#             item['purchase_rate'],
+#             item['amount']
+#         ])
+
+#     # Write total row
+#     sheet.append([])
+#     sheet.append(['', '', '', 'Total', total_amount])
+
+#     # Set column widths for better visibility
+#     column_widths = [15, 30, 15, 15, 20]
+#     for i, column_width in enumerate(column_widths, start=1):
+#         sheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = column_width
+
+#     # Save the workbook to the output file
+#     workbook.save(output)
+#     output.seek(0)
+
+#     # Create the response
+#     response = HttpResponse(
+#         output,
+#         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+#     )
+#     response['Content-Disposition'] = 'attachment; filename=inventory_summary.xlsx'
+#     return response
 
 
 @login_required
@@ -1354,4 +1542,5 @@ def sales_display_items_by_date_range(request):
         return render(request, template_path.sales_register_list_report, {'items_within_range': items_within_range})
 
     return render(request, template_path.sales_register_date_report)
+
 

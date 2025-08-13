@@ -47,6 +47,19 @@ Ecoway
                                  <div class="error-message" id="inventory_name_error" style="display:none;color:red;">Please enter the item description.</div>
                              </div>
                          </div>
+                        <div class="col-md-6">
+
+                        <div class="form-group">
+                                    <label>Company Name</label>
+                                    <select class="form-control" name="company_name" id="company_name">
+                                        <option value="0" hidden>Select Company Name</option>
+                                        {% for i in company_name %}
+                                        <option value="{{i.id}}">{{i.company_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="error-message" id="comapny_error" style="display:none;color:red;">Please select a company name.</div>
+                                </div>
+                    </div>
                          <div class="col-md-3">
                              <div class="form-group">
                                  <label>Item Code <span style="color: red;">*</span></label>
@@ -311,6 +324,8 @@ Ecoway
                          <div class="col-md-12 pt11">
                              <div class="form-group">
                                  <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+                                <a href="{% url 'inventory_list_data' %}" class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
+
                              </div>
                          </div>
                      </div>

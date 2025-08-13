@@ -468,6 +468,7 @@ class inventory(models.Model):
     godown_name_old = models.CharField(max_length=512, null=True,blank=True)
     # Tax_rate = models.CharField(max_length=100, null=True,blank=True)
     inventory_godown = models.ForeignKey(godown, on_delete=models.CASCADE, null=True, blank=True)
+    vendor_name = models.ForeignKey(vendor, on_delete=models.CASCADE, null=True, blank=True)
 
 
     class Meta:
