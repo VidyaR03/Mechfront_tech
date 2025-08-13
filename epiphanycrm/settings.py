@@ -81,6 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':'keymech',
+        # 'NAME':'mach',
         'USER':'root',
         'PASSWORD':'password',
         'HOST':'localhost',

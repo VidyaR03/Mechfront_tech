@@ -90,7 +90,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let fromDateInput = document.getElementById("from_date");
     let toDateInput = document.getElementById("to_date");
 
-    // Set today's date only if inputs are empty (first load)
+    // Render the base URL from Django
+    const baseUrl = "{% url 'get_companies_by_date' %}";
+
+    // Set today's date if inputs are empty
     let today = new Date().toISOString().split('T')[0];
     if (!fromDateInput.value) fromDateInput.value = today;
     if (!toDateInput.value) toDateInput.value = today;
@@ -100,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let toDate = toDateInput.value;
 
         if (fromDate && toDate) {
-            fetch(`/get_companies_by_date/?start_date=${fromDate}&end_date=${toDate}`)
+            fetch(`${baseUrl}?start_date=${fromDate}&end_date=${toDate}`)
                 .then(response => response.json())
                 .then(data => {
                     let companySelect = document.getElementById("company_name");
@@ -112,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         companySelect.appendChild(opt);
                     });
 
-                    // Keep the previously selected value if available
+                    // Keep previously selected value
                     let selectedCompany = "{{ selected_company|default:'' }}";
                     if (selectedCompany) {
                         companySelect.value = selectedCompany;
@@ -125,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fromDateInput.addEventListener("change", fetchCompanies);
     toDateInput.addEventListener("change", fetchCompanies);
 
-    // Auto fetch companies on load if date is set
+    // Auto fetch on page load
     if (fromDateInput.value && toDateInput.value) {
         fetchCompanies();
     }
