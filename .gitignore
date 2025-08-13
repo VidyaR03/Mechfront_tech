@@ -18,6 +18,13 @@ venv/
 
 # Media files (uploads)
 media/
+# Ignore migrations
+migrations/
+*/migrations/
+!*/migrations/__init__.py
+**/migrations/
+!**/migrations/__init__.py
+
 
 # Static files (collectstatic)
 staticfiles/

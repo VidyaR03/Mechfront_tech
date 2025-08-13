@@ -80,8 +80,7 @@ WSGI_APPLICATION = 'epiphanycrm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME':'mach',
-        # 'NAME':'Mech_Key',
+        'NAME':'keymech',
         'USER':'root',
         'PASSWORD':'password',
         'HOST':'localhost',
@@ -145,18 +144,19 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-# STATIC_URL = '/static_keymech/'
-# STATIC_ROOT = '/home/Mech_Front_Keymech/mechfront-keymech/Mechfront_tech/staticfiles/'
 
-# MEDIA_URL = '/media_keymech/'
+STATIC_URL = '/static_keymech/'
+STATIC_ROOT = '/home/keymech/Mechfront_tech/static/'
+
+MEDIA_URL = '/media_keymech/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# CSRF_TRUSTED_ORIGINS = [
-#     'https://prod1.olatechs.com',
-# ]
-MEDIA_URL = '/media/'
+CSRF_TRUSTED_ORIGINS = [
+    'https://app2.olatechs.com',
+]
+#MEDIA_URL = '/media/'
 
-STATIC_URL="/static/"
-STATIC_ROOT=os.path.join(BASE_DIR,"staticfiles")
+#STATIC_URL="/static/"
+#STATIC_ROOT=os.path.join(BASE_DIR,"staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
