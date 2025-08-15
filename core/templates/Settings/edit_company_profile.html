@@ -344,18 +344,23 @@ CRM
                                             </select>
                                         </div>
                                      </div>
+
                                      <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>GST Number</label>
-                                           <input type="text" class="form-control" name="gst_number" id="gst_number" value="{{form.phone}}" placeholder="GST Number">
-                                        </div>
-                                     </div>
-                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>PAN Number</label>
-                                           <input type="text" class="form-control" name="pan_number" id="pan_number" value="{{form.pan_number}}" placeholder="PAN Number">
-                                        </div>
-                                     </div>
+    <div class="form-group">
+        <label>GST Number</label>
+        <input type="text" class="form-control" name="gst_number" id="gst_number" value="{{form.gst_number}}" placeholder="GST Number">
+        <span id="gstNoError" style="color: red;"></span>
+    </div>
+</div>
+
+<div class="col-md-3">
+    <div class="form-group">
+        <label>PAN Number</label>
+        <input type="text" class="form-control" name="pan_number" id="pan_number" value="{{form.pan_number}}" placeholder="PAN Number">
+        <span id="panError" style="color: red;"></span>
+    </div>
+</div>
+
                                      <div class="col-md-3">
                                         <div class="form-group">
                                         <label>TAN Number</label>
@@ -392,102 +397,9 @@ CRM
 
 
 {% block custom_js %}
-<script>
-   document.addEventListener("DOMContentLoaded", function() {
-       const gstNoInput = document.getElementById("gst_no");
-       const gstNoLabel = document.querySelector(".gst_no"); // Get the label element
-       const toggleGst = document.getElementById("toggleGst");
 
-       // Check if GST number is initially provided
-       if (gstNoInput.value.trim() !== '') {
-           // If GST number is provided, keep the toggle button "on" (clicked)
-           toggleGst.checked = true;
-       } else {
-           // If GST number is empty, turn the toggle button "off"
-           toggleGst.checked = false;
-           // Hide the GST number label and input field
-           gstNoInput.style.display = 'none';
-           gstNoLabel.style.display = 'none';
-       }
 
-       toggleGst.addEventListener("change", function() {
-           if (!toggleGst.checked) {
-               // If the toggle button is turned off, hide the GST number label and input field
-               gstNoInput.style.display = 'none';
-               gstNoLabel.style.display = 'none';
-           } else {
-               // If the toggle button is turned on, show the GST number label and input field
-               gstNoInput.style.display = 'block';
-               gstNoLabel.style.display = 'block';
-           }
-       });
 
-       gstNoInput.addEventListener("input", function() {
-           const gstNoValue = this.value.trim();
-           if (gstNoValue !== '') {
-               // If GST number is provided, keep the toggle button "on" (clicked)
-               toggleGst.checked = true;
-           } else {
-               // If GST number is empty, turn the toggle button "off"
-               toggleGst.checked = false;
-           }
-       });
-   });
-</script>
-
-<!-- Add this script at the bottom of your HTML file, after the other JavaScript code -->
-<script>
-   document.addEventListener("DOMContentLoaded", function() {
-     const gstIdInput = document.getElementById("gst_no");
-     const panInput = document.getElementById("pan_no");
- 
-     // Function to generate PAN from GST (Assuming the format is consistent)
-     function generatePAN(gstId) {
-       // Extract the 3rd to 12th characters from the GST ID
-       const panSubstring = gstId.substr(2, 10);
-       // Append a fixed PAN suffix
-       const panNumber = panSubstring;
-       return panNumber;
-     }
- 
-     gstIdInput.addEventListener("input", function() {
-       const gstIdValue = this.value;
-       if (gstIdValue.length >= 12) {
-         const panValue = generatePAN(gstIdValue);
-         panInput.value = panValue;
-       } else {
-         panInput.value = ''; // Clear the PAN field if the GST is not long enough
-       }
-     });
-   });
- </script>
-<script>
-   document.addEventListener("DOMContentLoaded", function() {
-      const gstNoInput = document.getElementById("gst_no");
-      const toggleGst = document.getElementById("toggleGst");
-  
-      // Check if GST number is initially provided
-      if (gstNoInput.value.trim() !== '') {
-          // If GST number is provided, keep the toggle button "on" (clicked)
-          toggleGst.checked = true;
-      } else {
-          // If GST number is empty, turn the toggle button "off"
-          toggleGst.checked = false;
-      }
-  
-      gstNoInput.addEventListener("input", function() {
-          const gstNoValue = this.value.trim();
-          if (gstNoValue !== '') {
-              // If GST number is provided, keep the toggle button "on" (clicked)
-              toggleGst.checked = true;
-          } else {
-              // If GST number is empty, turn the toggle button "off"
-              toggleGst.checked = false;
-          }
-      });
-  });
-  
-</script>  
 <script>
    document.addEventListener("DOMContentLoaded", function() {
        // Your existing code for other fields here...
@@ -618,58 +530,60 @@ CRM
   });
 </script>
 
+
 <script>
-   document.addEventListener("DOMContentLoaded", function() {
-       const gstNoInput = document.getElementById("gst_no");
-       const gstNoError = document.getElementById("gstNoError");
- 
-       function validateGSTNo(gstNoValue) {
-           if (gstNoValue.trim() === '') {
-               return true;  // Allow empty value
-           }
- 
-           const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/; 
- 
-           return gstNoRegex.test(gstNoValue);
-       }
- 
-       gstNoInput.addEventListener("input", function() {
-           const gstNoValue = this.value;
- 
-           if (!validateGSTNo(gstNoValue)) {
-               gstNoError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
-           } else {
-               gstNoError.textContent = "";
-           }
-       });
-   });
- </script>
- <script>
-   document.addEventListener("DOMContentLoaded", function() {
-       const panInput = document.getElementById("pan_no");
-       const panError = document.getElementById("panError");
- 
-       // Function to validate a PAN number
-       function validatePAN(pan) {
-           if (pan.trim() === '') {
-               return true;  // Allow empty value
-           }
- 
-           const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/; // Regular expression for PAN
-           return panRegex.test(pan);
-       }
- 
-       panInput.addEventListener("input", function() {
-           const panValue = this.value.trim().toUpperCase(); // Remove whitespace and convert to uppercase
-           if (!validatePAN(panValue)) {
-               panError.textContent = 'Enter a valid PAN number (e.g., ABCDE1234F).';
-           } else {
-               panError.textContent = '';
-           }
-       });
-   });
- </script>
- 
+document.addEventListener("DOMContentLoaded", function () {
+    const gstInput = document.getElementById("gst_number");
+    const panInput = document.getElementById("pan_number");
+    const gstError = document.getElementById("gstNoError");
+    const panError = document.getElementById("panError");
+
+    // GST Validation
+    function validateGST(gst) {
+        if (gst.trim() === '') return true; // allow empty GST
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        return gstRegex.test(gst);
+    }
+
+    // PAN Validation
+    function validatePAN(pan) {
+        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+        return panRegex.test(pan);
+    }
+
+    // Auto-fill PAN from GST
+    gstInput.addEventListener("input", function () {
+        const gstVal = this.value.trim().toUpperCase();
+        this.value = gstVal;
+
+        // GST validation
+        if (!validateGST(gstVal)) {
+            gstError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+        } else {
+            gstError.textContent = "";
+        }
+
+        // Auto-generate PAN if GST valid and has at least 12 chars
+        if (gstVal.length >= 12) {
+            const extractedPan = gstVal.substr(2, 10);
+            panInput.value = extractedPan;
+            panError.textContent = validatePAN(extractedPan) ? "" : "Invalid PAN from GST.";
+        }
+    });
+
+    // PAN validation
+    panInput.addEventListener("input", function () {
+        const panVal = this.value.trim().toUpperCase();
+        this.value = panVal;
+
+        if (!validatePAN(panVal)) {
+            panError.textContent = "Enter a valid PAN number (e.g., ABCDE1234F).";
+        } else {
+            panError.textContent = "";
+        }
+    });
+});
+</script>
 {% endblock custom_js %}    
 {% endblock main_content %}
 

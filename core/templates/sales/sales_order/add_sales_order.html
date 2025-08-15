@@ -164,7 +164,7 @@ Ecoway
                                     <div class="form-group">
                                         <label>Customer Name <span style="color: red;">*</span></label>
                                        
-                                                <select id="customer_Name_id" required name="customer_Name" class="form-control">
+                                                <select id="customer_Name_id" required name="customer_Name" id="so_customer_name" class="form-control">
                                                     <option value="">Choose...</option>
                                                     {% for i in customer_name %}
                                                     <option value="{{i.id}}">{{i.customer}}</option>
@@ -397,19 +397,14 @@ Ecoway
                                     </div>
                                 </div>
                                 
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                <div class="col-xl-4 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Shipping Address </label>
-                                                <select class="form-control" type="text" name="shipping_address" id="shipping_address" >
-                                                    <option value="" hidden disabled selected>Select Shipping Address</option>
-                                                </select>
-                                            </span>
-                                        </div>
+                                        <label for="shipping_address">Shipping Address</label>
+                                        <select class="form-control" id="shipping_address_dropdown" name="shipping_address_dropdown">
+                                            <option value="">Select Shipping Address</option>
+                                        </select>
                                     </div>
                                 </div>
-                                
 
 
                                 <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -2397,60 +2392,6 @@ Ecoway
     };
 </script>
 
-<!-- 
-<script>
-    function test(n) {
-        if (n < 0) return false;
-        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-        if (n === 0) return 'Zero';
-
-        function translate(n) {
-            let word = "";
-            if (n < 10) {
-                word = single_digit[n] + ' ';
-            } else if (n < 20) {
-                word = double_digit[n - 10] + ' ';
-            } else if (n < 100) {
-                const rem = translate(n % 10);
-                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
-            } else if (n < 1000) {
-                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
-            } else if (n < 1000000) {
-                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
-            } else if (n < 1000000000) {
-                word = translate(Math.floor(n / 1000000)).trim() + ' Million ' + translate(n % 1000000);
-            } else {
-                word = translate(Math.floor(n / 1000000000)).trim() + ' Billion ' + translate(n % 1000000000);
-            }
-            return word;
-        }
-
-        let [integerPart, decimalPart] = n.toString().split('.');
-
-        let result = translate(parseInt(integerPart)).trim();
-
-        if (decimalPart) {
-            result += ' and ' + translate(parseInt(decimalPart)) + ' Cents';
-        }
-
-        return result.trim() + '.';
-    }
-
-    function updateTotalInWords() {
-        const totalAmt = parseFloat(document.getElementById('totalamt').value);
-        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
-        document.getElementById('totalamt_word').value = totalAmtInWords;
-    }
-
-    window.onload = function() {
-        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
-        updateTotalInWords(); // Update on page load
-    };
-</script> -->
-
 
 <script>
     // Function to validate email
@@ -2478,4 +2419,43 @@ Ecoway
         }
     }
 </script>
+
+
+
+  <script>  
+    document.addEventListener('DOMContentLoaded', function() {
+        const customerSelect = document.getElementById('so_customer_name');
+        const shippingDropdown = document.getElementById('shipping_address_dropdown');
+        const placeOfSupplySelect = document.getElementById('place_of_supply');
+    
+        customerSelect.addEventListener('change', function() {
+            const customerId = this.value;
+    
+            if (customerId) {
+                fetch(`/get_shipping_address/?customer_id=${customerId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear previous options
+                        shippingDropdown.innerHTML = '<option value="">Select Shipping Address</option>';
+    
+                        // Populate new options
+                        data.shipping_addresses.forEach(addr => {
+                            const option = document.createElement('option');
+                            option.value = addr.value;
+                            option.text = addr.label;
+                            shippingDropdown.appendChild(option);
+                        });
+    
+                        // Default place of supply from first shipping address
+                        placeOfSupplySelect.value = data.place_of_supply || '';
+                    })
+                    .catch(error => console.error('Error fetching shipping addresses:', error));
+            } else {
+                shippingDropdown.innerHTML = '<option value="">Select Shipping Address</option>';
+                placeOfSupplySelect.value = '';
+            }
+        });
+    });
+</script>
+    
 {% endblock main_content %}

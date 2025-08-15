@@ -13,7 +13,7 @@ from core.modules.login.login import login_required
 @login_required
 def upload_customer_doc(request):
     if request.method == "POST":
-        upload_file = request.FILES['upload_vendor_excel']
+        upload_file = request.FILES['upload_customer_excel']
         df = pd.read_excel(upload_file)
         with transaction.atomic():
             for index, row in df.iterrows():

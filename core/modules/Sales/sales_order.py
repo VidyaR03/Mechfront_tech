@@ -177,8 +177,8 @@ def edit_sales_order_data(request,id):
         all_dispatch_through = transporter.objects.all()
         sales_order_item = sales_order_items.objects.filter(so_sales_order_id = id)
         len_sales_order_item = len(sales_order_item)
-        for i in sales_order_item:
-            print(i.so_item_code,">>>>>>>>>>>>>>>>>>>>>>>")
+        # for i in sales_order_item:
+        #     print(i.so_item_code,">>>>>>>>>>>>>>>>>>>>>>>")
         shipping_address_list = []
         for i in all_customer_name:
             shipping_address_list.append(i.shipping_1_attention)
@@ -557,3 +557,34 @@ def get_quotation_items(request, quotation_id):
     items = quotation_items.objects.filter(q_quotation_id=quotation_id)
     items_list = list(items.values())
     return JsonResponse(items_list, safe=False)
+
+
+def get_shipping_address(request):
+    customer_id = request.GET.get('customer_id')
+    Customer = customer.objects.filter(id=customer_id).first()
+    
+    if Customer:
+        shipping_addresses = []
+
+        for i in range(1, 5):
+            attention = getattr(Customer, f'shipping_{i}_attention', '')
+            street = getattr(Customer, f'shipping_{i}_street', '')
+            city = getattr(Customer, f'shipping_{i}_city', '')
+            state = getattr(Customer, f'shipping_{i}_state', '')
+            pincode = getattr(Customer, f'shipping_{i}_pincode', '')
+
+            if any([attention, street, city, state, pincode]):
+                shipping_addresses.append({
+                    'label': f"{attention}, {street}, {city}, {state}, {pincode}",
+                    'value': f"{attention}, {street}, {city}, {state}, {pincode}",
+                    'state': state,
+                })
+
+        return JsonResponse({
+            'shipping_addresses': shipping_addresses,
+            'gst_number': Customer.gst_uin,
+            'place_of_supply': shipping_addresses[0]['state'] if shipping_addresses else ''
+        })
+    else:
+        return JsonResponse({'shipping_addresses': [], 'gst_number': '', 'place_of_supply': ''})
+
