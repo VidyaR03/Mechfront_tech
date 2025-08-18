@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import os, logging,sys
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -80,10 +80,9 @@ WSGI_APPLICATION = 'epiphanycrm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        # 'NAME':'keymech',
-        'NAME':'mach',
-        'USER':'root',
-        'PASSWORD':'password',
+        'NAME':'mechfront_tech',
+        'USER':'manoj',
+        'PASSWORD':'123456',
         'HOST':'localhost',
         'PORT': '3306',
     }

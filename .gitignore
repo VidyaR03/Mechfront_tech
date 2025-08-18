@@ -46,3 +46,6 @@ bower_components/
 
 # Ignore local settings
 settings_local.py
+
+
+employee_photos/
