@@ -137,8 +137,8 @@ def inventory_overview(request, id):
                 combined_data.append({
                     'particular': 'Sales',
                     'date': invoice.invoice_date,
-                    'invoice_no': invoice.formatted_id,
-                    'customer_vendor': invoice.invoice_customer_name.customer,
+                    'invoice_no': invoice.inv_number,
+                    'customer_vendor': invoice.invoice_customer_name,
                     'rate': average_rate,
                     # 'unit': inventory_entity_data.units,
                     'unit': get_last_purchase_unit(inventory_entity_data.item_code, start_date,end_date) or inventory_entity_data.units,
