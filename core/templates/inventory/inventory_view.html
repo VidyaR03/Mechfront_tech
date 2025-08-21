@@ -35,6 +35,11 @@ crm
             <div class="card-header">
                 <h5 class="card-title">{{inventory_entity_data.inventory_name}}</h5>
             </div>
+<div class="d-flex justify-content-end mb-3">
+    <a href="?download_csv=1" class="btn btn-sm btn-primary me-2">Download CSV</a>
+    <a href="?download_excel=1" class="btn btn-sm btn-success">Download Excel</a>
+</div>
+
             <div class="card-body">
                 <ul class="nav nav-tabs nav-tabs-solid">
                     <li class="nav-item"><a class="nav-link active" href="#bottom-tab1"
@@ -43,9 +48,6 @@ crm
                     <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Purchase</a></li>
                     <li class="nav-item"><a class="nav-link" href="#bottom-tab4" data-bs-toggle="tab">Sales/Purchase</a></li>
 
-                    <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab4" data-bs-toggle="tab">Manufacturing</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#bottom-tab5" data-bs-toggle="tab">Adjustment</a></li> -->
-                    <!-- <li class="nav-item"><a class="nav-link" href="#bottom-tab6" data-bs-toggle="tab">Godown</a></li> -->
                 </ul>
                 <div class="tab-content ">
 
@@ -240,32 +242,49 @@ crm
                                  <th>Balance</th>
                               </tr>
                            </thead>
-                           <tbody>
-                            <tr>
-                                <td>Opening Stock</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ opening_stock_quantity|floatformat:2 }}</td>
-                            
-                            </tr> 
-                            {% for data in combined_data %}
-                            <tr>
-                                <td>{{ data.particular }}</td>
-                                <td>{{ data.date|date:"d-m-Y"  }}</td>
-                                <td>{{ data.invoice_no }}</td>
-                                <td>{{ data.customer_vendor }}</td>
-                                <td>{{ data.rate|floatformat:2 }}</td>
-                                <td>{{ data.unit }}</td>
-                                <td>{{ data.quantity|floatformat:2 }}</td>
-                                <td>{{data.balance|floatformat:2}}</td>
-                             
-                            </tr>
-                            {% endfor %}
-                        </tbody>
+<tbody>
+    <tr>
+        <td>Opening Stock</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{ opening_stock_quantity|floatformat:2 }}</td>
+    </tr> 
+
+    {% for data in combined_data %}
+    <tr>
+        <td>{{ data.particular }}</td>
+        <td>{{ data.date|date:"d-m-Y" }}</td>
+
+        {# Invoice No / Bill No depending on type #}
+        <td>
+            {% if data.particular == "Sales" %}
+                {{ data.invoice_no }}
+            {% else %}
+                {{ data.invoice_no }}  {# you can rename to purchase_invoice_no if needed #}
+            {% endif %}
+        </td>
+
+        {# Customer or Vendor depending on type #}
+        <td>
+            {% if data.particular == "Sales" %}
+                {{ data.customer_vendor }}  {# customer #}
+            {% else %}
+                {{ data.customer_vendor }}  {# vendor #}
+            {% endif %}
+        </td>
+
+        <td>{{ data.rate|floatformat:2 }}</td>
+        <td>{{ data.unit }}</td>
+        <td>{{ data.quantity|floatformat:2 }}</td>
+        <td>{{ data.balance|floatformat:2 }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+
                         </table>
                      </div>
 

@@ -322,11 +322,14 @@ def download_debit_note_excel(request):
     return response
 
 
-
 @login_required
 def inventory_summery(request):  
+    companies = vendor.objects.values('company_name').distinct().order_by('company_name')
 
-    return render(request, template_path.inventory_sum)
+    return render(request, template_path.inventory_sum, {
+        'company': companies,
+    })
+
 
 #  Sales Register
 @login_required
