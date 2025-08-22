@@ -27,7 +27,7 @@ def add_employee_leaves(request):
         leave_type = request.POST.get('leave_type')
         leave_reason = request.POST.get('leave_reason')
 
-        if leave_type == "casual":
+        if leave_type == "Casual Leave":
             if employee_name.casual_leaves >= no_days:
                 employee_name.casual_leaves -= no_days  # Deduct casual leaves
                 remaining_days = employee_name.casual_leaves + employee_name.earned_leaves

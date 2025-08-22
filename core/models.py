@@ -159,7 +159,7 @@ class department(models.Model):
     class Meta:
         db_table = 'department'
 class leave_type(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     count = models.IntegerField(null=True)
     date = models.DateTimeField(auto_now_add=True)
     class Meta:

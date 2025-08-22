@@ -28,17 +28,22 @@ Ecoway
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group">
+                                     <div class="form-group">
                                         <label>Name <span style="color: red;">*</span></label>
-                                        <input type="text" name="name" value="{{leave_type_data.name}}" id="name" class="form-control" required>
+                                                <select class="form-select" name="name" id="leavename_type" required>
+                                                <option value="">Select Leave</option>
+                                                <option value="Earned Leave" {% if leave_type_data.name == "Earned Leave" %}selected{% endif %}>Earned Leave</option>
+                                                <option value="Casual Leave" {% if leave_type_data.name == "Casual Leave" %}selected{% endif %}>Casual Leave</option>
+                                            </select>
+                                        <!-- <input type="text" name="name" value="{{leave_type_data.name}}" id="name" class="form-control" required> -->
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Total Leaves <span style="color: red;">*</span></label>
                                         <input type="number" name="count" value="{{leave_type_data.count}}" id="count" class="form-control" required>
                                     </div>
-                                </div>
+                                </div> -->
 
                             </div>
 

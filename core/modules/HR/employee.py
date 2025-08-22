@@ -40,7 +40,7 @@ def add_employee(request):
         if joining_date.year == current_date.year :    
            
             months_since =  (12 - joining_date.month) 
-            print("months_since",months_since)
+            # print("months_since",months_since)
             earned_leaves = months_since * 1.5
             casual_leaves = months_since * 0.67
             formatted_casual_leaves = "{:.2f}".format(casual_leaves)

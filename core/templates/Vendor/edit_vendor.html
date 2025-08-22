@@ -60,14 +60,14 @@ CRM
                                     <div class="form-group row">
                                        <label class="col-lg-3 col-form-label">Company Name:<span style="color: red;">*</span></label>
                                        <div class="col-lg-9">
-                                          <input type="text" class="form-control" value="{{vendor_instance.company_name}}"  name="company_name" id="company_name" placeholder="Company Name"  required>
+                                          <input type="text" class="form-control" value="{{vendor_instance.company_name}}"  name="company_name" id="company_name" placeholder="Company Name"  onkeyup="displayname()" required>
                                        </div>
                                     </div>
                                     <div class="form-group row">
                                        <label class="col-lg-3 col-form-label">Display Name :<span style="color: red;">*</span></label>
                                        <div class="col-lg-9">
                                            <!-- Input box for Display Name -->
-                                           <input type="text" name="display_name" value="{{vendor_instance.display_name}}"  class="form-control" id="display_name_input" onkeyup="displayname()" readonly required>
+                                           <input type="text" name="display_name" value="{{vendor_instance.display_name}}"  class="form-control" id="display_name_input" readonly required>
                                        </div>
                                    </div>
                                     <!-- <div class="form-group row">
@@ -533,7 +533,7 @@ CRM
 
 <script>
     // Get references to the dropdown and input fields
-    var scustomer = document.getElementById("first_name");
+    var scustomer = document.getElementById("company_name");
     var fromInput = document.getElementById("display_name_input");
  
     // Add an event listener to the dropdown to update the input field when it changes

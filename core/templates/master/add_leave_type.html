@@ -30,15 +30,20 @@ Ecoway
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Name <span style="color: red;">*</span> </label>
-                                        <input type="text" name="name" id="name" class="form-control" pattern="[A-Za-z]+" title="Please enter only letters" required>
+                                            <select class="form-select" name="name" id="leavename_type" required>
+                                                <option value="">Select Leave</option>
+                                                <option value="Earned Leave">Earned Leave</option>
+                                                <option value="Casual Leave">Casual Leave</option>
+                                            </select>
+
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Total Leaves <span style="color: red;">*</span></label>
-                                        <input type="number" name="count" id="count" class="form-control" min="0" required>
+                                        <input type="number" name="count" id="count" class="form-control" >
                                     </div>
-                                </div>
+                                </div> -->
 
                             </div>
 
