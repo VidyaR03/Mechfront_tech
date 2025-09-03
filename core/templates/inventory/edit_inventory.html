@@ -22,16 +22,17 @@ Ecoway
 
 {% block main_content %}
 <div class="page-wrapper" style="padding-top:0px;">
-   <div class="content container-fluid">
-      <div class="page-header">
-         <div class="row">
-            <div class="col-sm-12">
-               <h3 class="page-title"> <a href="{% url 'inventory_list_data' %}" style="margin-right: 10px;"><i
-                        class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
-                        aria-label="fa fa-arrow-left"></i></a>Edit Inventory</h3>
-            </div>
-         </div>
-      </div>
+    <div class="content container-fluid">
+<div class="row">
+    <div class="col-sm-12">
+        <h3 class="page-title">
+            <a href="{% url 'inventory_list_data' %}" class="me-2">
+                <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="Back"></i>
+            </a>
+            Edit Inventory
+        </h3>
+    </div>
+</div>
       <div class="row">
          <div class="col-md-12">
             <div class="card" data-select2-id="9">
@@ -42,14 +43,14 @@ Ecoway
                      <div class="row">
 
                          <!-- Item Description, Item Code, Unit, Type, Tax Type -->
-                         <div class="col-md-6">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>Item Description <span style="color: red;">*</span></label>
                                  <input class="form-control" type="text" name="inventory_name" id="name" value="{{inventory_item.inventory_name}}" required>
                                  <div class="error-message" id="inventory_name_error" style="display:none;color:red;">Please enter the item description.</div>
                              </div>
                          </div>
-                         <div class="col-md-6">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>Company Name <span style="color: red;">*</span></label>    
                                 <select name="company_name" class="form-control" required>
@@ -67,14 +68,14 @@ Ecoway
 
 
 
-                         <div class="col-md-3">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>Item Code <span style="color: red;">*</span></label>
                                  <input class="form-control" type="text" name="item_code" value="{{inventory_item.item_code}}" id="item_code" required>
                                  <div class="error-message" id="item_code_error" style="display:none;color:red;">Please enter the item code.</div>
                              </div>
                          </div>
-                         <div class="col-md-3">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>Unit <span style="color: red;">*</span></label>
                                  <select class="form-control" name="unit" id="unit" required>
@@ -114,7 +115,7 @@ Ecoway
                                  <div class="error-message" id="unit_error" style="display:none;color:red;">Please select a unit.</div>
                              </div>
                          </div>
-                         <div class="col-md-3">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>Type</label>
                                  <select class="form-control" name="good_type" id="good_type">
@@ -125,7 +126,7 @@ Ecoway
                                  <div class="error-message" id="good_type_error" style="display:none;color:red;">Please select a type.</div>
                              </div>
                          </div>
-                         <div class="col-md-3">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>Tax Type</label>
                                  <select class="form-control" name="tax_type" id="tax_type">
@@ -139,30 +140,22 @@ Ecoway
                              </div>
                          </div>
                          <!-- HSN, SKU, Default Discount -->
-                         <div class="col-md-2">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>HSN/SAC <span style="color: red;">*</span></label>
                                  <input class="form-control" type="number" name="hsn" oninput="this.value = this.value.replace(/[^0-9]/g, '');"  value="{{inventory_item.hsn}}" required>
                                  <!-- <div class="error-message" id="hsn_error" style="display:none;color:red;">Please enter a valid 8 digit HSN code. </div> -->
                              </div>
                          </div>
-                         <div class="col-md-2">
+                         <div class="col-md-4">
                              <div class="form-group">
                                  <label>SKU</label>
                                  <input class="form-control" type="number" name="sku" id="sku"  value="{{inventory_item.sku}}" pattern="\d{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                  <div class="error-message" id="sku_error" style="display:none;color:red;">Please enter a valid SKU.</div>
                              </div>
                          </div>
-                         <!-- <div class="col-md-2">
-                             <div class="form-group">
-                                 <label>Default Discount (%)</label>
-                                 <input class="form-control" type="text" name="default_discount" id="default_discount" value="{{inventory_item.default_discount}}" pattern="\d{1,5}(\.\d{0,2})?" 
-                                 title="Enter a number with up to 5 digits before the decimal and up to 2 digits after the decimal."
-                                 maxlength="3">
-                                 <div class="error-message" id="default_discount_error" style="display:none;color:red;">Please enter a valid discount.</div>
-                             </div>
-                         </div> -->
-                         <div class="col-md-2">
+                       
+                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Default Discount (%) </label>
                                 <input class="form-control" type="text" name="default_discount" id="default_discount" 
@@ -250,44 +243,47 @@ Ecoway
                          <div class="col-md-3 pt11 purchase_information hidden">
                              <div class="form-group">
                                  <label>Purchase</label>
-                                 <select class="form-control" name="purchase_account" id="purchase_account">
-                                     <option value="" hidden>Select Account</option>
-                                     <optgroup label="Expense">
-                                        <option value="Purchase Account">Purchase Account</option>
-                                         <option value="Bank Fees and Charges">Bank Fees and Charges</option>
-                                         <option value="Printing and Stationery">Printing and Stationery</option>
-                                         <option value="Salaries and Employee Wages">Salaries and Employee Wages</option>
-                                         <option value="Meals and Entertainment">Meals and Entertainment</option>
-                                         <option value="Depreciation Expense">Depreciation Expense</option>
-                                         <option value="Consultant Expense">Consultant Expense</option>
-                                         <option value="Repairs and Maintenance">Repairs and Maintenance</option>
-                                         <option value="Other Expenses">Other Expenses</option>
-                                         <option value="Lodging">Lodging</option>
-                                         <option value="Bad Debt">Bad Debt</option>
-                                         <option value="Postage">Postage</option>
-                                         <option value="Advertising And Marketing">Advertising And Marketing</option>
-                                         <option value="Credit Card Charges">Credit Card Charges</option>
-                                         <option value="Travel Expense">Travel Expense</option>
-                                         <option value="Telephone Expense">Telephone Expense</option>
-                                         <option value="Automobile Expense">Automobile Expense</option>
-                                         <option value="IT and Internet Expenses">IT and Internet Expenses</option>
-                                         <option value="Rent Expense">Rent Expense</option>
-                                         <option value="Janitorial Expense">Janitorial Expense</option>
-                                         <option value="Office Supplies">Office Supplies</option>
-                                         <option value="Custom Duty">Custom Duty</option>
-                                         <option value="PETROL EXPENSE">PETROL EXPENSE</option>
-                                         <option value="COURIER EXPENSE">COURIER EXPENSE</option>
-                                         <option value="Office Expenses">Office Expenses</option>
-                                         <option value="COMMISION">COMMISION</option>
-                                         <option value="FIX ASSET PURCHASE">FIX ASSET PURCHASE</option>
-                                         <option value="BANK COMMISION">BANK COMMISION</option>
-                                         <option value="MARKETING EXPENSE">MARKETING EXPENSE</option>
-                                         <option value="OTHER PURCHASE">OTHER PURCHASE</option>
-                                         <option value="MISC EXPENSE">MISC EXPENSE</option>
-                                         <option value="OTHER INDIRECT EXPENSE">OTHER INDIRECT EXPENSE</option>
-                                     </optgroup>
+
+                                <select class="form-control" name="purchase_account" id="purchase_account">
+                                    <option value="" hidden>Select Account</option>
+                                    <optgroup label="Expense">
+                                        <option value="Purchase Account" {% if inventory_item.purchase == "Purchase Account" %}selected{% endif %}>Purchase Account</option>
+                                        <option value="Bank Fees and Charges" {% if inventory_item.purchase == "Bank Fees and Charges" %}selected{% endif %}>Bank Fees and Charges</option>
+                                        <option value="Printing and Stationery" {% if inventory_item.purchase == "Printing and Stationery" %}selected{% endif %}>Printing and Stationery</option>
+                                        <option value="Salaries and Employee Wages" {% if inventory_item.purchase == "Salaries and Employee Wages" %}selected{% endif %}>Salaries and Employee Wages</option>
+                                        <option value="Meals and Entertainment" {% if inventory_item.purchase == "Meals and Entertainment" %}selected{% endif %}>Meals and Entertainment</option>
+                                        <option value="Depreciation Expense" {% if inventory_item.purchase == "Depreciation Expense" %}selected{% endif %}>Depreciation Expense</option>
+                                        <option value="Consultant Expense" {% if inventory_item.purchase == "Consultant Expense" %}selected{% endif %}>Consultant Expense</option>
+                                        <option value="Repairs and Maintenance" {% if inventory_item.purchase == "Repairs and Maintenance" %}selected{% endif %}>Repairs and Maintenance</option>
+                                        <option value="Other Expenses" {% if inventory_item.purchase == "Other Expenses" %}selected{% endif %}>Other Expenses</option>
+                                        <option value="Lodging" {% if inventory_item.purchase == "Lodging" %}selected{% endif %}>Lodging</option>
+                                        <option value="Bad Debt" {% if inventory_item.purchase == "Bad Debt" %}selected{% endif %}>Bad Debt</option>
+                                        <option value="Postage" {% if inventory_item.purchase == "Postage" %}selected{% endif %}>Postage</option>
+                                        <option value="Advertising And Marketing" {% if inventory_item.purchase == "Advertising And Marketing" %}selected{% endif %}>Advertising And Marketing</option>
+                                        <option value="Credit Card Charges" {% if inventory_item.purchase == "Credit Card Charges" %}selected{% endif %}>Credit Card Charges</option>
+                                        <option value="Travel Expense" {% if inventory_item.purchase == "Travel Expense" %}selected{% endif %}>Travel Expense</option>
+                                        <option value="Telephone Expense" {% if inventory_item.purchase == "Telephone Expense" %}selected{% endif %}>Telephone Expense</option>
+                                        <option value="Automobile Expense" {% if inventory_item.purchase == "Automobile Expense" %}selected{% endif %}>Automobile Expense</option>
+                                        <option value="IT and Internet Expenses" {% if inventory_item.purchase == "IT and Internet Expenses" %}selected{% endif %}>IT and Internet Expenses</option>
+                                        <option value="Rent Expense" {% if inventory_item.purchase == "Rent Expense" %}selected{% endif %}>Rent Expense</option>
+                                        <option value="Janitorial Expense" {% if inventory_item.purchase == "Janitorial Expense" %}selected{% endif %}>Janitorial Expense</option>
+                                        <option value="Office Supplies" {% if inventory_item.purchase == "Office Supplies" %}selected{% endif %}>Office Supplies</option>
+                                        <option value="Custom Duty" {% if inventory_item.purchase == "Custom Duty" %}selected{% endif %}>Custom Duty</option>
+                                        <option value="PETROL EXPENSE" {% if inventory_item.purchase == "PETROL EXPENSE" %}selected{% endif %}>PETROL EXPENSE</option>
+                                        <option value="COURIER EXPENSE" {% if inventory_item.purchase == "COURIER EXPENSE" %}selected{% endif %}>COURIER EXPENSE</option>
+                                        <option value="Office Expenses" {% if inventory_item.purchase == "Office Expenses" %}selected{% endif %}>Office Expenses</option>
+                                        <option value="COMMISION" {% if inventory_item.purchase == "COMMISION" %}selected{% endif %}>COMMISION</option>
+                                        <option value="FIX ASSET PURCHASE" {% if inventory_item.purchase == "FIX ASSET PURCHASE" %}selected{% endif %}>FIX ASSET PURCHASE</option>
+                                        <option value="BANK COMMISION" {% if inventory_item.purchase == "BANK COMMISION" %}selected{% endif %}>BANK COMMISION</option>
+                                        <option value="MARKETING EXPENSE" {% if inventory_item.purchase == "MARKETING EXPENSE" %}selected{% endif %}>MARKETING EXPENSE</option>
+                                        <option value="OTHER PURCHASE" {% if inventory_item.purchase == "OTHER PURCHASE" %}selected{% endif %}>OTHER PURCHASE</option>
+                                        <option value="MISC EXPENSE" {% if inventory_item.purchase == "MISC EXPENSE" %}selected{% endif %}>MISC EXPENSE</option>
+                                        <option value="OTHER INDIRECT EXPENSE" {% if inventory_item.purchase == "OTHER INDIRECT EXPENSE" %}selected{% endif %}>OTHER INDIRECT EXPENSE</option>
+                                    </optgroup>
+                                </select>
+     
                                  
-                                 </select>
+                                
                                  <div class="error-message" id="purchase_account_error" style="display:none;color:red;">Please select a purchase account.</div>
                              </div>
                          </div>
