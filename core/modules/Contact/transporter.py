@@ -50,6 +50,7 @@ def edit_transporter(request, transporter_id):
         transporter_instance.branch_name = request.POST['branch_name']
         transporter_instance.mobile = request.POST['mobile']
         transporter_instance.vendor_email = request.POST['vendor_email']
+        transporter_instance.ifsc_code = request.POST['ifsc_code']
         transporter_instance.save()
         messages.success(request, 'Transporter Updated successfully.')
 

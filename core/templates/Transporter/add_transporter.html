@@ -4,13 +4,23 @@ CRM
 {% endblock %}
 
 {% block custom_css %}
-
-
+<style>
+    .error-message {
+        color: red;
+        font-size: 0.9em;
+        margin-top: 5px;
+        display: block;
+    }
+    .form-group.invalid .form-control {
+        border-color: red;
+    }
+    .form-group.valid .form-control {
+        border-color: green;
+    }
+</style>
 {% endblock custom_css %}
 
 {% block main_content %}
-
-
 <div class="page-wrapper" style="padding-top: 0px;">
     <div class="content container-fluid">
         <div class="page-header">
@@ -25,288 +35,239 @@ CRM
                 </div>
             </div>
         </div>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" id="vendor_form" action="" autocomplete="off">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Name</label><span
-                                            style="color: red;">*</span>
-                                            <input type="text" class="form-control" name="name" id="name" placeholder="Name" required>
-                                        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" id="vendor_form" action="" enctype="multipart/form-data" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Name <span style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Name" required>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Address</label><span
-                                            style="color: red;">*</span>
-                                            <input type="text" name="address" id="address" class="form-control" placeholder="Address" required>
-                                        </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Address <span style="color: red;">*</span></label>
+                                        <input type="text" name="address" id="address" class="form-control" placeholder="Address" required>
                                     </div>
-                                  
-                                    <div class="col-md-3">
-                                        <div class="form-group">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
                                         <label>GST No</label>
-                                        <input type="text" class="form-control" name="gst_no" id="gst_no_input" placeholder="GST No.">
-                                        <span id="gstError" style="color: red;"></span>
-
-                                        </div>
-                                    </div> 
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>Bank Name</label>
-                                           <input type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Bank Name">
-                                        </div>
-                                     </div> 
-                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>Account Number</label>
-                                           <input type="number" class="form-control" name="account_number" id="account_number" placeholder="Account No." maxlength="17">
-                                        </div>
-                                     </div> 
-                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>Branch</label>
-                                           <input type="text" class="form-control" name="branch_name" id="branch_name" placeholder="Branch Name">
-                                        </div>
-                                     </div>
-                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>Mobile Number</label><span
-                                        style="color: red;">*</span>
-                                            <input type="number" class="form-control" name="mobile" id="mobile" placeholder="Mobile" required  pattern="\d{10}" title="Enter a 10-digit number">
-                                            <p id="mobileError" style="color: red;"></p>
-                                        </div>
-                                     </div>                    
-                                      
-
-                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>Email Address</label>
-                                           <input type="email" class="form-control" name="vendor_email" id="id_email" placeholder="Enter email">
-                                           <span id="email-error-message" style="color: red; display: none;">Invalid email address.</span>
- 
-                                        </div>
-                                     </div>
-                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                        <label>IFSC Code</label>
-                                           <input type="text" class="form-control" name="ifsc_code" id="ifsc_code" placeholder="IFSC Code">
-                                        </div>
-                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label for="timestamp" style="display: none;">Date</label>
-                                            <input type="text" class="form-control" name="timestamp" id="timestamp" placeholder="Date" hidden>
-                                        </div>
+                                        <input type="text" class="form-control" name="gst_no" id="gst_no_input" placeholder="GST No. (e.g., 22ABCDE1234F1Z5)">
+                                        <span id="gstError" class="error-message"></span>
                                     </div>
                                 </div>
-                                <div class="add-customer-btns text-end">
-                                    <a href="{% url 'fn_transporter_List_View' %}" class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
-                                    <button type="submit" class="btn btn-outline-primary me-1 btn-rounded">Save Transporter</button>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Bank Name</label>
+                                        <input type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Bank Name">
+                                    </div>
                                 </div>
-                                <div class="row col-sm-6 p-5">
-                                    <div class="success_message row"></div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Account Number</label>
+                                        <input type="text" class="form-control" name="account_number" id="account_number" placeholder="Account No." maxlength="17">
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Branch</label>
+                                        <input type="text" class="form-control" name="branch_name" id="branch_name" placeholder="Branch Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Mobile Number <span style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Mobile (10 digits)" required>
+                                        <span id="mobileError" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Email Address</label>
+                                        <input type="email" class="form-control" name="vendor_email" id="id_email" placeholder="Enter email">
+                                        <span id="emailError" class="error-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>IFSC Code</label>
+                                        <input type="text" class="form-control" name="ifsc_code" id="ifsc_code" placeholder="IFSC Code">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="timestamp" style="display: none;">Date</label>
+                                        <input type="text" class="form-control" name="timestamp" id="timestamp" placeholder="Date" hidden>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="add-customer-btns text-end">
+                                <a href="{% url 'fn_transporter_List_View' %}" class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
+                                <button type="submit" class="btn btn-outline-primary me-1 btn-rounded">Save Transporter</button>
+                            </div>
+                            <div class="row col-sm-6 p-5">
+                                <div class="success_message row"></div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
-
-
-
-{% block custom_js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-    const mobileInput = document.getElementById("mobile");
-    const mobileError = document.getElementById("mobileError");
-    
-    mobileInput.addEventListener("input", function() {
-    const mobileValue = this.value;
-    const mobileRegex = /^[0-9]{10}$/; // Regular expression for a 10-digit mobile number
-    
-    if (!mobileRegex.test(mobileValue)) {
-    mobileError.textContent = "Enter a valid 10-digit mobile number.";
-    } else {
-    mobileError.textContent = "";
-    }
-    });
-    });
-    </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-     const gstNoInput = document.getElementById("gst_no_input");
-     const gstError = document.getElementById("gstError");
- 
-     function validateGSTNo(gstNoValue) {
-         if (gstNoValue.trim() === '') {
-             return true;  // Allow empty value
-         }
- 
-         const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
-         return gstNoRegex.test(gstNoValue);
-     }
- 
-     gstNoInput.addEventListener("input", function () {
-         const gstNoValue = this.value;
- 
-         if (!validateGSTNo(gstNoValue)) {
-             gstError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
-         } else {
-             gstError.textContent = "";
-         }
-     });
- });
- 
- </script>
-
-<script>
-    // Function to validate email
-    function isValidEmail(email) {
-      var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailPattern.test(email);
-    }
- 
-    // Add an event listener for input changes
-    document.getElementById('id_email').addEventListener('input', validateEmail);
- 
-    // Function to validate email and show/hide error message
-    function validateEmail() {
-      var emailInput = document.getElementById('id_email').value;
-      var emailErrorMessage = document.getElementById('email-error-message');
- 
-      // Check if the email is valid
-      var isValid = isValidEmail(emailInput);
- 
-      // Display or hide the error message based on validation result
-      if (!isValid && emailInput !== "") {
-        emailErrorMessage.style.display = 'inline';
-      } else {
-        emailErrorMessage.style.display = 'none';
-      }
-    }
- </script>
- 
-
-<!-- <script>
-    // Function to validate email
-    function isValidEmail(email) {
-      var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailPattern.test(email);
-    }
-    
-    // Set a specific email to check
-    // var emailToCheck = "user@example.com";
-    // document.getElementById('id_email').value = emailToCheck;
-    
-    // Validate the email on page load
-    validateEmail();
-    
-    // Add an event listener for input changes
-    document.getElementById('id_email').addEventListener('input', validateEmail);
-    
-    // Function to validate email and show/hide error message
-    function validateEmail() {
-      var emailInput = document.getElementById('id_email').value;
-      var emailErrorMessage = document.getElementById('email-error-message');
-    
-      // Check if the email is valid
-      var isValid = isValidEmail(emailInput);
-    
-      // Display or hide the error message based on validation result
-      if (!isValid) {
-        emailErrorMessage.style.display = 'inline';
-      } else {
-        emailErrorMessage.style.display = 'none';
-      }
-    }
-    </script> -->
-
-<script>
-   document.addEventListener("DOMContentLoaded", function() {
-       // Your existing code for other fields here...
-       
-       // Function to validate Maximum Payment Limit
-       function validateMaximumPaymentLimit(value) {
-           // Allow empty value
-           if (value.trim() === '') {
-               return true;
-           }
-
-           // Add any additional validation logic if needed
-           return true; // Return true for non-empty values (add validation logic here if needed)
-       }
-
-       const maximumPaymentLimitInput = document.getElementById("maximum_payment_limit");
-       
-       maximumPaymentLimitInput.addEventListener("input", function() {
-           const value = this.value;
-           if (!validateMaximumPaymentLimit(value)) {
-               // Display an error message or perform other actions for invalid values
-           }
-       });
-   });
-</script>
-<!-- Include jQuery -->
-
-
-
-
-<script>
-   document.addEventListener("DOMContentLoaded", function() {
-       // Your existing code for other fields here...
-       
-       // Function to validate Total Supply Value
-       function validateTotalSupplyValue(value) {
-           if (value.trim() === '') {
-               return true; // Allow empty value
-           }
-           
-           // Add any additional validation logic if needed
-           return true; // Return true for non-empty values (add validation logic here if needed)
-       }
-
-       // Function to validate Maximum Payment Limit
-       function validateMaximumPaymentLimit(value) {
-           if (value.trim() === '') {
-               return true; // Allow empty value
-           }
-
-           // Add any additional validation logic if needed
-           return true; // Return true for non-empty values (add validation logic here if needed)
-       }
-
-       const totalSupplyValueInput = document.getElementById("total_supply_value");
-       const maximumPaymentLimitInput = document.getElementById("maximum_payment_limit");
-       
-       totalSupplyValueInput.addEventListener("input", function() {
-           const value = this.value;
-           if (!validateTotalSupplyValue(value)) {
-               // Display an error message or perform other actions for invalid values
-           }
-       });
-       
-       maximumPaymentLimitInput.addEventListener("input", function() {
-           const value = this.value;
-           if (!validateMaximumPaymentLimit(value)) {
-               // Display an error message or perform other actions for invalid values
-           }
-       });
-   });
-</script>
-
-  
- 
- 
-{% endblock custom_js %}    
 {% endblock main_content %}
 
-    
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // GST Number Validation
+    function validateGSTNo(gstNoValue) {
+        if (gstNoValue.trim() === '') {
+            return true; // Allow empty value since GST is optional
+        }
+        const gstNoRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        return gstNoRegex.test(gstNoValue);
+    }
+
+    const gstNoInput = document.getElementById("gst_no_input");
+    const gstError = document.getElementById("gstError");
+
+    gstNoInput.addEventListener("input", function() {
+        const gstNoValue = this.value.trim();
+        const formGroup = this.closest('.form-group');
+        if (!validateGSTNo(gstNoValue)) {
+            gstError.textContent = "Enter a valid GST number (e.g., 22ABCDE1234F1Z5)";
+            formGroup.classList.add('invalid');
+            formGroup.classList.remove('valid');
+        } else {
+            gstError.textContent = "";
+            formGroup.classList.remove('invalid');
+            formGroup.classList.add('valid');
+        }
+    });
+
+    // Mobile Number Validation
+    function validateMobileNumber(mobileValue) {
+        const mobileRegex = /^[6-9][0-9]{9}$/;
+        return mobileRegex.test(mobileValue);
+    }
+
+    const mobileInput = document.getElementById("mobile");
+    const mobileError = document.getElementById("mobileError");
+
+    mobileInput.addEventListener("input", function() {
+        const mobileValue = this.value.trim();
+        const formGroup = this.closest('.form-group');
+        if (!validateMobileNumber(mobileValue)) {
+            mobileError.textContent = "Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9";
+            formGroup.classList.add('invalid');
+            formGroup.classList.remove('valid');
+        } else {
+            mobileError.textContent = "";
+            formGroup.classList.remove('invalid');
+            formGroup.classList.add('valid');
+        }
+    });
+
+    // Email Validation
+    function validateEmail(emailValue) {
+        if (emailValue.trim() === '') {
+            return true; // Allow empty value since email is optional
+        }
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(emailValue);
+    }
+
+    const emailInput = document.getElementById("id_email");
+    const emailError = document.getElementById("emailError");
+
+    emailInput.addEventListener("input", function() {
+        const emailValue = this.value.trim();
+        const formGroup = this.closest('.form-group');
+        if (!validateEmail(emailValue)) {
+            emailError.textContent = "Enter a valid email address (e.g., user@example.com)";
+            formGroup.classList.add('invalid');
+            formGroup.classList.remove('valid');
+        } else {
+            emailError.textContent = "";
+            formGroup.classList.remove('invalid');
+            formGroup.classList.add('valid');
+        }
+    });
+
+    // jQuery Validate for Form Submission
+    $("#vendor_form").validate({
+        rules: {
+            name: {
+                required: true,
+                minlength: 2
+            },
+         
+            mobile: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                pattern: /^[6-9][0-9]{9}$/
+            },
+            vendor_email: {
+                email: true
+            },
+            gst_no: {
+                pattern: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/
+            },
+            account_number: {
+                maxlength: 17,
+                pattern: /^[0-9]+$/
+            },
+            ifsc_code: {
+                pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/
+            }
+        },
+        messages: {
+            name: {
+                required: "Please enter the transporter's name",
+                minlength: "Name must be at least 2 characters long"
+            },
+         
+            mobile: {
+                required: "Please enter a mobile number",
+                minlength: "Mobile number must be 10 digits",
+                maxlength: "Mobile number must be 10 digits",
+                pattern: "Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9"
+            },
+            vendor_email: {
+                email: "Enter a valid email address (e.g., user@example.com)"
+            },
+            gst_no: {
+                pattern: "Enter a valid GST number (e.g., 22ABCDE1234F1Z5)"
+            },
+            account_number: {
+                maxlength: "Account number cannot exceed 17 digits",
+                pattern: "Account number must contain only digits"
+            },
+            ifsc_code: {
+                pattern: "Enter a valid IFSC code (e.g., SBIN0001234)"
+            }
+        },
+        errorElement: "span",
+        errorClass: "error-message",
+        errorPlacement: function(error, element) {
+            error.insertAfter(element);
+        },
+        highlight: function(element) {
+            $(element).closest('.form-group').addClass('invalid').removeClass('valid');
+        },
+        unhighlight: function(element) {
+            $(element).closest('.form-group').removeClass('invalid').addClass('valid');
+        }
+    });
+});
+</script>
+{% endblock custom_js %}

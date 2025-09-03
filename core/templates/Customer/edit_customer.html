@@ -269,12 +269,27 @@ CRM
                                           <label class="col-lg-3 col-form-label">PAN Number</label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control"
+                                                value="{{customer_instance.pan_number}}"
+                                                name="pan_number"
+                                                id="pan_number_input"
+                                                placeholder="PAN Number"
+                                                pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                                                title="Enter a valid PAN (e.g., ABCDE1234F)"
+                                                required>
+                                             <span id="panError" style="color: red;"></span>
+                                          </div>
+                                          </div>
+
+                                       <!-- <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">PAN Number</label>
+                                          <div class="col-lg-9">
+                                             <input type="text" class="form-control"
                                                 value="{{customer_instance.pan_number}}" name="pan_number"
                                                 id="pan_number_input" placeholder="PAN Number">
                                              <span id="panError" style="color: red;"></span>
 
                                           </div>
-                                       </div>
+                                       </div> -->
 
 
                                     </div>
