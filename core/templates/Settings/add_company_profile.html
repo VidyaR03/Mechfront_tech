@@ -406,8 +406,7 @@
     <div class="form-group row">
         <label class="col-lg-3 col-form-label">CIN Number<span style="color: red;">*</span></label>
         <div class="col-lg-9">
-            <input type="text" class="form-control" name="cin_number" id="cin_number" 
-                   placeholder="CIN Number" maxlength="21"  required>
+<input type="text" name="cin_number" id="cin_number"  maxlength="21" pattern="[A-Z0-9]{21}" title="CIN must be exactly 21 alphanumeric characters (e.g., U12345MH2020PLC123456)" required><br>
         </div>
                                        </div>
                                     </div>
@@ -707,7 +706,24 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+    document.getElementById('cin_number').addEventListener('input', function(e) {
+        const cin = e.target.value;
+        const cinPattern = /^[A-Z0-9]{21}$/;
+        const errorDiv = document.createElement('div');
+        errorDiv.style.color = 'red';
+        errorDiv.id = 'cin-error';
 
+        // Remove any existing error message
+        const existingError = document.getElementById('cin-error');
+        if (existingError) existingError.remove();
+
+        if (cin && !cinPattern.test(cin)) {
+            errorDiv.textContent = 'CIN must be exactly 21 alphanumeric characters (e.g., U12345MH2020PLC123456)';
+            e.target.insertAdjacentElement('afterend', errorDiv);
+        }
+    });
+</script>
 
 {% endblock custom_js %}    
 {% endblock main_content %}

@@ -505,39 +505,6 @@
 
 
 
-        <li class="menu-title"><span>Documents</span></li>
-        <li
-          class="nav-item has-treeview {% if 'customer_doc' in request.path  or 'vendor_doc' in request.path or 'inventory_doc' in request.path %}menu-open{% endif %}">
-          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
-            &nbsp;&nbsp;<i class="fe fe-package"></i> <span>Documents</span><span class="menu-arrow"></span>
-
-          </a>
-          <ul id="sub-menu-vendor"
-            class="nav nav-treeview sub-menu {% if 'customer_doc' in request.path or 'vendor_doc' in request.path or 'inventory_doc' in request.path %}active{% endif %}">
-            <li class="nav-item">
-              {% url 'customer_doc' as customer_doc %}
-              <a href="{{ customer_doc }}" class="nav-link {% if request.path == customer_doc %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'vendor_doc' as vendor_doc %}
-              <a href="{{ vendor_doc }}" class="nav-link {% if request.path == vendor_doc %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vendor
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'inventory_doc' as inventory_doc %}
-              <a href="{{ inventory_doc }}" class="nav-link {% if request.path == inventory_doc %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inventory
-              </a>
-            </li>
-
-
-          </ul>
-        </li>
 
 
         <li class="menu-title"><span>Settings</span></li>

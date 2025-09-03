@@ -264,7 +264,7 @@ class Settings(models.Model):
     gst_number = models.CharField(max_length=150, null=True)
     pan_number = models.CharField(max_length=255, null=True)    
     tan_number = models.CharField(max_length=255, null=True)    
-    cin_number = models.CharField(max_length=255, null=True)    
+    cin_number = models.CharField(max_length=21, null=True)
 
     class Meta:
         db_table = 'Settings'
