@@ -393,7 +393,7 @@
                                     <div class="rowbb">
                                         <div class="invoice-add-table">
                                             <div class="table-responsive">
-                                                <table class="table table-center add-table-items">
+                                                <table class="table table-center add-table-items"  id="append_table">
                                                     <thead>
                                                         <tr>
                                                             <th></th>
@@ -494,8 +494,9 @@
                                             <div class="col-lg-7 col-md-6">
                                                 <!-- <div class="form-group float-end mb-0"> <button class="btn btn-primary" type="submit">Add Item</button> </div> -->
                                                 <div class="invoice-fields">
-                                                    <h4 class="field-title">Terms and Conditions</h4> <br> <textarea
-                                                        class="form-control" name="note"></textarea>
+                                                    <h4 class="field-title">Terms and Conditions</h4> <br>
+                                                 <textarea class="form-control" name="note">{{challan_data.dc_note}}</textarea>
+
                                                 </div>
                                             </div>
                                             <div class="col-lg-5 col-md-6">
@@ -873,1184 +874,384 @@
         }
     });
 </script>
-
 <script>
-    $(document).ready(function() {
-        // Hide fields initially
-        $("#pf_amount_row").hide();
-        $("#pf_percentage_row").hide();
-        $("#fr_amount_row").hide();
-        $("#fr_percentage_row").hide();
-    
-        // Show or hide P&F amount field
-        $("#packaging_forwording_amount").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#pf_amount_row").show();
-            } else {
-                $("#pf_amount_row").hide();
-            }
-        });
-    
-        // Show or hide P&F percentage field
-        $("#packaging_forwording_percentage").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#pf_percentage_row").show();
-            } else {
-                $("#pf_percentage_row").hide();
-            }
-        });
-    
-        // Show or hide Freight amount field
-        $("#freight_amount").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#fr_amount_row").show();
-            } else {
-                $("#fr_amount_row").hide();
-            }
-        });
-    
-        // Show or hide Freight percentage field
-        $("#freight_percentage").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#fr_percentage_row").show();
-            } else {
-                $("#fr_percentage_row").hide();
-            }
-        });
+(function() {
+    // Toastr Configuration
+    toastr.options = {
+        closeButton: true,
+        debug: false,
+        newestOnTop: false,
+        progressBar: true,
+        positionClass: "custom-toast-position",
+        preventDuplicates: false,
+        showDuration: "300",
+        hideDuration: "1000",
+        timeOut: "5000",
+        extendedTimeOut: "1000",
+        showEasing: "swing",
+        hideEasing: "linear",
+        showMethod: "fadeIn",
+        hideMethod: "fadeOut"
+    };
+
+    // Form Validation
+    document.getElementById('invoice_form').addEventListener('submit', function(event) {
+        const customerSelect = document.getElementById('customer_id_select').value;
+        const customerDatalist = document.getElementById('customer_Name').value;
+        if (!customerSelect && !customerDatalist) {
+            event.preventDefault();
+            toastr.error('Please select a Customer Name.');
+        }
     });
-    </script>
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const freightAmount = document.getElementById('freight_amount');
-        const freightPercentage = document.getElementById('freight_percentage');
-        const packagingAmount = document.getElementById('packaging_forwording_amount');
-        const packagingPercentage = document.getElementById('packaging_forwording_percentage');
-
-        function toggleFreightInputs() {
-            if (freightAmount.value !== "0" && freightAmount.value !== "") {
-                freightPercentage.value = "0";
-                freightPercentage.disabled = true;
-            } else {
-                freightPercentage.disabled = false;
-            }
-        }
-
-        function toggleFreightPercentage() {
-            if (freightPercentage.value !== "0" && freightPercentage.value !== "") {
-                freightAmount.value = "0";
-                freightAmount.disabled = true;
-            } else {
-                freightAmount.disabled = false;
-            }
-        }
-
-        function togglePackagingInputs() {
-            if (packagingAmount.value !== "0" && packagingAmount.value !== "") {
-                packagingPercentage.value = "0";
-                packagingPercentage.disabled = true;
-            } else {
-                packagingPercentage.disabled = false;
-            }
-        }
-
-        function togglePackagingPercentage() {
-            if (packagingPercentage.value !== "0" && packagingPercentage.value !== "") {
-                packagingAmount.value = "0";
-                packagingAmount.disabled = true;
-            } else {
-                packagingAmount.disabled = false;
-            }
-        }
-
-        freightAmount.addEventListener('input', toggleFreightInputs);
-        freightPercentage.addEventListener('input', toggleFreightPercentage);
-        packagingAmount.addEventListener('input', togglePackagingInputs);
-        packagingPercentage.addEventListener('input', togglePackagingPercentage);
-    });
-</script>
-
-
-<script>
-    function updatePFPercentage() {
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value);
-        var pfAmount2 = (subtotal * percentage) / 100;
-
-        var gstAmountpf2 = (pfAmount2 * 0.18).toFixed(2);
-        var pfAmount = (pfAmount2 + parseFloat(gstAmountpf2)).toFixed(2);
-        document.getElementById('pf_percentage').value = pfAmount;
-        updateTotalInWords();
-
+    // Initialize Date
+    function initializeDate() {
+        const dateInput = document.getElementById('challan_date');
+        const today = new Date();
+        const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+        dateInput.value = formattedDate;
     }
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('packaging_forwording_percentage').addEventListener('input', updatePFPercentage);
-    });
+    // Toggle Freight and Packaging Fields
+    function toggleFields() {
+        const freightAmount = parseFloat(document.getElementById('freight_amount').value) || 0;
+        const freightPercentage = parseFloat(document.getElementById('freight_percentage').value) || 0;
+        const pfAmount = parseFloat(document.getElementById('packaging_forwording_amount').value) || 0;
+        const pfPercentage = parseFloat(document.getElementById('packaging_forwording_percentage').value) || 0;
 
-    function updateFreightPercentage() {
-        var subtotals = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var fr_percentage = parseFloat(document.getElementById('freight_percentage').value);
-        var f_Percentage3 = (subtotals * fr_percentage) / 100;
+        document.getElementById('freight_amount_gst_row').style.display = freightAmount > 0 ? 'block' : 'none';
+        document.getElementById('freight_percentage_gst_row').style.display = freightPercentage > 0 ? 'block' : 'none';
+        document.getElementById('pfamtgst').style.display = pfAmount > 0 ? 'block' : 'none';
+        document.getElementById('pfpergst').style.display = pfPercentage > 0 ? 'block' : 'none';
 
-        var gstAmountpf3 = (f_Percentage3 * 0.18).toFixed(2);
-        var f_Percentage = (f_Percentage3 + parseFloat(gstAmountpf3)).toFixed(2);
-
-        document.getElementById('fr_percentage').value = f_Percentage;
-        updateTotalInWords();
-
+        document.getElementById('freight_percentage').disabled = freightAmount > 0;
+        document.getElementById('freight_amount').disabled = freightPercentage > 0;
+        document.getElementById('packaging_forwording_percentage').disabled = pfAmount > 0;
+        document.getElementById('packaging_forwording_amount').disabled = pfPercentage > 0;
     }
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('freight_percentage').addEventListener('input', updateFreightPercentage);
-    });
-</script>
-
-<script>
+    // Calculate Packaging and Freight
     function updatePFAmount() {
-        var pfAmount1 = parseFloat(document.getElementById('packaging_forwording_amount').value);
-        var gstAmountpf = (pfAmount1 * 0.18).toFixed(2);
-        var pfAmount = (pfAmount1 + parseFloat(gstAmountpf)).toFixed(2);
-        document.getElementById('pf_amount').value = pfAmount;
+        const pfAmount = parseFloat(document.getElementById('packaging_forwording_amount').value) || 0;
+        const gstAmount = (pfAmount * 0.18).toFixed(2);
+        document.getElementById('pf_amount').value = (pfAmount + parseFloat(gstAmount)).toFixed(2);
         updateTotalInWords();
-
-        
     }
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('packaging_forwording_amount').addEventListener('input', updatePFAmount);
-
-        
-    });
-    // function updateFreightAmount() {
-    //     var fr_Amount = document.getElementById('freight_amount').value;
-    //     var gstAmount = fr_Amount * 0.18;
-    //     var totall = fr_Amount + gstAmount;
-    //     document.getElementById('fr_amount').value = totall;
-    //     updateTotalInWords();
-
-    // }
+    function updatePFPercentage() {
+        const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
+        const percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value) || 0;
+        const pfAmount = (subtotal * percentage) / 100;
+        const gstAmount = (pfAmount * 0.18).toFixed(2);
+        document.getElementById('pf_percentage').value = (pfAmount + parseFloat(gstAmount)).toFixed(2);
+        updateTotalInWords();
+    }
 
     function updateFreightAmount() {
-    var fr_Amount = parseFloat(document.getElementById('freight_amount').value);
-    var gstAmount = (fr_Amount * 0.18).toFixed(2);
-    var totall = (fr_Amount + parseFloat(gstAmount)).toFixed(2);
-    document.getElementById('fr_amount').value = totall;
-    updateTotalInWords();
+        const frAmount = parseFloat(document.getElementById('freight_amount').value) || 0;
+        const gstAmount = (frAmount * 0.18).toFixed(2);
+        document.getElementById('fr_amount').value = (frAmount + parseFloat(gstAmount)).toFixed(2);
+        updateTotalInWords();
     }
 
-    // function updateFreightAmount() {
-    //     var fr_Amount = document.getElementById('freight_amount').value;
-    //     var gstAmount = fr_Amount * 0.18;
-    //     var gstAmount = pfAmount * 0.18;
-    //     document.getElementById('pf_amount').value = (pfAmount + gstAmount).toFixed(2);
-    //     updateTotalInWords();
+    function updateFreightPercentage() {
+        const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
+        const percentage = parseFloat(document.getElementById('freight_percentage').value) || 0;
+        const frAmount = (subtotal * percentage) / 100;
+        const gstAmount = (frAmount * 0.18).toFixed(2);
+        document.getElementById('fr_percentage').value = (frAmount + parseFloat(gstAmount)).toFixed(2);
+        updateTotalInWords();
+    }
 
-    // }
+    // Calculate Row Totals
+    function calculateRow(index, itemRate = 'tax_exclusive') {
+        const rate = parseFloat($(`#rate_${index}`).val()) || 0;
+        const qty = parseFloat($(`#qty_${index}`).val()) || 0;
+        const discount = parseFloat($(`#discount_${index}`).val()) || 0;
+        const taxrate = parseFloat($(`#taxrate_${index}`).val()) || 0;
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('freight_amount').addEventListener('input', updateFreightAmount);
+        let total = rate - (rate * discount / 100);
+        let totalamt = total * qty;
+        let taxamt = totalamt * taxrate / 100;
 
-        
-    });
-    
-</script>
-<script>
-     function calculateTotalTaxAmount() {
+        if (itemRate === 'tax_inclusive') {
+            $(`#taxamt_${index}`).val(taxamt.toFixed(2));
+            $(`#total_${index}`).val((totalamt - taxamt).toFixed(2));
+        } else {
+            $(`#total_${index}`).val(totalamt.toFixed(2));
+            $(`#taxamt_${index}`).val(taxamt.toFixed(2));
+        }
+
+        subtotal();
+        calculateTotalTaxAmount();
+        updateTotalInWords();
+    }
+
+    // Calculate Subtotal and Taxes
+    function subtotal() {
+        let totalamt = 0;
+        $(".totalamt").each(function() {
+            totalamt += parseFloat($(this).val()) || 0;
+        });
+        $('.subtotal').val(totalamt.toFixed(2));
+
         let totalTaxAmount = 0;
         $(".taxamt").each(function() {
-            let taxAmt = parseFloat($(this).val());
-            if (!isNaN(taxAmt)) {
-                totalTaxAmount += taxAmt;
-            }
+            totalTaxAmount += parseFloat($(this).val()) || 0;
+        });
+
+        const cgst = parseFloat($('#cgst').val()) || 0;
+        const sgst = parseFloat($('#sgst').val()) || 0;
+        const igst = parseFloat($('#igst').val()) || 0;
+        const adjustment = parseFloat($('#adjustment').val()) || 0;
+        const pfAmount = parseFloat($('#pf_amount').val()) || 0;
+        const frAmount = parseFloat($('#fr_amount').val()) || 0;
+        const pfPercentage = parseFloat($('#pf_percentage').val()) || 0;
+        const frPercentage = parseFloat($('#fr_percentage').val()) || 0;
+        const saleOfGood = parseFloat($('#sale_of_good').val()) || 0;
+
+        const finalamt = totalamt + totalTaxAmount + adjustment + pfAmount + frAmount + pfPercentage + frPercentage + saleOfGood;
+        $('.finalamt').val(finalamt.toFixed(2));
+    }
+
+    function calculateTotalTaxAmount() {
+        let totalTaxAmount = 0;
+        $(".taxamt").each(function() {
+            totalTaxAmount += parseFloat($(this).val()) || 0;
         });
         $("#total_tax_amount").val(totalTaxAmount.toFixed(2));
         updateTaxFields();
-}
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-    i_field = $('#i_field').val();
-    var max_fields = 500;
-    var i = i_field;
-    var x = 1;
-    $(".add-table-items").on('click', '.remove-btn', function () {
-        $(this).closest('.add-row').remove();
-        
-        subtotal();
-
-        calculateTotalTaxAmount();
-        $(document).ready(function() {
-            subtotal();
-        });
-        // 
-        updateTotalInWords();
-
-        return false;
-    });
-
-   
-
-    // var i = 1;
-    $(document).on("click", ".add-btn", function () {
-        if (x < max_fields) {
-        i++;
-        x++;
-        var experiencecontent = '<tr class="add-row">' +
-            ' <td>' +
-            '<input type="hidden" name="iid[]" class="iid" value="' + i + '">' +
-            '</td>'+
-            '<td>' +
-            '<input type="text" style="width: 120px;" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\'); " onfocus="updateTotalInWords();">' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" name="item_' + i + '" id="item_' + i + '" class="form-control" onkeyup="getitemsdetails(\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\',\'itemcode_' + i + '\'); " >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" name="hsn_' + i + '" id="hsn_' + i + '" class="form-control" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="qty_' + i + '" id="qty_' + i + '" onkeyup="taxrate(\'qty_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="uom_' + i + '" id="uom_' + i + '" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="rate_' + i + '" id="rate_' + i + '" onkeyup="taxrate(\'rate_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="discount_' + i + '" id="discount_' + i + '" onkeyup="taxrate(\'discount_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="number" class="form-control taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="taxrate(\'taxrate_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control taxamt" name="taxamt_' + i + '" id="taxamt_' + i + '" readonly>' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control totalamt" name="total_' + i + '" id="total_' + i + '" readonly>' +
-            '</td>' +
-
-            '<td class="add-remove text-end">' +
-            '<a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a> ' +
-            '<a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>' +
-            '</td>' +
-            '</tr>';
-        }
-        $(".add-table-items").append(experiencecontent);
-        return false;
-    });
-});
-</script>
-
-<script type="text/javascript">
-    function getitemsdetails(inputname, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
-
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: '#',
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                    },
-                    success: function (data) {
-                        response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
-                            return {
-                                label: code[0],
-                                value: code[0],
-                                data: item
-                            }
-                        }));
-                    }
-                });
-            },
-            autoFocus: true,
-            minLength: 0,
-            change: function (event, ui) {
-                if (ui.item == null) {
-                }
-            },
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log(names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
-                $('#' + itemcode).val(names[11]);
-
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
-
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
-
-                
-
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
-                updatePFPercentage();
-            }
-
-        });
     }
 
-    function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
-        
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                    },
-                    success: function (data) {
-                        response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
-                            return {
-                                label: code[0],
-                                value: code[0],
-                                data: item
-                            }
-                        }));
-                    }
-                });
-            },
-            autoFocus: true,
-            minLength: 0,
-            change: function (event, ui) {
-                if (ui.item == null) {
-                }
-            },
-            
-            
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log("Mangesh",names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
-
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
-
-                
-
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
-
-                
-            }
-
-        });
-    }
-
-    function calculatePFPercentage() {
-        var subtotal2 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var percentage2 = parseFloat(document.getElementById('packaging_forwording_percentage').value);
-        var pfAmount2 = (subtotal2 * percentage2) / 100;
-
-        var gstAmountpf2 = (pfAmount2 * 0.18).toFixed(2);
-        var pfAmount = (pfAmount2 + parseFloat(gstAmountpf2)).toFixed(2);
-        console.log(pfAmount,"pfAmount.......")
-        document.getElementById('pf_percentage').value = pfAmount;
-        updateTotalInWords();
-
-        
-    }
-    function calculateFreightPercentage() {
-        var subtotal3 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var fr_percentage3 = parseFloat(document.getElementById('freight_percentage').value);
-        var f_Percentage3 = (subtotal3 * fr_percentage3) / 100;
-        document.getElementById('fr_percentage').value = f_Percentage3.toFixed(2);
-        updateTotalInWords();
-
-    }
-
-    function discountamt(inputname) {
-        //alert(inputname);
-        input = inputname.split("_");
-        id_val = input[1];
-        //alert(id_val);
-
-        var rate = $('#rate_' + id_val).val();
-        var discount = $('#discount_' + id_val).val();
-        var qty = $('#qty_' + id_val).val();
-
-        var item_rate = $('#item_rate').val();
-
-        if (item_rate == 'tax_exclusive') {
-            var total = rate - (rate * discount / 100);
-            //alert(total);
-            var totalamt = total * qty;
-            //alert(totalamt);
-
-            $('#total_' + id_val).val((totalamt).toFixed(2));
-
-            var taxrate = $('#taxrate_' + id_val).val();
-            var taxamt = totalamt * taxrate / 100;
-            //alert(taxamt);
-
-            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
-        }
-
-        if (item_rate == 'tax_inclusive') {
-            var total = rate - (rate * discount / 100);
-            //alert(totalamt);
-
-            var totalamt = total * qty;
-            //alert(totalamt);
-
-            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
-
-            var taxrate = $('#taxrate_' + id_val).val();
-            var taxamt = totalamt * taxrate / 100;
-            //alert(taxamt);
-
-            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
-
-            t = totalamt - taxamt;
-
-            $('#total_' + id_val).val((t).toFixed(2));
-        }
-        $(document).ready(function() {
-            subtotal();
-        });
-        subtotal();
-
-        calculateTotalTaxAmount();
-        $(document).ready(function() {
-            subtotal();
-        });
-        updateTotalInWords();
-    }
-
-    function taxrate(inputname) {
-
-        input = inputname.split("_");
-        id_val = input[1];
-     
-        var rate = $('#rate_' + id_val).val();
-        var qty = $('#qty_' + id_val).val();
-        var discount = $('#discount_' + id_val).val();
-
-    
-        var item_rate = "tax_exclusive";
-
-        if (item_rate == 'tax_exclusive') {
-            var total = rate - (rate * discount / 100);
-            //alert(total);
-            var totalamt = total * qty;
-            //alert(totalamt);
-
-            $('#total_' + id_val).val((totalamt).toFixed(2));
-
-            var taxrate = $('#taxrate_' + id_val).val();
-            var taxamt = totalamt * taxrate / 100;
-            //alert(taxamt);
-
-            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
-        }
-
-        if (item_rate == 'tax_inclusive') {
-            var total = rate - (rate * discount / 100);
-            //alert(totalamt);
-
-            var totalamt = total * qty;
-            //alert(totalamt);
-
-            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
-
-            var taxrate = $('#taxrate_' + id_val).val();
-            var taxamt = totalamt * taxrate / 100;
-            //alert(taxamt);
-
-            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
-
-            t = totalamt - taxamt;
-
-            $('#total_' + id_val).val((t).toFixed(2));
-        }
-
-        subtotal();
-
-        calculateTotalTaxAmount();
-
-        $(document).ready(function() {
-            subtotal();
-        });
-        
-        updateTotalInWords();
-    }
-
- 
-    function qty(inputname) {
-        input = inputname.split("_");
-        id_val = input[1];
-        //alert(id_val);
-
-        var rate = $('#rate_' + id_val).val();
-        var qty = $('#qty_' + id_val).val();
-        var discount = $('#discount_' + id_val).val();
-
-        var item_rate = $('#item_rate').val();
-
-        if (item_rate == 'tax_exclusive') {
-            //var discountamt = rate/100;
-            //var total = rate-discountamt;
-            var total = rate - (rate * discount / 100);
-            //alert(total);
-            var totalamt = total * qty;
-            //alert(totalamt);
-
-            $('#total_' + id_val).val((totalamt).toFixed(2));
-
-            var taxrate = $('#taxrate_' + id_val).val();
-            var taxamt = totalamt * taxrate / 100;
-            //alert(taxamt);
-
-            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
-        }
-
-        if (item_rate == 'tax_inclusive') {
-            //var discountamt = rate/100;
-            //var total = rate-discountamt;
-            var total = rate - (rate * discount / 100);
-            //alert(total);
-            var totalamt = total * qty;
-            //alert(totalamt);
-
-            //t = $('#total_'+id_val).val((totalamt).toFixed(2));
-
-            var taxrate = $('#taxrate_' + id_val).val();
-            var taxamt = totalamt * taxrate / 100;
-            //alert(taxamt);
-
-            $('#taxamt_' + id_val).val((taxamt).toFixed(2));
-
-            t = totalamt - taxamt;
-
-            $('#total_' + id_val).val((t).toFixed(2));
-        }
-
-        subtotal();
-
-        calculateTotalTaxAmount();
-        $(document).ready(function() {
-            subtotal();
-        });
-        updateTotalInWords();
-    }
-    function rate(inputname) {
-        // Extracting the id from inputname
-        input = inputname.split("_");
-        id_val = input[1];
-
-        // Parsing the values
-        var rate = parseFloat($('#rate_' + id_val).val()) || 0;
-        var qty = parseFloat($('#qty_' + id_val).val()) || 0;
-        var discount = parseFloat($('#discount_' + id_val).val()) || 0;
-
-        var item_rate = 'tax_exclusive'; // Assuming tax_exclusive for now.
-
-        if (item_rate == 'tax_exclusive') {
-            var total = rate - (rate * discount / 100);
-            var totalamt = total * qty;
-            $('#total_' + id_val).val(totalamt.toFixed(2));
-
-            var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
-            var taxamt = totalamt * taxrate / 100;
-            console.log(taxamt,taxrate,"taxamt.kkkkkkkk")
-
-            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
-        }
-
-        if (item_rate == 'tax_inclusive') {
-            var total = rate - (rate * discount / 100);
-            var totalamt = total * qty;
-            var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
-            var taxamt = totalamt * taxrate / 100;
-            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
-
-            var totalExclusive = totalamt - taxamt;
-            $('#total_' + id_val).val(totalExclusive.toFixed(2));
-        }
-
-        subtotal();
-        calculateTotalTaxAmount();
-        $(document).ready(function() {
-            subtotal();
-        });
-        updateTotalInWords();
-    }
-
-    function subtotal() {
-        var totalamt = 0;
-        $(".totalamt").each(function () {
-            totalamt += parseFloat($(this).val()) || 0;
-        });
-
-        var sub_total = totalamt;
-        $('.subtotal').val(sub_total.toFixed(2));
-
-        var sum1 = 0;
-        $(".taxamt").each(function () {
-            sum1 += parseFloat($(this).val()) || 0;
-        });
-        console.log(sum1,"sum1.........")
-
-        var cgst = parseFloat($('#cgst').val()) || 0;
-        var sgst = parseFloat($('#sgst').val()) || 0;
-        var igst = parseFloat($('#igst').val()) || 0;
-        var adjustment = parseFloat($('#adjustment').val()) || 0;
-        var pf_amount = parseFloat($('#pf_amount').val()) || 0;
-        var fr_amount = parseFloat($('#fr_amount').val()) || 0;
-        var pf_percentage = parseFloat($('#pf_percentage').val()) || 0;
-        var fr_percentage = parseFloat($('#fr_percentage').val()) || 0;
-        var sale_of_good = parseFloat($('#sale_of_good').val()) || 0;
-
-        
-        // var finalamt = sub_total + cgst + sgst + igst + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
-        var finalamt = sub_total + sum1 + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
-
-        $('.finalamt').val(finalamt.toFixed(2));
-        updatePFPercentage();
-        updateFreightPercentage();
-
-    }
-
-    
-    // function  {
-    //     var sum = 0;
-    //     $(".billamt").each(function () {
-    //         sum += +this.value;
-    //     });
-
-    //     $('.finalamt').val((sum).toFixed(2));
-    // }
-
-    $(document).on('change', '#item_rate', function () {
-        var item_rate = $(this).val();
-        //alert(item_rate);
-
-        for (var i = 0; i < 2; i++) {
-            //alert(i);
-
-            if (item_rate == 'tax_inclusive') {
-                qty('qty_' + i);
-                rate('rate_' + i);
-                discountamt('discount_' + i);
-            }
-
-            if (item_rate == 'tax_exclusive') {
-                qty('qty_' + i);
-                rate('rate_' + i);
-                discountamt('discount_' + i);
-            }
-        }
-
-
-    });
-
-    $(document).on('keyup', '#freight_amount', function () {
-        subtotal();
-
-        ;
-        updateTotalInWords();
-    });
-
-    $(document).on('keyup', '#freight_percentage', function () {
-        subtotal();
-
-        ;
-        updateTotalInWords();
-    });
-    $(document).on('keyup', '#packaging_forwording_amount', function () {
-        subtotal();
-
-        ;
-        updateTotalInWords();
-    });
-    $(document).on('keyup', '#packaging_forwording_percentage', function () {
-        subtotal();
-
-        
-        updateTotalInWords();
-    });
-    $(document).on('keyup', '#gst_option', function () {
-        subtotal();
-
-        
-        updateTotalInWords();
-    });
-
-    $(document).on('keyup', '#igst', function () {
-        subtotal();
-
-        updateTotalInWords();
-    });
-</script>
-
-<script>
     function updateTaxFields() {
-        var gstOption = document.getElementById('gst_option').value;
-        var totalTaxAmount = parseFloat(document.getElementById('total_tax_amount').value) || 0;
+        const gstOption = document.getElementById('gst_option').value;
+        const totalTaxAmount = parseFloat(document.getElementById('total_tax_amount').value) || 0;
 
         if (gstOption === 'Interstate') {
             document.getElementById('igst').value = totalTaxAmount.toFixed(2);
             document.getElementById('cgst').value = '0.00';
             document.getElementById('sgst').value = '0.00';
         } else if (gstOption === 'Intrastate') {
-            var halfTaxAmount = (totalTaxAmount / 2).toFixed(2);
+            const halfTaxAmount = (totalTaxAmount / 2).toFixed(2);
             document.getElementById('cgst').value = halfTaxAmount;
             document.getElementById('sgst').value = halfTaxAmount;
             document.getElementById('igst').value = '0.00';
         } else {
-            // Handle cases where no valid option is selected
             document.getElementById('cgst').value = '0.00';
             document.getElementById('sgst').value = '0.00';
             document.getElementById('igst').value = '0.00';
         }
-    }
-    
-    // Example function to update total tax amount (for demonstration purposes)
-    function setTotalTaxAmount(amount) {
-        document.getElementById('total_tax_amount').value = amount.toFixed(2);
-        updateTaxFields();
-    }
-    </script>
-<!-- 
-<script>
-    $(document).ready(function() {
-        $('#gst_option').change(function() {
-            updateGST();
-            updateTotalInWords();
-
-        });
-    
-        // Assuming there's a trigger for the subtotal calculation
-        $('#freight_amount, .totalamt').on('input', function() {
-            subtotal();
-            updateTotalInWords();
-
-        });
-    });
-    
-    function updateGST() {
-        var gstOption = $('#gst_option').val();
-        if (gstOption === "Interstate") {
-            // Apply 18% GST and show IGST field
-            $('#cgstper').val("0%");
-            $('#sgstper').val("0%");
-            $('#igstper').val("18%");
-            $('#igst_id').show();
-        } else if (gstOption === "Intrastate") {
-            // Apply 9% CGST and 9% SGST and show fields
-            $('#cgstper').val("9%");
-            $('#sgstper').val("9%");
-            $('#igstper').val("0%");
-            $('#igst_id').hide();
-        }
         subtotal();
         updateTotalInWords();
-
     }
-    
-    function subtotal() {
-        var freight = $('#freight').val() || 0;
-        var totalamt = 0;
-        $(".totalamt").each(function() {
-            totalamt += +this.value || 0;
-        });
-    
-        sub_total =  totalamt;
-        $('.subtotal').val(sub_total);
-    
-        var gstOption = $('#gst_option').val();
-        var gstRate = 0;
-        var cgstRate = 0;
-        var sgstRate = 0;
-    
-        if (gstOption === "Interstate") {
-            gstRate = 18;
-            cgstRate = 0;
-            sgstRate = 0;
-        } else if (gstOption === "Intrastate") {
-            gstRate = 0;
-            cgstRate = 9;
-            sgstRate = 9;
-        }
-    
-        var cgstAmount = (sub_total * cgstRate) / 100;
-        var sgstAmount = (sub_total * sgstRate) / 100;
-        var igstAmount = (sub_total * gstRate) / 100;
-    
-        if (gstOption === "Interstate") {
-            $('#cgst').val("0.00");
-            $('#sgst').val("0.00");
-            $('#igst').val(igstAmount.toFixed(2));
-        } else if (gstOption === "Intrastate") {
-            $('#cgst').val(cgstAmount.toFixed(2));
-            $('#sgst').val(sgstAmount.toFixed(2));
-            $('#igst').val("0.00");
-        }
-        var pf_amount=$('#packaging_forwording_amount').val();
-        var fre_amount=$('#freight_amount').val();
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var fr_percentage = parseFloat(document.getElementById('freight_percentage').value);
-        var f_Percentage_amt = (subtotal * fr_percentage) / 100;
 
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value);
-        var pfAmount_amt = (subtotal * percentage) / 100;
-        
-
-    
-        var totalTaxAmount = cgstAmount + sgstAmount + igstAmount;
-        $('.totaltaxamt').val(totalTaxAmount.toFixed(2));
-    
-        var finalamt = sub_total + totalTaxAmount + parseInt(pf_amount) + parseInt(fre_amount) + f_Percentage_amt + pfAmount_amt;
-        $('.finalamt').val(finalamt.toFixed(2));
-        updateTotalInWords();
-    }
-    </script>
-     -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
-
-
-
-<script type="text/javascript">
-    $(document).on('change', '#customer_name', function () {
-        $('#shipping_address').empty();
-        //alert();return;
-        var customer_id = $('#customer_name').val();
-        //alert(customer_id);return;
-
-        $.ajax({
-            type: 'POST',
-            url: '#',
-            data: { 'customer_id': customer_id },
-            dataType: 'json',
-            success: function (json) {
-                $('#shipping_address').append($('<option>').text("Select Shipping Address"));
-                //$('#document_uid').append($('<option>').text("Select Document"));
-                $.each(json, function (key, value) {
-                    $('#shipping_address')
-                        .append($("<option></option>")
-                            .attr("value", value.id)
-                            .text(value.shippingattention + ', ' + value.shippingstreet + ', ' + value.shippingcity + ', ' + value.shippingstate + ', ' + value.shippingpincode))
-                });
-            }
-        })
-    });
-
-    function shippingaddress() {
-        $('#shipping_address').empty();
-        //alert();return;
-        var customer_id = $('#customer_name').val();
-        //alert(customer_id);return;
-
-        $.ajax({
-            type: 'POST',
-            url: '#',
-            data: { 'customer_id': customer_id },
-            dataType: 'json',
-            success: function (json) {
-                $('#shipping_address').append($('<option>').text("Select Shipping Address"));
-                //$('#document_uid').append($('<option>').text("Select Document"));
-                $.each(json, function (key, value) {
-                    $('#shipping_address')
-                        .append($("<option></option>")
-                            .attr("value", value.id)
-                            .text(value.shippingattention + ', ' + value.shippingstreet + ', ' + value.shippingcity + ', ' + value.shippingstate + ', ' + value.shippingpincode))
-                });
-            }
-        })
-    }
-</script>
-
-<script type="text/javascript">
-    $(document).on('keyup', '#sales_order_no', function () {
-        var sales_order_no = $('#sales_order_no').val();
-
-        if (sales_order_no != '') {
-            $.ajax({
-                type: 'POST',
-                url: '#',
-                data: { 'sales_order_no': sales_order_no },
-                dataType: 'json',
-                success: function (data) {
-                    $('#challan_date').val(data.sales_order_details.dc_date_1);
-                    $('#payment_term').val(data.sales_order_details.payment_term);
-                    $('#customer_name').val(data.sales_order_details.customer_name);
-                    //$('#challan_type').val(data.sales_order_details.challan_type);
-                    $('#place_of_supply').val(data.sales_order_details.place_of_supply);
-                    $('#transporter_name').val(data.sales_order_details.transporter_name);
-                    $('#delivery_type').val(data.sales_order_details.delivery_type);
-                    $('#buyer_order_no').val(data.sales_order_details.buyer_order_no);
-                    $('#buyer_order_date').val(data.sales_order_details.buyer_order_date);
-
-                    $('#shipping_address').val(shippingaddress(data.sales_order_details.shippingaddress));
-                    $('#lr_no').val(data.sales_order_details.lr_no);
-                    $('#destination').val(data.sales_order_details.destination);
-                    $('#sales_person').val(data.sales_order_details.sales_person);
-                    $('#freight').val(data.sales_order_details.freight);
-
-                    $.each(data.sales_order_entries, function (index, obj) {
-                        if (index == 0) {
-                            $(`#itemcode_` + index).val(obj.itemcode);
-                            $(`#item_` + index).val(obj.item);
-                            $(`#hsn_` + index).val(obj.hsn);
-                            $(`#qty_` + index).val(obj.qty);
-                            $(`#uom_` + index).val(obj.uom);
-                            $(`#rate_` + index).val(obj.rate);
-                            $(`#discount_` + index).val(obj.discount);
-                            $(`#taxrate_` + index).val(obj.taxrate);
-                            $(`#taxamt_` + index).val(obj.taxamt);
-                            $(`#total_` + index).val(obj.total);
-                        }
-                        else {
-
-                            var my_html = `<tr class="add-row">
-                                    <input type="hidden" name="iid[]" class="iid" value="`+ index + `">
-
-                                    <td><input type="text" class="form-control" name="itemcode_`+ index + `" id="itemcode_` + index + `" value="` + obj.itemcode + `"></td>
-
-                                    <td><input type="text" class="form-control" name="item_`+ index + `" id="item_` + index + `" value="` + obj.item + `" placeholder=" "> </td>
-
-                                    <td><textarea class="form-control" name="hsn_`+ index + `" id="hsn_` + index + `" placeholder=" ">` + obj.hsn + `</textarea></td>
-                                                                    
-                                    <td><input type="text" class="form-control"name="qty_`+ index + `" id="qty_` + index + `" value="` + obj.qty + `" > </td>
-
-                                    <td><input type="text" class="form-control" name="uom_`+ index + `" id="uom_` + index + `" value="` + obj.uom + `"></td>
-                                                                    
-                                    <td><input type="text" class="form-control" name="rate_`+ index + `" id="rate_` + index + `" value="` + obj.rate + `" ></td>
-
-                                    <td><input type="text" class="form-control" name="discount_`+ index + `" id="discount_` + index + `" value="` + obj.discount + `"></td>
-
-                                    <td><input type="text" class="form-control" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
-
-                                    <td><input type="text" class="form-control taxamt" name="taxamt_`+ index + `" id="taxamt_` + index + `" value="` + obj.taxamt + `"></td>
-
-                                    <td><input type="text" class="form-control totalamt" name="total_`+ index + `" id="total_` + index + `" value="` + obj.total + `"></td>
-
-                                    <td class="add-remove text-end">
-                                        <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
-
-                                        <a href="javascript:void(0);" class="remove-btn "><i class="fe fe-trash-2" ></i></a>
-                                    </td>
-                                </tr>`;
-
-                            $("#append_table > tbody ").append(my_html);
-                        }
-                    });
-
-                    $('#subtotal').val(data.sales_order_details.subtotal);
-                    $('#igstper').val(data.sales_order_details.igstper);
-                    $('#cgstper').val(data.sales_order_details.cgstper);
-                    $('#sgstper').val(data.sales_order_details.sgstper);
-                    $('#igst').val(data.sales_order_details.igst);
-                    $('#cgst').val(data.sales_order_details.cgst);
-                    $('#sgst').val(data.sales_order_details.sgst);
-                    $('#total_taxamt').val(data.sales_order_details.total_taxamt);
-                    $('#totalamt').val(data.sales_order_details.totalamt);
-                }
-            })
-        }
-        else {
-            alert("Please enter sales order no");
-        }
-
-    });
-</script>
-
-<script>
-    function test(n) {
-        if (n < 0) return false;
-        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    // Number to Words Conversion
+    function numberToWords(n) {
+        if (n < 0) return 'Invalid';
+        const single = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        const double = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
         if (n === 0) return 'Zero Rupees';
 
-        function translate(n) {
-            let word = "";
-            if (n < 10) {
-                word = single_digit[n] + ' ';
-            } else if (n < 20) {
-                word = double_digit[n - 10] + ' ';
-            } else if (n < 100) {
-                const rem = translate(n % 10);
-                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
-            } else if (n < 1000) {
-                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
-            } else if (n < 100000) {
-                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
-            } else if (n < 10000000) {
-                word = translate(Math.floor(n / 100000)).trim() + ' Lakh ' + translate(n % 100000);
-            } else if (n < 1000000000) {
-                word = translate(Math.floor(n / 10000000)).trim() + ' Crore ' + translate(n % 10000000);
-            } else {
-                word = translate(Math.floor(n / 1000000000)).trim() + ' Arab ' + translate(n % 1000000000);
-            }
-            return word;
+        function translate(num) {
+            if (num < 10) return single[num] + ' ';
+            if (num < 20) return double[num - 10] + ' ';
+            if (num < 100) return tens[Math.floor(num / 10) - 2] + ' ' + translate(num % 10);
+            if (num < 1000) return single[Math.floor(num / 100)] + ' Hundred ' + translate(num % 100);
+            if (num < 100000) return translate(Math.floor(num / 1000)).trim() + ' Thousand ' + translate(num % 1000);
+            if (num < 10000000) return translate(Math.floor(num / 100000)).trim() + ' Lakh ' + translate(num % 100000);
+            return translate(Math.floor(num / 10000000)).trim() + ' Crore ' + translate(num % 10000000);
         }
 
-        let [integerPart, decimalPart] = n.toString().split('.');
-
-        let result = translate(parseInt(integerPart)).trim() + ' Rupees';
-
-        if (decimalPart) {
-            decimalPart = decimalPart.padEnd(2, '0'); // Ensure it's at least 2 digits
-            result += ' and ' + translate(parseInt(decimalPart)) + ' Paise';
+        let [integer, decimal] = n.toString().split('.');
+        let result = translate(parseInt(integer)).trim() + ' Rupees';
+        if (decimal) {
+            decimal = decimal.padEnd(2, '0');
+            result += ' and ' + translate(parseInt(decimal)) + ' Paise';
         }
-
         return result.trim() + '.';
     }
 
     function updateTotalInWords() {
-        const totalAmt = parseFloat(document.getElementById('totalamt').value);
-        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
-        document.getElementById('totalamt_word').value = totalAmtInWords;
+        const totalAmt = parseFloat(document.getElementById('totalamt').value) || 0;
+        document.getElementById('totalamt_word').value = numberToWords(totalAmt);
     }
 
-    window.onload = function() {
-        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
-        updateTotalInWords(); // Update on page load
-    };
-</script>
-
-<!-- 
-<script>
-    function test(n) {
-        if (n < 0) return false;
-        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-        if (n === 0) return 'Zero';
-
-        function translate(n) {
-            let word = "";
-            if (n < 10) {
-                word = single_digit[n] + ' ';
-            } else if (n < 20) {
-                word = double_digit[n - 10] + ' ';
-            } else if (n < 100) {
-                const rem = translate(n % 10);
-                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
-            } else if (n < 1000) {
-                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
-            } else if (n < 1000000) {
-                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
-            } else if (n < 1000000000) {
-                word = translate(Math.floor(n / 1000000)).trim() + ' Million ' + translate(n % 1000000);
-            } else {
-                word = translate(Math.floor(n / 1000000000)).trim() + ' Billion ' + translate(n % 1000000000);
+    // Autocomplete for Item Code
+    function initializeItemCodeAutocomplete(index) {
+        $(`#itemcode_${index}`).autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{% url 'getitemscodedetails' %}",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: index
+                    },
+                    success: function(data) {
+                        response($.map(data, function(item) {
+                            const code = item.split("|");
+                            return {
+                                label: code[0],
+                                value: code[0],
+                                data: item
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 1,
+            autoFocus: true,
+            select: function(event, ui) {
+                const names = ui.item.data.split("|");
+                $(`#itemcode_${index}`).val(names[0]);
+                $(`#item_${index}`).val(names[1]);
+                $(`#hsn_${index}`).val(names[2]);
+                $(`#qty_${index}`).val('1');
+                $(`#rate_${index}`).val(names[5]);
+                $(`#uom_${index}`).val(names[7]);
+                $(`#discount_${index}`).val(names[4]);
+                $(`#taxrate_${index}`).val(names[6]);
+                calculateRow(index);
+            },
+            change: function(event, ui) {
+                if (!ui.item) {
+                    $(`#itemcode_${index}, #item_${index}, #hsn_${index}, #qty_${index}, #rate_${index}, #uom_${index}, #discount_${index}, #taxrate_${index}`).val('');
+                }
             }
-            return word;
+        });
+    }
+
+    // Add and Remove Rows
+    $(document).on('click', '.add-btn', function() {
+        const index = $('.add-row').length;
+        const row = `
+            <tr class="add-row">
+                <input type="hidden" name="iid[]" class="iid" value="${index}">
+                <td><input type="text" style="width: 120px;" class="form-control" name="itemcode_${index}" id="itemcode_${index}"></td>
+                <td><input type="text" class="form-control" name="item_${index}" id="item_${index}" placeholder=" "></td>
+                <td><input type="text" class="form-control" name="hsn_${index}" id="hsn_${index}"></td>
+                <td><input type="text" class="form-control" name="qty_${index}" id="qty_${index}" onkeyup="qty('qty_${index}');"></td>
+                <td><input type="text" class="form-control" name="uom_${index}" id="uom_${index}"></td>
+                <td><input type="text" class="form-control" name="rate_${index}" id="rate_${index}" onkeyup="rate('rate_${index}');"></td>
+                <td><input type="text" class="form-control" name="discount_${index}" id="discount_${index}" onkeyup="discountamt('discount_${index}');"></td>
+                <td><input type="number" class="form-control taxrate_${index}" name="taxrate_${index}" id="taxrate_${index}" onkeyup="taxrate('taxrate_${index}');" required></td>
+                <td><input type="text" class="form-control taxamt" name="taxamt_${index}" id="taxamt_${index}" readonly></td>
+                <td><input type="text" class="form-control totalamt" name="total_${index}" id="total_${index}" readonly></td>
+                <td class="add-remove text-end">
+                    <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
+                    <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
+                </td>
+            </tr>`;
+        $("#append_table > tbody").append(row);
+        initializeItemCodeAutocomplete(index);
+        $(`#qty_${index}, #rate_${index}, #discount_${index}, #taxrate_${index}`).on('keyup', function() {
+            calculateRow(index);
+        });
+    });
+
+    $(document).on('click', '.remove-btn', function() {
+        $(this).closest('.add-row').remove();
+        subtotal();
+        calculateTotalTaxAmount();
+        updateTotalInWords();
+    });
+
+    // Sales Order Selection
+    let selectedQuotationId = null;
+    document.getElementById('customer_Name').addEventListener('change', function() {
+        const input = this.value;
+        const options = document.getElementById('customer_Name_list').options;
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value === input) {
+                document.getElementById('customer_id').value = options[i].dataset.id;
+                document.getElementById('sales_person').value = options[i].dataset.contact_person;
+                document.getElementById('sales_order_no').value = options[i].dataset.so_number;
+                document.getElementById('customer_Name').value = options[i].dataset.so_customer_name;
+                document.getElementById('igst').value = options[i].dataset.so_igstval;
+                document.getElementById('cgst').value = options[i].dataset.so_cgstval;
+                document.getElementById('sgst').value = options[i].dataset.so_sgstval;
+                document.getElementById('buyer_order_no').value = options[i].dataset.so_buyer_order_no;
+                document.getElementById('buyer_order_date').value = options[i].dataset.so_buyer_order_date;
+                document.getElementById('shipping_address').value = options[i].dataset.so_shipping_address;
+                document.getElementById('freight_amount').value = options[i].dataset.freight_amount;
+                document.getElementById('packaging_forwording_amount').value = options[i].dataset.p_and_f_amount;
+                document.getElementById('freight_percentage').value = options[i].dataset.freight_percentage;
+                document.getElementById('packaging_forwording_percentage').value = options[i].dataset.p_and_f_percentage;
+                $(`#gst_option option[value="${options[i].dataset.gst_option}"]`).prop('selected', true);
+                $(`#payment_term option[value="${options[i].dataset.payment_terms}"]`).prop('selected', true);
+                $(`#place_of_supply option[value="${options[i].dataset.supply_place}"]`).prop('selected', true);
+                selectedQuotationId = options[i].dataset.id_sales;
+                if (selectedQuotationId) {
+                    fetchQuotationItems(selectedQuotationId);
+                }
+                break;
+            }
         }
+        toggleFields();
+        updatePFAmount();
+        updateFreightAmount();
+        updatePFPercentage();
+        updateFreightPercentage();
+    });
 
-        let [integerPart, decimalPart] = n.toString().split('.');
-
-        let result = translate(parseInt(integerPart)).trim();
-
-        if (decimalPart) {
-            result += ' and ' + translate(parseInt(decimalPart)) + ' Cents';
-        }
-
-        return result.trim() + '.';
+    function fetchQuotationItems(quotationId) {
+        fetch(`/get-sales_order-items/${quotationId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('quotation-items-body');
+                tbody.innerHTML = '';
+                data.forEach((item, index) => {
+                    const row = `
+                        <tr class="add-row">
+                            <input type="hidden" name="iid[]" class="iid" value="${index}">
+                            <td><input style="width: 120px;" type="text" class="form-control" name="itemcode_${index}" id="itemcode_${index}" value="${item.so_item_code}"></td>
+                            <td><input type="text" class="form-control" name="item_${index}" id="item_${index}" value="${item.so_description_goods}"></td>
+                            <td><input type="text" class="form-control" name="hsn_${index}" id="hsn_${index}" value="${item.so_hsn}"></td>
+                            <td><input type="text" class="form-control" name="qty_${index}" id="qty_${index}" value="${item.so_qantity}" onkeyup="qty('qty_${index}');"></td>
+                            <td><input type="text" class="form-control" name="uom_${index}" id="uom_${index}" value="${item.so_uom}"></td>
+                            <td><input type="text" class="form-control" name="rate_${index}" id="rate_${index}" value="${item.so_unit_price}" onkeyup="rate('rate_${index}');"></td>
+                            <td><input type="text" class="form-control" name="discount_${index}" id="discount_${index}" value="${item.so_discount}" onkeyup="discountamt('discount_${index}');"></td>
+                            <td><input type="number" class="form-control taxrate_${index}" name="taxrate_${index}" id="taxrate_${index}" value="${item.so_tax_rate}" onkeyup="taxrate('taxrate_${index}');" required></td>
+                            <td><input type="text" class="form-control taxamt" name="taxamt_${index}" id="taxamt_${index}" value="${item.so_tax_amount}" readonly></td>
+                            <td><input type="text" class="form-control totalamt" name="total_${index}" id="total_${index}" value="${item.so_total}" readonly></td>
+                            <td class="add-remove text-end">
+                                <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
+                                <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
+                            </td>
+                        </tr>`;
+                    tbody.innerHTML += row;
+                    initializeItemCodeAutocomplete(index);
+                    calculateRow(index);
+                });
+                subtotal();
+                calculateTotalTaxAmount();
+                updateTotalInWords();
+            });
     }
 
-    function updateTotalInWords() {
-        const totalAmt = parseFloat(document.getElementById('totalamt').value);
-        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
-        document.getElementById('totalamt_word').value = totalAmtInWords;
-    }
-
-    window.onload = function() {
-        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
-        updateTotalInWords(); // Update on page load
-    };
-</script> -->
-
-
-<script>
-    // Function to validate email
-    function isValidEmail(email) {
-        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailPattern.test(email);
-    }
-
-    // Add an event listener for input changes
-    document.getElementById('contact_person_email').addEventListener('input', validateEmail);
-
-    // Function to validate email and show/hide error message
-    function validateEmail() {
-        var emailInput = document.getElementById('contact_person_email').value;
-        var emailErrorMessage = document.getElementById('email-error-message');
-
-        // Check if the email is valid
-        var isValid = isValidEmail(emailInput);
-
-        // Display or hide the error message based on validation result
-        if (!isValid && emailInput !== "") {
-            emailErrorMessage.style.display = 'inline';
-        } else {
-            emailErrorMessage.style.display = 'none';
-        }
-    }
+    // Event Listeners
+    $(document).ready(function() {
+        initializeDate();
+        initializeItemCodeAutocomplete(0);
+        $('#freight_amount, #freight_percentage, #packaging_forwording_amount, #packaging_forwording_percentage, #gst_option').on('input', function() {
+            toggleFields();
+            updatePFAmount();
+            updateFreightAmount();
+            updatePFPercentage();
+            updateFreightPercentage();
+            subtotal();
+            updateTotalInWords();
+        });
+        $('#item_rate').on('change', function() {
+            $('.add-row').each(function(index) {
+                calculateRow(index, $(this).val());
+            });
+        });
+    });
+})();
 </script>
+
 {% endblock main_content %}

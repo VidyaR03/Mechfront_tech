@@ -96,6 +96,7 @@ def edit_company_profile(request, employee_id):
         pan_number = request.POST.get('pan_number') 
         tan_number = request.POST.get('tan_number') 
         cin_number = request.POST.get('cin_number') 
+        organization_type = request.POST.get('organization_type') 
         
         
         company_instance.profile_photo = profile_photo
@@ -116,6 +117,7 @@ def edit_company_profile(request, employee_id):
         company_instance.pan_number = pan_number
         company_instance.tan_number = tan_number
         company_instance.cin_number = cin_number
+        company_instance.organization_type = organization_type
         
         if not profile_photo:
             company_instance.profile_photo = profile_photo

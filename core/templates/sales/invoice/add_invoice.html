@@ -433,66 +433,25 @@ Ecoway
                                                             <!-- <th hidden>Date</th> -->
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="quotation-items-body">
-                                                        <input type="hidden" name="iid[]" class="iid" value="0">
-                                                        <tr class="add-row">
-                                                            <td><input type="text" style="width: 120px;" class="form-control"
-                                                                    name="itemcode_0" id="itemcode_0"
-                                                                    onkeyup="getitemscodedetails('itemcode_0','item_0','godown_0','hsn_0','qty_0','rate_0','uom_0','discount_0','taxrate_0');">
-                                                            </td>
-
-                                                            <td><input type="text" class="form-control" name="item_0"
-                                                                    id="item_0"
-                                                                    onkeyup="getitemsdetails('item_0','godown_0','hsn_0','qty_0','rate_0','uom_0','discount_0','taxrate_0','itemcode_0');"
-                                                                    placeholder=" " > </td>
-
-                                                            <!-- <td><input type="text" class="form-control" name="godown_0" id="godown_0"></td> -->
-
-                                                            <!-- <td width="150">
-                                                                <select class="form-control" name="godown_0" id="godown_0">
-                                                                    <option value="">Select Godown</option>
-                                                                    {% for i in godown_name %}
-                                                                    <option value="{{i.name}}">{{i.name}}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td> -->
-
-                                                            <td><input type="text" class="form-control" name="hsn_0"
-                                                                    id="hsn_0" ></td>
-
-                                                            <td><input type="text" class="form-control" name="qty_0"
-                                                                    id="qty_0" onkeyup="taxrate('qty_0') ; checkStockQuantity('itemcode_0', 'qty_0');"> </td>
-
-                                                            <td><input type="text" class="form-control" name="uom_0"
-                                                                    id="uom_0" ></td>
-
-                                                            <td><input type="text" class="form-control" name="rate_0"
-                                                                    id="rate_0" onkeyup="rate('rate_0')"></td>
-
-                                                            <td><input type="text" class="form-control"
-                                                                    name="discount_0" id="discount_0"
-                                                                    onkeyup="discountamt('discount_0')"></td>
-
-                                                            <td><input type="number" class="form-control taxrate_0"
-                                                                    name="taxrate_0" id="taxrate_0"
-                                                                    onkeyup="taxrate('taxrate_0')" required></td>
-
-                                                            <td><input type="text" class="form-control taxamt"
-                                                                    name="taxamt_0" id="taxamt_0" readonly></td>
-
-                                                            <td><input type="text" class="form-control totalamt"
-                                                                    name="total_0" id="total_0" readonly></td>
-
-                                                            <td class="add-remove text-end"> <a
-                                                                    href="javascript:void(0);" class="add-btn me-2"><i
-                                                                        class="fas fa-plus-circle"></i></a> <a
-                                                                    href="javascript:void(0);" class="remove-btn"><i
-                                                                        class="fe fe-trash-2"></i></a></td>
-                                                                    
-                                                            <!-- <td hidden><input type="date" class="form-control" name="date" placeholder="Date" required value="{{current_date | date:'Y-m-d'}}" ></td> -->
-                                                                            
-                                                        </tr>
-                                                    </tbody>
+                                                                                             <tbody id="quotation-items-body">
+                                                                                        <input type="hidden" name="iid[]" class="iid" value="0">
+                                                                                        <tr class="add-row">
+                                                                                            <td><input type="text" style="width: 120px;" class="form-control" name="itemcode_0" id="itemcode_0"></td>
+                                                                                            <td><input type="text" class="form-control" name="item_0" id="item_0" placeholder=" "></td>
+                                                                                            <td><input type="text" class="form-control" name="hsn_0" id="hsn_0"></td>
+                                                                                            <td><input type="text" class="form-control" name="qty_0" id="qty_0" onkeyup="qty('qty_0');"></td>
+                                                                                            <td><input type="text" class="form-control" name="uom_0" id="uom_0"></td>
+                                                                                            <td><input type="text" class="form-control" name="rate_0" id="rate_0" onkeyup="rate('rate_0');"></td>
+                                                                                            <td><input type="text" class="form-control" name="discount_0" id="discount_0" onkeyup="discountamt('discount_0');"></td>
+                                                                                            <td><input type="number" class="form-control taxrate_0" name="taxrate_0" id="taxrate_0" onkeyup="taxrate('taxrate_0');" required></td>
+                                                                                            <td><input type="text" class="form-control taxamt" name="taxamt_0" id="taxamt_0" readonly></td>
+                                                                                            <td><input type="text" class="form-control totalamt" name="total_0" id="total_0" readonly></td>
+                                                                                            <td class="add-remove text-end">
+                                                                                                <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
+                                                                                                <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
                                                 </table>
                                             </div>
                                         </div>
