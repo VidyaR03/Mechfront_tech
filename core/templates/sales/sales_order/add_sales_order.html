@@ -160,7 +160,20 @@ Ecoway
                                     </div>
                                     </div> -->
 
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+<div class="col-xl-2 col-md-6 col-sm-12 col-12">
+    <div class="form-group">
+        <label for="customer_Name_id">Customer Name</label>
+        <input type="hidden" id="customer_id" name="customer_id">
+        <select class="form-select" name="customer_id" id="so_customer_name" required>
+            <option value="" selected hidden disabled>Select Customer</option>
+            {% for i in customer_name %}
+            <option value="{{ i.id }}">{{ i.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+                                <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Customer Name <span style="color: red;">*</span></label>
                                        
@@ -172,7 +185,7 @@ Ecoway
                                                 </select>
                                            
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12" hidden>
                                     <div class="form-group">
                                         <div class=" ">

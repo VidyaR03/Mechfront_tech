@@ -558,33 +558,30 @@ def get_quotation_items(request, quotation_id):
     items_list = list(items.values())
     return JsonResponse(items_list, safe=False)
 
-
 def get_shipping_address(request):
     customer_id = request.GET.get('customer_id')
-    Customer = customer.objects.filter(id=customer_id).first()
-    
-    if Customer:
-        shipping_addresses = []
+    customer = Customer.objects.filter(id=customer_id).first()
 
-        for i in range(1, 5):
-            attention = getattr(Customer, f'shipping_{i}_attention', '')
-            street = getattr(Customer, f'shipping_{i}_street', '')
-            city = getattr(Customer, f'shipping_{i}_city', '')
-            state = getattr(Customer, f'shipping_{i}_state', '')
-            pincode = getattr(Customer, f'shipping_{i}_pincode', '')
-
-            if any([attention, street, city, state, pincode]):
-                shipping_addresses.append({
-                    'label': f"{attention}, {street}, {city}, {state}, {pincode}",
-                    'value': f"{attention}, {street}, {city}, {state}, {pincode}",
-                    'state': state,
-                })
+    if customer:
+        # Fetch shipping addresses from CustomerShippingAddress
+        shipping_addresses = customer.shipping_addresses.all()
+        address_list = [
+            {
+                'label': f"{addr.shipping_attention or ''}, {addr.shipping_street}, {addr.shipping_city}, {addr.shipping_state}, {addr.shipping_pincode}",
+                'value': f"{addr.shipping_attention or ''}, {addr.shipping_street}, {addr.shipping_city}, {addr.shipping_state}, {addr.shipping_pincode}",
+                'state': addr.shipping_state,
+            }
+            for addr in shipping_addresses
+        ]
 
         return JsonResponse({
-            'shipping_addresses': shipping_addresses,
-            'gst_number': Customer.gst_uin,
-            'place_of_supply': shipping_addresses[0]['state'] if shipping_addresses else ''
+            'shipping_addresses': address_list,
+            'gst_number': customer.gst_no or '',
+            'place_of_supply': address_list[0]['state'] if address_list else '',
         })
     else:
-        return JsonResponse({'shipping_addresses': [], 'gst_number': '', 'place_of_supply': ''})
-
+        return JsonResponse({
+            'shipping_addresses': [],
+            'gst_number': '',
+            'place_of_supply': '',
+        })

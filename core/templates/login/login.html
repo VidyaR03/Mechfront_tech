@@ -39,6 +39,22 @@
     transform: translateY(-1px);
 }
 
+.form-container {
+   padding-inline: 3rem;
+   width: 100%;
+   flex-grow: 1;
+}
+
+.input-container {
+   display: flex;
+   flex-direction: column;
+   gap: 6px
+}
+
+.input{
+   border-color: black;
+}
+
    </style>
    <body>
       <div class="main-wrapper login-body">
@@ -46,7 +62,7 @@
             <div class="container">
                
                <div class="loginbox">
-                  <div class="login-right">
+                  <div class="login-right form-container">
                      <div class="login-right-wrap">
 			     <img class="img-fluid logo-dark mb-2" src="{% static 'assets/img/logo-png.png' %}" style="width:220px; height:90px; " alt="Logo">
 
@@ -57,27 +73,15 @@
                         {% endif %}
                         <form action="{% url 'loginPage' %}" method="post" id="kt_login_signin_form">
                             {% csrf_token %}
-                           <div class="form-group">
-                              <label class="form-control-label">Email Address</label>
-                              <input type="email" name="email" id="email" class="form-control">
-                           </div>
-                           <div class="form-group">
-                              <label class="form-control-label">Password</label> &nbsp;&nbsp; &nbsp; &nbsp;
-                                 <input type="password" name="password" id="password" class="form-control pass-input">
-                                 <span class="fas fa-eye toggle-password"></span>
-                           </div>
-                           <div class="form-group">
-                              <div class="row">
-                                 <div class="col-6">
-                                    <div class="custom-control custom-checkbox">
-                                       <input type="checkbox" class="custom-control-input" id="cb1">
-                                       <label class="custom-control-label" for="cb1">Remember me</label>
-                                    </div>
-                                 </div>
-                       
-
-                              </div>
-                           </div>
+                        <div class="form-group input-container">
+                           <label for="email" class="form-label">Email Address</label>
+                           <input type="email" name="email" id="email" class="form-control input custom-input" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group input-container">
+                           <label for="password" class="form-label">Password</label>
+                           <input type="password" name="password" id="password" class="form-control input custom-input" placeholder="Enter your password">
+                           <span class="fas fa-eye toggle-password position-absolute" style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></span>
+                        </div>
                            <div style="text-align: center; " class="success_message "></div>
                         <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-lg py-2">Login</button>
