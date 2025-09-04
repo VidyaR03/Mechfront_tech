@@ -1031,14 +1031,7 @@ function checkDuplicateQuotationNumber(quotationNumber) {
 
         
     });
-    // function updateFreightAmount() {
-    //     var fr_Amount = document.getElementById('freight_amount').value;
-    //     var gstAmount = fr_Amount * 0.18;
-    //     var totall = fr_Amount + gstAmount;
-    //     document.getElementById('fr_amount').value = totall;
-    //     updateTotalInWords();
-
-    // }
+  
 
     function updateFreightAmount() {
     var fr_Amount = parseFloat(document.getElementById('freight_amount').value);
@@ -1048,14 +1041,7 @@ function checkDuplicateQuotationNumber(quotationNumber) {
     updateTotalInWords();
     }
 
-    // function updateFreightAmount() {
-    //     var fr_Amount = document.getElementById('freight_amount').value;
-    //     var gstAmount = fr_Amount * 0.18;
-    //     var gstAmount = pfAmount * 0.18;
-    //     document.getElementById('pf_amount').value = (pfAmount + gstAmount).toFixed(2);
-    //     updateTotalInWords();
-
-    // }
+  
 
     document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('freight_amount').addEventListener('input', updateFreightAmount);
