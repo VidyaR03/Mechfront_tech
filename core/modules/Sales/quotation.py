@@ -356,26 +356,42 @@ def edit_quotation_data(request, id):
         messages.success(request, 'Quotation Updated Successfully.')
         return redirect('quotation_list')
 
-        
- 
 
 @csrf_exempt
 @require_POST
 def get_item_code_details(request):
     name_starts_with = request.POST.get('name_startsWith', '')
-    # items_details = request.POST.getlist('itemsdetails[]', '')
-    items = inventory.objects.filter(item_code__istartswith=name_starts_with)
+    items = inventory.objects.filter(item_code__istartswith=name_starts_with)[:10]  # Limit to 10 results for performance
 
     data = []
     for item in items:
-       item_data = (
+        item_data = (
             f"{item.item_code}|{item.inventory_name}|{item.hsn}|1|"
             f"{item.default_discount}|{item.sales_rate}||{item.units}|{item.sales_information_description}"
         )
-    print(item_data)
-    print("***")
-    data.append(item_data)
-    return JsonResponse(data, safe=False)
+        data.append(item_data)
+
+    print(data)  # Debugging: Print the data list
+    return JsonResponse(data, safe=False)  
+ 
+
+# @csrf_exempt
+# @require_POST
+# def get_item_code_details(request):
+#     name_starts_with = request.POST.get('name_startsWith', '')
+#     # items_details = request.POST.getlist('itemsdetails[]', '')
+#     items = inventory.objects.filter(item_code__istartswith=name_starts_with)
+
+#     data = []
+#     for item in items:
+#        item_data = (
+#             f"{item.item_code}|{item.inventory_name}|{item.hsn}|1|"
+#             f"{item.default_discount}|{item.sales_rate}||{item.units}|{item.sales_information_description}"
+#         )
+#     print(item_data)
+#     print("***")
+#     data.append(item_data)
+#     return JsonResponse(data, safe=False)
 
 
 @login_required

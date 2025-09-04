@@ -159,16 +159,6 @@ Ecoway
                                     </div>
 
 
-
-                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label>Packaging &amp; Forwading</label>
-                                            <input type="text" class="form-control" name="packaging_forwading"
-                                                id="packaging_forwading"
-                                                value="{{quotation_data.q_packaging_forwording}}">
-                                        </div>
-                                    </div> -->
-
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Place Of Supply <span style="color: red;">*</span></label>
@@ -1246,9 +1236,7 @@ function checkDuplicateQuotationNumber(quotationNumber) {
     }
 
     function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        //alert();return;
         input = inputname.split("_");
-        //alert(input);return;
         
         $('#' + inputname).autocomplete({
             source: function (request, response) {
@@ -1274,7 +1262,7 @@ function checkDuplicateQuotationNumber(quotationNumber) {
                 });
             },
             autoFocus: true,
-            minLength: 0,
+            minLength: 1,
             change: function (event, ui) {
                 if (ui.item == null) {
                 }
@@ -1283,7 +1271,6 @@ function checkDuplicateQuotationNumber(quotationNumber) {
             
             select: function (event, ui) {
                 var names = ui.item.data.split("|");
-                console.log("Mangesh",names)
                 $('#' + inputname).val(names[0]);
                 $('#' + description).val(names[1]);
                 $('#' + godown).val(names[2]);

@@ -722,24 +722,7 @@ Ecoway
                                     </div>
                                 </div>
 
-                                <!-- <div class="col-lg-2 ">
-                                    <div class="form-group">
-                                        <label>Sales Person</label>
-                                        <select class="form-control" name="item_rate" id="item_rate">
-                                            <option value="">Search Sales Person</option>
-                                            <option value="">Tax Inclusive </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 ">
-                                    <div class="form-group">
-                                        <label>Sales Person</label>
-                                        <select class="form-control" name="item_rate" id="item_rate">
-                                            <option value="">Enter Sales Person</option>
-                                            <option value="">Tax Inclusive </option>
-                                        </select>
-                                    </div>
-                                </div> -->
+                
                                 <div class="rowbb">
                                     <div class="invoice-add-table">
                                         <div class="table-responsive">
@@ -1258,26 +1241,7 @@ Ecoway
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-<!-- <script>
 
-    var input = this.value;
-        var list = document.getElementById('customer_Name_list').options;
-    document.getElementById('customer_Name').addEventListener('input', function() {
-
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].value === input) {
-                console.log(list[i].dataset);
-                document.getElementById('customer_id').value = list[i].dataset.id;
-                document.getElementById('contact_person_name').value = list[i].dataset.contact_person;
-                document.getElementById('contact_person_email').value = list[i].dataset.email;
-                document.getElementById('destination').value = list[i].dataset.address;
-                 $("#q_ser_type option").attr('selected', false);
-                $("#q_ser_type option[value='" + list[i].dataset.service_type + "']").attr('selected', true);
-                break;
-            }
-        }
-    });
-</script> -->
 
 <script>
     $(document).ready(function() {
@@ -1430,14 +1394,7 @@ Ecoway
 
         
     });
-    // function updateFreightAmount() {
-    //     var fr_Amount = document.getElementById('freight_amount').value;
-    //     var gstAmount = fr_Amount * 0.18;
-    //     var totall = fr_Amount + gstAmount;
-    //     document.getElementById('fr_amount').value = totall;
-    //     updateTotalInWords();
-
-    // }
+   
 
     function updateFreightAmount() {
     var fr_Amount = parseFloat(document.getElementById('freight_amount').value);
@@ -1447,15 +1404,7 @@ Ecoway
     updateTotalInWords();
     }
 
-    // function updateFreightAmount() {
-    //     var fr_Amount = document.getElementById('freight_amount').value;
-    //     var gstAmount = fr_Amount * 0.18;
-    //     var gstAmount = pfAmount * 0.18;
-    //     document.getElementById('pf_amount').value = (pfAmount + gstAmount).toFixed(2);
-    //     updateTotalInWords();
-
-    // }
-
+  
     document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('freight_amount').addEventListener('input', updateFreightAmount);
 
@@ -1649,7 +1598,7 @@ Ecoway
                 });
             },
             autoFocus: true,
-            minLength: 0,
+            minLength: 1,
             change: function (event, ui) {
                 if (ui.item == null) {
                 }
