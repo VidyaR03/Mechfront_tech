@@ -67,11 +67,18 @@ def add_sales_order_data(request):
         return render(request, template_path.add_sales_order, context)
     elif request.method == "POST":
         so_number = generate_sales_order_number()
-        so_date_str = request.POST['so_date']
-        so_due_date_str = request.POST['due_date']
-        so_due_date = datetime.strptime(so_due_date_str, '%d-%m-%Y').date()
-        so_date = datetime.strptime(so_date_str, '%d-%m-%Y').date()
+        so_due_date_str = request.POST.get('due_date', '')
+        if so_due_date_str:
+            so_due_date = datetime.strptime(so_due_date_str, '%d-%m-%Y').date()
+        else:
+            so_due_date = datetime.now().date()
         so_shipping_address = request.POST.get('shipping_address', None)
+        so_date_str = request.POST.get('so_date', '')
+        if so_date_str:
+            so_date = datetime.strptime(so_date_str, '%d-%m-%Y').date()
+        else:
+            so_date = datetime.now().date()
+
         sales_order_data = {
             'so_date':so_date,
             'so_number':so_number,
@@ -97,6 +104,10 @@ def add_sales_order_data(request):
             'so_dc_no_3':request.POST['dc_no_3'],
             'so_dc_date_3':request.POST['dc_date_3'],
             'so_dc_no_4':request.POST['dc_no_4'],
+            'so_ewaybill_no_1':request.POST['so_ewaybill_no_1'],
+            'so_ewaybill_no_2':request.POST['so_ewaybill_no_2'],
+            'so_ewaybill_no_3':request.POST['so_ewaybill_no_3'],
+            'so_ewaybill_no_4':request.POST['so_ewaybill_no_4'],
             'so_invoce_no_1':request.POST['invoice_no_1'],
             'so_invoce_date_1':request.POST['invoice_date_1'],
             'so_invoce_no_2':request.POST['invoice_no_2'],
@@ -236,6 +247,10 @@ def edit_sales_order_data(request,id):
             'so_invoce_date_3':request.POST['invoice_date_3'],
             'so_invoce_no_4':request.POST['invoice_no_4'],
             'so_invoce_date_4':request.POST['invoice_date_4'],
+            'so_ewaybill_no_1':request.POST['so_ewaybill_no_1'],
+            'so_ewaybill_no_2':request.POST['so_ewaybill_no_2'],
+            'so_ewaybill_no_3':request.POST['so_ewaybill_no_3'],
+            'so_ewaybill_no_4':request.POST['so_ewaybill_no_4'],
             'so_dispatch':transporter.objects.filter(id=request.POST['transporter_name']).first(),
             # 'so_freight':request.POST['freight'],
             'so_sub_total':request.POST['subtotal'],
