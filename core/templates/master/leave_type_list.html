@@ -36,7 +36,12 @@
         top: auto;
         top: 60px; /* Adjust as needed */
     }
-
+        .dataTables_filter{
+            margin-bottom: 16px !important;
+        }
+        .dataTables_length{
+            margin-top: 8px !important;
+        }
     /* .negative-padding {
         margin-top: -60px;
     } */
@@ -78,6 +83,7 @@
                                 <thead class="thead-light">
                                     <tr>
                                     <tr>
+                                        <th>SR. No</th>
                                         <th>Name</th>
                                         <th>Total Leaves In Year</th>
                                         <!-- <th>Date</th> -->
@@ -88,6 +94,7 @@
                                     {% if leave_type_list %}
                                     {% for t in leave_type_list %}
                                     <tr>
+                                        <td>{{forloop.counter}}</td>
                                         <td>
                                             <a href="#" style="color:blue;">{{t.name}}</a>
                                         </td>

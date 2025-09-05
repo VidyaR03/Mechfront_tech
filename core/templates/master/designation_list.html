@@ -75,6 +75,7 @@
                                                         <thead class="thead-light">
                                                             <tr>
                                                             <tr>
+                                                                <th>SR. No</th>
                                                                 <th>Name</th>
                                                                 <th>Date</th>
                                                                 <th>Actions</th>
@@ -84,6 +85,7 @@
                                                             {% if designation_list %}
                                                             {% for t in designation_list %}
                                                             <tr>
+                                                                <td>{{ forloop.counter }}</td>
                                                                 <td>
                                                                     <a href="#" style="color:blue;">{{t.name}}</a>
                                                                 </td>
