@@ -65,7 +65,9 @@ def add_invoice_data(request):
     elif request.method == "POST":
         inv_number = generate_tax_invoice_number()
         invoice_date_str = request.POST['invoice_date']
-        invoice_due_date_str = request.POST['due_date']
+        invoice_due_date_str = request.POST.get('due_date')
+        if not invoice_due_date_str:
+            return HttpResponse("Missing 'due_date' field in form.", status=400)
         invoice_buyer_order_date_str = request.POST['buyer_order_date']
         invoice_due_date_date = datetime.strptime( invoice_due_date_str, '%d-%m-%Y').date()
         invoice_buyerorder_date = datetime.strptime( invoice_buyer_order_date_str, '%d-%m-%Y').date()
@@ -477,7 +479,6 @@ def invoice_pdf(request, id):
         combined_chunks[-1].extend([None] * (chunk_size - len(combined_chunks[-1])))
 
 
-    print(combined_chunks, "^^^^^^^^^^^^^^^^^^^^66")
     list_n = []
     count_page = int(len(items) / chunk_size)
     next = False
@@ -774,8 +775,28 @@ def download_invoice_pdf(request, id):
         return HttpResponse(f'Error generating PDF: {str(e)}')
 
 
-def get_dc_order_items(request, quotation_id):
-    items = delivery_challan_items.objects.filter(delivery_challan_id=quotation_id)
 
-    items_list = list(items.values())
-    return JsonResponse(items_list, safe=False)
+@csrf_exempt
+def get_dc_order_items(request, quotation_id):
+    try:
+        items = delivery_challan_items.objects.filter(delivery_challan_id=quotation_id)
+        data = [
+            {
+                'dc_item_code': item.dc_item_code,
+                'dc_description_goods': item.dc_description_goods,
+                'dc_hsn': item.dc_hsn,
+                'dc_qantity': item.dc_qantity,  # Corrected typo
+                'dc_uom': item.dc_uom,
+                'dc_unit_price': item.dc_unit_price,
+                'dc_discount': item.dc_discount,
+                'dc_tax_rate': item.dc_tax_rate,
+                'dc_tax_amount': item.dc_tax_amount,
+                'dc_total': item.dc_total
+            } for item in items
+        ]
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': str(e)}, status=500)
+
+ 
