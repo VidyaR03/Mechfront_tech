@@ -328,6 +328,7 @@ urlpatterns = [
     path('get-dc_order-items/<int:quotation_id>/', views.get_dc_order_items, name='get_dc_order_items'),
 
     path('get_shipping_address/', views.get_shipping_address, name='get_shipping_address'),
+    
 
 ]
 

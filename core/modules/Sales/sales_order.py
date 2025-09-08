@@ -575,24 +575,33 @@ def get_quotation_items(request, quotation_id):
 
 def get_shipping_address(request):
     customer_id = request.GET.get('customer_id')
-    customer = Customer.objects.filter(id=customer_id).first()
+    customer_obj = customer.objects.filter(id=customer_id).first()
 
-    if customer:
-        # Fetch shipping addresses from CustomerShippingAddress
-        shipping_addresses = customer.shipping_addresses.all()
-        address_list = [
-            {
-                'label': f"{addr.shipping_attention or ''}, {addr.shipping_street}, {addr.shipping_city}, {addr.shipping_state}, {addr.shipping_pincode}",
-                'value': f"{addr.shipping_attention or ''}, {addr.shipping_street}, {addr.shipping_city}, {addr.shipping_state}, {addr.shipping_pincode}",
-                'state': addr.shipping_state,
-            }
-            for addr in shipping_addresses
-        ]
+    if customer_obj:
+        # Create a list of shipping addresses from the customer object
+        shipping_addresses = []
+        
+        # Check each shipping address field and add if not empty
+        if customer_obj.shipping_1_attention:
+            addr1 = f"{customer_obj.shipping_1_attention}, {customer_obj.shipping_1_street}, {customer_obj.shipping_1_city}, {customer_obj.shipping_1_state}, {customer_obj.shipping_1_pincode}"
+            shipping_addresses.append({'value': addr1, 'state': customer_obj.shipping_1_state})
+        
+        if customer_obj.shipping_2_attention:
+            addr2 = f"{customer_obj.shipping_2_attention}, {customer_obj.shipping_2_street}, {customer_obj.shipping_2_city}, {customer_obj.shipping_2_state}, {customer_obj.shipping_2_pincode}"
+            shipping_addresses.append({'value': addr2, 'state': customer_obj.shipping_2_state})
+        
+        if customer_obj.shipping_3_attention:
+            addr3 = f"{customer_obj.shipping_3_attention}, {customer_obj.shipping_3_street}, {customer_obj.shipping_3_city}, {customer_obj.shipping_3_state}, {customer_obj.shipping_3_pincode}"
+            shipping_addresses.append({'value': addr3, 'state': customer_obj.shipping_3_state})
+        
+        if customer_obj.shipping_4_attention:
+            addr4 = f"{customer_obj.shipping_4_attention}, {customer_obj.shipping_4_street}, {customer_obj.shipping_4_city}, {customer_obj.shipping_4_state}, {customer_obj.shipping_4_pincode}"
+            shipping_addresses.append({'value': addr4, 'state': customer_obj.shipping_4_state})
 
         return JsonResponse({
-            'shipping_addresses': address_list,
-            'gst_number': customer.gst_no or '',
-            'place_of_supply': address_list[0]['state'] if address_list else '',
+            'shipping_addresses': shipping_addresses,
+            'gst_number': customer_obj.gst_number or '',
+            'place_of_supply': customer_obj.state or '',
         })
     else:
         return JsonResponse({
