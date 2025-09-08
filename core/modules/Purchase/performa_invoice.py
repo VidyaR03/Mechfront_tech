@@ -15,7 +15,7 @@ from django.http import JsonResponse, HttpResponseBadRequest
 import csv
 from core.modules.login.login import login_required
 from django.contrib import messages
-
+from django.core.exceptions import ValidationError
 @login_required
 def performa_invoice_list_view(request):
     try:
@@ -60,6 +60,7 @@ def performa_add_invoice_data(request):
         return render(request, template_path.performa_add_invoice, context)
     elif request.method == "POST":
         pi_number = generate_proforma_invoice_number()
+        print(pi_number,'PPPPPPPPPPPPPP')
         invoice_date_str = request.POST['invoice_date']
         invoice_due_date_str = request.POST['due_date']
         invoice_buyer_order_date_str = request.POST['buyer_order_date']
@@ -91,7 +92,7 @@ def performa_add_invoice_data(request):
 
         
         
-
+        print(q_customer_name,'q_customer_name')
         invoice_data = {
             'invoice_date': invoice_date,
             'pi_number':pi_number,
@@ -132,7 +133,7 @@ def performa_add_invoice_data(request):
             'cn_total_amt_word':request.POST['cn_total_amt_word'],
             'cn_packaging_forwording_amt_amt': request.POST.get('packaging_forwording_amt_amt', '0'),
             'cn_freight_percentage_amt_amt': request.POST.get('freight_amt_amt', '0'),
-            # 'inv_Dispatch_document_no': request.POST['inv_Dispatch_document_no'],
+            'invoice_customer':customer.objects.filter(id=request.POST['customer_id_select']).first(),
 
 
         }
@@ -192,7 +193,6 @@ def performa_edit_invoice_data(request, id):
         dispatch_through = invoice_data.invoice_dispatch
         item_data = inventory.objects.all()
         all_dispatch_through = transporter.objects.all()
-        all_customer_name = customer.objects.all()
         dc_list = delivery_challan.objects.all()
 
         invoice_item_data = performa_invoice_items.objects.filter(invoice_id = id)
@@ -215,9 +215,9 @@ def performa_edit_invoice_data(request, id):
         print(request.POST)
         invoice_data = get_object_or_404(Performa_Invoice, id=id)
         id = invoice_data.id
-        invoice_date_str = request.POST['invoice_date']
-        invoice_due_date_str = request.POST['due_date']
-        invoice_buyer_order_date_str = request.POST['buyer_order_date']
+        invoice_date_str = request.POST.get('invoice_date')
+        invoice_due_date_str = request.POST.get('due_date')
+        invoice_buyer_order_date_str = request.POST.get('buyer_order_date')
         customer_id = request.POST['customer_id']
         if customer_id:
             q_customer_name = delivery_challan.objects.get(id=customer_id)
