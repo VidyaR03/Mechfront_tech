@@ -30,7 +30,11 @@ Ecoway
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Name <span style="color: red;">*</span></label>
-                                        <input type="text" name="name" value="{{department_data.name}}" id="name" class="form-control" required>
+                                        <input type="text" name="name" value="{{department_data.name}}" id="name" 
+                                        class="form-control" required 
+                                        maxlength="50" 
+                                        pattern="[a-zA-Z0-9\s\-_]+" 
+                                        title="Department name must be 50 characters or less.">
                                     </div>
                                 </div>
 
