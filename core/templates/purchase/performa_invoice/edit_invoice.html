@@ -1,6 +1,6 @@
 {% extends 'dashboard/base_template.html' %}
 {% block title %}
-crm
+Ecoway
 {% endblock %}
 
 {% block custom_css %}
@@ -45,6 +45,14 @@ crm
                             <input type="hidden" name="invoice_id" id="invoice_id" value="18">
                             <div class="invoices-main-form">
                                 <div class="row">
+                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Invoice No</label>
+                                            <input type="text" class="form-control" name="invoice_no" id="invoice_no"
+                                                value="{{invoice_data.inv_number}}" readonly="">
+                                        </div>
+                                    </div> -->
+
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Invoice No</label>
@@ -62,32 +70,25 @@ crm
                                             <div id="duplicate_invoice_no_error" style="display: none; color: red;">Invoice number already exists.</div>
                                         </div>
                                     </div>
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>Invoice Date <span class="text-danger">*</span></label>
-                                                    <input class="form-control datetimepicker" type="text"
-                                                        name="invoice_date" id="invoice_date"
-                                                        value="{{invoice_data.invoice_date}} | date:'d-m-Y' "
-                                                         required>
-                                                        
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Payment Term</label>
-                                            <select class="form-control" name="payment_term" id="payment_term">
-                                                <option value="{{invoice_data.invoice_payment_terms}}">
-                                                    {{invoice_data.invoice_payment_terms}}</option>
-                                                <option value="AGAINST PROFORMA INVOICE">AGAINST PROFORMA INVOICE
-                                                </option>
+                                            <label>Invoice Date <span style="color: red;">*</span></label>
+                                            <input class="form-control datetimepicker" type="text"
+                                                   name="invoice_date" id="invoice_date"
+                                                   value="{{ invoice_data.invoice_date | date:'d-m-Y' }}" required readonly>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Payment Term <span style="color: red;">*</span></label>
+                                            <select class="form-control" name="payment_term" id="payment_term" required>
+                                                <option value="{{invoice_data.invoice_payment_terms}}" >{{invoice_data.invoice_payment_terms}}</option>
+                                                <option value="AGAINST PROFORMA INVOICE">AGAINST PROFORMA INVOICE</option>
                                                 <option value="100% ADVANCE">100% ADVANCE</option>
-                                                <option value="50% ADVANCE BALANCE AGAINST DELIVERY">50% ADVANCE BALANCE
-                                                    AGAINST DELIVERY</option>
+                                                <option value="50% ADVANCE BALANCE AGAINST DELIVERY">50% ADVANCE BALANCE AGAINST DELIVERY</option>
                                                 <option value="7 DAYS">7 DAYS</option>
                                                 <option value="15 DAYS">15 DAYS</option>
                                                 <option value="30 DAYS">30 DAYS</option>
@@ -96,57 +97,57 @@ crm
                                                 <option value="90 DAYS">90 DAYS</option>
                                                 <option value="120 DAYS">120 DAYS</option>
                                                 <option value="AGAINST TAX INVOICE">AGAINST TAX INVOICE</option>
+                                                <option value="OTHER OPTION">OTHER OPTION</option>
+                                                
                                             </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label >Customer Name</label>
+                                            <div>
+                                                <select id="customer_id_select" name="customer_id_select" class="form-control">
+                                                    <option value="{{invoice_data.invoice_customer}}" >{{invoice_data.invoice_customer.customer}}</option>
+                                                    <option value="" hidden>Choose...</option>
+                                                    {% for i in all_customer_name %}
+                                                    <option value="{{i.id}}">{{i.customer}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Customer Name</label>
-                                            <select name="customer_id_select" class="form-control" id="customer_id_select">
-                                                <option value="{{ invoice_data.invoice_customer.id }}">{{ invoice_data.invoice_customer.customer }}</option>
+                                             <input type="hidden" id="customer_id" name="customer_id" value="{{invoice_data.invoice_customer_name_customer_id }}" >
+                                            <label for="customer_Name">Customer Name(DC) <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="customer_Name" id="customer_Name"
+                                            value="{{invoice_data.invoice_sales_person}}" required>
                                                
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <input type="hidden" id="customer_id" name="customer_id" value="{{customer_name.id}}">
-                                            <label for="customer_Name">Customer Name From DC</label>
-                                            <input list="customer_Name_list" id="customer_Name" name="customer_Name" class="form-control" placeholder="Select Lead"  value="{{invoice_data.invoice_customer_name.dc_customer_name.customer }}" >
-                                            <datalist id="customer_Name_list">
-                                                {% for lead in dc_list %}
-                                                <option value="{{ lead.dc_customer_name.customer}}" 
-                                                data-id="{{ lead.id }}" 
-                                                data-contact_person="{{ lead.dc_customer_name.customer}}"
-                                                data-dc_destination="{{ lead.dc_destination }}"
-                                                data-dc_number="{{ lead.dc_number }}"
-                                               >{{ lead.customer }} {{ lead.dc_number }}</option>
-                                                {% endfor %}
                                             </datalist>
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label>Contact Person Name.</label>
-                                            <input type="text" class="form-control" name="contact_person_name" id="contact_person_name" value="{{invoice_data.invoice_customer_name.dc_customer_name.customer}}">
-                                        </div>
-                                    </div>
                                     
-
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12" hidden>
                                         <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>Due Date<span class="text-danger">*</span></label>
-                                                    <input class="form-control datetimepicker" type="text"
+                                           
+                                                
+                                                    <label>Due Date <span style="color: red;">*</span></label>
+                                                    <input class="form-control " type="text"
                                                         name="due_date" id="due_date"
-                                                        value="{{invoice_data.invoice_due_date}} | date  'Y-m-d' "
-                                                        placeholder="Date" required>
-                                                </span>
+                                                        value="{{invoice_data.invoice_due_date |  date:'d-m-Y' }}" required>
+                                                
                                             </div>
                                         </div>
-                                    </div>
+                                  
+
+                                
+                                        
+    
+    
+
+
                                     <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                                 <div class="form-group">
                                                     <label>Invoice No.</label>
@@ -160,105 +161,68 @@ crm
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Eway Bill No.</label>
+                                            <label>Eway Bill No.<span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" name="ewaybill_no" id="ewaybill_no"
-                                                value="{{invoice_data.invoice_eway_bill_no}}">
+                                                value="{{invoice_data.invoice_eway_bill_no}}" required>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Delivery Challan No. <span class="text-danger">*</span></label>
+                                            <label>Delivery Challan No.</label>
                                             <input type="text" class="form-control" name="order_no" id="order_no"
                                                 value="{{invoice_data.invoice_delivery_no}}" >
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label >Source of Supply</label>
+                                            <label>Place Of Supply <span style="color: red;">*</span></label>
                                             <select class="form-control" name="place_of_supply" id="place_of_supply"
-                                            onchange="totaltaxamt();">
-                                                    <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+                                                onchange="totaltaxamt();" required>
+                                                <option value="{{invoice_data.invoice_supply_place}}" >{{invoice_data.invoice_supply_place}}</option>
+                                                <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+                                                <option value="ANDHRA PRADESH (BEFORE DIVISION)">ANDHRA PRADESH (BEFORE DIVISION)</option>
+                                                <option value="ANDHRA PRADESH (NEW)">ANDHRA PRADESH (NEW)</option>
+                                                <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+                                                <option value="ASSAM">ASSAM</option>
+                                                <option value="BIHAR">BIHAR</option>
+                                                <option value="CHANDIGARH">CHANDIGARH</option>
+                                                <option value="CHHATTISGARH">CHHATTISGARH</option>
+                                                <option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
+                                                <option value="DAMAN AND DIU">DAMAN AND DIU</option>
+                                                <option value="DELHI">DELHI</option>
+                                                <option value="GOA">GOA</option>
+                                                <option value="GUJARAT">GUJARAT</option>
+                                                <option value="HARYANA">HARYANA</option>
+                                                <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+                                                <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+                                                <option value="JHARKHAND">JHARKHAND</option>
+                                                <option value="KARNATAKA">KARNATAKA</option>
+                                                <option value="KERALA">KERALA</option>
+                                                <option value="LADAKH">LADAKH</option>
+                                                <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+                                                <option value="MADHYA PRADESH">MADHYA PRADESH</option>
+                                                <option value="MAHARASHTRA">MAHARASHTRA</option>
+                                                <option value="MANIPUR">MANIPUR</option>
+                                                <option value="MEGHALAYA">MEGHALAYA</option>
+                                                <option value="MIZORAM">MIZORAM</option>
+                                                <option value="NAGALAND">NAGALAND</option>
+                                                <option value="ODISHA">ODISHA</option>
+                                                <option value="OTHER TERRITORY">OTHER TERRITORY</option>
+                                                <option value="PUDUCHERRY">PUDUCHERRY</option>
+                                                <option value="PUNJAB">PUNJAB</option>
+                                                <option value="RAJASTHAN">RAJASTHAN</option>
+                                                <option value="SIKKIM">SIKKIM</option>
+                                                <option value="TAMIL NADU">TAMIL NADU</option>
+                                                <option value="TELANGANA">TELANGANA</option>
+                                                <option value="TRIPURA">TRIPURA</option>
+                                                <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+                                                <option value="UTTARAKHAND">UTTARAKHAND</option>
+                                                <option value="WEST BENGAL">WEST BENGAL</option>
 
-                                                    <option value="ANDHRA PRADESH (BEFORE DIVISION)">ANDHRA PRADESH (BEFORE DIVISION)</option>
-                                                    
-                                                    <option value="ANDHRA PRADESH (NEW)">ANDHRA PRADESH (NEW)</option>
-                                                    
-                                                    <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
-                                                    
-                                                    <option value="ASSAM">ASSAM</option>
-                                                    
-                                                    <option value="BIHAR">BIHAR</option>
-                                                    
-                                                    <option value="CHANDIGARH">CHANDIGARH</option>
-                                                    
-                                                    <option value="CHHATTISGARH">CHHATTISGARH</option>
-                                                    
-                                                    <option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
-                                                    
-                                                    <option value="DAMAN AND DIU">DAMAN AND DIU</option>
-                                                    
-                                                    <option value="DELHI">DELHI</option>
-                                                    
-                                                    <option value="GOA">GOA</option>
-                                                    
-                                                    <option value="GUJARAT">GUJARAT</option>
-                                                    
-                                                    <option value="HARYANA">HARYANA</option>
-                                                    
-                                                    <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
-                                                    
-                                                    <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
-                                                    
-                                                    <option value="JHARKHAND">JHARKHAND</option>
-                                                    
-                                                    <option value="KARNATAKA">KARNATAKA</option>
-                                                    
-                                                    <option value="KERALA">KERALA</option>
-                                                    
-                                                    <option value="LADAKH">LADAKH</option>
-                                                    
-                                                    <option value="LAKSHADWEEP">LAKSHADWEEP</option>
-                                                    
-                                                    <option value="MADHYA PRADESH">MADHYA PRADESH</option>
-                                                    
-                                                    <option value="MAHARASHTRA">MAHARASHTRA</option>
-                                                    
-                                                    <option value="MANIPUR">MANIPUR</option>
-                                                    
-                                                    <option value="MEGHALAYA">MEGHALAYA</option>
-                                                    
-                                                    <option value="MIZORAM">MIZORAM</option>
-                                                    
-                                                    <option value="NAGALAND">NAGALAND</option>
-                                                    
-                                                    <option value="ODISHA">ODISHA</option>
-                                                    
-                                                    <option value="OTHER TERRITORY">OTHER TERRITORY</option>
-                                                    
-                                                    <option value="PUDUCHERRY">PUDUCHERRY</option>
-                                                    
-                                                    <option value="PUNJAB">PUNJAB</option>
-                                                    
-                                                    <option value="RAJASTHAN">RAJASTHAN</option>
-                                                    
-                                                    <option value="SIKKIM">SIKKIM</option>
-                                                    
-                                                    <option value="TAMIL NADU">TAMIL NADU</option>
-                                                    
-                                                    <option value="TELANGANA">TELANGANA</option>
-                                                    
-                                                    <option value="TRIPURA">TRIPURA</option>
-                                                    
-                                                    <option value="UTTAR PRADESH">UTTAR PRADESH</option>
-                                                    
-                                                    <option value="UTTARAKHAND">UTTARAKHAND</option>
-                                                    
-                                                    <option value="WEST BENGAL">WEST BENGAL</option>
-                                                    
                                             </select>
                                         </div>
                                     </div>
- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Destination</label>
                                             <input type="text" class="form-control" name="destination" id="destination"
@@ -276,16 +240,14 @@ crm
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label >Dispatch Through <span class="text-danger">*</span></label>
+                                            <label >Dispatch Through</label>
                                             <div>
-                                                <select class="form-control" required name="transporter_name"
-                                                    id="transporter_name">
-                                                    <option value="{{invoice_data.invoice_dispatch.id}}">
-                                                        {{invoice_data.invoice_dispatch.name}}</option>
+                                                <select id="transporter_name_id" name="transporter_name" class="form-control">
+                                                    <option value="{{invoice_data.invoice_dispatch.id}}" >{{invoice_data.invoice_dispatch.name}}</option>
+                                                    <option value="" hidden>Choose...</option>
                                                     {% for i in all_dispatch_through %}
                                                     <option value="{{i.id}}">{{i.name}}</option>
                                                     {% endfor %}
-
                                                 </select>
                                             </div>
                                         </div>
@@ -308,19 +270,15 @@ crm
 
                                     <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label style="color:black">Invoice Format Type</label>
+                                            <label >Invoice Format Type</label>
                                             <div>
                                                 <select class="form-control" name="invoice_format" id="invoice_format">
-                                                    <option value="{{invoice_data.invoice_format_type}}">
-                                                        {{invoice_data.invoice_format_type}}</option>
-                                                    <option value="TRIPLICATE FOR SUPPLIER">TRIPLICATE FOR SUPPLIER
-                                                    </option>
+                                                    <option value="{{invoice_data.invoice_format_type}}">{{invoice_data.invoice_format_type}}</option>
+                                                    <option value="TRIPLICATE FOR SUPPLIER">TRIPLICATE FOR SUPPLIER</option>
 
-                                                    <option value="DUPLICATE FOR TRANSPORTER">DUPLICATE FOR TRANSPORTER
-                                                    </option>
+                                                    <option value="DUPLICATE FOR TRANSPORTER">DUPLICATE FOR TRANSPORTER</option>
 
-                                                    <option value="ORIGINAL FOR RECIPIENT">ORIGINAL FOR RECIPIENT
-                                                    </option>
+                                                    <option value="ORIGINAL FOR RECIPIENT">ORIGINAL FOR RECIPIENT</option>
 
                                                 </select>
                                             </div>
@@ -329,20 +287,24 @@ crm
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Buyer Order No.</label>
+                                            <label>Buyer Order No.<span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" name="buyer_order_no"
-                                                id="buyer_order_no" value="{{invoice_data.invoice_buyer_order_no}}">
+                                                id="buyer_order_no" value="{{invoice_data.invoice_buyer_order_no}}" required>
                                         </div>
                                     </div>
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Buyer Order Date <span class="text-danger">*</span> </label>
+                                            <label>Buyer Order Date <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control datetimepicker"
                                                 name="buyer_order_date" id="buyer_order_date"
-                                                value="{{invoice_data.invoice_buyer_order_date}} | 'Y-m-d'   " required>
+                                                value="{{invoice_data.invoice_buyer_order_date |  date:'d-m-Y' }}" required>
                                         </div>
                                     </div>
+
+                                  
+
+                                    
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
@@ -355,59 +317,41 @@ crm
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>GST No.</label>
-                                            <input type="text" class="form-control" name="gst_no" id="gst_no_input"
+                                            <input type="text" class="form-control" name="gst_no" id="gst_no"
                                                 value="{{invoice_data.invoice_gst_no}}">
-                                            <span id="gstError" style="color: red;"></span>
-
                                         </div>
                                     </div>
 
-                                   
-
                                     <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Term of Delivery <span class="text-danger">*</span></label>
-                                            <select class="form-control" name="delivery_term" id="delivery_term" required>
-                                                <option value="{{invoice_data.invoice_term_of_delivery}}" >
-                                                    {{invoice_data.invoice_term_of_delivery}} </option>
+                                            <label>Term of Delivery</label>
+                                            <select class="form-control" name="delivery_term" id="delivery_term">
+                                                <option value="{{invoice_data.invoice_term_of_delivery}}">{{invoice_data.invoice_term_of_delivery}} </option>
                                                 <option value="PAID">PAID</option>
 
                                                 <option value="TO PAY">TO PAY</option>
 
-                                                <option value="DOOR DELIVERY">DOOR DELIVERY</option>
+                                                <option value="DOOR DELIVERY" >DOOR DELIVERY</option>
 
                                                 <option value="SELF COLLECTION">SELF COLLECTION</option>
-                                                <option value="INVOICE FORMAT TYPE">INVOICE FORMAT TYPE</option>
 
                                             </select>
                                         </div>
                                     </div> -->
 
-                                    
+                                  
 
-                                   
-
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="shipping_address_dropdown">Shipping Address</label>
-                                            <select class="form-control" name="shipping_address"
-                                                id="shipping_address_dropdown">
-                                                <option value="{{invoice_data.invoice_shipping_address}}" selected>{{invoice_data.invoice_shipping_address}}</option>
-                                                <option value="">Select Shipping Address</option>
-                                                <option value="{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_attention}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_street}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_city}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_state}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_pincode}}" >{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_attention}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_street}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_city}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_state}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_1_pincode}}</option>
-                                                <option value="{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_attention}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_street}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_city}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_state}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_pincode}}" >{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_attention}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_street}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_city}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_state}},{{invoice_data.invoice_customer_name.dc_customer_name.shipping_2_pincode}}</option>
-
-                                            </select>
+                                            <label>Shipping Address</label>
+                                            <input class="form-control" name="shipping_address" id="shipping_address" value="{{invoice_data.invoice_shipping_address}}">
+                                               
                                         </div>
                                     </div>
-
-                                    
-
-                                    
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Amount)</label>
-                                            <input type="text" class="form-control " name="freight_amount" id="freight_amount"  value="{{invoice_data.cn_freight_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <input type="text" class="form-control " name="freight_amount" id="freight_amount"  value="{{invoice_data.inv_freight_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -436,41 +380,27 @@ crm
 
                             
 
-                                    <!-- <div class="col-md-3 ">
+                                    <div class="col-md-2 ">
                                         <div class="form-group">
                                            <label>GST</label>
                                            <div>
-                                              <select class="form-control" name="gst_option" id="gst_option" onchange="updateTaxFields();">
+                                              <select class="form-control" name="gst_option" id="gst_option" onchange="updateTaxFields();calculateTotalTaxAmount();">
                                                  <option value="{{invoice_data.gst_option}}">{{invoice_data.gst_option}}</option>
-
+                                                 <option value="Interstate">Interstate</option>
+                                                 <option value="Intrastate">Intrastate</option>
                                                  
                                               </select>
-                                           </div>
-                                        </div>
-                                     </div> -->
-                                     <div class="col-md-3 ">
-                                        <div class="form-group">
-                                           <label>GST <span class="text-danger">*</span></label>
-                                           <div>
-                                              <select class="form-control" name="gst_option" id="gst_option" onchange="updateTaxFields();calculateTotalTaxAmount();">
-                                                 <option value=""hidden>Select GST</option>
-                                                 <option value="Interstate" {% if invoice_data.gst_option == "Interstate" %}selected{% endif %}>Interstate</option>
-                                                 <option value="Intrastate" {% if invoice_data.gst_option == "Intrastate" %}selected{% endif %}>Intrastate</option>
-                                               
-                                              </select>
+
+                                             
                                            </div>
                                         </div>
                                      </div>
-
 
                                     <div class="col-lg-2" style="visibility: hidden;">
                                         <div class="form-group">
                                             <label>Item Rates Are </label>
                                             <select class="form-control" name="item_rate" id="item_rate">
-                                                <option value="{{invoice_data.item_rate}}">{{invoice_data.item_rate}}
-                                                </option>
-
-                                                <option value="tax_exclusive">Tax Exclusive</option>
+                                                <option value="tax_exclusive" selected="">Tax Exclusive</option>
                                                 <option value="tax_inclusive">Tax Inclusive </option>
                                             </select>
                                         </div>
@@ -506,79 +436,70 @@ crm
                                                             </td>
 
                                                             <td><input type="text" style="width: 120px;" class="form-control"
-                                                                    name="itemcode_{{ forloop.counter }}"
-                                                                    id="itemcode_{{ forloop.counter }}"
+                                                                    name="itemcode_{{ forloop.counter }}" id="itemcode_{{ forloop.counter }}"
                                                                     value="{{j.invoice_item_code}}"
-                                                                    onkeyup="getitemscodedetails('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}', 'sac_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');" >
+                                                                    onkeyup="getitemscodedetails('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');">
                                                             </td>
 
-                                                            <td><input type="text" class="form-control"
-                                                                    name="item_{{ forloop.counter }}"
+                                                            <td><input type="text" class="form-control" name="item_{{ forloop.counter }}"
                                                                     id="item_{{ forloop.counter }}"
-                                                                    onkeyup="getitemsdetails('item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}', 'sac_{{ forloop.counter }}', 'uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}','itemcode_{{ forloop.counter }}');"
+                                                                    onkeyup="getitemsdetails('item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}','itemcode_{{ forloop.counter }}');"
                                                                     value="{{j.invoice_description_goods}}"
                                                                     placeholder=" " > </td>
 
                                                             <!-- <td><input type="text" class="form-control" name="godown_{{ forloop.counter }}" id="godown_{{ forloop.counter }}" value=""></td> -->
 
                                                             <!-- <td width="150">
-                                                                <select class="form-select"
-                                                                    name="godown_{{ forloop.counter }}"
+                                                                <select class="form-select" name="godown_{{ forloop.counter }}"
                                                                     id="godown_{{ forloop.counter }}">
                                                                     <option value="{{j.invoice_godown}}">
                                                                         {{j.invoice_godown}}</option>
+
                                                                     <option value="3">5th floor</option>
+
+
                                                                     <option value="2">Ankush Godown</option>
+
+
                                                                     <option value="1">TURBHE</option>
+
                                                                 </select>
                                                             </td> -->
 
-                                                            <td><input type="text" class="form-control"
-                                                                    name="hsn_{{ forloop.counter }}"
-                                                                    id="hsn_{{ forloop.counter }}"
-                                                                    value="{{j.invoice_hsn}}" ></td>
+                                                            <td><input type="text" class="form-control" name="hsn_{{ forloop.counter }}"
+                                                                    id="hsn_{{ forloop.counter }}" value="{{j.invoice_hsn}}" ></td>
 
-                                                           
+                                                                   
+    
 
-                                                            <td><input type="text" class="form-control"
-                                                                    name="qty_{{ forloop.counter }}"
-                                                                    id="qty_{{ forloop.counter }}"
-                                                                    value="{{j.invoice_qantity}}"
-                                                                    onkeyup="taxrate('qty_{{ forloop.counter }}')"> </td>
+                                                            <td><input type="text" class="form-control" name="qty_{{ forloop.counter }}"
+                                                                    id="qty_{{ forloop.counter }}" value="{{j.invoice_qantity}}"
+                                                                    onkeyup="qty('qty_{{ forloop.counter }}');checkStockQuantity('itemcode_{{ forloop.counter }}', 'qty_{{ forloop.counter }}' ,'{{j.invoice_qantity}}');"> </td>
 
-                                                            <td><input type="text" class="form-control"
-                                                                    name="uom_{{ forloop.counter }}"
-                                                                    id="uom_{{ forloop.counter }}"
-                                                                    value="{{j.invoice_uom}}" ></td>
+                                                            <td><input type="text" class="form-control" name="uom_{{ forloop.counter }}"
+                                                                    id="uom_{{ forloop.counter }}" value="{{j.invoice_uom}}" ></td>
 
-                                                            <td><input type="text" class="form-control"
-                                                                    name="rate_{{ forloop.counter }}"
-                                                                    id="rate_{{ forloop.counter }}"
-                                                                    value="{{j.invoice_unit_price}}"
-                                                                    onkeyup="taxrate('rate_{{ forloop.counter }}')"></td>
+                                                            <td><input type="text" class="form-control" name="rate_{{ forloop.counter }}"
+                                                                    id="rate_{{ forloop.counter }}" value="{{j.invoice_unit_price}}"
+                                                                    onkeyup="rate('rate_{{ forloop.counter }}')" readonly></td>
 
                                                             <td><input type="text" class="form-control"
-                                                                    name="discount_{{ forloop.counter }}"
-                                                                    id="discount_{{ forloop.counter }}"
+                                                                    name="discount_{{ forloop.counter }}" id="discount_{{ forloop.counter }}"
                                                                     value="{{j.invoice_discount}}"
-                                                                    onkeyup="discountamt('discount_{{ forloop.counter }}')">
-                                                            </td>
+                                                                    onkeyup="discountamt('discount_{{ forloop.counter }}')"></td>
 
-                                                            <td><input type="number"
-                                                                    class="form-control taxrate_{{ forloop.counter }}"
-                                                                    name="taxrate_{{ forloop.counter }}"
-                                                                    id="taxrate_{{ forloop.counter }}"
+                                                            <td><input type="number" class="form-control taxrate_{{ forloop.counter }}"
+                                                                    name="taxrate_{{ forloop.counter }}" id="taxrate_{{ forloop.counter }}"
                                                                     value="{{j.invoice_tax_rate}}"
-                                                                    onkeyup="taxrate('taxrate_{{ forloop.counter }}')" required>
-                                                            </td>
+                                                                    onkeyup="taxrate('taxrate_{{ forloop.counter }}')" required></td>
+
                                                             <td><input type="text" class="form-control taxamt"
-                                                                    name="taxamt_{{ forloop.counter }}"
-                                                                    id="taxamt_{{ forloop.counter }}"
+                                                                    name="taxamt_{{ forloop.counter }}" id="taxamt_{{ forloop.counter }}"
                                                                     value="{{j.invoice_tax_amount}}" readonly>
                                                             </td>
+
                                                             <td><input type="text" class="form-control totalamt"
-                                                                    name="total_{{ forloop.counter }}"
-                                                                    id="total_{{ forloop.counter }}"
+                                                                    name="total_{{ forloop.counter }}" id="total_{{ forloop.counter }}"
                                                                     value="{{j.invoice_total}}" readonly>
                                                             </td>
 
@@ -589,6 +510,9 @@ crm
                                                                 <a href="javascript:void(0);" class="remove-btn "><i
                                                                         class="fe fe-trash-2"></i></a>
                                                             </td>
+                                                            <td><input type="hidden" class="form-control" name="qty_old_{{ forloop.counter }}"
+                                                                id="qty_{{ forloop.counter }}" value="{{j.invoice_qantity}}"
+                                                                > </td>
                                                         </tr>
                                                         <input type="hidden" id="i_field" value="{{len_invoice_item}}">
                                                         {% endfor %}
@@ -600,9 +524,10 @@ crm
                                             <div class="col-lg-7 col-md-6">
                                                 <!-- <div class="form-group float-end mb-0"> <button class="btn btn-primary" type="submit">Add Item</button> </div> -->
                                                 <div class="invoice-fields">
-                                                    <strong class="field-title">Terms and Conditions</strong> 
-                                                    <!-- <button type="button" class="btn-right btn btn-sm btn-outline-primary" onclick="enableTextarea()"> edit </button> -->
-                                                    <br> <textarea class="form-control" name="note" id='Terms_Condition' style="min-height: 50px;" >{{invoice_data.invoice_note}}</textarea>
+<div class="invoice-fields">
+    <h4 class="field-title">Terms and Conditions</h4> <br>
+    <textarea class="form-control" name="note">{{invoice_data.invoice_note}}</textarea>
+</div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-5 col-md-6">
@@ -611,6 +536,8 @@ crm
                                                     <div class="invoice-total-box">
                                                         <div class="invoice-total-inner">
 
+                                                            
+                                                
                                                             <div class="total-tax-amt" hidden>
                                                                 <label for="total_tax_amount">Total Tax Amount:</label>
                                                                 <input type="text" id="total_tax_amount" class="form-control" readonly>
@@ -618,7 +545,6 @@ crm
                                                            
 
 
-                                                    <!-- omk -->
                                                     <div class="row">
                                                         <div class="col-lg-6">
                                                             <p>Sub Total </p>
@@ -638,7 +564,7 @@ crm
                                                             <input type="hidden"
                                                                 class="totaltaxamt billamt utrt1"
                                                                 name="total_taxamt" id="total_taxamt"
-                                                                value="{{invoice_data.invoice_total}}" readonly="">
+                                                                value="{{invoice_data.inv_total}}" readonly="">
                                                         </div>
                                                     </div>
 
@@ -663,7 +589,7 @@ crm
                                                         <div class="col-lg-6">
                                                             <p>CGST 
                                                                 <!-- @ <input type="text" name="cgstper"
-                                                                    id="cgstper" value="{{invoice_data.invoice_cgstper}}" size="1"
+                                                                    id="cgstper" value="{{invoice_data.inv_cgstper}}" size="1"
                                                                     class="no-outline"> -->
                                                                 </p>
                                                         </div>
@@ -677,7 +603,7 @@ crm
                                                         <div class="col-lg-6">
                                                             <p>SGST
                                                                  <!-- @ <input type="text" name="sgstper"
-                                                                    id="sgstper" value="{{invoice_data.invoice_sgstper}}" size="1"
+                                                                    id="sgstper" value="{{invoice_data.inv_sgstper}}" size="1"
                                                                     class="no-outline"> -->
                                                                 </p>
                                                         </div>
@@ -706,7 +632,7 @@ crm
                                                         <div class="col-lg-6 ">
                                                             <input class="billamt utrt1" type="text"
                                                                 name="adjustment" id="adjustment" value="0.00"
-                                                                onkeyup=";">
+                                                                onkeyup=";" readonly>
                                                         </div>
                                                     </div>
 
@@ -714,27 +640,27 @@ crm
                                                     <div class="row">
                                                         <div class="col-lg-6"><p>P&F (Amount) + GST</p></div>
                                                         <div class="col-lg-6 ">
-                                                            <input class="billamt utrt1 " name="packaging_forwording_amt_amt" type="text" id="pf_amount" value="{{invoice_data.cn_packaging_forwording_amt_amt}}" >
+                                                            <input class="billamt utrt1 " name="packaging_forwording_amt_amt" type="text" id="pf_amount" value="{{invoice_data.inv_packaging_forwording_amt_amt}}" readonly>
                                                         </div>
                                                     </div>
                                                     </div>
-
 
                                                     <div id="pfpergst" style="display: none;">
                                                     <div class="row">
                                                         <div class="col-lg-6"><p>P&F (Percentage) + GST</p></div>
                                                         <div class="col-lg-6 ">
-                                                            <input class="billamt utrt1 " type="text" name="packaging_forwording_percentage_amt" id="pf_percentage" value="{{invoice_data.cn_packaging_forwording_percentage_amt}}" >
+                                                            <input class="billamt utrt1 " type="text" name="packaging_forwording_percentage_amt" id="pf_percentage" value="{{invoice_data.inv_packaging_forwording_percentage_amt}}" readonly>
                                                         </div>
                                                     </div>
                                                     </div>
 
                                                     <input type="hidden" id="subtotal" value="100.00"> <!-- Replace with actual subtotal -->
                                                     <div id="freight_amount_gst_row" style="display: none;">
+
                                                     <div class="row">
                                                         <div class="col-lg-6"><p>Freight (Amount) + GST</p></div>
                                                         <div class="col-lg-6 ">
-                                                            <input class="billamt utrt1" type="text" name="freight_amt_amt" id="fr_amount" value="{{invoice_data.cn_freight_percentage_amt_amt}}" >
+                                                            <input class="billamt utrt1" type="text" name="freight_amt_amt" id="fr_amount" value="{{invoice_data.inv_freight_amt_amt}}" readonly>
                                                         </div>
                                                     </div>
                                                     </div>
@@ -743,7 +669,7 @@ crm
                                                     <div class="row">
                                                         <div class="col-lg-6"><p>Freight (Percentage) + GST</p></div>
                                                         <div class="col-lg-6 ">
-                                                            <input class="utrt1" type="text" id="fr_percentage" name="freight_percentage_amt"  value="{{invoice_data.cn_freight_percentage_amt}}" >
+                                                            <input class="utrt1" type="text" name="freight_percentage_amt" id="fr_percentage" value="{{invoice_data.inv_freight_percentage_amt}}" readonly>
                                                         </div>
                                                     </div>
                                                     </div>
@@ -755,7 +681,7 @@ crm
                                                         <div class="col-lg-6 ">
                                                             <input class="billamt utrt1" type="text"
                                                                 name="sale_of_good" id="sale_of_good"
-                                                                value="0.00" onkeyup=";">
+                                                                value="0.00" onkeyup=";" readonly>
                                                         </div>
                                                     </div>
 
@@ -767,7 +693,7 @@ crm
                                                     </div>
                                                     <div class="invoice-total-footer">
                                                         <h4>Total Amount in Word
-                                                            -<input  name="totalamt_word" id="totalamt_word" readonly="" style="width: 370px; border: none;" value="{{invoice_data.invoice_total_amt_word}}"></input>
+                                                            -<input  name="totalamt_word" id="totalamt_word" readonly="" style="width: 370px; border: none;" value="{{invoice_data.cn_total_amt_word}}"></input>
                                                         </h4>
                                                     </div>
 
@@ -776,36 +702,32 @@ crm
 
                                                     <div class="upload-sign">
                                                         <div class="form-group float-end mb-0"> <a
-                                                                href="{% url 'invoice_list'%}"
+                                                                href="{% url 'performa_invoice_list'%}"
                                                                 class="btn btn-primary">Cancel</a></div>
                                                         <div class="form-group float-end mb-0"> <button
                                                                 class="btn btn-primary" type="submit" id="btn_submit"
                                                                 name="btn_submit">Save</button>
                                                         </div>
-                                                        <!-- <div class="form-group float-end mb-0"> <button
-                                                                class="btn btn-primary" type="reset" id="reset"
-                                                                name="reset">Reset</button>
-                                                        </div> -->
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row col-sm-6 p-5">
-                                    <div class="success_message row"></div>
+                                    <div class="row col-sm-6 p-5">
+                                        <div class="success_message row"></div>
+                                    </div>
                                 </div>
                             </div>
+                        </form>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</div>
 
 </div>
+
 
 
 <script>
@@ -821,10 +743,10 @@ crm
         const errorDiv = document.getElementById('invoice_no_error');
         const duplicateErrorDiv = document.getElementById('duplicate_invoice_no_error');
 
-        // Validate the format (MF followed by 2 digits, /PI-, and 3 digits, e.g., MF24/PI-007)
-        const invoicePattern = /^MF\d{2}\/PI-\d{3}$/;  // Pattern for MF24/PI-007
+        // Validate the format (MF followed by 4 digits of the year and a 3-digit number, e.g., MF2024015)
+        const invoicePattern = /^MF\d{7}$/;  // Adjusted pattern for MF followed by 7 digits
         if (!invoicePattern.test(invoiceInput.value)) {
-            invoiceInput.setCustomValidity('Invalid format. Invoice number must be in the format MF24/PI-007.');
+            invoiceInput.setCustomValidity('Invalid format. Invoice number must be in the format MF2024015.');
             errorDiv.style.display = 'block';
         } else {
             invoiceInput.setCustomValidity('');
@@ -833,7 +755,7 @@ crm
 
         // Check for duplicate if the format is valid
         if (invoicePattern.test(invoiceInput.value)) {
-            const originalInvoiceNumber = "{{ invoice_data.pi_number }}";  // Get the original number from the template
+            const originalInvoiceNumber = "{{ invoice_data.inv_number }}";  // Get the original number from the template
 
             if (invoiceInput.value !== originalInvoiceNumber) {
                 checkDuplicateInvoiceNumber(invoiceInput.value)
@@ -854,11 +776,107 @@ crm
     }
 
     function checkDuplicateInvoiceNumber(invoice_no) {
-        return fetch(`/check_duplicate_performa_invoice_no/?invoice_no=${invoice_no}`)
+        return fetch(`/check_duplicate_invoice_no/?invoice_no=${invoice_no}`)
             .then(response => response.json())
             .then(data => data.is_duplicate);
     }
 </script>
+
+
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    function checkStockQuantity(itemCodeFieldId, qtyFieldId, old_qty) {
+        var itemCode = document.getElementById(itemCodeFieldId).value;
+        var qty = document.getElementById(qtyFieldId).value;
+
+        if (itemCode && qty) {
+            $.ajax({
+                url: '{% url "check_inventory_stock_edit" %}',  // Ensure this matches your Django URL configuration
+                method: 'GET',
+                data: {
+                    'item_code': itemCode,
+                    'qty': qty,
+                    'old_qty': old_qty  // Pass the old quantity here
+                },
+                success: function(response) {
+                    if (!response.success) {
+                        // Display a Toastr error message instead of an alert
+                        toastr.error("You don't have enough quantity in inventory! <br>Available: " + response.available_qty, "Stock Warning");
+                        
+                        // Reset quantity to 0 if not enough stock
+                        document.getElementById(qtyFieldId).value = 0;
+                        taxrate(qtyFieldId); // Assuming taxrate function is defined elsewhere
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error checking stock: ", error);
+                    toastr.error("Error checking stock: " + error, "Error");
+                }
+            });
+        }
+    }
+</script>
+
+<!-- 
+<script>
+    function checkStockQuantity(itemCodeFieldId, qtyFieldId) {
+        var itemCode = document.getElementById(itemCodeFieldId).value;
+        var qty = document.getElementById(qtyFieldId).value;
+
+        if (itemCode && qty) {
+            $.ajax({
+                url: '#',  // Define the correct URL in your Django URLs
+                method: 'GET',
+                data: {
+                    'item_code': itemCode,
+                    'qty': qty,
+                    'old_qty':old_qty
+                },
+                success: function(response) {
+                    if (!response.success) {
+                        // Display a Toastr error message instead of an alert
+                        toastr.error("You don't have enough quantity in inventory! <br>Available: " + response.available_qty, "Stock Warning");
+                        // Reset quantity to 1 if not enough stock
+                        document.getElementById(qtyFieldId).value = 0;
+                        taxrate(qtyFieldId) ;
+                        
+                        
+
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error checking stock: ", error);
+                    toastr.error("Error checking stock: " + error, "Error");
+                }
+            });
+        }
+    }
+</script> -->
+<script>
+    toastr.options = {
+  "closeButton": true,
+  "debug": false,
+  "newestOnTop": true,
+  "progressBar": true,
+  "positionClass": "toast-top-right",  // You can change this to control where the message appears
+  "preventDuplicates": false,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",  // 5 seconds
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+};
+
+
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
      const freightAmount = document.getElementById('freight_amount');
@@ -901,24 +919,41 @@ crm
  
  </script>
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const expiryDateInput = document.getElementById("due_date");
+        // const buyer_order_dateInput = document.getElementById("buyer_order_date");
+
+        
+        // Initialize the datepicker with the desired format and set minDate to today
+        $(expiryDateInput).datepicker({
+            dateFormat: 'dd-mm-yy',
+            minDate: 0, // Prevent selection of dates before today
+            beforeShow: function(input, inst) {
+                // Convert the existing value back to a Date object
+                const existingDateParts = expiryDateInput.value.split('-');
+                const existingDate = new Date(existingDateParts[2], existingDateParts[1] - 1, existingDateParts[0]);
+                
+                // Set the existing value as the current date in the datepicker
+                $(expiryDateInput).datepicker("setDate", existingDate);
+            }
+        });
+        // $(buyer_order_dateInput).datepicker({
+        //     dateFormat: 'dd-mm-yy',
+        //     minDate: 0, // Prevent selection of dates before today
+        //     beforeShow: function(input, inst) {
+        //         // Convert the existing value back to a Date object
+        //         const existingDateParts = buyer_order_dateInput.value.split('-');
+        //         const existingDate = new Date(existingDateParts[2], existingDateParts[1] - 1, existingDateParts[0]);
+                
+        //         // Set the existing value as the current date in the datepicker
+        //         $(buyer_order_dateInput).datepicker("setDate", existingDate);
+        //     }
+        // });
+    });
+</script>
+<script>
 
     $(document).ready(function() {
-        function toggleFreightFields() {
-                
-                const freightAmount = parseFloat(document.getElementById('freight_amount').value) || 0;
-                const freightPercentage = parseFloat(document.getElementById('freight_percentage').value) || 0;
-    
-                if (freightAmount > 0) {
-                    document.getElementById('freight_amount_gst_row').style.display = 'block';
-                    document.getElementById('freight_percentage_gst_row').style.display = 'none';
-                } else if (freightPercentage > 0) {
-                    document.getElementById('freight_amount_gst_row').style.display = 'none';
-                    document.getElementById('freight_percentage_gst_row').style.display = 'block';
-                } else {
-                    document.getElementById('freight_amount_gst_row').style.display = 'none';
-                    document.getElementById('freight_percentage_gst_row').style.display = 'none';
-                }
-            }
         toggleFreightFields();
     });
         
@@ -976,6 +1011,31 @@ crm
         });
     </script>
     
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script>
+
+    document.getElementById('customer_Name').addEventListener('input', function() {
+        var input = this.value;
+        var list = document.getElementById('customer_Name_list').options;
+
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].value === input) {
+                console.log(list[i].dataset);
+                document.getElementById('customer_id').value = list[i].dataset.id;
+                document.getElementById('contact_person_name').value = list[i].dataset.contact_person;
+                document.getElementById('destination').value = list[i].dataset.dc_destination;
+                document.getElementById('order_no').value = list[i].dataset.dc_number;
+                //  $("#q_ser_type option").attr('selected', false);
+                // $("#q_ser_type option[value='" + list[i].dataset.service_type + "']").attr('selected', true);
+                break;
+            }
+        }
+    });
+</script>
 
 <script>
     $(document).ready(function() {
@@ -1183,7 +1243,9 @@ crm
         $(this).closest('.add-row').remove();
         
         subtotal();
-
+        $(document).ready(function() {
+            subtotal();
+        });
         calculateTotalTaxAmount();
         $(document).ready(function() {
             subtotal();
@@ -1206,7 +1268,7 @@ crm
             '<input type="hidden" name="iid[]" class="iid" value="' + i + '">' +
             '</td>'+
             '<td>' +
-            '<input type="text" style="width: 120px;" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\'); " onfocus="updateTotalInWords();" required>' +
+            '<input type="text" style="width: 120px;" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\'); " onfocus="updateTotalInWords();">' +
             '</td>' +
 
             '<td>' +
@@ -1218,7 +1280,7 @@ crm
             '</td>' +
 
             '<td>' +
-            '<input type="text" class="form-control" name="qty_' + i + '" id="qty_' + i + '" onkeyup="taxrate(\'qty_' + i + '\');" >' +
+            '<input type="text" class="form-control" name="qty_' + i + '" id="qty_' + i + '" onkeyup="taxrate(\'qty_' + i + '\');checkStockQuantity(\'itemcode_' + i + '\', \'qty_' + i + '\');" >' +
             '</td>' +
 
             '<td>' +
@@ -1226,7 +1288,7 @@ crm
             '</td>' +
 
             '<td>' +
-            '<input type="text" class="form-control" name="rate_' + i + '" id="rate_' + i + '" onkeyup="rate(\'rate_' + i + '\');" readonly>' +
+            '<input type="text" class="form-control" name="rate_' + i + '" id="rate_' + i + '" onkeyup="rate(\'rate_' + i + '\');" >' +
             '</td>' +
 
             '<td>' +
@@ -1234,7 +1296,7 @@ crm
             '</td>' +
 
             '<td>' +
-            '<input type="number" class="form-control taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="taxrate(\'taxrate_' + i + '\');" required>' +
+            '<input type="number" class="form-control taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="taxrate(\'taxrate_' + i + '\');" >' +
             '</td>' +
 
             '<td>' +
@@ -1301,9 +1363,9 @@ crm
                 //$('#'+qty).val(names[3]);
                 $('#' + qty).val('1');
                 $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[10]);
+                $('#' + uom).val(names[7]);
                 $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[7]);
+                $('#' + taxrate).val(names[6]);
                 $('#' + hsn).val(names[2]);
                 $('#' + item).val(names[1]);
                 $('#' + itemcode).val(names[11]);
@@ -1527,10 +1589,10 @@ crm
         subtotal();
 
         calculateTotalTaxAmount();
+
         $(document).ready(function() {
             subtotal();
         });
-
         
         updateTotalInWords();
     }
@@ -1661,7 +1723,47 @@ crm
         var fr_percentage = parseFloat($('#fr_percentage').val()) || 0;
         var sale_of_good = parseFloat($('#sale_of_good').val()) || 0;
 
-      
+        // var taxrate = parseFloat($('#taxrate_').val()) || 0;
+        // var taxamt = totalamt * taxrate / 100;
+        // console.log(taxamt,"taxamt11111111111222222222222.kkkkkkkk")
+
+
+
+        // var taxrate = parseFloat($('#taxrate_' ).val()) || 0;
+        // console.log(taxrate,"taxrate.......2")
+        // var taxamt = totalamt * taxrate / 100;
+        // console.log(taxamt,taxrate,"taxamt.kkkkkkkk344444444444")
+        // var gstOption = document.getElementById('gst_option').value;
+        // // var totalTaxAmount = parseFloat(document.getElementById('total_tax_amount').value) || 0;
+    
+        // if (gstOption === 'Interstate') {
+        //     document.getElementById('igst').value = taxamt.toFixed(2);
+        //     document.getElementById('cgst').value = '0.00';
+        //     document.getElementById('sgst').value = '0.00';
+            
+        //     var igst=taxamt;
+        // } else if (gstOption === 'Intrastate') {
+        //     var halfTaxAmount = (taxamt / 2).toFixed(2);
+        //     document.getElementById('cgst').value = halfTaxAmount;
+        //     document.getElementById('sgst').value = halfTaxAmount;
+        //     document.getElementById('igst').value = '0.00';
+        //     var cgst=halfTaxAmount;
+        //     var sgst=halfTaxAmount;
+        // } else {
+        //     // Handle cases where no valid option is selected
+        //     document.getElementById('cgst').value = '0.00';
+        //     document.getElementById('sgst').value = '0.00';
+        //     document.getElementById('igst').value = '0.00';
+        // }
+        // var gst_total=igst + cgst + sgst;
+        // console.log(gst_total,"gst_total......345")
+        // var gst_total = gst_total1.toFixed(2);
+        // var sum1 = 0;
+        // $(".taxamt").each(function () {
+        //     gst_total += parseFloat($(this).val()) || 0;
+        // });
+        // console.log(gst_total,"gstttttttttttttttt")
+
 
         // var finalamt = sub_total + cgst + sgst + igst + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
         var finalamt = sub_total + sum1 + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
@@ -1673,6 +1775,14 @@ crm
     }
 
     
+    // function  {
+    //     var sum = 0;
+    //     $(".billamt").each(function () {
+    //         sum += +this.value;
+    //     });
+
+    //     $('.finalamt').val((sum).toFixed(2));
+    // }
 
     $(document).on('change', '#item_rate', function () {
         var item_rate = $(this).val();
@@ -1863,31 +1973,9 @@ crm
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
 <script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 
-<script>
 
-    document.getElementById('customer_Name').addEventListener('input', function() {
-        var input = this.value;
-        var list = document.getElementById('customer_Name_list').options;
-
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].value === input) {
-                console.log(list[i].dataset);
-                document.getElementById('customer_id').value = list[i].dataset.id;
-                document.getElementById('contact_person_name').value = list[i].dataset.contact_person;
-                document.getElementById('destination').value = list[i].dataset.dc_destination;
-                document.getElementById('order_no').value = list[i].dataset.dc_number;
-                //  $("#q_ser_type option").attr('selected', false);
-                // $("#q_ser_type option[value='" + list[i].dataset.service_type + "']").attr('selected', true);
-                break;
-            }
-        }
-    });
-</script>
 
 <script type="text/javascript">
-
-
-
     $(document).on('change', '#customer_name', function () {
         $('#shipping_address').empty();
         //alert();return;
@@ -1996,7 +2084,7 @@ crm
 
                                     <td><input type="text" class="form-control" name="discount_`+ index + `" id="discount_` + index + `" value="` + obj.discount + `"></td>
 
-                                    <td><input type="text" class="form-control" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
+                                    <td><input type="number" class="form-control" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
 
                                     <td><input type="text" class="form-control taxamt" name="taxamt_`+ index + `" id="taxamt_` + index + `" value="` + obj.taxamt + `"></td>
 
@@ -2088,6 +2176,60 @@ crm
     };
 </script>
 
+<!-- 
+<script>
+    function test(n) {
+        if (n < 0) return false;
+        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        if (n === 0) return 'Zero';
+
+        function translate(n) {
+            let word = "";
+            if (n < 10) {
+                word = single_digit[n] + ' ';
+            } else if (n < 20) {
+                word = double_digit[n - 10] + ' ';
+            } else if (n < 100) {
+                const rem = translate(n % 10);
+                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
+            } else if (n < 1000) {
+                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
+            } else if (n < 1000000) {
+                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
+            } else if (n < 1000000000) {
+                word = translate(Math.floor(n / 1000000)).trim() + ' Million ' + translate(n % 1000000);
+            } else {
+                word = translate(Math.floor(n / 1000000000)).trim() + ' Billion ' + translate(n % 1000000000);
+            }
+            return word;
+        }
+
+        let [integerPart, decimalPart] = n.toString().split('.');
+
+        let result = translate(parseInt(integerPart)).trim();
+
+        if (decimalPart) {
+            result += ' and ' + translate(parseInt(decimalPart)) + ' Cents';
+        }
+
+        return result.trim() + '.';
+    }
+
+    function updateTotalInWords() {
+        const totalAmt = parseFloat(document.getElementById('totalamt').value);
+        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
+        document.getElementById('totalamt_word').value = totalAmtInWords;
+    }
+
+    window.onload = function() {
+        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
+        updateTotalInWords(); // Update on page load
+    };
+</script> -->
+
 
 <script>
     // Function to validate email
@@ -2115,5 +2257,4 @@ crm
         }
     }
 </script>
-
 {% endblock main_content %}
