@@ -152,7 +152,10 @@ Ecoway
                         <div class="col-md-2 sales_information hidden">
                             <div class="form-group">
                                 <label>Rate <span class="text-danger">*</span></label>
-                                <input class="form-control" type="number" name="sale_rate" id="sale_rate" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                {% comment %} <input class="form-control" type="number" name="sale_rate" id="sale_rate" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> {% endcomment %}
+                                <!-- Sales Rate -->
+                                <input class="form-control" type="number" step="0.01" min="0" name="sale_rate" id="sale_rate" value="0.00">
+
                             </div>
                         </div>
 
@@ -189,7 +192,9 @@ Ecoway
                         <div class="col-md-2 purchase_information hidden">
                             <div class="form-group">
                                 <label>Rate</label>
-                                <input class="form-control" type="number" name="purchase_rate" id="purchase_rate" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                {% comment %} <input class="form-control" type="number" name="purchase_rate" id="purchase_rate" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> {% endcomment %}
+                                <!-- Purchase Rate -->
+                                <input class="form-control" type="number" step="0.01" min="0" name="purchase_rate" id="purchase_rate" value="0.00">
                             </div>
                         </div>
 
