@@ -7,9 +7,6 @@ CRM
 {% endblock custom_css %}
 
 {% block main_content %}
-
-
-
 <div class="page-wrapper" style="padding-top:0px;">
    <div class="content container-fluid">
       <div class="page-header">
@@ -30,7 +27,6 @@ CRM
                      <div class="row" style="padding-top: 5px;">
                         <div class="col-lg-6">
                            <div class="card-body">
-
                               <div class="form-group row">
                                  <label class="col-lg-3 col-form-label">Contact Person:<span
                                        style="color: red;">*</span></label>
@@ -46,16 +42,10 @@ CRM
                                              <option value="Dr">Dr.</option>
                                           </select>
                                        </div>
-                                       <!-- <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="first_name" placeholder="Customer Name" name="customer">
-                                             </div> -->
                                        <div class="col-lg-9">
                                           <input type="text" class="form-control" placeholder="Customer Name"
                                              value="{{customer_instance.customer}}" name="customer">
                                        </div>
-
-
-
                                     </div>
                                  </div>
                               </div>
@@ -71,30 +61,19 @@ CRM
                                  <label class="col-lg-3 col-form-label">Display Name :<span
                                        style="color: red;">*</span></label>
                                  <div class="col-lg-9">
-                                    <!-- Input box for Display Name -->
                                     <input type="text" name="display_name" class="form-control"
                                        value="{{customer_instance.display_name}}" id="display_name_input"
                                        onkeypress="displayname()" readonly required>
                                  </div>
                               </div>
-                              <!-- <div class="form-group row">
-                                     <label class="col-lg-3 col-form-label">Display Name :<span style="color: red;">*</span></label>
-                                     <div class="col-lg-9">
-                                     </div>
-                                   </div> -->
-
-
-
-                                   <div class="form-group row">
-                                    <label class="col-lg-3 col-form-label">Email Address:<span style="color: red;">*</span></label>
-                                    <div class="col-lg-9">
-                                      <input type="ttext" class="form-control" value="{{ customer_instance.cust_email }}"
-                                             name="cust_email" id="email" placeholder="Email Address" onchange="validateEmail(this);" required>
-                                      <span id="email-error-message" style="color: red; display: none;">Invalid Email Format</span>
-                                    </div>
-                                  </div>
-                                  
-
+                              <div class="form-group row">
+                                 <label class="col-lg-3 col-form-label">Email Address:<span style="color: red;">*</span></label>
+                                 <div class="col-lg-9">
+                                    <input type="text" class="form-control" value="{{ customer_instance.cust_email }}"
+                                           name="cust_email" id="email" placeholder="Email Address" onchange="validateEmail(this);" required>
+                                    <span id="email-error-message" style="color: red; display: none;">Invalid Email Format</span>
+                                 </div>
+                              </div>
                               <div class="form-group row">
                                  <label class="col-lg-3 col-form-label">Phone:<span style="color: red;">*</span></label>
                                  <div class="col-lg-9">
@@ -102,14 +81,12 @@ CRM
                                        <div class="col-lg-6">
                                           <input type="text" class="form-control" value="{{customer_instance.phone}}"
                                              name="phone" id="phone" placeholder="Phone">
-                                             <span id="phoneError" style="color: red;"></span>
-
+                                          <span id="phoneError" style="color: red;"></span>
                                        </div>
                                        <div class="col-lg-6">
                                           <input type="text" class="form-control" name="mobile"
-                                             value="{{customer_instance.mobile}}" id="mob_no" placeholder="Mobile"
-                                             >
-                                          <!-- <span id="mobileError" style="color: red;"></span> -->
+                                             value="{{customer_instance.mobile}}" id="mob_no" placeholder="Mobile">
+                                          <span id="mobileError" style="color: red;"></span>
                                        </div>
                                     </div>
                                  </div>
@@ -121,21 +98,9 @@ CRM
                                        name="website" id="website" placeholder="Website">
                                  </div>
                               </div>
-
-                              <!-- <div class="form-group row">
-                                 <label class="col-lg-3 col-form-label">Has GST Registered?</label>
-                                 <div class="col-lg-9">
-                                    <label class="switch">
-                                       <input type="checkbox" id="toggleGst" checked>
-                                       <span class="slider round"></span>
-                                    </label>
-                                 </div>
-                              </div> -->
-
-
                            </div>
                         </div>
-                        <div class="col-lg-6" style=" border-left: 1px solid #ccc;">
+                        <div class="col-lg-6" style="border-left: 1px solid #ccc;">
                            <div class="card-body">
                               <ul class="nav nav-tabs nav-tabs-bottom">
                                  <li class="nav-item"><a class="nav-link active" href="#bottom-tab1"
@@ -145,49 +110,41 @@ CRM
                                  <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Bank
                                        Details</a></li>
                               </ul>
-
-
                               <div class="tab-content">
                                  <div class="tab-pane show active" id="bottom-tab1">
                                     <div class="row">
-
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">GST Treatment :</label>
                                           <div class="col-lg-9">
-                                             <select class="form-control " name="gst_treatment">
+                                             <select class="form-control" name="gst_treatment">
                                                 <option>{{customer_instance.gst_treatment}}</option>
                                                 <option value="Unregistered Business">Unregistered Business</option>
                                                 <option value="Regular">Regular</option>
                                              </select>
                                           </div>
                                        </div>
-
                                        <div class="form-group row gst_no">
                                           <label class="col-lg-3 col-form-label">GST No.</label>
                                           <div class="col-lg-9">
-                                            <input type="text" class="form-control" value="{{ customer_instance.gst_number }}" name="gst_number"
-                                                   id="gst_no_input" placeholder="GST No." required>
-                                            <span id="gstError" style="color: red;"></span>
+                                             <input type="text" class="form-control" value="{{ customer_instance.gst_number }}" name="gst_number"
+                                                   id="gst_no_input" placeholder="GST No." >
+                                             <span id="gstError" style="color: red;"></span>
                                           </div>
-                                        </div>
-
+                                       </div>
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">State :</label>
                                           <div class="col-lg-9">
-                                             <select class="form-select " name="state">
+                                             <select class="form-select" name="state">
                                                 <option value="{{customer_instance.state}}">{{customer_instance.state}}</option>
-                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
-                                                </option>
-                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before
-                                                   Division)</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
                                                 <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
                                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                                 <option value="Assam">Assam</option>
                                                 <option value="Bihar">Bihar</option>
                                                 <option value="Chandigarh">Chandigarh</option>
                                                 <option value="Chhattisgarh">Chhattisgarh</option>
-                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar
-                                                   Haveli And Daman And Diu</option>
+                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
                                                 <option value="Daman and Diu">Daman and Diu</option>
                                                 <option value="Delhi">Delhi</option>
                                                 <option value="Goa">Goa</option>
@@ -219,48 +176,28 @@ CRM
                                                 <option value="Uttarakhand">Uttarakhand</option>
                                                 <option value="West Bengal">West Bengal</option>
                                              </select>
-
                                           </div>
                                        </div>
-                                       <!-- <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Balance</label>
-                                          <div class="col-lg-9">
-                                             <input type="text" class="form-control"
-                                                value="{{customer_instance.balance}}" name="balance" id="balance"
-                                                placeholder="Balance">
-                                             <span id="balance" style="color: red;"></span>
-
-                                          </div>
-                                       </div> -->
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Balance</label>
                                           <div class="col-lg-9">
-                                              <input type="number" step="0.01" class="form-control" value="{{customer_instance.balance}}" name="balance" id="balance"
+                                             <input type="number" step="0.01" class="form-control" value="{{customer_instance.balance}}" name="balance" id="balance"
                                                   placeholder="Balance" required>
-                                              <span id="balance-error" style="color: red;"></span>
+                                             <span id="balance-error" style="color: red;"></span>
                                           </div>
-                                      </div>
-                                      
-
-
-
-                                      
-
-
+                                       </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Discount:<span
-                                                style="color: red;">*</span></label>
+                                          <label class="col-lg-3 col-form-label">Discount:<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
-                                             <input type="number"  step="0.01"  class="form-control"
+                                             <input type="number" step="0.01" class="form-control"
                                                 value="{{customer_instance.discount}}" name="discount" id="discount"
                                                 placeholder="Discount" required>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Credit Limit:<span
-                                                style="color: red;">*</span></label>
+                                          <label class="col-lg-3 col-form-label">Credit Limit:<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
-                                             <input type="number"  step="0.01"  class="form-control"
+                                             <input type="number" step="0.01" class="form-control"
                                                 value="{{customer_instance.credit_limit}}" name="credit_limit"
                                                 id="credit_limit" value="0" placeholder="Credit Limit" required>
                                           </div>
@@ -275,30 +212,15 @@ CRM
                                                 placeholder="PAN Number"
                                                 pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
                                                 title="Enter a valid PAN (e.g., ABCDE1234F)"
-                                                required>
+                                                >
                                              <span id="panError" style="color: red;"></span>
                                           </div>
-                                          </div>
-
-                                       <!-- <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">PAN Number</label>
-                                          <div class="col-lg-9">
-                                             <input type="text" class="form-control"
-                                                value="{{customer_instance.pan_number}}" name="pan_number"
-                                                id="pan_number_input" placeholder="PAN Number">
-                                             <span id="panError" style="color: red;"></span>
-
-                                          </div>
-                                       </div> -->
-
-
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="tab-pane" id="bottom-tab2">
                                     <div class="row">
-                                       <p>
-                                          <strong>Billing</strong>
-                                       </p>
+                                       <p><strong>Billing</strong></p>
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Attention:</label>
                                           <div class="col-lg-9">
@@ -322,24 +244,20 @@ CRM
                                                 name="city" id="city" placeholder="city">
                                           </div>
                                        </div>
-
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">State:</label>
                                           <div class="col-lg-9">
-                                             <select class="form-select " name="com_state">
+                                             <select class="form-select" name="com_state">
                                                 <option value="{{customer_instance.com_state}}">{{customer_instance.com_state}}</option>
-                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
-                                                </option>
-                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before
-                                                   Division)</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
                                                 <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
                                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                                 <option value="Assam">Assam</option>
                                                 <option value="Bihar">Bihar</option>
                                                 <option value="Chandigarh">Chandigarh</option>
                                                 <option value="Chhattisgarh">Chhattisgarh</option>
-                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar
-                                                   Haveli And Daman And Diu</option>
+                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
                                                 <option value="Daman and Diu">Daman and Diu</option>
                                                 <option value="Delhi">Delhi</option>
                                                 <option value="Goa">Goa</option>
@@ -380,7 +298,6 @@ CRM
                                                 value="{{customer_instance.pincode}}" name="pincode" id="pincode"
                                                 placeholder="pincode">
                                              <span id="pincodeError_4" style="color: red;"></span>
-
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -389,24 +306,19 @@ CRM
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.gst_uin}}" name="gst_uin" id="gst_uin"
                                                 placeholder="gst_uin">
-                                                <span class="error-message" id="gstError_1"></span>
-
+                                             <span class="error-message" id="gstError_1"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Contact Number:</label>
                                           <div class="col-lg-9">
-                                             <input type="number" class="form-control"
+                                             <input type="text" class="form-control" pattern="\d{10}" maxlength="10"
                                                 value="{{customer_instance.contact_number}}" name="contact_number"
-                                                id="contact_number" placeholder="contact_number">
+                                                id="contact_number" placeholder="contact_number" title="Contact number must be exactly 10 digits">
+                                             <span id="contactNumberError" style="color: red;"></span>
                                           </div>
                                        </div>
-
-
-
-                                       <p>
-                                          <strong> Shipping 1 </strong>
-                                       </p>
+                                       <p><strong>Shipping 1</strong></p>
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Company Name</label>
                                           <div class="col-lg-9">
@@ -432,24 +344,20 @@ CRM
                                                 id="shipping_1_city" placeholder="city">
                                           </div>
                                        </div>
-
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">State:</label>
                                           <div class="col-lg-9">
-                                             <select class="form-select " name="shipping_1_state">
+                                             <select class="form-select" name="shipping_1_state">
                                                 <option>{{customer_instance.shipping_1_state}}</option>
-                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
-                                                </option>
-                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before
-                                                   Division)</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
                                                 <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
                                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                                 <option value="Assam">Assam</option>
                                                 <option value="Bihar">Bihar</option>
                                                 <option value="Chandigarh">Chandigarh</option>
                                                 <option value="Chhattisgarh">Chhattisgarh</option>
-                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar
-                                                   Haveli And Daman And Diu</option>
+                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
                                                 <option value="Daman and Diu">Daman and Diu</option>
                                                 <option value="Delhi">Delhi</option>
                                                 <option value="Goa">Goa</option>
@@ -490,7 +398,6 @@ CRM
                                                 value="{{customer_instance.shipping_1_pincode}}"
                                                 name="shipping_1_pincode" id="pincode_input_1" placeholder="pincode">
                                              <span id="pincodeError_1" style="color: red;"></span>
-
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -499,8 +406,7 @@ CRM
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.shipping_1_gst_uin}}"
                                                 name="shipping_1_gst_uin" id="shipping_1_gst_uin" placeholder="gst_uin">
-                                                <span class="error-message" id="gstError_shipping"></span>
-
+                                             <span class="error-message" id="gstError_shipping_1"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -510,10 +416,10 @@ CRM
                                                 value="{{customer_instance.shipping_1_contact_number}}"
                                                 name="shipping_1_contact_number" id="shipping_1_contact_number"
                                                 placeholder="contact_number">
+                                             <span id="shipping1ContactNumberError" style="color: red;"></span>
                                           </div>
                                        </div>
-
-                                       <p> <strong> Shipping 2 </strong></p>
+                                       <p><strong>Shipping 2</strong></p>
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Company Name</label>
                                           <div class="col-lg-9">
@@ -539,24 +445,20 @@ CRM
                                                 id="shipping_2_city" placeholder="city">
                                           </div>
                                        </div>
-
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">State:</label>
                                           <div class="col-lg-9">
-                                             <select class="form-select " name="shipping_2_state">
+                                             <select class="form-select" name="shipping_2_state">
                                                 <option>{{customer_instance.shipping_2_state}}</option>
-                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
-                                                </option>
-                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before
-                                                   Division)</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
                                                 <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
                                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                                 <option value="Assam">Assam</option>
                                                 <option value="Bihar">Bihar</option>
                                                 <option value="Chandigarh">Chandigarh</option>
                                                 <option value="Chhattisgarh">Chhattisgarh</option>
-                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar
-                                                   Haveli And Daman And Diu</option>
+                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
                                                 <option value="Daman and Diu">Daman and Diu</option>
                                                 <option value="Delhi">Delhi</option>
                                                 <option value="Goa">Goa</option>
@@ -593,11 +495,10 @@ CRM
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Pincode:</label>
                                           <div class="col-lg-9">
-                                             <input type="number" class="form-control"
+                                             <input type="text" class="form-control"
                                                 value="{{customer_instance.shipping_2_pincode}}"
                                                 name="shipping_2_pincode" id="pincode_input_2" placeholder="pincode">
                                              <span id="pincodeError_2" style="color: red;"></span>
-
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -606,8 +507,7 @@ CRM
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.shipping_2_gst_uin}}"
                                                 name="shipping_2_gst_uin" id="shipping_2_gst_uin" placeholder="gst_uin">
-                                                <span class="error-message" id="gstError_shipping"></span>
-
+                                             <span class="error-message" id="gstError_shipping_2"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -617,14 +517,10 @@ CRM
                                                 value="{{customer_instance.shipping_2_contact_number}}"
                                                 name="shipping_2_contact_number" id="shipping_2_contact_number"
                                                 placeholder="contact_number">
+                                             <span id="shipping2ContactNumberError" style="color: red;"></span>
                                           </div>
                                        </div>
-
-
-
-
-
-                                       <p><strong> Shipping 3 </strong></p>
+                                       <p><strong>Shipping 3</strong></p>
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Company Name</label>
                                           <div class="col-lg-9">
@@ -650,24 +546,20 @@ CRM
                                                 id="shipping_3_city" placeholder="city">
                                           </div>
                                        </div>
-
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">State:</label>
                                           <div class="col-lg-9">
-                                             <select class="form-select " name="shipping_3_state">
+                                             <select class="form-select" name="shipping_3_state">
                                                 <option>{{customer_instance.shipping_3_state}}</option>
-                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
-                                                </option>
-                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before
-                                                   Division)</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
                                                 <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
                                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                                 <option value="Assam">Assam</option>
                                                 <option value="Bihar">Bihar</option>
                                                 <option value="Chandigarh">Chandigarh</option>
                                                 <option value="Chhattisgarh">Chhattisgarh</option>
-                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar
-                                                   Haveli And Daman And Diu</option>
+                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
                                                 <option value="Daman and Diu">Daman and Diu</option>
                                                 <option value="Delhi">Delhi</option>
                                                 <option value="Goa">Goa</option>
@@ -708,7 +600,6 @@ CRM
                                                 value="{{customer_instance.shipping_3_pincode}}"
                                                 name="shipping_3_pincode" id="pincode_input_3" placeholder="pincode">
                                              <span id="pincodeError_3" style="color: red;"></span>
-
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -717,8 +608,7 @@ CRM
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.shipping_3_gst_uin}}"
                                                 name="shipping_3_gst_uin" id="shipping_3_gst_uin" placeholder="gst_uin">
-                                                <span class="error-message" id="gstError_shipping"></span>
-
+                                             <span class="error-message" id="gstError_shipping_3"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -728,10 +618,10 @@ CRM
                                                 value="{{customer_instance.shipping_3_contact_number}}"
                                                 name="shipping_3_contact_number" id="shipping_3_contact_number"
                                                 placeholder="contact_number">
+                                             <span id="shipping3ContactNumberError" style="color: red;"></span>
                                           </div>
                                        </div>
-
-                                       <p><strong> Shipping 4 </strong></p>
+                                       <p><strong>Shipping 4</strong></p>
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Company Name</label>
                                           <div class="col-lg-9">
@@ -753,28 +643,24 @@ CRM
                                           <label class="col-lg-3 col-form-label">City:</label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control"
-                                                value="{{customer_instance.shipping_4_contact_number}}"
-                                                name="shipping_4_city" id="shipping_4_city" placeholder="city">
+                                                value="{{customer_instance.shipping_4_city}}" name="shipping_4_city"
+                                                id="shipping_4_city" placeholder="city">
                                           </div>
                                        </div>
-
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">State:</label>
                                           <div class="col-lg-9">
-                                             <select class="form-select " name="shipping_4_state">
+                                             <select class="form-select" name="shipping_4_state">
                                                 <option>{{customer_instance.shipping_4_state}}</option>
-                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
-                                                </option>
-                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before
-                                                   Division)</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
                                                 <option value="Andhra Pradesh (New)">Andhra Pradesh (New)</option>
                                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                                 <option value="Assam">Assam</option>
                                                 <option value="Bihar">Bihar</option>
                                                 <option value="Chandigarh">Chandigarh</option>
                                                 <option value="Chhattisgarh">Chhattisgarh</option>
-                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar
-                                                   Haveli And Daman And Diu</option>
+                                                <option value="Dadra And Nagar Haveli And Daman And Diu">Dadra And Nagar Haveli And Daman And Diu</option>
                                                 <option value="Daman and Diu">Daman and Diu</option>
                                                 <option value="Delhi">Delhi</option>
                                                 <option value="Goa">Goa</option>
@@ -815,7 +701,6 @@ CRM
                                                 value="{{customer_instance.shipping_4_pincode}}"
                                                 name="shipping_4_pincode" id="pincode_input_4" placeholder="pincode">
                                              <span id="pincodeError_4" style="color: red;"></span>
-
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -824,8 +709,7 @@ CRM
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.shipping_4_gst_uin}}"
                                                 name="shipping_4_gst_uin" id="shipping_4_gst_uin" placeholder="gst_uin">
-                                                <span class="error-message" id="gstError_shipping"></span>
-
+                                             <span class="error-message" id="gstError_shipping_4"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -835,6 +719,7 @@ CRM
                                                 value="{{customer_instance.shipping_4_contact_number}}"
                                                 name="shipping_4_contact_number" id="shipping_4_contact_number"
                                                 placeholder="contact_number">
+                                             <span id="shipping4ContactNumberError" style="color: red;"></span>
                                           </div>
                                        </div>
                                     </div>
@@ -842,7 +727,7 @@ CRM
                                  <div class="tab-pane" id="bottom-tab3">
                                     <div class="row">
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label"> Bank Name</label>
+                                          <label class="col-lg-3 col-form-label">Bank Name</label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.bank_name}}" name="bank_name" id="bank_name"
@@ -855,6 +740,7 @@ CRM
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.account_number}}" name="account_number"
                                                 id="account_number" placeholder="Account No.">
+                                             <span id="accountError" style="color: red;"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -871,8 +757,7 @@ CRM
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.ifsc_code}}" name="ifsc_code" id="ifsc_code_input"
                                                 placeholder="IFSC Code">
-                                                <span id="ifscError" style="color: red;"></span>
-
+                                             <span id="ifscError" style="color: red;"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
@@ -880,18 +765,13 @@ CRM
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control" name="banking_address"
                                                 placeholder="Banking Address" value="{{customer_instance.banking_address}}">
-
                                           </div>
                                        </div>
-
-
                                     </div>
                                  </div>
                               </div>
                            </div>
-
                         </div>
-
                         <div class="add-customer-btns text-end">
                            <a href="{% url 'fn_customer_List_View' %}" class="btn customer-btn-cancel">Cancel</a>
                            <button type="submit" class="btn btn-primary">Save</button>
@@ -903,406 +783,361 @@ CRM
 </div>
 </div>
 </div>
-</div>
-</div>
+{% endblock main_content %}
 
-<!-- Include Toastr CSS and JS files in your HTML -->
+{% block custom_js %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  $(document).ready(function () {
+$(document).ready(function () {
     let emailError = false;
     let gstError = false;
+    let contactNumberError = false;
+    let shippingContactErrors = [false, false, false, false]; // Track errors for shipping 1-4
     const initialEmail = "{{ customer_instance.cust_email }}";
     const initialGstNumber = "{{ customer_instance.gst_number }}";
 
     // CSRF token setup for AJAX requests
     function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
-      }
-      return cookieValue;
+        return cookieValue;
     }
     const csrftoken = getCookie('csrftoken');
 
     // Email validation
     $("#email").keyup(function () {
-      var email = $(this).val();
-
-      if (email !== "" && email !== initialEmail) {
-        $.ajax({
-          url: "{% url 'check_email_exist' %}",
-          type: 'POST',
-          headers: { 'X-CSRFToken': csrftoken },
-          data: { email: email }
-        })
-        .done(function (response) {
-          console.log(response);
-          if (response === "True") {
+        var email = $(this).val();
+        if (email !== "" && email !== initialEmail) {
+            $.ajax({
+                url: "{% url 'check_email_exist' %}",
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                data: { email: email }
+            })
+            .done(function (response) {
+                if (response === "True") {
+                    $(".email_error").remove();
+                    $("<span class='email_error' style='padding: 5px;color: red;'>Email Already Exists</span>").insertAfter("#email");
+                    emailError = true;
+                } else {
+                    $(".email_error").remove();
+                    $("<span class='email_error' style='padding: 5px;color: green;'>Email Available</span>").insertAfter("#email");
+                    emailError = false;
+                }
+            })
+            .fail(function () {
+                console.log("failed");
+            });
+        } else {
             $(".email_error").remove();
-            $("<span class='email_error' style='padding: 5px;color: red;'>Email Already Exists</span>").insertAfter("#email");
-            emailError = true;
-          } else {
-            $(".email_error").remove();
-            $("<span class='email_error' style='padding: 5px;color: green;'>Email Available</span>").insertAfter("#email");
-            emailError = false;
-          }
-        })
-        .fail(function () {
-          console.log("failed");
-        });
-      } else {
-        $(".email_error").remove();
-      }
+        }
     });
 
     const emailInput = document.getElementById('email');
     const emailErrorMessage = document.getElementById('email-error-message');
-
-   //  emailInput.addEventListener('input', function () {
-   //    const email = emailInput.value.trim();
-   //    const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|olatechs)\.com$/;
-   //    if (!emailRegex.test(email)) {
-   //      emailErrorMessage.style.display = 'block';
-   //      emailError = true;
-   //    } else {
-   //      emailErrorMessage.style.display = 'none';
-   //      emailError = false;
-   //    }
-   //  });
-   emailInput.addEventListener('input', function () {
-   const email = emailInput.value.trim();
-   const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|olatechs)\.com$/;
-   const allowedValues = ['na', 'NA', 'nan', 'NaN'];
-
-   if (allowedValues.includes(email.toLowerCase()) || emailRegex.test(email)) {
-      emailErrorMessage.style.display = 'none';
-      emailError = false;
-   } else {
-      emailErrorMessage.style.display = 'block';
-      emailError = true;
-   }
-   });
+    emailInput.addEventListener('input', function () {
+        const email = emailInput.value.trim();
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|olatechs)\.com$/;
+        const allowedValues = ['na', 'NA', 'nan', 'NaN'];
+        if (allowedValues.includes(email.toLowerCase()) || emailRegex.test(email)) {
+            emailErrorMessage.style.display = 'none';
+            emailError = false;
+        } else {
+            emailErrorMessage.style.display = 'block';
+            emailError = true;
+        }
+    });
 
     // GST validation
     $("#gst_no_input").keyup(function () {
-      var gstNumber = $(this).val();
-
-      if (gstNumber !== "" && gstNumber !== initialGstNumber) {
-        if (!validateGSTNo(gstNumber)) {
-          $("#gstError").text("Enter a valid GST number (e.g., 12ABCDE1234F1Z5).").css("color", "red").show();
-          gstError = true;
-        } else {
-          $.ajax({
-            url: "{% url 'check_gst_exist' %}",
-            type: 'POST',
-            headers: { 'X-CSRFToken': csrftoken },
-            data: {
-              gst_number: gstNumber
-            }
-          })
-          .done(function (response) {
-            console.log(response);
-            if (response === "True") {
-              $("#gstError").text("GST Number Already Exists").css("color", "red").show();
-              gstError = true;
+        var gstNumber = $(this).val();
+        if (gstNumber !== "" && gstNumber !== initialGstNumber) {
+            if (!validateGSTNo(gstNumber)) {
+                $("#gstError").text("Enter a valid GST number (e.g., 12ABCDE1234F1Z5).").css("color", "red").show();
+                gstError = true;
             } else {
-              $("#gstError").text("GST Number Available").css("color", "green").show();
-              gstError = false;
+                $.ajax({
+                    url: "{% url 'check_gst_exist' %}",
+                    type: 'POST',
+                    headers: { 'X-CSRFToken': csrftoken },
+                    data: { gst_number: gstNumber }
+                })
+                .done(function (response) {
+                    if (response === "True") {
+                        $("#gstError").text("GST Number Already Exists").css("color", "red").show();
+                        gstError = true;
+                    } else {
+                        $("#gstError").text("GST Number Available").css("color", "green").show();
+                        gstError = false;
+                    }
+                })
+                .fail(function () {
+                    console.log("failed");
+                });
             }
-          })
-          .fail(function () {
-            console.log("failed");
-          });
+        } else {
+            $("#gstError").hide();
         }
-      } else {
-        $("#gstError").hide();
-      }
     });
 
     const gstNoInput = document.getElementById("gst_no_input");
     const gstErrorElement = document.getElementById("gstError");
-
-    function validateGSTNo(gstNoValue) {
-      if (gstNoValue.trim() === '') {
-        return true;  // Allow empty value
-      }
-
-      const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
-      return gstNoRegex.test(gstNoValue);
-    }
-
-    gstNoInput.addEventListener("input", function () {
-      const gstNoValue = this.value;
-
-      if (!validateGSTNo(gstNoValue)) {
-        gstErrorElement.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
-        gstErrorElement.style.color = "red";
-        gstError = true;
-      } else {
-        gstErrorElement.textContent = "";
-        gstError = false;
-      }
-    });
-
-    // Form submission
-    $("form").submit(function (event) {
-      if (emailError || gstError) {
-        event.preventDefault();
-        toastr.clear();  // Clear any existing Toastr messages
-        if (emailError && gstError) {
-          toastr.error("Please correct Email and GST Number before submitting the form.");
-        } else if (emailError) {
-          toastr.error("Please correct the Email before submitting the form.");
-        } else if (gstError) {
-          toastr.error("Please correct the GST Number before submitting the form.");
-        }
-      }
-    });
-  });
-</script>
-
-<!-- 
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-    const gstNoInput = document.getElementById("gst_no_input");
-    const gstError = document.getElementById("gstError");
-
     function validateGSTNo(gstNoValue) {
         if (gstNoValue.trim() === '') {
-            return true;  // Allow empty value
+            return true; // Allow empty value
         }
-
         const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
         return gstNoRegex.test(gstNoValue);
     }
-
     gstNoInput.addEventListener("input", function () {
         const gstNoValue = this.value;
-
         if (!validateGSTNo(gstNoValue)) {
-            gstError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+            gstErrorElement.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+            gstErrorElement.style.color = "red";
+            gstError = true;
         } else {
-            gstError.textContent = "";
+            gstErrorElement.textContent = "";
+            gstError = false;
         }
     });
-});
 
-</script> -->
+    // Contact Number validation (Billing and Shipping)
+    const contactNumberInputs = [
+        { id: "contact_number", errorId: "contactNumberError" },
+        { id: "shipping_1_contact_number", errorId: "shipping1ContactNumberError" },
+        { id: "shipping_2_contact_number", errorId: "shipping2ContactNumberError" },
+        { id: "shipping_3_contact_number", errorId: "shipping3ContactNumberError" },
+        { id: "shipping_4_contact_number", errorId: "shipping4ContactNumberError" }
+    ];
 
-<script>
-   // Get references to the dropdown and input fields
-   var scustomer = document.getElementById("first_name");
-   var fromInput = document.getElementById("display_name_input");
-
-   // Add an event listener to the dropdown to update the input field when it changes
-   scustomer.addEventListener("change", function () {
-      var selectedcustomer = scustomer.value;
-      fromInput.value = selectedcustomer;
-   });
-</script>
-
-<!-- Fot GST Number -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-       const gstInputs = document.querySelectorAll('.gst-input');
-
-       gstInputs.forEach(function(gstInput) {
-           gstInput.addEventListener("input", function () {
-               const gstNoValue = this.value.trim();
-               const errorSpan = this.parentNode.querySelector('.error-message');
-
-               if (gstNoValue === '') {
-                   errorSpan.textContent = ""; // No error message for empty input
-               } else {
-                   const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
-                   if (!gstNoRegex.test(gstNoValue)) {
-                       errorSpan.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
-                   } else {
-                       errorSpan.textContent = "";
-                   }
-               }
-           });
-       });
-   });
-</script>
-<!-- For Phone Number -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-      const mobileInput = document.getElementById("phone");
-      const mobileError = document.getElementById("phoneError");
-
-      mobileInput.addEventListener("input", function () {
-         const mobileValue = this.value;
-         const mobileRegex = /^[0-9]{10}$/; // Regular expression for a 10-digit mobile number
-
-         if (!mobileRegex.test(mobileValue)) {
-            mobileError.textContent = "Enter a valid 10-digit phone number.";
-         } else {
-            mobileError.textContent = "";
-         }
-      });
-   });
-
-</script>
-<!-- For Mobile Number -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-      const mobileInput = document.getElementById("mob_no");
-      const mobileError = document.getElementById("mobileError");
-
-      mobileInput.addEventListener("input", function () {
-         const mobileValue = this.value;
-         const mobileRegex = /^[0-9]{10}$/; // Regular expression for a 10-digit mobile number
-
-         if (!mobileRegex.test(mobileValue)) {
-            mobileError.textContent = "Enter a valid 10-digit mobile number.";
-         } else {
-            mobileError.textContent = "";
-         }
-      });
-   });
-
-</script>
-<!-- For Pan Number -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-      const panInput = document.getElementById("pan_number_input");
-      const panError = document.getElementById("panError");
-
-      function validatePAN(pan) {
-         if (pan.trim() === '') {
-            return true;  // Allow empty value
-         }
-
-         const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/; // Regular expression for PAN
-         return panRegex.test(pan);
-      }
-
-      panInput.addEventListener("input", function () {
-         const panValue = this.value.trim().toUpperCase(); // Remove whitespace and convert to uppercase
-         if (!validatePAN(panValue)) {
-            panError.textContent = 'Enter a valid PAN number (e.g., ABCDE1234F).';
-         } else {
-            panError.textContent = '';
-         }
-      });
-   });
-
-</script>
-<!-- For IFSC Code -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-      const ifscInput = document.getElementById("ifsc_code_input");
-      const ifscError = document.getElementById("ifscError");
-
-      function validateIFSC(ifsc) {
-         if (ifsc.trim() === '') {
-            return true;  // Empty value is allowed
-         }
-
-         const ifscRegex = /^[A-Za-z]{4}[0-9]{7}$/; // Regular expression for IFSC
-         return ifscRegex.test(ifsc);
-      }
-
-      ifscInput.addEventListener("input", function () {
-         const ifscValue = this.value.trim().toUpperCase(); // Remove whitespace and convert to uppercase
-         if (!validateIFSC(ifscValue)) {
-            ifscError.textContent = 'Enter a valid IFSC code (e.g., ABCD0123456).';
-         } else {
-            ifscError.textContent = '';
-         }
-      });
-   });
-
-</script>
-<!-- For Account Number -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-      const accountInput = document.getElementById("account_number_input");
-      const accountError = document.getElementById("accountError");
-
-      accountInput.addEventListener("input", function () {
-         const accountValue = this.value.trim();
-
-         // Basic length-based validation (adjust the length as per your requirement)
-         const minLength = 6;
-         const maxLength = 20;
-
-         if (accountValue.length < minLength || accountValue.length > maxLength) {
-            accountError.textContent = `Account number should be between ${minLength} and ${maxLength} characters.`;
-         } else {
-            accountError.textContent = '';
-         }
-      });
-   });
-
-</script>
-
-<!-- For Pin Code -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-      const pincodeInputs = document.querySelectorAll('input[name^="pincode"], input[name^="shipping_"]');
-      pincodeInputs.forEach(function (input) {
-         input.addEventListener("input", function () {
-            const pincodeValue = this.value.trim();
-            const pincodeErrorId = "pincodeError_" + this.id.split("_").pop(); // Get the unique error span ID
-
-            const pincodeError = document.getElementById(pincodeErrorId);
-
-            // Regular expression for a standard 6-digit pin code
-            const pincodeRegex = /^[1-9][0-9]{5}$/;
-
-            if (pincodeError) {
-               if (!pincodeRegex.test(pincodeValue)) {
-                  pincodeError.textContent = "Enter a valid 6-digit pin code.";
-               } else {
-                  pincodeError.textContent = "";
-               }
+    contactNumberInputs.forEach((input, index) => {
+        const element = document.getElementById(input.id);
+        const errorElement = document.getElementById(input.errorId);
+        element.addEventListener("input", function () {
+            const value = this.value.trim();
+            const contactRegex = /^\d{10}$/;
+            if (value && !contactRegex.test(value)) {
+                errorElement.textContent = "Enter a valid 10-digit contact number.";
+                if (index === 0) {
+                    contactNumberError = true;
+                } else {
+                    shippingContactErrors[index - 1] = true;
+                }
+            } else {
+                errorElement.textContent = "";
+                if (index === 0) {
+                    contactNumberError = false;
+                } else {
+                    shippingContactErrors[index - 1] = false;
+                }
             }
-         });
-      });
-   });
+        });
+    });
 
+    // Form submission
+    $("#vendor_form").submit(function (event) {
+        let errorTab = null;
+        let errorMessages = [];
 
+        // Other Details Tab
+        if (emailError || gstError) {
+            errorTab = "#bottom-tab1";
+            if (emailError && gstError) {
+                errorMessages.push("Please correct Email and GST Number before submitting the form.");
+            } else if (emailError) {
+                errorMessages.push("Please correct the Email before submitting the form.");
+            } else if (gstError) {
+                errorMessages.push("Please correct the GST Number before submitting the form.");
+            }
+        }
+
+        // PAN validation
+        const panValue = $("#pan_number_input").val().trim();
+        if (!errorTab && panValue && !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(panValue)) {
+            errorTab = "#bottom-tab1";
+            errorMessages.push("Please enter a valid PAN number (e.g., ABCDE1234F).");
+        }
+
+        // Address Tab - Contact Number validation
+        const contactNumber = $("#contact_number").val() ? $("#contact_number").val().trim() : "";
+        if (!errorTab && contactNumber && !/^\d{10}$/.test(contactNumber)) {
+            errorTab = "#bottom-tab2";
+            errorMessages.push("Billing contact number must be exactly 10 digits.");
+            contactNumberError = true;
+            $("#contactNumberError").text("Enter a valid 10-digit contact number.");
+        }
+
+        // Shipping Contact Numbers validation
+        for (let i = 1; i <= 4; i++) {
+            const shippingContact = $(`#shipping_${i}_contact_number`).val() ? $(`#shipping_${i}_contact_number`).val().trim() : "";
+            if (!errorTab && shippingContact && !/^\d{10}$/.test(shippingContact)) {
+                errorTab = "#bottom-tab2";
+                errorMessages.push(`Shipping ${i} contact number must be exactly 10 digits.`);
+                shippingContactErrors[i - 1] = true;
+                $(`#shipping${i}ContactNumberError`).text("Enter a valid 10-digit contact number.");
+            }
+        }
+
+        // Prevent submission if any errors
+        if (errorTab) {
+            event.preventDefault();
+            toastr.clear();
+            errorMessages.forEach(message => toastr.error(message));
+            var tabTrigger = document.querySelector('a[href="' + errorTab + '"]');
+            if (tabTrigger) {
+                var tab = new bootstrap.Tab(tabTrigger);
+                tab.show();
+            }
+        }
+    });
+
+    // Phone Number validation
+    const mobileInput = document.getElementById("phone");
+    const mobileError = document.getElementById("phoneError");
+    mobileInput.addEventListener("input", function () {
+        const mobileValue = this.value;
+        const mobileRegex = /^[0-9]{10}$/;
+        if (!mobileRegex.test(mobileValue)) {
+            mobileError.textContent = "Enter a valid 10-digit phone number.";
+        } else {
+            mobileError.textContent = "";
+        }
+    });
+
+    // Mobile Number validation
+    const mobNoInput = document.getElementById("mob_no");
+    const mobNoError = document.getElementById("mobileError");
+    mobNoInput.addEventListener("input", function () {
+        const mobileValue = this.value;
+        const mobileRegex = /^[0-9]{10}$/;
+        if (!mobileRegex.test(mobileValue)) {
+            mobNoError.textContent = "Enter a valid 10-digit mobile number.";
+        } else {
+            mobNoError.textContent = "";
+        }
+    });
+
+    // PAN Number validation
+    const panInput = document.getElementById("pan_number_input");
+    const panError = document.getElementById("panError");
+    function validatePAN(pan) {
+        if (pan.trim() === '') {
+            return true;
+        }
+        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+        return panRegex.test(pan);
+    }
+    panInput.addEventListener("input", function () {
+        const panValue = this.value.trim().toUpperCase();
+        if (!validatePAN(panValue)) {
+            panError.textContent = 'Enter a valid PAN number (e.g., ABCDE1234F).';
+        } else {
+            panError.textContent = '';
+        }
+    });
+
+    // IFSC Code validation
+    const ifscInput = document.getElementById("ifsc_code_input");
+    const ifscError = document.getElementById("ifscError");
+    function validateIFSC(ifsc) {
+        if (ifsc.trim() === '') {
+            return true;
+        }
+        const ifscRegex = /^[A-Za-z]{4}[0-9]{7}$/;
+        return ifscRegex.test(ifsc);
+    }
+    ifscInput.addEventListener("input", function () {
+        const ifscValue = this.value.trim().toUpperCase();
+        if (!validateIFSC(ifscValue)) {
+            ifscError.textContent = 'Enter a valid IFSC code (e.g., ABCD0123456).';
+        } else {
+            ifscError.textContent = '';
+        }
+    });
+
+    // Account Number validation
+    const accountInput = document.getElementById("account_number");
+    const accountError = document.getElementById("accountError");
+    accountInput.addEventListener("input", function () {
+        const accountValue = this.value.trim();
+        const minLength = 6;
+        const maxLength = 20;
+        if (accountValue.length < minLength || accountValue.length > maxLength) {
+            accountError.textContent = `Account number should be between ${minLength} and ${maxLength} characters.`;
+        } else {
+            accountError.textContent = '';
+        }
+    });
+
+    // Pin Code validation
+    const pincodeInputs = document.querySelectorAll('input[name^="pincode"], input[name^="shipping_"]');
+    pincodeInputs.forEach(function (input) {
+        input.addEventListener("input", function () {
+            const pincodeValue = this.value.trim();
+            const pincodeErrorId = "pincodeError_" + this.id.split("_").pop();
+            const pincodeError = document.getElementById(pincodeErrorId);
+            const pincodeRegex = /^[1-9][0-9]{5}$/;
+            if (pincodeError) {
+                if (pincodeValue && !pincodeRegex.test(pincodeValue)) {
+                    pincodeError.textContent = "Enter a valid 6-digit pin code.";
+                } else {
+                    pincodeError.textContent = "";
+                }
+            }
+        });
+    });
+
+    // GST/UIN validation for shipping addresses
+    const gstInputs = document.querySelectorAll('.gst-input, #gst_uin, #shipping_1_gst_uin, #shipping_2_gst_uin, #shipping_3_gst_uin, #shipping_4_gst_uin');
+    gstInputs.forEach(function(gstInput) {
+        gstInput.addEventListener("input", function () {
+            const gstNoValue = this.value.trim();
+            const errorSpan = this.parentNode.querySelector('.error-message');
+            if (gstNoValue === '') {
+                errorSpan.textContent = "";
+            } else {
+                const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
+                if (!gstNoRegex.test(gstNoValue)) {
+                    errorSpan.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+                } else {
+                    errorSpan.textContent = "";
+                }
+            }
+        });
+    });
+
+    // Display Name update (if applicable)
+    var scustomer = document.getElementById("first_name");
+    var fromInput = document.getElementById("display_name_input");
+    scustomer.addEventListener("change", function () {
+        var selectedcustomer = scustomer.value;
+        fromInput.value = selectedcustomer;
+    });
+
+    function validateEmail(emailField) {
+        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        const emailError = document.getElementById("email-error-message");
+        const allowedValues = ['na', 'NA', 'nan', 'NaN'];
+        if (allowedValues.includes(emailField.value.toLowerCase()) || reg.test(emailField.value)) {
+            emailError.textContent = '';
+            return true;
+        }
+        emailField.value = '';
+        emailError.textContent = "please enter valid email or 'na'";
+        return false;
+    }
+});
 </script>
-
-<script>
-   function validateEmail(emailField) {
-     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-     const emailError = document.getElementById("email-error-message");
-     console.log(emailField.value,"kkkkkkkkk")
- 
-     if (reg.test(emailField.value)) {
-         console.log('ddd');
-         emailError.textContent = ''
-         return true;
- 
-     }
-     const allowedValues = ['na', 'NA', 'nan', 'NaN'];
-     if (allowedValues.includes(emailField.value)) {
-         emailError.textContent = ''
-         return true;
-     }
-     emailField.value = ''
-     emailError.textContent = "please enter valid email or 'na'"
-     return false;
- }
- </script>
-
-
-
-</body>
-
-</html>
-{% endblock main_content %}
+{% endblock %}
