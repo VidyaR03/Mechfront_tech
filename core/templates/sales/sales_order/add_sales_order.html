@@ -144,7 +144,8 @@ Ecoway
                                     <div class="form-group">
                                         <label>Customer Name <span style="color: red;">*</span></label>
                                        
-                                                <select id="customer_Name_id" required name="customer_Name" class="form-control">
+                                                <select id="customer_Name_id" required name="customer_Name" class="form-control" 
+                                                onchange="fetchShippingAddresses(this.value)"> 
                                                     <option value="">Choose...</option>
                                                     {% for i in customer_name %}
                                                     <option value="{{i.id}}">{{i.customer}}</option>
@@ -1065,6 +1066,10 @@ Ecoway
                 shipTo.innerHTML += '<option value="' + list[i].dataset.shipping_address3 + '">' + list[i].dataset.shipping_address3 + '</option>';
             }
 
+              // Also fetch shipping addresses for the selected customer
+            const customerId = list[i].dataset.cname;
+            fetchShippingAddresses(customerId);
+
                 break;
             }
         }
@@ -1129,6 +1134,53 @@ Ecoway
       
         
     });
+
+    // Add this function to fetch shipping addresses when customer is selected
+// Add this function to fetch shipping addresses when customer is selected
+function fetchShippingAddresses(customerId) {
+    if (!customerId) return;
+    
+    // Use Django's URL template tag to generate the correct URL
+    const url = "{% url 'get_shipping_address' %}?customer_id=" + customerId;
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const shipTo = document.getElementById('shipping_address');
+            shipTo.innerHTML = '<option value="" selected hidden disabled>Select Shipping Address</option>';
+            
+            if (data.shipping_addresses && data.shipping_addresses.length > 0) {
+                data.shipping_addresses.forEach(address => {
+                    shipTo.innerHTML += `<option value="${address.value}">${address.value}</option>`;
+                });
+                
+                // Auto-select the first address and update place of supply
+                if (data.place_of_supply) {
+                    $("#place_of_supply option").attr('selected', false);
+                    $("#place_of_supply option[value='" + data.place_of_supply + "']").attr('selected', true);
+                }
+            } else {
+                shipTo.innerHTML += '<option value="" disabled>No shipping addresses found</option>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching shipping addresses:', error);
+            const shipTo = document.getElementById('shipping_address');
+            shipTo.innerHTML = '<option value="" selected hidden disabled>Error loading addresses</option>';
+        });
+}
+
+// Update the customer selection handler
+document.getElementById('customer_Name_id').addEventListener('change', function() {
+    const customerId = this.value;
+    fetchShippingAddresses(customerId);
+});
+
 </script>
 
 <!-- fetch item code from quotation -->
