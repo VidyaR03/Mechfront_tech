@@ -1143,24 +1143,26 @@ Ecoway
     }
 
     function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
-        
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                    },
-                    success: function (data) {
+    let input = inputname.split("_");
+
+    $('#' + inputname).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "{% url 'getitemscodedetails' %}",
+                dataType: "json",
+                type: "POST",
+                data: {
+                    name_startsWith: request.term,
+                    itemsdetails: input,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (data) {
+                    if (data.length === 0) {
+                        // return fake option if no matches
+                        response([{ label: "No results found", value: "__no_result__" }]);
+                    } else {
                         response($.map(data, function (item) {
                             var code = item.split("|");
-                            //alert(data);
                             return {
                                 label: code[0],
                                 value: code[0],
@@ -1168,50 +1170,162 @@ Ecoway
                             }
                         }));
                     }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Autocomplete error:", error);
+                    response([]);
+                }
+            });
+        },
+        autoFocus: true,
+        minLength: 0,
+        change: function (event, ui) {
+            if (!ui.item || ui.item.value === "__no_result__") {
+                // Clear fields if nothing selected or if "No results found"
+                $('#' + inputname + ',#' + description + ',#' + godown + ',#' + qty + ',#' + rate +
+                  ',#' + uom + ',#' + discount + ',#' + taxrate + ',#' + hsn + ',#' + item).val('');
+                subtotal();
+                calculateTotalTaxAmount();
+                updateTotalInWords();
+            }
+        },
+        select: function (event, ui) {
+            if (ui.item.value === "__no_result__") {
+                event.preventDefault(); // block selection of "No results found"
+                return false;
+            }
+
+            var names = ui.item.data.split("|");
+            console.log("Mangesh", names);
+
+            $('#' + inputname).val(names[0]);
+            $('#' + description).val(names[1]);
+            $('#' + godown).val(names[2]);
+            $('#' + qty).val('1');
+            $('#' + rate).val(names[5]);
+            $('#' + uom).val(names[7]);
+            $('#' + discount).val(names[4]);
+            $('#' + taxrate).val(names[6]);
+            $('#' + hsn).val(names[2]);
+            $('#' + item).val(names[1]);
+
+            calculateTotalTaxAmount();
+            updateTaxFields();
+            discountamt(inputname);
+            subtotal();
+            calculatePFPercentage();
+            calculateFreightPercentage();
+            updateTotalInWords();
+            updatePFAmount();
+            updateFreightPercentage();
+        }
+    })
+    // Custom rendering for "No results found"
+    .data("ui-autocomplete")._renderItem = function (ul, item) {
+        if (item.value === "__no_result__") {
+            return $("<li>")
+                .append("<div style='color:#999; font-style:italic;'>" + item.label + "</div>")
+                .appendTo(ul);
+        } else {
+            return $("<li>")
+                .append("<div>" + item.label + "</div>")
+                .appendTo(ul);
+        }
+    };
+}
+
+ function initItemCodeAutocomplete(id, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
+        $("#" + id).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "{% url 'getitemscodedetails' %}",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: id.split("_"),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        if (data.length === 0) {
+                            response([{ label: "No results found", value: "__no_result__" }]);
+                        } else {
+                            response($.map(data, function (item) {
+                                let code = item.split("|");
+                                return {
+                                    label: code[0],
+                                    value: code[0],
+                                    data: item
+                                };
+                            }));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Autocomplete error:", error);
+                        response([]);
+                    }
                 });
             },
+            minLength: 1,   // search from first letter
             autoFocus: true,
-            minLength: 0,
-            change: function (event, ui) {
-                if (ui.item == null) {
-                }
-            },
-            
-            
             select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log("Mangesh",names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
+                if (ui.item.value === "__no_result__") {
+                    event.preventDefault(); // block fake option
+                    return false;
+                }
+
+                let names = ui.item.data.split("|");
+
+                $("#" + id).val(names[0]);
+                $("#" + description).val(names[1]);
+                $("#" + godown).val(names[2]);
+                $("#" + qty).val('1');
+                $("#" + rate).val(names[5]);
+                $("#" + uom).val(names[7]);
+                $("#" + discount).val(names[4]);
+                $("#" + taxrate).val(names[6]);
+                $("#" + hsn).val(names[2]);
+                $("#" + item).val(names[1]);
 
                 calculateTotalTaxAmount();
                 updateTaxFields();
-                discountamt(inputname);
+                discountamt(id);
                 subtotal();
                 calculatePFPercentage();
-                calculateFreightPercentage()
-
-                
-
-                
+                calculateFreightPercentage();
                 updateTotalInWords();
                 updatePFAmount();
                 updateFreightPercentage();
-
-                
+            },
+            change: function (event, ui) {
+                if (!ui.item || ui.item.value === "__no_result__") {
+                    // clear all related fields
+                    $("#" + id + ",#" + description + ",#" + godown + ",#" + qty + ",#" + rate +
+                      ",#" + uom + ",#" + discount + ",#" + taxrate + ",#" + hsn + ",#" + item).val('');
+                    subtotal();
+                    calculateTotalTaxAmount();
+                    updateTotalInWords();
+                }
             }
-
-        });
+        })
+        // style "No results found"
+        .data("ui-autocomplete")._renderItem = function (ul, item) {
+            if (item.value === "__no_result__") {
+                return $("<li>")
+                    .append("<div style='color:#999; font-style:italic;'>" + item.label + "</div>")
+                    .appendTo(ul);
+            } else {
+                return $("<li>")
+                    .append("<div>" + item.label + "</div>")
+                    .appendTo(ul);
+            }
+        };
     }
+
+    // initialize for the first row
+    initItemCodeAutocomplete("itemcode_0", "item_0", "description_0", "godown_0", "qty_0", "rate_0", "uom_0", "discount_0", "taxrate_0", "hsn_0");
+
+
 
     function calculatePFPercentage() {
         var subtotal2 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists

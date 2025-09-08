@@ -659,17 +659,20 @@ Ecoway
 
     // Autocomplete for Item Code
     function initializeItemCodeAutocomplete(index) {
-        $(`#itemcode_${index}`).autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: index
-                    },
-                    success: function(data) {
+    $(`#itemcode_${index}`).autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "{% url 'getitemscodedetails' %}",
+                dataType: "json",
+                type: "POST",
+                data: {
+                    name_startsWith: request.term,
+                    itemsdetails: index
+                },
+                success: function(data) {
+                    if (data.length === 0) {
+                        response([{ label: "No results found", value: "" }]);
+                    } else {
                         response($.map(data, function(item) {
                             const code = item.split("|");
                             return {
@@ -679,29 +682,43 @@ Ecoway
                             };
                         }));
                     }
-                });
-            },
-            minLength: 1,
-            autoFocus: true,
-            select: function(event, ui) {
-                const names = ui.item.data.split("|");
-                $(`#itemcode_${index}`).val(names[0]);
-                $(`#item_${index}`).val(names[1]);
-                $(`#hsn_${index}`).val(names[2]);
-                $(`#qty_${index}`).val('1');
-                $(`#rate_${index}`).val(names[5]);
-                $(`#uom_${index}`).val(names[7]);
-                $(`#discount_${index}`).val(names[4]);
-                $(`#taxrate_${index}`).val(names[6]);
-                calculateRow(index);
-            },
-            change: function(event, ui) {
-                if (!ui.item) {
-                    $(`#itemcode_${index}, #item_${index}, #hsn_${index}, #qty_${index}, #rate_${index}, #uom_${index}, #discount_${index}, #taxrate_${index}`).val('');
                 }
+            });
+        },
+        minLength: 1,
+        autoFocus: true,
+        select: function(event, ui) {
+            if (ui.item.value === "") {
+                // Prevent filling when "No results found" is clicked
+                event.preventDefault();
+                return false;
             }
-        });
-    }
+            const names = ui.item.data.split("|");
+            $(`#itemcode_${index}`).val(names[0]);
+            $(`#item_${index}`).val(names[1]);
+            $(`#hsn_${index}`).val(names[2]);
+            $(`#qty_${index}`).val('1');
+            $(`#rate_${index}`).val(names[5]);
+            $(`#uom_${index}`).val(names[7]);
+            $(`#discount_${index}`).val(names[4]);
+            $(`#taxrate_${index}`).val(names[6]);
+            calculateRow(index);
+        }
+    })
+    // Custom rendering so "No results found" looks disabled
+    .data("ui-autocomplete")._renderItem = function(ul, item) {
+        if (item.value === "") {
+            return $("<li>")
+                .append("<div style='color: #999;'>" + item.label + "</div>")
+                .appendTo(ul);
+        } else {
+            return $("<li>")
+                .append("<div>" + item.label + "</div>")
+                .appendTo(ul);
+        }
+    };
+}
+
 
     // Add and Remove Rows
     $(document).on('click', '.add-btn', function() {

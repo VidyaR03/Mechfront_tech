@@ -588,10 +588,15 @@ function initializeItemCodeAutocomplete(index) {
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                 },
                 success: function(data) {
-                    response($.map(data, function(item) {
-                        const code = item.split('|');
-                        return { label: code[0], value: code[0], data: item };
-                    }));
+                    if (data.length === 0) {
+                        // Show "No results found" when no matches
+                        response([{ label: "No results found", value: "__no_result__" }]);
+                    } else {
+                        response($.map(data, function(item) {
+                            const code = item.split('|');
+                            return { label: code[0], value: code[0], data: item };
+                        }));
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("Autocomplete error:", error);
@@ -603,6 +608,11 @@ function initializeItemCodeAutocomplete(index) {
         autoFocus: true,
         minLength: 1,
         select: function(event, ui) {
+            if (ui.item.value === "__no_result__") {
+                // Prevent "No results found" from being selectable
+                event.preventDefault();
+                return false;
+            }
             if (ui.item.value) {
                 const names = ui.item.data.split('|');
                 $(`#itemcode_${index}`).val(names[0]);
@@ -620,15 +630,28 @@ function initializeItemCodeAutocomplete(index) {
             }
         },
         change: function(event, ui) {
-            if (!ui.item) {
+            if (!ui.item || ui.item.value === "__no_result__") {
                 $(`#itemcode_${index}, #item_${index}, #hsn_${index}, #qty_${index}, #rate_${index}, #uom_${index}, #discount_${index}, #taxrate_${index}`).val('');
                 subtotal();
                 calculateTotalTaxAmount();
                 updateTotalInWords();
             }
         }
-    });
+    })
+    // Custom render: make "No results found" grey/italic
+    .data("ui-autocomplete")._renderItem = function(ul, item) {
+        if (item.value === "__no_result__") {
+            return $("<li>")
+                .append("<div>" + item.label + "</div>")
+                .appendTo(ul);
+        } else {
+            return $("<li>")
+                .append("<div>" + item.label + "</div>")
+                .appendTo(ul);
+        }
+    };
 }
+
 
 // Stock Quantity Check
 function checkStockQuantity(itemCodeFieldId, qtyFieldId) {
