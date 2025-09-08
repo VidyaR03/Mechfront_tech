@@ -4,18 +4,24 @@ Ecoway
 {% endblock %}
 
 {% block custom_css %}
-
 <style>
     /* Inactive tab styles */
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
         color: #ccc;
-        /* Faint gray color for inactive tabs */
     }
 
     /* Active tab style */
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
         color: #000;
-        /* Black color for active tab */
+    }
+
+    /* Ensure browser-native error messages are styled consistently */
+    input:invalid {
+        border-color: red;
+    }
+    input:invalid:focus {
+        outline: none;
+        box-shadow: 0 0 5px red;
     }
 </style>
 {% endblock custom_css %}
@@ -23,7 +29,6 @@ Ecoway
 {% block main_content %}
 <div class="page-wrapper" style="min-height: 432px;">
     <div class="content container-fluid">
-
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -44,10 +49,13 @@ Ecoway
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Name <span style="color: red;">*</span></label>
-                                        <input type="text" name="name" id="name" class="form-control" required>
+                                        <input type="text" name="name" id="name" class="form-control" 
+                                               required 
+                                               maxlength="50" 
+                                               pattern="[a-zA-Z0-9\s\-_]+" 
+                                               title="Department name must be 50 characters or less.">
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="row col-sm-6 p-5">
@@ -66,4 +74,13 @@ Ecoway
         </div>
     </div>
 </div>
+
+{% block custom_js %}
+<!-- Retain dependencies in case they're used elsewhere -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+{% endblock %}
+
 {% endblock main_content %}
