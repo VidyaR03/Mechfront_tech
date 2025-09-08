@@ -1,12 +1,5 @@
 {% extends 'dashboard/base_template.html' %}
-{% block title %}
-Ecoway
-{% endblock %}
-
-{% block custom_css %}
-
-
-{% endblock custom_css %}
+{% block title %}Ecoway{% endblock %}
 
 {% block main_content %}
 <div class="page-wrapper" style="min-height: 432px;">
@@ -15,7 +8,12 @@ Ecoway
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
-                    <h3 class="page-title"> <a href="{% url 'leave_type_list' %}"style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Update Leave Type</h3>
+                    <h3 class="page-title">
+                        <a href="{% url 'leave_type_list' %}" style="margin-right: 10px;">
+                            <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back"></i>
+                        </a>
+                        Update Leave Type
+                    </h3>
                 </div>
             </div>
         </div>
@@ -24,43 +22,36 @@ Ecoway
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <form method="post" id="godown_form" action="{% url 'edit_leave_type' id=leave_type_data.id %}" autocomplete="off">
+                        <form method="post" action="{% url 'edit_leave_type' id=leave_type_data.id %}" autocomplete="off">
                             {% csrf_token %}
                             <div class="row">
+                                <!-- Leave Name -->
                                 <div class="col-md-6">
-                                     <div class="form-group">
+                                    <div class="form-group">
                                         <label>Name <span style="color: red;">*</span></label>
-                                                <select class="form-select" name="name" id="leavename_type" required>
-                                                <option value="">Select Leave</option>
-                                                <option value="Earned Leave" {% if leave_type_data.name == "Earned Leave" %}selected{% endif %}>Earned Leave</option>
-                                                <option value="Casual Leave" {% if leave_type_data.name == "Casual Leave" %}selected{% endif %}>Casual Leave</option>
-                                            </select>
-                                        <!-- <input type="text" name="name" value="{{leave_type_data.name}}" id="name" class="form-control" required> -->
+                                        <input type="text" name="name" value="{{ leave_type_data.name }}" id="name" class="form-control" required>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-6">
+
+                                <!-- Total Leaves -->
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Total Leaves <span style="color: red;">*</span></label>
-                                        <input type="number" name="count" value="{{leave_type_data.count}}" id="count" class="form-control" required>
+                                        <input type="number" step="0.01" name="count" value="{{ leave_type_data.count }}" id="count" class="form-control" required>
                                     </div>
-                                </div> -->
-
-                            </div>
-
-                            <div class="row col-sm-6 p-5">
-                                <div class="success_message row"></div>
+                                </div>
                             </div>
 
                             <div class="text-end mt-4">
-                                <button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary">Save</button>
-                                <a href="{% url 'leave_type_list' %}" class="btn btn-primary">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <a href="{% url 'leave_type_list' %}" class="btn btn-secondary">Cancel</a>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock main_content %}

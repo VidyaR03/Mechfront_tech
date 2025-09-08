@@ -16,20 +16,11 @@ def leave_type_list_view(request):
         }
     return render(request,template_path.leave_type_list,context)
 
-
 @login_required
 def add_leave_type_data(request):
     if request.method == 'POST':
         name = request.POST['name']
-
-        # Default count
-        # count = request.POST.get('count')
-
-        # Auto-assign based on leave type
-        if name.lower() == "earned leave":
-            count = 18
-        elif name.lower() == "casual leave":
-            count = 8.04
+        count = request.POST.get('count')
 
         leave_type_data = {
             'name': name,
@@ -37,8 +28,8 @@ def add_leave_type_data(request):
         }
 
         try:
-            godown_object = leave_type(**leave_type_data)
-            godown_object.save()
+            leave_obj = leave_type(**leave_type_data)
+            leave_obj.save()
             messages.success(request, 'Leave Type Added Successfully.')
         except Exception as e:
             messages.error(request, f"Error: {e}")
@@ -48,50 +39,22 @@ def add_leave_type_data(request):
     return render(request, template_path.leave_type_add)
 
 
-# @login_required
-# def add_leave_type_data(request):
-#     if request.method == 'POST':
-#         leave_type_data = {
-#             'name': request.POST['name'],
-#             'count':request.POST['count']
-#         }
-#         godown_object = leave_type(**leave_type_data)
-#         godown_object.save()
-#         messages.success(request, 'Leave Type Added Successfully.')
-
-#         return redirect('leave_type_list')
-#     return render(request, template_path.leave_type_add)
-
-
 @login_required
 def edit_leave_type_data(request, id):
-    # Fetch the leave_type instance
     leave_type_data = get_object_or_404(leave_type, id=id)
 
     if request.method == 'POST':
-        name = request.POST['name']
-        count = request.POST.get('count')
-
-        # Auto-assign logic
-        if name.lower() == "earned leave":
-            count = 18
-        elif name.lower() == "casual leave":
-            count = 8.04
-
-        # Update values
-        leave_type_data.name = name
-        leave_type_data.count = count
-
+        leave_type_data.name = request.POST['name']
+        leave_type_data.count = request.POST.get('count')
         leave_type_data.save()
-        messages.success(request, 'Leave Type Updated Successfully.')
 
+        messages.success(request, 'Leave Type Updated Successfully.')
         return redirect('leave_type_list')
 
     context = {
         'leave_type_data': leave_type_data
     }
     return render(request, template_path.leave_type_edit, context)
-
 
 
 @login_required
