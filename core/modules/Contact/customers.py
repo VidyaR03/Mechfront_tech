@@ -19,7 +19,6 @@ gst_no_pattern = re.compile(r'^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1
 def add_customer(request):
    
     associated_lead_ids = customer.objects.values_list('lead_id', flat=True)
-    # Convert associated_lead_ids to a list of strings (if they are not already)
     associated_lead_ids = list(map(str, associated_lead_ids))
 
     leads = Leads.objects.exclude(id__in=associated_lead_ids)
