@@ -85,7 +85,7 @@
                                     <tr>
                                         <th>SR. No</th>
                                         <th>Name</th>
-                                        <th>Total Leaves In Year</th>
+                                        {% comment %} <th>Total Leaves In Year</th> {% endcomment %}
                                         <!-- <th>Date</th> -->
                                         <th>Actions</th>
                                     </tr>
@@ -98,9 +98,9 @@
                                         <td>
                                             <a href="#" style="color:blue;">{{t.name}}</a>
                                         </td>
-                                        <td>
+                                        {% comment %} <td>
                                             {{t.count}}
-                                        </td>
+                                        </td> {% endcomment %}
                                         <!-- <td>
                                             {{t.date}}
                                         </td> -->
