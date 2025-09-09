@@ -20,11 +20,10 @@ def leave_type_list_view(request):
 def add_leave_type_data(request):
     if request.method == 'POST':
         name = request.POST['name']
-        count = request.POST.get('count')
+        # count = request.POST.get('count')
 
         leave_type_data = {
             'name': name,
-            'count': count
         }
 
         try:
@@ -45,7 +44,6 @@ def edit_leave_type_data(request, id):
 
     if request.method == 'POST':
         leave_type_data.name = request.POST['name']
-        leave_type_data.count = request.POST.get('count')
         leave_type_data.save()
 
         messages.success(request, 'Leave Type Updated Successfully.')
