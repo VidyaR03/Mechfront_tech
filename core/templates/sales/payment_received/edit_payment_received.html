@@ -27,8 +27,6 @@
 {% endblock custom_css %}
 <!-- Main content -->
 {% block main_content %}
-
-
 <div class="page-wrapper" style="min-height: 434px;">
     <div class="content container-fluid">
         <div class="page-header">
@@ -50,58 +48,46 @@
                             {% csrf_token %}
                             <div class="row" data-select2-id="6">
                                 <div class="col-md-2">
-                                    <!-- <div class="form-group">
-                                        <label style="color:#f00">Customer</label>
-                                        <select class="form-select" name="customer" id="customer" required>
-                                            <option value="{{payment_received_instance.payment_received_customer.customer}}">
-                                                {{payment_received_instance.payment_received_customer.customer}}
-                                            </option>
-                                            {% for i in customer_name %}
-                                            <option value="{{i.id}}">{{i.customer}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div> -->
-                                        <div class="form-group">
-                                            <label style="color:#f00">Deposite to</label>
-                                            <select class="form-select" name="payment_received_bank_name" id="payment_received_bank_name" required>
-                                                <option value="{{payment_received_instance.payment_received_bank_name}}">{{payment_received_instance.payment_received_bank_name}}</option>
-
-                                                <option value="HDFC">HDFC Bank</option>
-                                                <option value="ICICI">ICICI Bank</option>
-                                                <option value="SBI">State Bank of India (SBI)</option>
-                                                <option value="AXIS">Axis Bank</option>
-                                                <option value="KOTAK">Kotak Mahindra Bank</option>
-                                                <option value="PNB">Punjab National Bank (PNB)</option>
-                                                <option value="CANARA">Canara Bank</option>
-                                                <option value="BOB">Bank of Baroda (BOB)</option>
-                                                <option value="UNION">Union Bank of India</option>
-                                                <option value="IDBI">IDBI Bank</option>
-                                                <option value="INDUSIND">IndusInd Bank</option>
-                                                <option value="YES">YES Bank</option>
-                                                <option value="RBL">RBL Bank</option>
-                                                <option value="BANKOFINDIA">Bank of India</option>
-                                                <option value="INDIANBANK">Indian Bank</option>
-                                                <option value="SYNDICATE">Syndicate Bank</option>
-                                                <option value="UCO">UCO Bank</option>
-                                                <option value="BANKOFRY">Bank of Rajasthan</option>
-                                                <option value="HSBC">HSBC India</option>
-                                                <option value="CITIBANK">Citibank India</option>
-                                                <option value="OTHER">OTHER</option>
-                                                </select>
+                                    <div class="form-group">
+                                        <label style="color:#f00">Deposite to</label>
+                                        <select class="form-select" name="payment_received_bank_name" id="payment_received_bank_name" required>
+                                            <option value="{{payment_received_instance.payment_received_bank_name}}">{{payment_received_instance.payment_received_bank_name}}</option>
+                                            <option value="HDFC">HDFC Bank</option>
+                                            <option value="ICICI">ICICI Bank</option>
+                                            <option value="SBI">State Bank of India (SBI)</option>
+                                            <option value="AXIS">Axis Bank</option>
+                                            <option value="KOTAK">Kotak Mahindra Bank</option>
+                                            <option value="PNB">Punjab National Bank (PNB)</option>
+                                            <option value="CANARA">Canara Bank</option>
+                                            <option value="BOB">Bank of Baroda (BOB)</option>
+                                            <option value="UNION">Union Bank of India</option>
+                                            <option value="IDBI">IDBI Bank</option>
+                                            <option value="INDUSIND">IndusInd Bank</option>
+                                            <option value="YES">YES Bank</option>
+                                            <option value="RBL">RBL Bank</option>
+                                            <option value="BANKOFINDIA">Bank of India</option>
+                                            <option value="INDIANBANK">Indian Bank</option>
+                                            <option value="SYNDICATE">Syndicate Bank</option>
+                                            <option value="UCO">UCO Bank</option>
+                                            <option value="BANKOFRY">Bank of Rajasthan</option>
+                                            <option value="HSBC">HSBC India</option>
+                                            <option value="CITIBANK">Citibank India</option>
+                                            <option value="OTHER">OTHER</option>
+                                            </select>
                                         </div>
                                     <div class="form-group">
                                         <label for="customer" style="color: #f00;">Customer Name</label>
                                         <!-- Hidden field to store customer ID -->
                                         <input type="hidden" id="customer_id" name="customer_id" value="{{payment_received_instance.payment_received_customer.id}}">
                                         <!-- Input field for autocomplete -->
-                                        <input type="text" id="customer" name="customer" class="form-control" value="{{payment_received_instance.payment_received_customer.customer}}" placeholder="Type to search...">
+                                        <input type="text" id="customer" name="customer" class="form-control" value="{{payment_received_instance.payment_received_customer.customer}}" placeholder="Customer Name" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group"> <label style="color:#f00">Date</label>
                                         <div> <input class="form-control datetimepicker" type="text" name="date"
                                                 id="date"
-                                                value="{{payment_received_instance.payment_received_date}} | 'Y-d-m'">
+                                                value="{{payment_received_instance.payment_received_date | date:'Y-m-d'}}">
                                         </div>
                                     </div>
                                 </div>
@@ -130,11 +116,6 @@
                                                 value="{{payment_received_instance.payment_received_mobile}}"> </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-2">
-                                    <div class="form-group"> <label>Is Balance Only? </label>
-                                        <div> <input type="checkbox" name="balance" id="balance"> </div>
-                                    </div>
-                                </div> -->
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label style="color:#f00"> Amount</label>
@@ -170,7 +151,7 @@
                                         <label>DD/Cheque Date</label>
                                         <input class="form-control datetimepicker" type="text" name="cheque_date"
                                             id="cheque_date"
-                                            value="{{payment_received_instance.payment_received_cheque_date}} | date 'Y-m-d'">
+                                            value="{{payment_received_instance.payment_received_cheque_date | date:'Y-m-d'}}">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -190,7 +171,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <!-- <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Service Type</label>
                                         <div>
@@ -198,7 +179,7 @@
                                                 value="{{payment_received_instance.payment_ser_type}}">
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="col-md-2 total_due" style="display: none;">
                                     <div class="form-group">
@@ -211,6 +192,7 @@
 
                             </div>
                             <hr>
+
                             <div class="col-lg-12 pt11">
                                 <div class="table-responsive">
                                     <table class="table table-hover mb-0">
@@ -229,12 +211,12 @@
                                             <tr class="tblro">
                                                 <input type="hidden" name="iid[]" class="iid"
                                                     value="{{len_payment_received_item_data}}">
-                                                <td><input class="no-outline" id="invoicedate0"
+                                                <td><input class="no-outline" id="invoicedate{{forloop.counter}}"
                                                         name="invoicedate{{forloop.counter}}" value="{{j.invoicedate}}">
                                                 </td>
 
                                                 <td><input class="no-outline" id="customername{{forloop.counter}}"
-                                                        name="customername{{forloop.counter}}" value="{{j.customer}}">
+                                                        name="customername{{forloop.counter}}" value="{{j.customer_name.customer}}">
                                                 </td>
 
                                                 <td><input class="no-outline" id="invoiceno{{forloop.counter}}"
@@ -251,7 +233,7 @@
                                                             onclick="dueamt('{{forloop.counter}}');">(Pay Full)</a></span></td>
 
                                                 <td><input class="payment" name="payment{{forloop.counter}}"
-                                                        id="payment{{forloop.counter}}" value="0"
+                                                        id="payment{{forloop.counter}}" value="{{j.payment | default:'0'}}"
                                                         onkeyup="paymenti('{{forloop.counter}}');"></td>
 
                                             </tr>
@@ -360,6 +342,8 @@
                 select: function(event, ui) {
                     // Set the selected customer's ID in the hidden field
                     $("#customer_id").val(ui.item.id);
+                    // Trigger the AJAX call after selection
+                    $('#customer').trigger('change');
                 }
             });
         });
@@ -368,35 +352,32 @@
 
     <script type="text/javascript">
         $(document).on('change', '#customer', function () {
-            //alert();return;
-            //$('#update').removeAttr('disabled');
-            //$('.table-wrap').show();
             var customer = $('#customer_id').val();
-            //alert(customer);
-            //alert(divi);return;
             var paymentreceiptno = $('#paymentreceiptno').val();
             $.ajax({
                 type: 'ajax',
                 method: 'post',
-                url: '#',
+                url: "{% url 'get_customerinvoice_data' %}",
                 data: { 'customer': customer },
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
                 async: false,
                 dataType: 'json',
                 success: function (data) {
-                    //console.log(data);
+                    console.log(data);
                     var html = '';
                     var i;
+                    $("#existing_row_count").val(data.length); // Add if needed
                     for (i = 0; i < data.length; i++) {
-                        totalamt = data[i].totalamt;
-                        payments = data[i].payments;
-                        dueamount = (data[i].invoiceamount - 100) - data[i].totalamt;
+                        var totalamt = data[i].invoice_total;
+                        var payments = data[i].payments || 0; // Assume backend provides payments
+                        var dueamount = totalamt - payments;
                         html += '<tr class="tblro">' +
                             '<td><input class="no-outline" id="invoicedate' + i + '" name= "invoicedate' + i + '" value="' + data[i].invoice_date + '"></td>' +
                             '<td><input class="no-outline" id="customername' + i + '" name= "customername' + i + '" value="' + data[i].customer_name + '"></td>' +
-                            '<td><input class="no-outline" id="invoiceno' + i + '" name= "invoiceno' + i + '" value="' + data[i].invoice_no + '"></td>' +
-                            '<td><input class="no-outline" id="invoiceamount' + i + '" name= "invoiceamount' + i + '" value="' + data[i].totalamt + '"></td>' +
-                            '<td>' + '<input type="text" class="no-outline" name="paymentreceiptno' + i + '" id="paymentreceiptno' + i + '" value="' + paymentreceiptno + '"></td>' +
-                            '<td><input class="no-outline" id="dueamount' + i + '" name= "dueamount' + i + '" value="' + dueamount + '" size="8"><span> <a style="color:blue; cursor: pointer;" onclick="dueamt(\'' + i + '\');" >(Pay Full)</a></span></td>' +
+                            '<td><input class="no-outline" id="invoiceno' + i + '" name= "invoiceno' + i + '" value="' + data[i].id + '"></td>' +
+                            '<td><input class="no-outline" id="invoiceamount' + i + '" name= "invoiceamount' + i + '" value="' + totalamt + '"></td>' +
+                            '<td><input type="text" class="no-outline" name="paymentreceiptno' + i + '" id="paymentreceiptno' + i + '" value="' + paymentreceiptno + '"></td>' +
+                            '<td><input class="no-outline" id="dueamount{{forloop.counter}}" name="dueamount{{forloop.counter}}" value="{{j.dueamount}}"  data-original="{{j.dueamount}}" size="8"></td>' +
                             '<td>' + '<input class="payment" name="payment' + i + '" id="payment' + i + '" onkeyup="paymenti(\'' + i + '\');"></td>' +
                             '</tr>';
                     }
@@ -408,8 +389,6 @@
                         $('.nobi').html('');
                     }
 
-                    //$('.nobi').html('There is no Bill Applied For this payment');
-
                 },
                 error: function () {
                     alert('There is no Bill Applied For this payment');
@@ -420,157 +399,58 @@
         });
 
         function paymenti(inputname) {
-            var sum = 0;
-            // var due = Number($('#dueamount').val();
+            var paymentField = $('#payment' + inputname);
+            var dueField = $('#dueamount' + inputname);
+
+            var originalDue = parseFloat(dueField.attr('data-original')) || parseFloat(dueField.val()) || 0;
+            var payment = parseFloat(paymentField.val()) || 0;
+
+            if (payment > originalDue) {
+                alert('Payment cannot exceed due amount');
+                payment = originalDue;
+                paymentField.val(payment.toFixed(2));
+            }
+
+            var newDue = originalDue - payment;
+
+            // Update due field without letting it go negative
+            dueField.val(newDue.toFixed(2));
+
+            // Recalculate totals
+            var total = 0;
             $(".payment").each(function () {
-                sum += +this.value;
+                total += parseFloat($(this).val()) || 0;
             });
-        
-            $('#total').val((sum).toFixed(2));
-            $('#amount_received').val((sum).toFixed(2));
-            $('#amount_used').val((sum).toFixed(2));
-            
-            //alert(inputname);
-            // input = inputname.split("_");
-            // id_val = input[1];
-            // alert(inputname);
 
-            dueamount = Number($('#dueamount' + inputname).val());
-            totl_invoice  = Number($('#invoiceamount' + inputname).val());
-            // alert(dueamount);
-            payment = Number($('#payment' + inputname).val());
-            //alert(payment);
-            //$('#amount').val(payment);
-            $('#amount').val(sum);
-            due_a = (totl_invoice - 100) - payment;
-            // alert(due_a);
-            $('#dueamount' + inputname).val(due_a);
-            
-            // if (payment > dueamount) {
-            //     $('#payment' + inputname).val('0');
-            //     $('#amount').val('0');
-            // }
-
-
+            $('#amount').val(total.toFixed(2));
+            $('#total').val(total.toFixed(2));
+            $('#amount_received').val(total.toFixed(2));
+            $('#amount_used').val(total.toFixed(2));
         }
 
-        /*$("#btn_submit").on("click",function(e)
-        {
-            var customer = $("#customer").val();
-            var amount= $("#amount").val();
-        
-            if(customer == '')
-            {
-              alert('please Enter Customer')
-            }
-            else if(amount == '')
-            {
-              alert('Please Enter Amount')
-            }
-            else
-            {
-                //e.preventDefault();
-                $('.paym').each(function(i, obj) 
-                {
-                    //alert(i);
-        
-                    var deposit =$("#deposit").val();
-                    var customer = $("#customer").val();
-                    var date= $("#date").val();
-                    var payment_mode= $("#payment_mode").val();
-                    var mobile= $("#mobile").val();
-                    var balance= $("#balance").val();
-                    var amount= $("#amount").val();
-                    var bank_charges= $("#bank_charges").val();
-                    var cheque_no= $("#cheque_no").val();
-                    var cheque_date= $("#cheque_date").val();
-                    var reference= $("#reference").val();
-                    var note= $("#note").val();
-                    var total= $("#total").val();
-                    var amount_received= $("#amount_received").val();
-                    var amount_used= $("#amount_used").val();
-                    var amount_excess= $("#amount_excess").val();
-        
-                    if($("#balance").is(':checked'))
-                    {
-                      var balance = 'Checked';
-                    }
-                    else
-                    {
-                      var balance = 'UnChecked';
-                      //alert('unchecked');
-                    }
-        
-                    //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-        
-                    $.post('https://olatechs.in/crm/supreeno/admin/save_payment_received',{deposit:deposit,customer:customer,date:date,payment_mode:payment_mode,mobile:mobile,balance:balance,amount:amount,bank_charges:bank_charges,cheque_no:cheque_no,cheque_date:cheque_date,reference:reference,note:note,total:total,amount_received:amount_received,amount_used:amount_used,amount_excess:amount_excess},function(data)
-                    {
-                      //alert('aaaa'); return;
-                    });
-                
-                
-                });
-        
-                $('.tblro').each(function(i, obj) 
-                {
-                    //alert(i);
-                    var invoicedate =$("#invoicedate"+i).val();
-                    var invoiceno = $('#invoiceno'+i).val();
-                    var invoiceamount = $('#invoiceamount'+i).val();
-                    var dueamount = $('#dueamount'+i).val();
-                    var payment = $('#payment'+i).val();
-        
-                    if($("#balance").is(':checked'))
-                    {
-                      var balance = 'Checked';
-                    }
-                    else
-                    {
-                      var balance = 'UnChecked';
-                      //alert('unchecked');
-                    }
-        
-                    //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-        
-                    $.post('https://olatechs.in/crm/supreeno/admin/save_payment_received_entries',{invoicedate:invoicedate,invoiceno:invoiceno,invoiceamount:invoiceamount,dueamount:dueamount,payment:payment},function(data)
-                    {
-                      //alert('aaaa'); return;
-                    });
-                
-                
-                });
-        
-                //alert('Payment Received SucessFull');
-        
-                //$('.success_message').html('<div class="alert alert-info">Data analyzing...please wait...</div>');
-        
-            }
-        })*/
 
     </script>
 
     <script type="text/javascript">
 
         function dueamt(inputname) {
-            i = inputname;
-            //alert(i);
+            var dueField = $('#dueamount' + inputname);
+            var originalDue = parseFloat(dueField.attr('data-original')) || 0;
 
-            dueamount = $('#dueamount' + i).val();
-            //alert(dueamount);
-
-            $('#payment' + i).val(dueamount);
+            $('#payment' + inputname).val(originalDue.toFixed(2));
+            dueField.val('0.00');
 
             var sum = 0;
             $(".payment").each(function () {
-                sum += +this.value;
+                sum += parseFloat(this.value) || 0;
             });
-            //alert(sum);
 
-            $('#amount').val((sum).toFixed(2));
-            $('#total').val((sum).toFixed(2));
-            $('#amount_received').val((sum).toFixed(2));
-            $('#amount_used').val((sum).toFixed(2));
+            $('#amount').val(sum.toFixed(2));
+            $('#total').val(sum.toFixed(2));
+            $('#amount_received').val(sum.toFixed(2));
+            $('#amount_used').val(sum.toFixed(2));
         }
+
     </script>
 
     <script type="text/javascript">
@@ -579,16 +459,13 @@
                 beforeSend: function () {
                     $('#btn_submit').prop('disabled', true);
                     $('.form_error_msg').html('');
-                    //$('.success_message').html('<br><div class="alert alert-info">Data analyzing...please wait...</div>');
                 },
                 uploadProgress: function (event, position, total, percentComplete) {
-                    //albumprogressbar.width(percentComplete + '%');
                 },
                 beforeSubmit: function () {
                     return $("#payment_received_form").valid(); // TRUE when form is valid, FALSE will cancel submit
                 },
                 complete: function (response) {
-                    //alert(response);
                     var customer = $("#customer_id").val();
                     var amount = $("#amount").val();
                     var total_due = $("#due_total").val();
@@ -600,57 +477,7 @@
                         alert('Please Enter Amount')
                     }
                     else {
-                        //e.preventDefault();
-                        /*$('.paym,.tblro').each(function(i, obj) 
-                        {
-                            //alert(i);
-        
-                            var deposit =$("#deposit").val();
-                            var customer = $("#customer").val();
-                            var date= $("#date").val();
-                            var payment_mode= $("#payment_mode").val();
-                            var mobile= $("#mobile").val();
-                            var balance= $("#balance").val();
-                            var amount= $("#amount").val();
-                            var bank_charges= $("#bank_charges").val();
-                            var cheque_no= $("#cheque_no").val();
-                            var cheque_date= $("#cheque_date").val();
-                            var reference= $("#reference").val();
-                            var note= $("#note").val();
-                            var total= $("#total").val();
-                            var amount_received= $("#amount_received").val();
-                            var amount_used= $("#amount_used").val();
-                            var amount_excess= $("#amount_excess").val();
-        
-                            var invoicedate =$("#invoicedate"+i).val();
-                            var invoiceno = $('#invoiceno'+i).val();
-                            var invoiceamount = $('#invoiceamount'+i).val();
-                            var dueamount = $('#dueamount'+i).val();
-                            var payment = $('#payment'+i).val();
-        
-                            if($("#balance").is(':checked'))
-                            {
-                              var balance = 'Checked';
-                            }
-                            else
-                            {
-                              var balance = 'UnChecked';
-                              //alert('unchecked');
-                            }
-        
-                            //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-        
-                            $.post('https://olatechs.in/crm/supreeno/admin/save_payment_received',{deposit:deposit,customer:customer,date:date,payment_mode:payment_mode,mobile:mobile,balance:balance,amount:amount,bank_charges:bank_charges,cheque_no:cheque_no,cheque_date:cheque_date,reference:reference,note:note,total:total,amount_received:amount_received,amount_used:amount_used,amount_excess:amount_excess,invoicedate:invoicedate,invoiceno:invoiceno,invoiceamount:invoiceamount,dueamount:dueamount,payment:payment},function(data)
-                            {
-                              //alert('aaaa'); return;
-                            });
-                        
-                        
-                        });*/
-
                         $('.paym').each(function (i, obj) {
-                            //alert(i);
-
                             var deposit = $("#deposit").val();
                             var customer = $("#customer_id").val();
                             var date = $("#date").val();
@@ -669,25 +496,14 @@
                             var amount_excess = $("#amount_excess").val();
                             var paymentreceiptno = $("#paymentreceiptno").val();
 
-                            if ($("#balance").is(':checked')) {
-                                var balance = 'Checked';
-                            }
-                            else {
-                                var balance = 'UnChecked';
-                                //alert('unchecked');
-                            }
-
-                            //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-
+                            // Balance is text, no check
                             $.post('#', { deposit: deposit, customer: customer, date: date, payment_mode: payment_mode, mobile: mobile, balance: balance, amount: amount, bank_charges: bank_charges, cheque_no: cheque_no, cheque_date: cheque_date, reference: reference, note: note, total: total, amount_received: amount_received, amount_used: amount_used, amount_excess: amount_excess, paymentreceiptno: paymentreceiptno }, function (data) {
-                                //alert('aaaa'); return;
                             });
 
 
                         });
 
                         $('.tblro').each(function (i, obj) {
-                            //alert(i);
                             var invoicedate = $("#invoicedate" + i).val();
                             var customername = $("#customername" + i).val();
                             var invoiceno = $('#invoiceno' + i).val();
@@ -696,32 +512,17 @@
                             var payment = $('#payment' + i).val();
                             var paymentreceiptno = $('#paymentreceiptno' + i).val();
 
-                            if ($("#balance").is(':checked')) {
-                                var balance = 'Checked';
-                            }
-                            else {
-                                var balance = 'UnChecked';
-                                //alert('unchecked');
-                            }
-
-                            //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-
-                            //console.log(i+" - "+paymentreceiptno);
-
+                            // Balance is text
                             $.post('#', { invoicedate: invoicedate, customername: customername, invoiceno: invoiceno, invoiceamount: invoiceamount, dueamount: dueamount, payment: payment, paymentreceiptno: paymentreceiptno }, function (data) {
-                                //alert(paymentreceiptno); return;
                             });
 
 
                         });
 
-                        //alert('Payment Received SucessFull');
-
                         var temp = 'success';
 
                         if (temp == 'success') {
-                            //alert('success');
-                            $('.success_message').show().html('<div class="alert alert-info"><strong>Payment Received Added Successfully. </strong></div>');
+                            $('.success_message').show().html('<div class="alert alert-info"><strong>Payment Received Updated Successfully. </strong></div>');
                             setTimeout(function () {
                                 window.location.href = '#';
                             }, 3000);
@@ -741,8 +542,15 @@
                 }
             });
 
-            $('.cheque_date').hide();
-            $('.cheque_no').hide();
+            // Show cheque fields based on initial payment mode
+            var initial_mode = $('#payment_mode').val();
+            if (initial_mode == 'Cheque') {
+                $('.cheque_no').show();
+                $('.cheque_date').show();
+            } else {
+                $('.cheque_no').hide();
+                $('.cheque_date').hide();
+            }
         });
     </script>
 
@@ -752,9 +560,9 @@
 
     <script type="text/javascript">
         $("#payment_mode").on("change", function () {
-            $payment_mode = $('#payment_mode').val();
+            var payment_mode = $('#payment_mode').val();
 
-            if ($payment_mode == 'Cheque') {
+            if (payment_mode == 'Cheque') {
                 $('.cheque_no').show();
                 $('.cheque_date').show();
             }

@@ -307,7 +307,7 @@ def edit_delivery_challan_data(request, id):
 def check_duplicate_challan_no(request):
     quotation_no = request.GET.get('challan_no')
     is_duplicate = delivery_challan.objects.filter(dc_number=quotation_no).exists()
-    print(is_duplicate,"is_duplicate.........")
+    # print(is_duplicate,"is_duplicate.........")
     return JsonResponse({'is_duplicate': is_duplicate})
 
 @login_required

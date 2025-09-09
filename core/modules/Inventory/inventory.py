@@ -45,10 +45,10 @@ def get_last_purchase_unit(item_code, start_date, end_date):
     ).order_by('-purchase_invoice_date').first()
 
     if not latest_purchase_invoice:
-        print("No latest purchase invoice found.")
+        # print("No latest purchase invoice found.")
         return None
 
-    print(latest_purchase_invoice.id, "latest_purchase_invoice.id")
+    # print(latest_purchase_invoice.id, "latest_purchase_invoice.id")
 
     purchase_invoice_items_data = Purchase_Invoice_items.objects.filter(
         purchase_invoice_item_code=item_code,
@@ -59,7 +59,7 @@ def get_last_purchase_unit(item_code, start_date, end_date):
         # print(purchase_invoice_items_data.purchase_invoice_uom, "purchase_invoice_items_data.purchase_invoice_uom")
         return purchase_invoice_items_data.purchase_invoice_uom
     else:
-        print("No purchase invoice item data found.")
+        # print("No purchase invoice item data found.")
         return None
 
 

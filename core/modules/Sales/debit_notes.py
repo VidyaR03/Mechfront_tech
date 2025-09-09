@@ -31,11 +31,14 @@ def add_debit_notes_data(request):
         dispatch_through = transporter.objects.all()
         godown_list  = godown.objects.all()
         item_data = inventory.objects.all()
+        current_date = datetime.today().strftime('%d-%m-%Y')
+
         context ={ 
             'customer_name' : customer_name,
             'dispatch_through' : dispatch_through,
             'item_data': item_data,
-            'godown_list':godown_list
+            'godown_list':godown_list,
+            'current_date':current_date
             }
 
         return render(request, template_path.add_debit_notes, context)

@@ -59,7 +59,7 @@ def add_leads_data(request):
 def edit_lead_data(request, lead_id):
     lead = Leads.objects.get(id=lead_id)
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         company_name = request.POST.get('company_name')
         contact_person = request.POST.get('contact_person')
         contact_number = request.POST.get('contact_number')

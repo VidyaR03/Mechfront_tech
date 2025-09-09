@@ -12,7 +12,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers.json import DjangoJSONEncoder
-from core.models import  customer, transporter, inventory, vendor, Invoice, payment_received, payment_received_item
+from core.models import  customer,  vendor, Invoice, payment_received, payment_received_item
 from core.modules.login.login import login_required
 from django.contrib import messages
 
@@ -84,17 +84,25 @@ def add_payment_received_data(request):
         while max_row:
             payment = request.POST.get(f'payment{i}')
             invoiceamount = request.POST.get(f'invoiceamount{i}')
+            customer_name = request.POST.get(f'customername{i}')
+
             dueamount = float(invoiceamount) -  float(payment)
+            try:
+                customer_instance = customer.objects.get(customer=customer_name)
+            except customer.DoesNotExist:
+                messages.error(request, f'Customer "{customer_name}" not found.')
+                return redirect('payment_received_create') 
 
             purchase_invoice_item = payment_received_item(
                 invoicedate = request.POST.get(f'invoicedate{i}'),
-                customer = request.POST.get(f'customername{i}'),
+                customer_name = customer_instance, 
                 invoicenumber = request.POST.get(f'invoiceno{i}'),
                 invoiceamount = request.POST.get(f'invoiceamount{i}'),
                 paymentreceivedno = request.POST.get(f'paymentreceiptno{i}'),
                 dueamount = dueamount,
                 payment = request.POST.get(f'payment{i}'),
-                payment_received_id = latest_id.id                
+                payment_received_id = latest_id.id              
+              
             )
             purchase_invoice_item.save()
             max_row = max_row-1
@@ -120,7 +128,7 @@ def edit_payment_received_data(request, id):
             }
         return render(request, template_path.edit_paymentreceived, context)
     elif request.method == "POST":
-        print(request.POST)
+        # print(request.POST)
       
         total_due = request.POST['amount_received']
         payment_received_date_str = request.POST['date']
@@ -171,13 +179,21 @@ def edit_payment_received_data(request, id):
             payment = request.POST.get(f'payment{i}')
             invoiceamount = request.POST.get(f'invoiceamount{i}')
             due_amt = request.POST.get(f'dueamount{i}')
+            customer_name = request.POST.get(f'customername{i}')
+
             dueamount = (float(invoiceamount)- 100) -  float(payment) 
-            print(due_amt,total,'_____')
+            # print(due_amt,total,'_____')
             total += float(due_amt)
             inv_amt = Invoice.objects.get(id=request.POST.get(f'invoiceno{i}'))
+            try:
+                customer_instance = customer.objects.get(customer=customer_name)
+            except customer.DoesNotExist:
+                messages.error(request, f'Customer "{customer_name}" not found.')
+                return redirect('payment_received_create') 
+
             purchase_invoice_item = payment_received_item(
                 invoicedate = request.POST.get(f'invoicedate{i}'),
-                customer = request.POST.get(f'customername{i}'),
+                customer_name = customer_instance, 
                 invoicenumber = request.POST.get(f'invoiceno{i}'),
                 invoiceamount = request.POST.get(f'invoiceamount{i}'),
                 paymentreceivedno = request.POST.get(f'paymentreceiptno{i}'),
@@ -188,7 +204,7 @@ def edit_payment_received_data(request, id):
             purchase_invoice_item.save()
             inv_amt.invoice_due = dueamount
             due_list.append(dueamount)
-            print(due_amt,payment, '%3333')
+            # print(due_amt,payment, '%3333')
             if due_amt == payment:
                 inv_amt.invoice_status = 'Received'
             else:
@@ -199,45 +215,25 @@ def edit_payment_received_data(request, id):
             max_row = int(max_row) - 1
 
             i = i + 1
-        print('*************',total)    
+        # print('*************',total)    
         payment_received_object.payment_received_due_amount = total
         payment_received_object.save()
         return redirect('payment_received_list')
 
 
-# @csrf_exempt
-# def get_customer_invoice_details(request):
-#     if request.method == 'POST':
-#         customer_id = request.POST.get('customer')
-#         data = Invoice.objects.filter(invoice_customer_name = customer_id).values(
-#                 'invoice_date', 'invoice_customer_name', 'id', 'invoice_total'
-#         )
-#         data_list = list(data)
 
-#         # Convert list to JSON using DjangoJSONEncoder to handle datetime fields
-#         json_data = json.dumps(data_list, cls=DjangoJSONEncoder)
-
-#         return JsonResponse(json_data, safe=False)
-
-#     return JsonResponse({'error': 'Invalid request method'})
 
 
 @csrf_exempt
 def get_customer_invoice_details(request):
     if request.method == 'POST':
         customer_id = request.POST.get('customer')
-        print(customer_id,"customer_id........")
-        # Assuming YourModel has fields like 'invoice_date', 'customer_name', 'invoice_no', 'totalamt', 'payments'
-        # data = Invoice.objects.filter(invoice_customer_name = customer_id).values(
-        #         'invoice_date', 'invoice_customer_name', 'id', 'invoice_total'
-        # )
+        # print(customer_id,"customer_id........")
+ 
         data = Invoice.objects.filter(invoice_customer_name_customer = customer_id).values(
-            'invoice_date', 'invoice_customer_name', 'id', 'invoice_total'
+            'invoice_date', 'invoice_customer_name_customer', 'id', 'invoice_total','invoice_customer_name_customer__customer'
         )
-        print(data,"-------------------------------------")
-        # Convert QuerySet to a list of dictionaries
         data_list = list(data)
-        print(data_list,">>>>>>>>>>>>>>>>")
         return JsonResponse(data_list, safe=False, encoder=DjangoJSONEncoder)
     return JsonResponse({'error': 'Invalid request method'})
 
@@ -246,7 +242,7 @@ def get_customer_invoice_details(request):
 @login_required
 def payment_pdf(request, id):
     payment = get_object_or_404(payment_received, id=id)
-    print(payment,"ppppppppppppppppp")
+    # print(payment,"ppppppppppppppppp")
     company_name = payment.payment_received_customer.company_name
     deposit_to = payment.payment_received_customer.company_name
 

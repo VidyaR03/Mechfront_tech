@@ -60,7 +60,7 @@ def performa_add_invoice_data(request):
         return render(request, template_path.performa_add_invoice, context)
     elif request.method == "POST":
         pi_number = generate_proforma_invoice_number()
-        print(pi_number,'PPPPPPPPPPPPPP')
+        # print(pi_number,'PPPPPPPPPPPPPP')
         invoice_date_str = request.POST['invoice_date']
         invoice_due_date_str = request.POST['due_date']
         invoice_buyer_order_date_str = request.POST['buyer_order_date']
@@ -395,7 +395,7 @@ def performa_invoice_show_pdf(request, id):
             cgst_rate_str = invo.invoice_cgstper.strip('%')
             cgst_rate = float(cgst_rate_str)
             cgst_amount = (taxable_value * cgst_rate) / 100
-            print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
+            # print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
         except (ValueError, TypeError):
             cgst_rate = cgst_amount = 0.0
 
@@ -404,7 +404,7 @@ def performa_invoice_show_pdf(request, id):
             sgst_rate_str = invo.invoice_sgstper.strip('%')
             sgst_rate = float(sgst_rate_str)
             sgst_amount = taxable_value * (sgst_rate / 100)
-            print(sgst_amount)
+            # print(sgst_amount)
         except (ValueError, TypeError):
             sgst_rate = sgst_amount = 0.0
 
@@ -538,7 +538,7 @@ def download__performa_invoice_show_pdf(request, id):
             cgst_rate_str = invo.invoice_cgstper.strip('%')
             cgst_rate = float(cgst_rate_str)
             cgst_amount = (taxable_value * cgst_rate) / 100
-            print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
+            # print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
         except (ValueError, TypeError):
             cgst_rate = cgst_amount = 0.0
 
@@ -547,7 +547,7 @@ def download__performa_invoice_show_pdf(request, id):
             sgst_rate_str = invo.invoice_sgstper.strip('%')
             sgst_rate = float(sgst_rate_str)
             sgst_amount = taxable_value * (sgst_rate / 100)
-            print(sgst_amount)
+            # print(sgst_amount)
         except (ValueError, TypeError):
             sgst_rate = sgst_amount = 0.0
 
@@ -741,7 +741,7 @@ def download_csv_invoice(request):
 def autocomplete_customer_name(request):
     term = request.GET.get('term', '')
     customers = customer.objects.filter(customer__icontains=term)
-    results = [{'id': customer.id, 'label': customer.customer} for customer in customers]
+    results = [{'id': customer, 'label': customer.customer} for customer in customers]
     return JsonResponse(results, safe=False)
 
 

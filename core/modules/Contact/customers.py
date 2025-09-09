@@ -134,7 +134,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 def check_email_exist(request):
     email = request.POST.get("email")
-    print(email, "iiiiiiiiiiiiiiii")
+    # print(email, "iiiiiiiiiiiiiiii")
 
     # Allow "NA" or "na" without checking for existence
     if email.lower() == "na":
@@ -152,7 +152,7 @@ def check_email_exist(request):
 @login_required
 def check_gst_exist(request):
     gst_number = request.POST.get("gst_number")
-    print(gst_number, "iiiiiiiiiiiiiiii")
+    # print(gst_number, "iiiiiiiiiiiiiiii")
     user_obj = customer.objects.filter(gst_number=gst_number).exists()
     if user_obj:
         return HttpResponse("True")
@@ -170,7 +170,7 @@ def validate_gst_number(gst_number):
 
 @login_required
 def fn_customer_List_View(request):
-    print("<><>1")
+    # print("<><>1")
     customer_data = customer.objects.all().order_by('-id')
     context = {'customer_data':customer_data}
     return render(request,template_path.Customer_list,context)

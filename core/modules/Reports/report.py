@@ -35,16 +35,16 @@ def debit_note_report(request):
         end_date_str = request.POST.get('end_date')
 
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        print(start_date,'start_date--')
+        # print(start_date,'start_date--')
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-        print(end_date,'end_date---')
+        # print(end_date,'end_date---')
 
         request.session['start_date'] = start_date_str
         request.session['end_date'] = end_date_str
 
         # Filter items within the date range
         items_within_range = Debit_Notes.objects.filter(cn_date__range=(start_date, end_date))
-        print("items_within_range",items_within_range)
+        # print("items_within_range",items_within_range)
         filtered_items = list(items_within_range.values(
         'cn_customer_name', 'cn_date', 'cn_invoice_no', 'cn_total','cn_sub_total','cn_igstval','cn_sgstval','cn_cgstval'))
         total_amount = sum(float(item.cn_total or 0) for item in items_within_range)
@@ -91,16 +91,16 @@ def credit_note_report(request):
         end_date_str = request.POST.get('end_date')
 
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        print(start_date,'start_date--')
+        # print(start_date,'start_date--')
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-        print(end_date,'end_date---')
+        # print(end_date,'end_date---')
 
         request.session['start_date'] = start_date_str
         request.session['end_date'] = end_date_str
 
         # Filter items within the date range
         items_within_range = Credit_Notes.objects.filter(cn_date__range=(start_date, end_date))
-        print("items_within_range",items_within_range)
+        # print("items_within_range",items_within_range)
         filtered_items = list(items_within_range.values(
         'cn_customer_name', 'cn_date', 'cn_invoice_no', 'cn_total','cn_sub_total','cn_igstval','cn_sgstval','cn_cgstval'))
         total_amount = sum(float(item.cn_total or 0) for item in items_within_range)
@@ -475,7 +475,7 @@ def vendor_outstanding(request):
     }
     
     if request.method == "POST":
-        print(request.POST)
+        # print(request.POST)
         customer_nm = request.POST['vendor_id']
         from_date_str = request.POST['from_date']
         to_date_str = request.POST['to_date']
@@ -500,7 +500,7 @@ def vendor_outstanding(request):
             # if item:
             #     due_amt = item.dueamount  # Accessing the dueamount attribute correctly
 
-            print(invoice, '**')
+            # print(invoice, '**')
             ven_entries.append({
                 'invoice_number': invoice.id,
                 'date': invoice.purchase_invoice_date,
@@ -1088,7 +1088,7 @@ from django.db.models.functions import Cast
 @login_required
 def inventory_division_date(request):
     inventory_list = inventory.objects.all()  
-    print(inventory_list, 'inventory_list---') 
+    # print(inventory_list, 'inventory_list---') 
     return render(request, template_path.inventory_division_date_report, {'inventory_list': inventory_list})
 
 

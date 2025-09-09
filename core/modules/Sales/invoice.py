@@ -146,7 +146,7 @@ def add_invoice_data(request):
         # cust_data.save()
         i = 0
         max_row = int(request.POST.get('iid[]',0))
-        print(max_row)
+        # print(max_row)
         while i <= max_row:
             item_code = request.POST.get(f'itemcode_{i}')
             quantity_sold = float(request.POST.get(f'qty_{i}'))
@@ -287,7 +287,7 @@ def check_inventory_stock_edit(request):
             return JsonResponse({'error': 'Invalid quantity format'}, status=400)
 
         net_qty_needed = requested_qty - old_qty 
-        print(net_qty_needed,"net_qty_needed.........")
+        # print(net_qty_needed,"net_qty_needed.........")
 
         if opening_stock_quantity >= net_qty_needed:
             return JsonResponse({'success': True})  
@@ -295,7 +295,7 @@ def check_inventory_stock_edit(request):
             return JsonResponse({'success': False, 'message': 'Not enough stock', 'available_qty': opening_stock_quantity})
 
     except Exception as e:
-        print(f"Error: {e}")
+        # print(f"Error: {e}")
         return JsonResponse({'error': str(e)}, status=500)
 
 @login_required
@@ -400,7 +400,7 @@ def edit_invoice_data(request, id):
         Invoice_object.save()
         i = 1
         max_row = int(request.POST.get('iid[]',0))
-        print(max_row)
+        # print(max_row)
         invoice_items.objects.filter(invoice_id = id).delete()
         # while i <= max_row:
         for i in range(1, max_row + 1):
@@ -409,7 +409,7 @@ def edit_invoice_data(request, id):
             quantity_sold = float(request.POST.get(f'qty_{i}'))
             quantity_sold_old = float(request.POST.get(f'qty_old_{i}'))
             remaining_qty = abs(quantity_sold_old - quantity_sold)
-            print(remaining_qty,"remaining_qty")
+            p/rint(remaining_qty,"remaining_qty")
 
 
             inventory_item = inventory.objects.filter(item_code=dc_item_code).first()
@@ -418,7 +418,7 @@ def edit_invoice_data(request, id):
                 t_qty = float(inventory_item.opening_stock_quantity)
                 if t_qty >= float(remaining_qty):
                     inventory_item.opening_stock_quantity = t_qty - float(remaining_qty)
-                    print(inventory_item.opening_stock_quantity,"inventory_item.opening_stock_quantity,,,,,,,")
+                    # print(inventory_item.opening_stock_quantity,"inventory_item.opening_stock_quantity,,,,,,,")
                     inventory_item.save()
                 else:
                     print(f"Error: Insufficient stock for item code {dc_item_code}. Available: {inventory_item.opening_stock_quantity}, Requested: {quantity_sold}")
@@ -451,7 +451,7 @@ def edit_invoice_data(request, id):
 @login_required
 def delete_invoice_data(request, id):
     # Get the customer instance based on the provided ID
-    print("Httt")
+    # print("Httt")
     invoice_instance = get_object_or_404(Invoice, id=id)    
     invoice_item_instance = invoice_items.objects.filter(invoice_id = id)
     invoice_instance.delete()
@@ -512,7 +512,7 @@ def invoice_pdf(request, id):
             cgst_rate_str = invo.invoice_cgstper.strip('%')
             cgst_rate = float(cgst_rate_str)
             cgst_amount = (taxable_value * cgst_rate) / 100
-            print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
+            # print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
         except (ValueError, TypeError):
             cgst_rate = cgst_amount = 0.0
 
@@ -521,7 +521,7 @@ def invoice_pdf(request, id):
             sgst_rate_str = invo.invoice_sgstper.strip('%')
             sgst_rate = float(sgst_rate_str)
             sgst_amount = taxable_value * (sgst_rate / 100)
-            print(sgst_amount)
+            # print(sgst_amount)
         except (ValueError, TypeError):
             sgst_rate = sgst_amount = 0.0
 
@@ -661,7 +661,7 @@ def download_invoice_pdf(request, id):
             cgst_rate_str = invo.invoice_cgstper.strip('%')
             cgst_rate = float(cgst_rate_str)
             cgst_amount = (taxable_value * cgst_rate) / 100
-            print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
+            # print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
         except (ValueError, TypeError):
             cgst_rate = cgst_amount = 0.0
 
@@ -670,7 +670,7 @@ def download_invoice_pdf(request, id):
             sgst_rate_str = invo.invoice_sgstper.strip('%')
             sgst_rate = float(sgst_rate_str)
             sgst_amount = taxable_value * (sgst_rate / 100)
-            print(sgst_amount)
+            # print(sgst_amount)
         except (ValueError, TypeError):
             sgst_rate = sgst_amount = 0.0
 

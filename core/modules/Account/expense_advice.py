@@ -132,7 +132,7 @@ def get_vendor_expenses(request):
         )
         # Convert QuerySet to a list of dictionaries
         data_list = list(data)
-        print("00000000000000",data_list)
+        # print("00000000000000",data_list)
         return JsonResponse(data_list, safe=False, encoder=DjangoJSONEncoder)
     return JsonResponse({'error': 'Invalid request method'})
 
@@ -173,11 +173,11 @@ def fnedit_expense_advice(request, advice_id):
         }
         return render(request, template_path.expense_advice_edit_path, context)
     elif request.method == "POST":
-        print(request.POST)
+        # print(request.POST)
         expense_advice_date_str = request.POST.get('date')
         expense_advice_check_str = request.POST.get('cheque_date')
 
-        print(expense_advice_date_str, expense_advice_check_str, "lllllllllllll")
+        # print(expense_advice_date_str, expense_advice_check_str, "lllllllllllll")
         if expense_advice_check_str:
             expense_advice_check_date = datetime.strptime(expense_advice_check_str, '%Y-%m-%d').date()
         else:

@@ -243,7 +243,7 @@ def getitemscodedetails_1(request):
             # print(item_code)
             item_details = expense_item.objects.filter(item_code__startswith=item_code)
             itemCode = [i.ex_item_code for i in item_details]
-            print("PPPPPPPP",itemCode)
+            # print("PPPPPPPP",itemCode)
             # Example response
             response_data = {"data":itemCode}
             # response_data = {'status': 'success', 'message': 'Data received successfully'}

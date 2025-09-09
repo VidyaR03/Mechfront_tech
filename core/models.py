@@ -952,7 +952,7 @@ class acc_expense_items(models.Model):
 class payment_received_item(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     invoicedate = models.CharField(max_length=50, null = True)
-    customer = models.CharField(max_length=50, null = True)
+    customer_name = models.ForeignKey(customer,on_delete=models.CASCADE, null=True)
     invoicenumber = models.CharField(max_length=50, null = True)
     invoiceamount = models.CharField(max_length=50, null = True)
     paymentreceivedno = models.CharField(max_length=50, null = True)
@@ -1083,12 +1083,12 @@ class Performa_Invoice(models.Model):
             else:
                 prefix = 'L'
             latest_id = Performa_Invoice.objects.filter(custom_id__startswith=prefix).order_by('-id').first()
-            print(latest_id)
+            # print(latest_id)
             if latest_id:
                 latest_number = int(latest_id.custom_id.split('-')[1])
             else:
                 latest_number = 0
-            print(latest_number)
+            # print(latest_number)
             new_id = f"{prefix}-{latest_number + 1}"
             self.custom_id = new_id
         super().save(*args, **kwargs)

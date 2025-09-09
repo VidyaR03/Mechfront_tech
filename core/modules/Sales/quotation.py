@@ -74,7 +74,7 @@ def add_quotation_data(request):
         q_date = datetime.strptime(q_date_str, '%d-%m-%Y').date()
 
         q_quotation_number = generate_quotation_number()
-        print(q_quotation_number,"qn........")
+        # print(q_quotation_number,"qn........")
         quotation_data = {
             'q_date':q_date,
             'q_quotation_number':q_quotation_number,
@@ -117,7 +117,7 @@ def add_quotation_data(request):
 
         quotation_object = quotation(**quotation_data)
         quotation_object.save()
-        print(quotation_object)
+        # print(quotation_object)
         latest_quotation_id = quotation.objects.latest('id')
         i = 0
         max_row = int(request.POST.get('iid[]',0))
@@ -135,7 +135,6 @@ def add_quotation_data(request):
                 q_total = request.POST.get(f'total_{i}'),
                 q_quotation_id = latest_quotation_id.id
             )
-            print(q_item)
 
             q_item.save()
             i = i+1
@@ -251,7 +250,7 @@ def edit_quotation_data(request, id):
     if request.method == "GET":
         quotation_data = get_object_or_404(quotation, id=id)
         customer_name = quotation_data.q_customer_name
-        print(customer_name.customer,"customer_name..............")
+        # print(customer_name.customer,"customer_name..............")
         # quotation_data = quotation.objects.filter(id = id).first()
         # customer_name = customer.objects.filter(id = quotation_data.q_customer_name_id.id)
         # dispatch_through = transporter.objects.filter(id = quotation_data.q_dispatch_id.id)
@@ -427,7 +426,6 @@ def getitemscodedetails_1(request):
             itemCode = [i.item_code for i in item_details]
             # Example response
             response_data = {"data":itemCode}
-            print(response_data,'$$$$$$$$$$')
             # response_data = {'status': 'success', 'message': 'Data received successfully'}
             return JsonResponse(response_data)
 

@@ -78,17 +78,7 @@
                                     </div>
                                 </div>
                                 {% endcomment %}
-                                <!-- <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label style="color:#f00">Deposite to</label>
-                                        <select class="form-select" name="deposite" id="deposite" required>
-                                            <option value="" disabled selected>Select Vendor</option>
-                                            {% for item in vendor_data %}
-                                            <option value="{{ item.id }}">{{item.company_name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div> -->
+                               
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label style="color:#f00">Deposite to</label>
@@ -376,7 +366,7 @@
                 type: 'ajax',
                 method: 'post',
                 //url: '#',
-                url: '/get_customerinvoice_data/',
+                url: "{% url 'get_customerinvoice_data' %}",
                 data: { 'customer': customer },
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
                 async: false,
@@ -393,7 +383,7 @@
                         dueamount = totalamt - payments;
                         html += '<tr class="tblro">' +
                             '<td><input class="no-outline" id="invoicedate' + i + '" name= "invoicedate' + i + '" value="' + data[i].invoice_date + '"></td>' +
-                            '<td><input class="no-outline" id="customername' + i + '" name= "customername' + i + '" value="' + data[i].invoice_customer_name + '"></td>' +
+                            '<td><input class="no-outline" id="customername' + i + '" name= "customername' + i + '" value="' + data[i].invoice_customer_name_customer__customer + '"></td>' +
                             '<td><input class="no-outline" id="invoiceno' + i + '" name= "invoiceno' + i + '" value="' + data[i].id + '"></td>' +
                             '<td><input class="no-outline" id="invoiceamount' + i + '" name= "invoiceamount' + i + '" value="' + data[i].invoice_total + '"></td>' +
                             '<td>' + '<input type="text" class="no-outline" name="paymentreceiptno' + i + '" id="paymentreceiptno' + i + '" value="' + paymentreceiptno + '"></td>' +
@@ -438,7 +428,6 @@
             //alert(id_val);
 
             dueamount = Number($('#dueamount' + id_val).val());
-            console.log("oooooooooo",dueamount)
             //alert(dueamount);
 
             payment = Number($('#payment' + id_val).val());
@@ -454,98 +443,6 @@
 
         }
 
-        /*$("#btn_submit").on("click",function(e)
-        {
-            var customer = $("#customer").val();
-            var amount= $("#amount").val();
-        
-            if(customer == '')
-            {
-              alert('please Enter Customer')
-            }
-            else if(amount == '')
-            {
-              alert('Please Enter Amount')
-            }
-            else
-            {
-                //e.preventDefault();
-                $('.paym').each(function(i, obj) 
-                {
-                    //alert(i);
-        
-                    var deposit =$("#deposit").val();
-                    var customer = $("#customer").val();
-                    var date= $("#date").val();
-                    var payment_mode= $("#payment_mode").val();
-                    var mobile= $("#mobile").val();
-                    var balance= $("#balance").val();
-                    var amount= $("#amount").val();
-                    var bank_charges= $("#bank_charges").val();
-                    var cheque_no= $("#cheque_no").val();
-                    var cheque_date= $("#cheque_date").val();
-                    var reference= $("#reference").val();
-                    var note= $("#note").val();
-                    var total= $("#total").val();
-                    var amount_received= $("#amount_received").val();
-                    var amount_used= $("#amount_used").val();
-                    var amount_excess= $("#amount_excess").val();
-        
-                    if($("#balance").is(':checked'))
-                    {
-                      var balance = 'Checked';
-                    }
-                    else
-                    {
-                      var balance = 'UnChecked';
-                      //alert('unchecked');
-                    }
-        
-                    //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-        
-                    $.post('https://olatechs.in/crm/supreeno/admin/save_payment_received',{deposit:deposit,customer:customer,date:date,payment_mode:payment_mode,mobile:mobile,balance:balance,amount:amount,bank_charges:bank_charges,cheque_no:cheque_no,cheque_date:cheque_date,reference:reference,note:note,total:total,amount_received:amount_received,amount_used:amount_used,amount_excess:amount_excess},function(data)
-                    {
-                      //alert('aaaa'); return;
-                    });
-                
-                
-                });
-        
-                $('.tblro').each(function(i, obj) 
-                {
-                    //alert(i);
-                    var invoicedate =$("#invoicedate"+i).val();
-                    var invoiceno = $('#invoiceno'+i).val();
-                    var invoiceamount = $('#invoiceamount'+i).val();
-                    var dueamount = $('#dueamount'+i).val();
-                    var payment = $('#payment'+i).val();
-        
-                    if($("#balance").is(':checked'))
-                    {
-                      var balance = 'Checked';
-                    }
-                    else
-                    {
-                      var balance = 'UnChecked';
-                      //alert('unchecked');
-                    }
-        
-                    //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-        
-                    $.post('https://olatechs.in/crm/supreeno/admin/save_payment_received_entries',{invoicedate:invoicedate,invoiceno:invoiceno,invoiceamount:invoiceamount,dueamount:dueamount,payment:payment},function(data)
-                    {
-                      //alert('aaaa'); return;
-                    });
-                
-                
-                });
-        
-                //alert('Payment Received SucessFull');
-        
-                //$('.success_message').html('<div class="alert alert-info">Data analyzing...please wait...</div>');
-        
-            }
-        })*/
 
     </script>
 
@@ -600,53 +497,7 @@
                         alert('Please Enter Amount')
                     }
                     else {
-                        //e.preventDefault();
-                        /*$('.paym,.tblro').each(function(i, obj) 
-                        {
-                            //alert(i);
-        
-                            var deposit =$("#deposit").val();
-                            var customer = $("#customer").val();
-                            var date= $("#date").val();
-                            var payment_mode= $("#payment_mode").val();
-                            var mobile= $("#mobile").val();
-                            var balance= $("#balance").val();
-                            var amount= $("#amount").val();
-                            var bank_charges= $("#bank_charges").val();
-                            var cheque_no= $("#cheque_no").val();
-                            var cheque_date= $("#cheque_date").val();
-                            var reference= $("#reference").val();
-                            var note= $("#note").val();
-                            var total= $("#total").val();
-                            var amount_received= $("#amount_received").val();
-                            var amount_used= $("#amount_used").val();
-                            var amount_excess= $("#amount_excess").val();
-        
-                            var invoicedate =$("#invoicedate"+i).val();
-                            var invoiceno = $('#invoiceno'+i).val();
-                            var invoiceamount = $('#invoiceamount'+i).val();
-                            var dueamount = $('#dueamount'+i).val();
-                            var payment = $('#payment'+i).val();
-        
-                            if($("#balance").is(':checked'))
-                            {
-                              var balance = 'Checked';
-                            }
-                            else
-                            {
-                              var balance = 'UnChecked';
-                              //alert('unchecked');
-                            }
-        
-                            //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
-        
-                            $.post('https://olatechs.in/crm/supreeno/admin/save_payment_received',{deposit:deposit,customer:customer,date:date,payment_mode:payment_mode,mobile:mobile,balance:balance,amount:amount,bank_charges:bank_charges,cheque_no:cheque_no,cheque_date:cheque_date,reference:reference,note:note,total:total,amount_received:amount_received,amount_used:amount_used,amount_excess:amount_excess,invoicedate:invoicedate,invoiceno:invoiceno,invoiceamount:invoiceamount,dueamount:dueamount,payment:payment},function(data)
-                            {
-                              //alert('aaaa'); return;
-                            });
-                        
-                        
-                        });*/
+                       
 
                         $('.paym').each(function (i, obj) {
                             //alert(i);

@@ -32,11 +32,15 @@ def add_credit_notes_data(request):
         godown_name = godown.objects.all()
         dispatch_through = transporter.objects.all()
         item_data = inventory.objects.all()
+        current_date = datetime.today().strftime('%d-%m-%Y')
+
         context ={ 
             'customer_name' : customer_name,
             'dispatch_through' : dispatch_through,
             'item_data': item_data,
-            'godown_name':godown_name
+            'godown_name':godown_name,
+            'current_date': current_date,  # pass it to template
+
             }
 
         return render(request, template_path.add_credits_notes, context)
