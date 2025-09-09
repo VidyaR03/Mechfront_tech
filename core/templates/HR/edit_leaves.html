@@ -39,9 +39,17 @@ CRM
                                         <div class="form-group">
                                             <label>Employee Name</label>
                                             <select class="form-select" name="employee_name" id="emp_name" required>
-                                                <option >{{form.employee_name.name}}</option>
+                                                {% if form.employee_name %}
+                                                    <option value="{{ form.employee_name.id }}">{{ form.employee_name.name }}</option>
+                                                {% else %}
+                                                    <option value="">Select Employee</option>
+                                                {% endif %}
                                                 {% for item in employee_name %}
-                                                <option value="{{ item.name }}">{{ item.name }}</option>
+                                                    {% if form.employee_name and item.id == form.employee_name.id %}
+                                                        {# Already selected above #}
+                                                    {% else %}
+                                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                                    {% endif %}
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -74,17 +82,20 @@ CRM
                                     </div> 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Leave Reason</label>
-                                            <input type="text" name="leave_reason" id="leave_reason" class="form-control" value="{{form.leave_reason}}" placeholder="Leave reason" required>
+                                            <label>Remaining Leaves</label>
+                                            <input type="number" class="form-control" name="leaves_allocated" id="leaves_allocated" readonly
+                                                value="{{ form.leaves_allocated|default_if_none:'' }}">
                                         </div>
                                     </div>
 
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Leave Reason</label>
+                                            <input type="text" name="leave_reason" id="leave_reason" class="form-control" value="{{form.leave_reason}}" placeholder="Leave reason" required>
+                                        </div>
+                                    </div>                                                        
                                  
-                                  
-                                 
-                                 
-
-                                   
+                                                                   
                                                      
                                       
 
@@ -386,7 +397,33 @@ CRM
        });
    });
  </script>
- 
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const empNameSelect = document.getElementById('emp_name');
+    const leavesAllocatedInput = document.getElementById('leaves_allocated');
+
+    empNameSelect.addEventListener('change', function() {
+        const selectedId = empNameSelect.value;
+        let url = "{% url 'get_emp_leaves_allocated' 0 %}".replace("0", selectedId);
+
+        if (selectedId) {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    leavesAllocatedInput.value = data.leaves_allocated || 0;
+                });
+        } else {
+            leavesAllocatedInput.value = '';
+        }
+    });
+
+    // Fill value for initial employee on page load
+    if (empNameSelect.value) {
+        empNameSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
 {% endblock custom_js %}    
 {% endblock main_content %}
 

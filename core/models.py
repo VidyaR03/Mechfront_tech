@@ -194,6 +194,8 @@ class employee(models.Model):
     earned_leaves = models.FloatField(null=True)
     casual_leaves = models.FloatField(null=True)
     ifsc_code = models.CharField(max_length=250,null=True,blank=True)
+    leaves_allocated = models.FloatField(null=True, default=0.00)
+
 
     class Meta:
         db_table = 'employee'

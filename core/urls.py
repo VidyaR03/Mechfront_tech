@@ -72,11 +72,12 @@ urlpatterns = [
     path('edit_holiday/<int:holiday_id>/', views.fn_holiday_edit, name='edit_holiday'),
     path('delete_holiday/<int:holiday_id>/', views.delete_holiday, name='delete_holiday'), 
 
-    path('add_hr_leaves/',views.add_employee_leaves , name="add_hr_leaves"),
+    path('add_hr_leaves/',views.add_employee_leaves, name="add_hr_leaves"),
     path('hr_leaves_List_View/',views.fn_employee_leave_List , name="hr_leaves_List_View"),
     path('edit_hr_leaves/<int:id>/', views.edit_employee_leaves, name='edit_hr_leaves'),
     path('delete_hr_leaves/<int:id>/', views.delete_employee_leaves, name='delete_hr_leaves'), 
-    
+    path('get_emp_leaves_allocated/<int:emp_id>/', views.get_emp_leaves_allocated, name='get_emp_leaves_allocated'),
+
    
     path('add_emp_slary/',views.add_employee_salary , name="add_emp_slary"),
     path('fn_emp_salary_List/',views.fn_employee_salary_List , name="fn_emp_salary_List"),
