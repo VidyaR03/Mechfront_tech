@@ -34,12 +34,14 @@ CRM
                         <div class="card-body">
                             <form method="post" id="vendor_form" action="" autocomplete="off">
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Voucher Number <span style="color: red;">*</span></label>
-                                            <input type="number" class="form-control" name="voucher_number" id="voucher_number" placeholder="Voucher Number" required>
-                                        </div>
-                                    </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Voucher Number <span style="color: red;">*</span></label>
+                            <input type="number" class="form-control" name="voucher_number" id="voucher_number" placeholder="Voucher Number"
+                                min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                        </div>
+                    </div>
+
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="inputDefault" >Date <span style="color: red;">*</span></label>
@@ -111,8 +113,7 @@ CRM
                                     <div class="col-md-3">
                                         <div class="form-group">
                                         <label>Balance  <span style="color: red;">*</span></label>
-                                           <input type="number" class="form-control" name="balance" id="balance" placeholder="balance" required>
-                                        </div>
+                                           <input type="number" class="form-control" name="balance" id="balance" placeholder="balance"  min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>                                     </div>
                                      </div>
                                                      
                                       

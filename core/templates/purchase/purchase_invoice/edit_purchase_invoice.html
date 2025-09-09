@@ -78,17 +78,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label >Vendor Name</label>
-                                            <div>
-                                                <input class="form-control " type="text"
-                                                        name="vendor_name" id="vendor_name" value="{{purchaseinvoice_data.purchase_invoice_vendor_name.id}}"
-                                                        placeholder="">
-                                                
-                                            </div>
-                                        </div>
-                                    </div> -->
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Vendor  Company Name  <span style="color: red;">*</span></label>
@@ -124,7 +113,7 @@
                                             <select class="form-control" name="place_of_supply" id="place_of_supply"
                                             onchange="totaltaxamt();">
                                                 <option value="{{purchaseinvoice_data.purchase_invoice_source_supply}}">
-                                                    {{purchase_order_data.po_source_supply}}</option>
+                                                    {{purchaseinvoice_data.purchase_invoice_source_supply}}</option>
                                                     <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
 
                                                     <option value="ANDHRA PRADESH (BEFORE DIVISION)">ANDHRA PRADESH (BEFORE DIVISION)</option>
@@ -273,23 +262,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label >Freight</label>
-                                            <input type="text" class="form-control" name="freight" id="freight"
-                                                value="{{purchaseinvoice_data.purchase_invoice_freight}}">
-                                        </div>
-                                    </div> -->
-                                    <!-- <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Shipping Address</label>
-                                            <select class="form-select" name="shipping_address" id="shipping_address">
-                                                <option>Select Shipping Address</option>
-                                                <option value="89">, , , , </option>
-                                               
-                                            </select>
-                                        </div>
-                                    </div> -->
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Amount)</label>
@@ -449,7 +421,7 @@
                                                 <!-- <div class="form-group float-end mb-0"> <button class="btn btn-primary" type="submit">Add Item</button> </div> -->
                                                 <div class="invoice-fields">
                                                     <h4 class="field-title">Terms and Conditions</h4> <br> <textarea
-                                                        class="form-control" name="note" aria-valuenow="{{purchaseinvoice_data.purchase_invoice_note}}"></textarea>
+                                                        class="form-control" name="note" >{{purchaseinvoice_data.purchase_invoice_note}}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-lg-5 col-md-6">

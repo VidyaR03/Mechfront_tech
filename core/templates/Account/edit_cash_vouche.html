@@ -38,7 +38,7 @@ CRM
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Voucher Number <span style="color: red;">*</span></label>
-                                            <input type="number" class="form-control"   value="{{form.voucher_number}}" name="voucher_number" id="voucher_number" placeholder="Voucher Number" required>
+                                            <input type="number" class="form-control"   value="{{form.voucher_number}}" name="voucher_number" id="voucher_number" placeholder="Voucher Number"    min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -113,7 +113,7 @@ CRM
                                     <div class="col-md-3">
                                         <div class="form-group">
                                         <label>Balance <span style="color: red;">*</span></label>
-                                           <input type="text" class="form-control"  value="{{form.balance}}" name="balance" id="balance" placeholder="balance" required>
+                                           <input type="text" class="form-control"  value="{{form.balance}}" name="balance" id="balance" placeholder="balance"    min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');"  required>
                                         </div>
                                      </div>
                                                 

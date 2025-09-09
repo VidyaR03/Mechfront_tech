@@ -26,11 +26,14 @@ def add_purchaseinvoice_data(request):
         vendor_name = vendor.objects.all()
         item_data = inventory.objects.all()
         dispatch_through = transporter.objects.all()
+        current_date = datetime.today().strftime('%d-%m-%Y')
+
 
         context ={ 
             'vendor_name' : vendor_name,
             'item_data': item_data,
             'dispatch_through':dispatch_through,
+            'current_date':current_date
             }
         return render(request, template_path.purchase_invoice_add, context)
     elif request.method == "POST":

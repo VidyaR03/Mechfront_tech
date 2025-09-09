@@ -33,28 +33,41 @@ def add_purchase_order_data(request):
         vendor_name = vendor.objects.all()
         dispatch_through = transporter.objects.all()
         item_data = inventory.objects.all()
+        current_date = datetime.today().strftime('%d-%m-%Y')
+
         context ={ 
             'vendor_name' : vendor_name,
             'dispatch_through' : dispatch_through,
-            'item_data': item_data
+            'item_data': item_data,
+            'current_date':current_date
             }
 
         return render(request, template_path.purchase_order_add, context)
     elif request.method == "POST":
+        import re
+        
         lattest_order = Purchase_order.objects.all().order_by('id').last()
 
         if lattest_order and lattest_order.po_no:
             last_po = lattest_order.po_no
-            po_number = int(last_po.split('-')[1]) + 1
+            po_suffix = last_po.split('-')[1] if '-' in last_po else last_po
+
+            # Remove all non-digit characters
+            numeric_part = re.sub(r'\D', '', po_suffix)
+
+            if numeric_part:
+                po_number = int(numeric_part) + 1
+            else:
+                po_number = 1
         else:
             po_number = 1
+
         po_no = f"PO-{po_number:03d}"
 
-        # Check for uniqueness of the po_no
+        # Ensure uniqueness
         while Purchase_order.objects.filter(po_no=po_no).exists():
-            po_number += 1  
-            po_no = f"PO-{po_number:03d}"  
-
+            po_number += 1
+            po_no = f"PO-{po_number:03d}"
 
         po_date_str = request.POST['order_date']
         po_delivery_date_str = request.POST['delivery_date']

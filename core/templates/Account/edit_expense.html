@@ -74,6 +74,7 @@ Ecoway
                                         <div class="form-group">
                                             <label>GST No. <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" value="{{expense_data.ex_gst_number}}" name="acc_gst" id="acc_gst" required>
+                                            <span id="gstError" style="color: red;"></span>
                                         </div>
                                     </div>
 
@@ -960,7 +961,20 @@ Ecoway
         finalamt = sum+sum1;
         $('.finalamt').val(finalamt);
     }*/
-
+    function setGstOption(gstNo) {
+        if (!validateGST(gstNo)) {
+            $('#gstError').text("Invalid GST Number");
+            $('#gst_option').val("");
+            updateTaxFields();
+            return false;
+        }
+        $('#gstError').text("");
+        const vendorStateCode = getStateCode(gstNo);
+        const gstType = (vendorStateCode === companyStateCode) ? "Intrastate" : "Interstate";
+        $('#gst_option').val(gstType);
+        updateTaxFields();
+        return true;
+    }
     function subtotal() {
         var freight = $('#freight').val();
         //alert(freight);
