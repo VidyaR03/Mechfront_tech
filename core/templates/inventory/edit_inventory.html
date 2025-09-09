@@ -81,35 +81,37 @@ Ecoway
                                  <select class="form-control" name="unit" id="unit" required>
                                     <option value="{{inventory_item.units}}" selected>{{inventory_item.units}}</option>
                             
-                                    <option value="" hidden>Select Unit</option>
-                                    <option value="kg">Kilogram (kg)</option>
-                                    <option value="g">Gram (g)</option>
-                                    <option value="mg">Milligram (mg)</option>
-                                    <option value="ltr">Litre (L)</option>
-                                    <option value="ml">Millilitre (mL)</option>
-                                    <option value="m">Meter (m)</option>
-                                    <option value="cm">Centimeter (cm)</option>
-                                    <option value="mm">Millimeter (mm)</option>
-                                    <option value="km">Kilometer (km)</option>
-                                    <option value="sq_m">Square Meter (m²)</option>
-                                    <option value="sq_km">Square Kilometer (km²)</option>
-                                    <option value="cubic_m">Cubic Meter (m³)</option>
-                                    <option value="cubic_cm">Cubic Centimeter (cm³)</option>
-                                    <option value="in">Inch (in)</option>
-                                    <option value="ft">Foot (ft)</option>
-                                    <option value="yd">Yard (yd)</option>
-                                    <option value="mile">Mile (mi)</option>
-                                    <option value="oz">Ounce (oz)</option>
-                                    <option value="lb">Pound (lb)</option>
-                                    <option value="ton">Ton (t)</option>
-                                    <option value="gal">Gallon (gal)</option>
-                                    <option value="qt">Quart (qt)</option>
-                                    <option value="pt">Pint (pt)</option>
-                                    <option value="cup">Cup</option>
-                                    <option value="tbsp">Tablespoon (tbsp)</option>
-                                    <option value="tsp">Teaspoon (tsp)</option>
-                                    <option value="other">Other</option>
-                                    <option value="Nos">Nos</option>
+
+    <option value="kg" {% if inventory_item.units == 'kg' %}selected{% endif %}>Kilogram (kg)</option>
+    <option value="g" {% if inventory_item.units == 'g' %}selected{% endif %}>Gram (g)</option>
+    <option value="mg" {% if inventory_item.units == 'mg' %}selected{% endif %}>Milligram (mg)</option>
+    <option value="ltr" {% if inventory_item.units == 'ltr' %}selected{% endif %}>Litre (L)</option>
+    <option value="ml" {% if form.units == 'ml' %}selected{% endif %}>Millilitre (mL)</option>
+    <option value="m" {% if inventory_item.units == 'm' %}selected{% endif %}>Meter (m)</option>
+    <option value="cm" {% if inventory_item.units == 'cm' %}selected{% endif %}>Centimeter (cm)</option>
+    <option value="mm" {% if inventory_item.units == 'mm' %}selected{% endif %}>Millimeter (mm)</option>
+    <option value="km" {% if inventory_item.units == 'km' %}selected{% endif %}>Kilometer (km)</option>
+    <option value="sq_m" {% if inventory_item.units == 'sq_m' %}selected{% endif %}>Square Meter (m²)</option>
+    <option value="sq_km" {% if inventory_item.units == 'sq_km' %}selected{% endif %}>Square Kilometer (km²)</option>
+    <option value="cubic_m" {% if inventory_item.units == 'cubic_m' %}selected{% endif %}>Cubic Meter (m³)</option>
+    <option value="cubic_cm" {% if inventory_item.units == 'cubic_cm' %}selected{% endif %}>Cubic Centimeter (cm³)</option>
+    <option value="in" {% if inventory_item.units == 'in' %}selected{% endif %}>Inch (in)</option>
+    <option value="ft" {% if inventory_item.units == 'ft' %}selected{% endif %}>Foot (ft)</option>
+    <option value="yd" {% if inventory_item.units == 'yd' %}selected{% endif %}>Yard (yd)</option>
+    <option value="mile" {% if inventory_item.units == 'mile' %}selected{% endif %}>Mile (mi)</option>
+    <option value="oz" {% if inventory_item.units == 'oz' %}selected{% endif %}>Ounce (oz)</option>
+    <option value="lb" {% if inventory_item.units == 'lb' %}selected{% endif %}>Pound (lb)</option>
+    <option value="ton" {% if inventory_item.units == 'ton' %}selected{% endif %}>Ton (t)</option>
+    <option value="gal" {% if inventory_item.units == 'gal' %}selected{% endif %}>Gallon (gal)</option>
+    <option value="qt" {% if inventory_item.units == 'qt' %}selected{% endif %}>Quart (qt)</option>
+    <option value="pt" {% if inventory_item.units == 'pt' %}selected{% endif %}>Pint (pt)</option>
+    <option value="cup" {% if inventory_item.units == 'cup' %}selected{% endif %}>Cup</option>
+    <option value="tbsp" {% if inventory_item.units == 'tbsp' %}selected{% endif %}>Tablespoon (tbsp)</option>
+    <option value="tsp" {% if inventory_item.units == 'tsp' %}selected{% endif %}>Teaspoon (tsp)</option>
+    <option value="other" {% if inventory_item.units == 'other' %}selected{% endif %}>Other</option>
+    <option value="Nos" {% if inventory_item.units == 'Nos' %}selected{% endif %}>Nos</option>
+
+
 
                                  </select>
                                  <div class="error-message" id="unit_error" style="display:none;color:red;">Please select a unit.</div>

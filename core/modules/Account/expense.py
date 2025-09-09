@@ -209,21 +209,6 @@ def delete_expense_vendor_data(request,expense_vendor_id):
     obj.delete()
     return redirect('expense_vendor_list')
 
-# @login_required
-# def delete_expense_vendor_data(request, expense_vendor_id):
-#     expense_vendor_obj = get_object_or_404(expense_vendor, id=expense_vendor_id)
-
-#     if request.method == "POST":
-#         # Delete associated expense items first
-#         expense_item.objects.filter(ex_expense_id=expense_vendor_id).delete()
-
-#         # Then delete the expense vendor object
-#         expense_vendor_obj.delete()
-
-#         return redirect('expense_vendor_list')  # Redirect to the expense vendor list view
-
-#     # Optionally, you can render a confirmation page for GET requests
-#     return render(request, 'confirm_expense_vendor_delete.html', {'expense_vendor': expense_vendor_obj})
 
 
 import json
