@@ -1,0 +1,590 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+Ecoway
+{% endblock %}
+
+{% block custom_css %}
+
+<style>
+   /* Inactive tab styles */
+   .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+      color: #ccc;
+      /* Faint gray color for inactive tabs */
+   }
+
+   /* Active tab style */
+   .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+      color: #000;
+      /* Black color for active tab */
+   }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<div class="page-wrapper" style="padding-top:0px;">
+    <div class="content container-fluid">
+<div class="row">
+    <div class="col-sm-12">
+        <h3 class="page-title">
+            <a href="{% url 'inventory_list_data' %}" class="me-2">
+                <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="Back"></i>
+            </a>
+            Edit Inventory
+        </h3>
+    </div>
+</div>
+      <div class="row">
+         <div class="col-md-12">
+            <div class="card" data-select2-id="9">
+               <div class="card-body" data-select2-id="8">
+                  <form method="post" id="inventory_form" action="#" enctype="multipart/form-data" autocomplete="off" novalidate="novalidate">
+                     {% csrf_token %}
+                     <input type="hidden" name="inventory_id" id="inventory_id" value="{{inventory_item.id}}">
+                     <div class="row">
+
+                         <!-- Item Description, Item Code, Unit, Type, Tax Type -->
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>Item Description <span style="color: red;">*</span></label>
+                                 <input class="form-control" type="text" name="inventory_name" id="name" value="{{inventory_item.inventory_name}}" required>
+                                 <div class="error-message" id="inventory_name_error" style="display:none;color:red;">Please enter the item description.</div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>Company Name <span style="color: red;">*</span></label>    
+                                <select name="company_name" class="form-control" required>
+                                {% for vendor in company_name %}
+                                <option value="{{ vendor.id }}"
+                                    {% if inventory_item.vendor_name and vendor.id == inventory_item.vendor_name.id %}
+                                        selected
+                                    {% endif %}>
+                                                {{ vendor.company_name }}
+
+                                {% endfor %}
+                            </select>
+                             </div>
+                        </div>
+
+
+
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>Item Code <span style="color: red;">*</span></label>
+                                 <input class="form-control" type="text" name="item_code" value="{{inventory_item.item_code}}" id="item_code" required>
+                                 <div class="error-message" id="item_code_error" style="display:none;color:red;">Please enter the item code.</div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>Unit <span style="color: red;">*</span></label>
+                                 <select class="form-control" name="unit" id="unit" required>
+                                    <option value="{{inventory_item.units}}" selected>{{inventory_item.units}}</option>
+                            
+                                    <option value="" hidden>Select Unit</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="g">Gram (g)</option>
+                                    <option value="mg">Milligram (mg)</option>
+                                    <option value="ltr">Litre (L)</option>
+                                    <option value="ml">Millilitre (mL)</option>
+                                    <option value="m">Meter (m)</option>
+                                    <option value="cm">Centimeter (cm)</option>
+                                    <option value="mm">Millimeter (mm)</option>
+                                    <option value="km">Kilometer (km)</option>
+                                    <option value="sq_m">Square Meter (m²)</option>
+                                    <option value="sq_km">Square Kilometer (km²)</option>
+                                    <option value="cubic_m">Cubic Meter (m³)</option>
+                                    <option value="cubic_cm">Cubic Centimeter (cm³)</option>
+                                    <option value="in">Inch (in)</option>
+                                    <option value="ft">Foot (ft)</option>
+                                    <option value="yd">Yard (yd)</option>
+                                    <option value="mile">Mile (mi)</option>
+                                    <option value="oz">Ounce (oz)</option>
+                                    <option value="lb">Pound (lb)</option>
+                                    <option value="ton">Ton (t)</option>
+                                    <option value="gal">Gallon (gal)</option>
+                                    <option value="qt">Quart (qt)</option>
+                                    <option value="pt">Pint (pt)</option>
+                                    <option value="cup">Cup</option>
+                                    <option value="tbsp">Tablespoon (tbsp)</option>
+                                    <option value="tsp">Teaspoon (tsp)</option>
+                                    <option value="other">Other</option>
+                                    <option value="Nos">Nos</option>
+
+                                 </select>
+                                 <div class="error-message" id="unit_error" style="display:none;color:red;">Please select a unit.</div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>Type</label>
+                                 <select class="form-control" name="good_type" id="good_type">
+                                    <option value="{{inventory_item.type}}" selected>{{inventory_item.type}}</option>
+                                    <option value="Goods">Goods</option>
+                                     <option value="Service">Services</option>
+                                 </select>
+                                 <div class="error-message" id="good_type_error" style="display:none;color:red;">Please select a type.</div>
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>Tax Type</label>
+                                 <select class="form-control" name="tax_type" id="tax_type">
+                                     
+                                    <option value="{{inventory_item.tax_type}}" selected> {{inventory_item.tax_type}}</option>
+                                    <option value="" hidden>Select Tax Type</option>
+                                     <option value="Non GST">Non GST</option>
+                                     <option value="Taxable" selected>Taxable</option>
+                                 </select>
+                                 <div class="error-message" id="tax_type_error" style="display:none;color:red;">Please select a tax type.</div>
+                             </div>
+                         </div>
+                         <!-- HSN, SKU, Default Discount -->
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>HSN/SAC <span style="color: red;">*</span></label>
+                                 <input class="form-control" type="number" name="hsn" oninput="this.value = this.value.replace(/[^0-9]/g, '');"  value="{{inventory_item.hsn}}" required>
+                                 <!-- <div class="error-message" id="hsn_error" style="display:none;color:red;">Please enter a valid 8 digit HSN code. </div> -->
+                             </div>
+                         </div>
+                         <div class="col-md-4">
+                             <div class="form-group">
+                                 <label>SKU</label>
+                                 <input class="form-control" type="number" name="sku" id="sku"  value="{{inventory_item.sku}}" pattern="\d{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                 <div class="error-message" id="sku_error" style="display:none;color:red;">Please enter a valid SKU.</div>
+                             </div>
+                         </div>
+                       
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Default Discount (%) </label>
+                                <input class="form-control" type="text" name="default_discount" id="default_discount" 
+                                       value="{{ inventory_item.default_discount }}" 
+                                       pattern="\d{1,5}(\.\d{0,2})?" 
+                                       title="Enter a number with up to 5 digits before the decimal and up to 2 digits after the decimal."
+                                       maxlength="3"
+                                       oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+                                <div class="error-message" id="default_discount_error" style="display:none;color:red;">
+                                    Please enter a valid discount.
+                                </div>
+                            </div>
+                        </div>
+                        
+                         
+                         <!-- Sales Information Section -->
+                         <div class="col-lg-3 pt11">
+                             <h5>
+                            <input type="checkbox"
+                                name="sales_information"
+                                id="sales_information"
+                                value="sales_information"
+                                style="vertical-align: middle;"
+                                {% if inventory_item.sales_checkbox %}checked{% endif %}>
+                                Sales Information
+                             </h5>
+                         </div>
+                         <!-- Sales Rate -->
+<div class="col-md-2 pt11 sales_information hidden">
+    <div class="form-group">
+        <label>Rate <span style="color: red;">*</span></label>
+        <input class="form-control" type="number" step="0.01" name="sale_rate" id="sale_rate" value="{{inventory_item.sales_rate}}" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(this.value.split('.').length > 2) this.value = this.value.substring(0, this.value.lastIndexOf('.'));">
+        <div class="error-message" id="sale_rate_error" style="display:none;color:red;">Please enter the sales rate.</div>
+    </div>
+</div>
+                         <div class="col-md-3 pt11 sales_information hidden">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" name="sale_description" id="sale_description"> {{inventory_item.sales_information_description}}</textarea>
+                                <div class="error-message" id="sale_description_error" style="display:none;color:red;">Please enter a sales description.</div>
+                            </div>
+                        </div>
+                         <div class="col-md-3 pt11 sales_information hidden">
+                             <div class="form-group" hidden>
+                                 <label>Sales</label>
+                                 <select class="form-control" name="sales_account" id="sales_account">
+                                     <option value="">Select Account</option>
+
+                                     <option value="{{inventory_item.sales}}" selected>{{inventory_item.sales}}</option>
+                                    
+                                       <option value="Sales">Sales</option>
+                                       <optgroup label="Income">
+                                       <option value="Discount">Discount</option>
+                                       <option value="Shipping Charge">Shipping Charge</option>
+                                       <option value="General Income">General Income</option>
+                                       <option value="Interest Income">Interest Income</option>
+                                       <option value="Late Fee Income">Late Fee Income</option>
+                                       <option value="Other Charges">Other Charges</option>
+                                   </optgroup>
+                                 </select>
+                                 <div class="error-message" id="sales_account_error" style="display:none;color:red;">Please select a sales account.</div>
+                             </div>
+                         </div>
+                        
+                         
+                         <!-- Purchase Information Section -->
+                         <div class="col-lg-3 pt11">
+                             <h5>
+                            <input type="checkbox"
+                                name="purchase_information"
+                                id="purchase_information"
+                                value="purchase_information"
+                                style="vertical-align: middle;"
+                               {% if is_purchase_information %}checked{% endif %} >   
+                                Purchase Information
+ 
+                             </h5>
+                         </div>
+                         <!-- Purchase Rate -->
+<div class="col-md-2 pt11 purchase_information hidden">
+    <div class="form-group">
+        <label>Rate</label>
+        <input class="form-control" type="number" step="0.01" name="purchase_rate" id="purchase_rate" value="{{inventory_item.purchase_rate}}" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(this.value.split('.').length > 2) this.value = this.value.substring(0, this.value.lastIndexOf('.'));">
+        <div class="error-message" id="purchase_rate_error" style="display:none;color:red;">Please enter the purchase rate.</div>
+    </div>
+</div>
+                         <div class="col-md-3 pt11 purchase_information hidden">
+                             <div class="form-group">
+                                 <label>Purchase</label>
+
+                                <select class="form-control" name="purchase_account" id="purchase_account">
+                                    <option value="" hidden>Select Account</option>
+                                    <optgroup label="Expense">
+                                        <option value="Purchase Account" {% if inventory_item.purchase == "Purchase Account" %}selected{% endif %}>Purchase Account</option>
+                                        <option value="Bank Fees and Charges" {% if inventory_item.purchase == "Bank Fees and Charges" %}selected{% endif %}>Bank Fees and Charges</option>
+                                        <option value="Printing and Stationery" {% if inventory_item.purchase == "Printing and Stationery" %}selected{% endif %}>Printing and Stationery</option>
+                                        <option value="Salaries and Employee Wages" {% if inventory_item.purchase == "Salaries and Employee Wages" %}selected{% endif %}>Salaries and Employee Wages</option>
+                                        <option value="Meals and Entertainment" {% if inventory_item.purchase == "Meals and Entertainment" %}selected{% endif %}>Meals and Entertainment</option>
+                                        <option value="Depreciation Expense" {% if inventory_item.purchase == "Depreciation Expense" %}selected{% endif %}>Depreciation Expense</option>
+                                        <option value="Consultant Expense" {% if inventory_item.purchase == "Consultant Expense" %}selected{% endif %}>Consultant Expense</option>
+                                        <option value="Repairs and Maintenance" {% if inventory_item.purchase == "Repairs and Maintenance" %}selected{% endif %}>Repairs and Maintenance</option>
+                                        <option value="Other Expenses" {% if inventory_item.purchase == "Other Expenses" %}selected{% endif %}>Other Expenses</option>
+                                        <option value="Lodging" {% if inventory_item.purchase == "Lodging" %}selected{% endif %}>Lodging</option>
+                                        <option value="Bad Debt" {% if inventory_item.purchase == "Bad Debt" %}selected{% endif %}>Bad Debt</option>
+                                        <option value="Postage" {% if inventory_item.purchase == "Postage" %}selected{% endif %}>Postage</option>
+                                        <option value="Advertising And Marketing" {% if inventory_item.purchase == "Advertising And Marketing" %}selected{% endif %}>Advertising And Marketing</option>
+                                        <option value="Credit Card Charges" {% if inventory_item.purchase == "Credit Card Charges" %}selected{% endif %}>Credit Card Charges</option>
+                                        <option value="Travel Expense" {% if inventory_item.purchase == "Travel Expense" %}selected{% endif %}>Travel Expense</option>
+                                        <option value="Telephone Expense" {% if inventory_item.purchase == "Telephone Expense" %}selected{% endif %}>Telephone Expense</option>
+                                        <option value="Automobile Expense" {% if inventory_item.purchase == "Automobile Expense" %}selected{% endif %}>Automobile Expense</option>
+                                        <option value="IT and Internet Expenses" {% if inventory_item.purchase == "IT and Internet Expenses" %}selected{% endif %}>IT and Internet Expenses</option>
+                                        <option value="Rent Expense" {% if inventory_item.purchase == "Rent Expense" %}selected{% endif %}>Rent Expense</option>
+                                        <option value="Janitorial Expense" {% if inventory_item.purchase == "Janitorial Expense" %}selected{% endif %}>Janitorial Expense</option>
+                                        <option value="Office Supplies" {% if inventory_item.purchase == "Office Supplies" %}selected{% endif %}>Office Supplies</option>
+                                        <option value="Custom Duty" {% if inventory_item.purchase == "Custom Duty" %}selected{% endif %}>Custom Duty</option>
+                                        <option value="PETROL EXPENSE" {% if inventory_item.purchase == "PETROL EXPENSE" %}selected{% endif %}>PETROL EXPENSE</option>
+                                        <option value="COURIER EXPENSE" {% if inventory_item.purchase == "COURIER EXPENSE" %}selected{% endif %}>COURIER EXPENSE</option>
+                                        <option value="Office Expenses" {% if inventory_item.purchase == "Office Expenses" %}selected{% endif %}>Office Expenses</option>
+                                        <option value="COMMISION" {% if inventory_item.purchase == "COMMISION" %}selected{% endif %}>COMMISION</option>
+                                        <option value="FIX ASSET PURCHASE" {% if inventory_item.purchase == "FIX ASSET PURCHASE" %}selected{% endif %}>FIX ASSET PURCHASE</option>
+                                        <option value="BANK COMMISION" {% if inventory_item.purchase == "BANK COMMISION" %}selected{% endif %}>BANK COMMISION</option>
+                                        <option value="MARKETING EXPENSE" {% if inventory_item.purchase == "MARKETING EXPENSE" %}selected{% endif %}>MARKETING EXPENSE</option>
+                                        <option value="OTHER PURCHASE" {% if inventory_item.purchase == "OTHER PURCHASE" %}selected{% endif %}>OTHER PURCHASE</option>
+                                        <option value="MISC EXPENSE" {% if inventory_item.purchase == "MISC EXPENSE" %}selected{% endif %}>MISC EXPENSE</option>
+                                        <option value="OTHER INDIRECT EXPENSE" {% if inventory_item.purchase == "OTHER INDIRECT EXPENSE" %}selected{% endif %}>OTHER INDIRECT EXPENSE</option>
+                                    </optgroup>
+                                </select>
+     
+                                 
+                                
+                                 <div class="error-message" id="purchase_account_error" style="display:none;color:red;">Please select a purchase account.</div>
+                             </div>
+                         </div>
+                         <div class="col-md-3 pt11 purchase_information hidden">
+                             <div class="form-group">
+                                 <label>Description</label>
+                                 <textarea class="form-control" name="purchase_description" id="purchase_description">{{inventory_item.purchase_information_description}}</textarea>
+                                 <div class="error-message" id="purchase_description_error" style="display:none;color:red;">Please enter a purchase description.</div>
+                             </div>
+                         </div>
+
+
+                          
+                         <!-- Trackable Item Section -->
+                         <div class="col-lg-3 pt11">
+                           <h5>
+                               <!-- <input type="checkbox" style="vertical-align: middle;" name="trackable_item" id="trackable_item" value="trackable_item"> It's a trackable item -->
+<input type="checkbox"
+       name="trackable_item"
+       id="trackable_item"
+       value="trackable_item"
+       {% if is_trackable %}checked{% endif %} >   
+                               It's a trackable item
+
+                           </h5>
+                       </div>
+                       <div class="col-lg-9 pt11 trackable_item hidden">
+                           <div class="row">
+                               <div class="col-md-3">
+                                   <div class="form-group">
+                                       <label>Opening Stock {Qty.}</label>
+                                       <input class="form-control" type="number" name="opening_stock" id="opening_stock"  value="{{inventory_item.opening_stock_quantity}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                       <div class="error-message" id="opening_stock_error" style="display:none;color:red;">Please enter the opening stock quantity.</div>
+                                   </div>
+                               </div>
+                               <div class="col-md-3">
+                                   <div class="form-group">
+                                       <label>Opening Rate</label>
+                                       <input class="form-control" type="number" name="opening_rate" id="opening_rate" value="{{inventory_item.opening_rate}}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                       <div class="error-message" id="opening_rate_error" style="display:none;color:red;">Please enter the opening rate.</div>
+                                   </div>
+                               </div>
+                               <div class="col-md-3" hidden>
+                                   <div class="form-group">
+                                       <label>Godown</label>
+                                       <select class="form-control" name="godown" id="godown">
+                                           <option value="" hidden>Select Godown</option>
+                                           {% for i in godown_name %}
+                                           <option value="{{i.city_name}}" {% if inventory_item.godown == i.city_name %}selected {% endif %}>{{i.city_name}}</option>
+                                           {% endfor %}
+                                       </select>
+                                       <div class="error-message" id="godown_error" style="display:none;color:red;">Please select a godown.</div>
+                                   </div>
+                               </div>
+                               <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Godown</label>
+                                    <select class="form-control" name="inv_godown" id="godown">
+                                        <option value="{{inventory_item.inventory_godown.id}}" hidden>{{inventory_item.inventory_godown.city_name}}</option>
+                                        {% for i in godown_name %}
+                                        <option value="{{i.id}}">{{i.city_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="error-message" id="godown_error" style="display:none;color:red;">Please select a godown.</div>
+                                </div>
+                               </div>
+                            </div>
+                           </div>
+                       </div>
+                      
+                         
+                         <!-- Submit Button -->
+                         <div class="col-md-12 pt11">
+                             <div class="form-group">
+                                 <button type="submit" class="btn btn-primary" id="btn_submit"  name="btn_submit">Submit</button>
+                                <a href="{% url 'inventory_list_data' %}" class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
+
+                             </div>
+                         </div>
+                     </div>
+                 </form>
+                 
+               </div>
+            </div>
+         </div>
+
+
+{% endblock main_content %}
+{% block custom_js %}
+<script type="text/javascript">
+   $(document).ready(function () {
+      // Initialize states on page load
+      function initializeSections() {
+         // Sales Information
+         if ($('#sales_information').prop('checked')) {
+            $('.sales_information').removeClass('hidden').show();
+         } else {
+            $('.sales_information').addClass('hidden').hide();
+         }
+
+         // Purchase Information
+         if ($('#purchase_information').prop('checked')) {
+            $('.purchase_information').removeClass('hidden').show();
+         } else {
+            $('.purchase_information').addClass('hidden').hide();
+         }
+
+         // Trackable Item
+         if ($('#trackable_item').prop('checked')) {
+            $('.trackable_item').removeClass('hidden').show();
+            $('#purchase_information').attr('disabled', 'disabled');
+            $('#sales_information').attr('disabled', 'disabled');
+         } else {
+            $('.trackable_item').addClass('hidden').hide();
+            $('#purchase_information').removeAttr('disabled');
+            $('#sales_information').removeAttr('disabled');
+         }
+
+         // Tax Type
+         var $tax_type = $('#tax_type').val();
+         if ($tax_type == 'Taxable') {
+            $('.instrastate_gst').show();
+            $('.insterstate_gst').show();
+         } else {
+            $('.instrastate_gst').hide();
+            $('.insterstate_gst').hide();
+         }
+      }
+
+      // Call initialization on page load
+      initializeSections();
+
+      // Trackable item checkbox click event
+      $('#trackable_item').click(function () {
+         if ($(this).prop('checked')) {
+            $('#purchase_information').attr('disabled', 'disabled');
+            $('#sales_information').attr('disabled', 'disabled');
+            $('.trackable_item').removeClass('hidden').show();
+         } else {
+            $('#purchase_information').removeAttr('disabled');
+            $('#sales_information').removeAttr('disabled');
+            $('.trackable_item').addClass('hidden').hide();
+         }
+      });
+
+      // Purchase information checkbox click event
+      $('#purchase_information').click(function () {
+         if ($(this).prop('checked')) {
+            $('.purchase_information').removeClass('hidden').show();
+         } else {
+            $('.purchase_information').addClass('hidden').hide();
+         }
+      });
+
+      // Sales information checkbox click event
+      $('#sales_information').click(function () {
+         if ($(this).prop('checked')) {
+            $('.sales_information').removeClass('hidden').show();
+         } else {
+            $('.sales_information').addClass('hidden').hide();
+         }
+      });
+
+      // Tax type change event
+      $('#tax_type').change(function () {
+         var $tax_type = $('#tax_type').val();
+         if ($tax_type == 'Taxable') {
+            $('.instrastate_gst').show();
+            $('.insterstate_gst').show();
+         } else {
+            $('.instrastate_gst').hide();
+            $('.insterstate_gst').hide();
+         }
+      });
+   });
+</script>
+
+<script>
+$("#inventory_form").ajaxForm({
+    beforeSend: function () {
+        $('#btn_submit').prop('disabled', true);
+        $('.form_error_msg').html('');
+        $('.success_message').html('<br><div class="alert alert-info">Data analyzing...please wait...</div>');
+    },
+    uploadProgress: function (event, position, total, percentComplete) {
+        //albumprogressbar.width(percentComplete + '%');
+    },
+    beforeSubmit: function () {
+        return $("#inventory_form").valid(); // TRUE when form is valid, FALSE will cancel submit
+    },
+    complete: function (response) {
+        var temp = JSON.parse(response.responseText);
+        if (temp.status == 'success') {
+            $('.success_message').show().html(temp.message);
+            setTimeout(function () {
+                window.location.href = temp.redirect;
+            }, 3000);
+        } else if (temp.status == 'error') {
+            $('#btn_submit').prop('disabled', false);
+            $('.success_message').html('');
+            $.each(temp.errors, function (key, val) {
+                $('.' + key).html(val);
+            });
+        }
+    }
+});
+</script>
+
+<script>
+   // Utility function to handle validation and display errors
+   function validateField(field, errorMessageId, condition) {
+       if (condition) {
+           field.classList.add('is-invalid');
+           document.getElementById(errorMessageId).style.display = 'block';
+       } else {
+           field.classList.remove('is-invalid');
+           document.getElementById(errorMessageId).style.display = 'none';
+       }
+   }
+
+   // Validate fields live
+   function attachValidationLive() {
+       const form = document.getElementById('inventory_form');
+
+       // Check Item Description
+       const nameField = form.querySelector('#name');
+       nameField.addEventListener('input', function () {
+           validateField(nameField, 'inventory_name_error', !nameField.value.trim());
+       });
+
+       // Check Item Code
+       const itemCodeField = form.querySelector('#item_code');
+       itemCodeField.addEventListener('input', function () {
+           validateField(itemCodeField, 'item_code_error', !itemCodeField.value.trim());
+       });
+
+       // Check Unit
+       const unitField = form.querySelector('#unit');
+       unitField.addEventListener('change', function () {
+           validateField(unitField, 'unit_error', !unitField.value);
+       });
+
+       // Check HSN Code
+       const hsnField = form.querySelector('input[name="hsn"]');
+       hsnField.addEventListener('input', function () {
+           validateField(hsnField, 'hsn_error', hsnField.value && hsnField.value.length !== 8);
+       });
+
+       // Check Sales Rate (if sales_information is checked)
+       const saleRateField = form.querySelector('#sale_rate');
+       saleRateField.addEventListener('input', function () {
+           if ($('#sales_information').prop('checked')) {
+               validateField(saleRateField, 'sale_rate_error', !saleRateField.value || saleRateField.value <= 0);
+           }
+       });
+
+       // Check Purchase Rate (if purchase_information is checked)
+       const purchaseRateField = form.querySelector('#purchase_rate');
+       purchaseRateField.addEventListener('input', function () {
+           if ($('#purchase_information').prop('checked')) {
+               validateField(purchaseRateField, 'purchase_rate_error', !purchaseRateField.value || purchaseRateField.value <= 0);
+           }
+       });
+   }
+
+   // Attach validation on page load
+   attachValidationLive();
+
+   // Form submission validation
+   document.getElementById('inventory_form').addEventListener('submit', function (event) {
+       let form = event.target;
+       let isValid = true;
+
+       // Check all fields before submitting
+       const nameField = form.querySelector('#name');
+       const itemCodeField = form.querySelector('#item_code');
+       const unitField = form.querySelector('#unit');
+       const hsnField = form.querySelector('input[name="hsn"]');
+       const saleRateField = form.querySelector('#sale_rate');
+       const purchaseRateField = form.querySelector('#purchase_rate');
+
+       validateField(nameField, 'inventory_name_error', !nameField.value.trim());
+       validateField(itemCodeField, 'item_code_error', !itemCodeField.value.trim());
+       validateField(unitField, 'unit_error', !unitField.value);
+       validateField(hsnField, 'hsn_error', hsnField.value && hsnField.value.length !== 8);
+
+       if ($('#sales_information').prop('checked')) {
+           validateField(saleRateField, 'sale_rate_error', !saleRateField.value || saleRateField.value <= 0);
+       }
+
+       if ($('#purchase_information').prop('checked')) {
+           validateField(purchaseRateField, 'purchase_rate_error', !purchaseRateField.value || purchaseRateField.value <= 0);
+       }
+
+       isValid = !document.querySelectorAll('.is-invalid').length;
+
+       if (!isValid) {
+           event.preventDefault();
+       }
+   });
+</script>
+{% endblock custom_js %}

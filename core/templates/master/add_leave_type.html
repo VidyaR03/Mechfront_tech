@@ -1,0 +1,55 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}Ecoway{% endblock %}
+
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 432px;">
+    <div class="content container-fluid">
+
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title"> 
+                        <a href="{% url 'leave_type_list' %}" style="margin-right: 10px;">
+                            <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back"></i>
+                        </a> 
+                        Add Leave Type
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" action="{% url 'leave_type_add' %}" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Name <span style="color: red;">*</span></label>
+                                        <input type="text" name="name" id="leavename_type" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Total Leaves <span style="color: red;">*</span></label>
+                                        <input type="number" step="0.01" name="count" id="count" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <a href="{% url 'leave_type_list' %}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock main_content %}
