@@ -47,23 +47,23 @@ CRM
                                             <select class="form-select" name="employee_name" id="emp_name" required>
                                                 <option value="" disabled selected>Select Employee Name</option>
                                                 {% for item in employee_name %}
-                                                <option value="{{ item.name }}">{{ item.name }}</option>
+                                                <option value="{{ item.id }}">{{ item.name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Leaves Type </label>
-                                            <select class="form-select" name="leave_type" id="leave_type" required>                                               
-                                                <option value="">Select Leave</option>
+    <div class="form-group">
+        <label>Leave Type</label>
+        <select class="form-select" name="leave_type" id="leave_type" required>
+            <option value="">Select Leave</option>
+            <option value="Full Day">Full Day</option>
+            <option value="Half Day">Half Day</option>
+            <option value="LOP">LOP</option>
+        </select>
+    </div>
+</div>
 
-                                                <option value="earn">Earn Leave</option>
-                                                <option value="casual">Casual Leave</option>
-
-                                            </select>
-                                        </div>
-                                    </div>
                                     <!-- <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Leaves Type </label>
@@ -88,16 +88,21 @@ CRM
                                         </div>
                                     </div>
                                  
-
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Remaining Leaves</label>
+                                            <input type="number" class="form-control" name="remaining_days" id="remaining_days" readonly>
+                                        </div>
+                                    </div>  
 
                                     <div class="col-md-3">
                                         <div class="form-group">
                                         <label>Leave Reason</label>
                                            <textarea type="text" class="form-control" name="leave_reason" id="leave_reason" placeholder="Leave reason " required></textarea>
                                         </div>
-                                     </div> 
+                                    </div> 
                                   
-                                                     
+                                              
                                       
 
                                  
@@ -201,7 +206,28 @@ $.ajax({
     });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const empNameSelect = document.getElementById('emp_name');
+    const remainingDaysInput = document.getElementById('remaining_days');
 
+    empNameSelect.addEventListener('change', function() {
+        const selectedId = empNameSelect.value;
+        let url = "{% url 'get_emp_leaves_allocated' 0 %}".replace("0",selectedId);
+       
+        if (selectedId) {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("AJAX response:", data); // <-- Debug line
+                    remainingDaysInput.value = data.leaves_allocated || 0;
+                });
+        } else {
+            remainingDaysInput.value = '';
+        }
+    });
+});
+</script>
 
 
  

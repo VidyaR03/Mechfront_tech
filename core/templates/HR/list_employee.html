@@ -82,8 +82,8 @@
                                       <th>Joining Date</th>   
                                       <th>Department</th>
                                       <th>Designation</th>   
-                                      <th>Casual Leaves</th> 
-                                      <th>Earned Leaves</th>                                      
+                                      {% comment %} <th>Casual Leaves</th> 
+                                      <th>Earned Leaves</th>                                       {% endcomment %}
                                    
                                       <th>Actions</th>
                                   </tr>
@@ -113,12 +113,12 @@
                                     <td>
                                         {{ t.designation.name }}
                                     </td>
-                                    <td>
+                                    {% comment %} <td>
                                       {{t.casual_leaves}}
                                   </td>
                                   <td>
                                       {{t.earned_leaves}}
-                                  </td>
+                                  </td> {% endcomment %}
                                                           
                                
                                   <td>

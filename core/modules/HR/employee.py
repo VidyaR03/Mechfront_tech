@@ -35,6 +35,7 @@ def add_employee(request):
         upload_photo = request.FILES.get('upload_photo')
         status = request.POST.get('status')
         ifsc_code = request.POST.get('ifsc_code') 
+        leaves_allocated = request.POST.get('leaves_allocated', 0.00)
 
 
         if joining_date.year == current_date.year :    
@@ -62,7 +63,8 @@ def add_employee(request):
             status=status,  
             earned_leaves=earned_leaves,
             casual_leaves=formatted_casual_leaves,
-            ifsc_code=ifsc_code
+            ifsc_code=ifsc_code,
+            leaves_allocated=leaves_allocated
 
             )
         obj.save()
@@ -114,6 +116,7 @@ def edit_employee(request, employee_id):
         upload_photo = request.FILES.get('upload_photo')
         status = request.POST.get('status')
         ifsc_code = request.POST.get('ifsc_code')
+        leaves_allocated = request.POST.get('leaves_allocated', 0.00)
 
         if joining_date.year == current_date.year:    
             months_since = (12 - joining_date.month)
@@ -139,6 +142,7 @@ def edit_employee(request, employee_id):
         employee_instance.earned_leaves = earned_leaves
         employee_instance.casual_leaves = formatted_casual_leaves
         employee_instance.ifsc_code = ifsc_code
+        employee_instance.leaves_allocated = leaves_allocated
 
         # Update photo if a new one is uploaded
         if upload_photo:
