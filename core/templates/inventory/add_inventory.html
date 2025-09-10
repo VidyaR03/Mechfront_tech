@@ -276,10 +276,12 @@ Ecoway
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Opening Rate</label>
-                                                <input class="form-control" type="number" name="opening_rate"
+                                                {% comment %} <input class="form-control" type="number" name="opening_rate"
                                                     id="opening_rate" value="0"
-                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                                                <div class="error-message" id="opening_rate_error"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"> {% endcomment %}
+                                                <input type="number" step="0.01" class="form-control" name="opening_rate" id="opening_rate"
+                                                    value="0.00" placeholder="Opening Rate">
+                                                    <div class="error-message" id="opening_rate_error"
                                                     style="display:none;color:red;">Please enter the opening rate.</div>
                                             </div>
                                         </div>
