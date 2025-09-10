@@ -231,7 +231,8 @@ Ecoway
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight (Percentage)</label>
-                                            <input type="text" class="form-control" name="freight_percentage" id="freight_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            {% comment %} <input type="text" class="form-control" name="freight_percentage" id="freight_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> {% endcomment %}
+                                            <input type="number" step="0.01" class="form-control" name="freight_percentage" id="freight_percentage" value="0.00" min="0" placeholder="Freight (%)">
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
