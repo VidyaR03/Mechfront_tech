@@ -414,7 +414,7 @@ class quotation(models.Model):
     q_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
     q_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
     q_freight_amount = models.CharField(max_length=255,blank=True)
-    q_freight_percentage = models.CharField(max_length=255,blank=True)
+    q_freight_percentage = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     gst_option= models.CharField(null=True,max_length=255)
     q_packaging_forwording_percentage_amt = models.CharField(max_length=512,blank=True)
     q_freight_percentage_amt = models.CharField(max_length=255,blank=True)
