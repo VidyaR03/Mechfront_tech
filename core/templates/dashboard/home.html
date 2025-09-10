@@ -3,50 +3,53 @@
 {% block page_title %}
 {% endblock page_title %}
 <style>
-    /* Media query for small screens */
-    @media (max-width: 768px) {
-        #sidebar {
-            display: none;
-            /* Hide the sidebar on small screens */
-        }
+.financial-overview {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-        #content {
-            width: 100%;
-            /* Make the content occupy the full width */
-        }
-
-        /* Show the sidebar when the toggle button is active */
-        #sidebar.active {
-            display: block;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            /* Adjust the width as needed */
-        }
-    }
+.dropdown {
+    position: relative;
+}
+.dropdown-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 120px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+.dropdown-item:hover {
+    background: #f0f0f0;
+}
 </style>
-<style>
-    /* Style the chart container */
-    #chart {
-        min-width: 5px; /* Minimum width */
-        min-height: 5px; /* Minimum height */
-        border: 1px solid #ccc; /* Optional: Adding border for visualization */
-    }
-</style>
-
 {% endblock custom_css %}
-<!-- Main content -->
 {% block main_content %}
 
-<div class="page-wrapper" style="padding-top:10px;">
+       
+<div class="page-wrapper">
     <div class="content container-fluid">
         <div class="row">
             <div class="col-xl-3 col-sm-6 col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-1"> <i
-                                    class="fas fa-users"></i> </span>
+                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-1"> <i class="fas fa-users"></i> </span>
                             <div class="dash-count">
                                 <div class="dash-title"> Total Customer </div>
                                 <div class="dash-counts">
@@ -60,8 +63,7 @@
             <div class="col-xl-3 col-sm-6 col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-2"> <i
-                                    class="fas fa-users"></i> </span>
+                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-2"> <i class="fas fa-users"></i> </span>
                             <div class="dash-count">
                                 <div class="dash-title">Total Vendor</div>
                                 <div class="dash-counts">
@@ -75,8 +77,7 @@
             <div class="col-xl-3 col-sm-6 col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-3"> <i
-                                    class="fas fa-file-alt"></i> </span>
+                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-3"> <i class="fas fa-file-alt"></i> </span>
                             <div class="dash-count">
                                 <div class="dash-title">Total Invoices</div>
                                 <div class="dash-counts">
@@ -84,15 +85,14 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                     </div>
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-4"> <i
-                                    class="far fa-file"></i> </span>
+                        <div class="dash-widget-header"> <span class="dash-widget-icon bg-4"> <i class="far fa-file"></i> </span>
                             <div class="dash-count">
                                 <div class="dash-title">Total Bill</div>
                                 <div class="dash-counts">
@@ -100,221 +100,154 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                     </div>
                 </div>
             </div>
         </div>
-        <br>
-<div class="row">
-
-
-    <div class="col-md-6 col-sm-6">
-        <div class="card flex-fill">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title">Sales Analytics</h5>
-                        <!-- <div class="dropdown">
-                            <button class="btn btn-white btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"> Monthly
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a href="javascript:void(0);" class="dropdown-item">Weekly</a></li>
-                                <li><a href="javascript:void(0);" class="dropdown-item">Monthly</a></li>
-                                <li><a href="javascript:void(0);" class="dropdown-item">Yearly</a></li>
-                            </ul>
-                        </div> -->
-                    </div>
-                </div>
-                <div>
-                    <!-- <label for="year-select">Select Year:</label>
-                    <select id="year-select" onchange="handleYearChange()">
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                    </select> -->
-                </div>
-                <div class="card-body" style="max-height: 350px; overflow-y: auto;">
-                    <div id="sales_chart" style="height: 250px;">
-                    </div>
-                    <div class="text-center text-muted">
-                        <!-- Your text content -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-        <div class="col-md-6 col-sm-6">
-            <div class="card flex-fill">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title">Invoice Analytics</h5>
-                        <div class="dropdown">
-                            <button class="btn btn-white btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Monthly
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body" style="max-height: 350px; overflow-y: auto;">
-                    <canvas id="invoiceChart" style="height: 300px;"></canvas>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get invoice data from your Django template
-            const invoiceLabels = [
-                {% for invoice in invoices %}
-                    "{{ invoice.invoice_date|date:'M d' }}",
-                {% endfor %}
-            ];
-            
-            const invoiceData = [
-                {% for invoice in invoices %}
-                    {{ invoice.invoice_sub_total }},
-                {% endfor %}
-            ];
-    
-            // Set up the Chart.js chart
-            const ctx = document.getElementById('invoiceChart').getContext('2d');
-            const invoiceChart = new Chart(ctx, {
-                type: 'bar', // You can change this to 'line', 'pie', etc.
-                data: {
-                    labels: invoiceLabels,
-                    datasets: [{
-                        label: 'Invoice Amounts',
-                        data: invoiceData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        });
-    </script>
-    
         <br>
 
         <div class="row">
-            <div class="col-md-6 col-sm-6">
-                <div class="card">
+            <div class="col-xl-6 d-flex">
+                <div class="card p-3">
+                    <!-- Title & Dropdown in One Line -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title m-0">Sales Analysis</h5> <!-- Title on Left -->
+                        <div class="dropdown">
+                            <button class="btn-right btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="invoiceDropdownSALES" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select 
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="invoiceDropdownSALES">
+                                <li><a href="javascript:void(0);" class="dropdown-item">Yearly</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item">Monthly</a></li>
+                                <li><a href="javascript:void(0);" class="dropdown-item">Weekly</a></li>
+                            </ul>
+                        </div>
+                    </div>
+            
+                    <!-- Chart Container -->
+                    <div class="chart-container mt-3">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-6 d-flex">
+                <div class="card flex-fill">
                     <div class="card-header">
-                        <div class="row">
-                            <div class="col">
-                                <h5 class="card-title">Recent Invoices</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Invoice Analytics</h5>
+                            <div class="dropdown">
+                                <button class="btn-right btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="invoiceDropdownInvoice" data-bs-toggle="dropdown" aria-expanded="false"> Select  </button>
+                                <ul class="dropdown-menu" aria-labelledby="invoiceDropdownInvoice">
+                                    <li> <a href="javascript:void(0);" class="dropdown-item invoice-option" data-type="weekly">Current Week</a> </li>
+                                    <li> <a href="javascript:void(0);" class="dropdown-item invoice-option" data-type="monthly">Current Month</a> </li>
+                                    <li> <a href="javascript:void(0);" class="dropdown-item invoice-option" data-type="yearly">Current year</a> </li>
+                                </ul>
                             </div>
-                            <div class="col-auto"> <a href="{% url 'invoice_list'%}"
-                                    class="btn-right btn btn-sm btn-outline-primary"> View All </a> </div>
                         </div>
                     </div>
                     <div class="card-body">
+                        <div id="invoice_chart"></div>
+                    </div>
+                </div>
+            </div>
+            
+          
+            
+            
+        </div>
+        <br>
 
+        <div class="row">
+            <!-- Recent Invoices Section -->
+            <div class="col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Recent Invoices</h5>
+                        <a href="{% url 'invoice_list' %}" class="btn btn-sm btn-outline-primary"> View All </a>
+                    </div>
+                    <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-stripped table-hover">
-                                    <thead class="thead-light">
-                                        <tr>
-                                        <tr>
-                                            <th>Customer</th>
-                                            <th>Invoice Date</th>
-                                            <th>Invoice Number</th>
-                                            <th>DC no</th>
-                                            <th>Amount</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% if invoices %}
+                            <table class="table w-100">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Invoice Date</th>
+                                        <th>Invoice No.</th>
+                                        <th>DC No.</th>
+                                        <th>Amount</th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if invoices %}
                                         {% for t in invoices %}
-                                        <tr>
-                                            <td>
-                                                {{t.invoice_customer_name_customer.customer}}
-                                                
-                                            </td>
-                                            <td>
-                                                {{t.invoice_date}}
-                                            </td>
-                                            <td>
-                                                {{t.inv_number}}
-                                            </td>
-                                            <td>
-                                                {{t.invoice_delivery_no}}                                                    
-                                            </td>
-                                            <td>
-                                                {{t.invoice_sub_total}}
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'invoice_show_pdf' t.id %}" style="color: blue;">
-                                                    <i class="fas fa-eye"></i> <!-- Assuming you are using Font Awesome icons -->
-                                                  </a>
-                                                                                              </td>
-                                            
-                                        </tr>
-                                  
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'invoice_show_pdf' t.id %}" class="text-primary">
+                                                        {{ t.invoice_customer_name_customer.customer }}
+                                                    </a>
+                                                </td>
+                                                <td>{{ t.invoice_date|date:"d-m-Y" }}</td>
+                                                <td>{{ t.inv_number }}</td>
+                                                <td>{{ t.invoice_delivery_no }}</td>
+                                                <td>₹{{ t.invoice_total }}</td>
+                                                <td class="text-right">
+                                                    <a href="{% url 'invoice_show_pdf' t.id %}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
                                         {% endfor %}
-                                        {% endif %}
-                                    </tbody>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">No invoices found.</td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+        
+            <!-- Recent Bills Section -->
             <div class="col-md-6 col-sm-6">
                 <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col">
-                                <h5 class="card-title">Recent Bill</h5>
-                            </div>
-                            <div class="col-auto"> <a href="{% url 'purchase_invoice_list'  %}"
-                                    class="btn-right btn btn-sm btn-outline-primary"> View All </a> </div>
-                        </div>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Recent Bills</h5>
+                        <a href="{% url 'purchase_invoice_list' %}" class="btn btn-sm btn-outline-primary"> View All </a>
                     </div>
                     <div class="card-body">
-
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table w-100">
                                 <thead class="thead-light">
                                     <tr>
                                         <th>Vendor</th>
-                                        <th>Due Date</th>
+                                        <th>Invoice Date</th>
                                         <th>Amount</th>
-                                        <th>Status</th>
                                         <th class="text-right">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% if pinvoice %}
-                                    {% for t in pinvoice %}
-                                    <tr>
-                                        <td>
-                                            {{t.purchase_invoice_vendor_name.company_name}}
-                                        </td>
-                                        <td>
-                                            {{t.purchase_due_date}}
-                                        </td>
-                                        <td>
-                                            {{t.purchase_invoice_total}}
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-success-light">Invoiced</span>                                                    
-                                        </td>
-                                        <td>
-                                        <a href="{% url 'purchase_invoice_list'%}" style="color: blue;">
-                                            <i class="fas fa-eye"></i> <!-- Assuming you are using Font Awesome icons -->
-                                          </a>
-                                        </td>
-                                        
-                                    </tr>
-                              
-                                    {% endfor %}
+                                        {% for t in pinvoice %}
+                                            <tr>
+                                                <td>{{ t.purchase_invoice_vendor_name.company_name }}</td>
+                                                <td>{{ t.purchase_invoice_date|date:"d-m-Y" }}</td>
+                                                <td>₹{{ t.purchase_invoice_total }}</td>
+                                                <td class="text-right">
+                                                    <a href="{% url 'edit_purchase_invoice' id=t.id %}" class="btn btn-sm btn-outline-success">
+                                                        <i class="far fa-edit"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">No bills found.</td>
+                                        </tr>
                                     {% endif %}
                                 </tbody>
                             </table>
@@ -323,213 +256,197 @@
                 </div>
             </div>
         </div>
-
+        
+    </div>
 </div>
-</div>
 
-<!-- Include ApexCharts JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.1/dist/apexcharts.min.js"></script>
-<!-- <script>
-    // Sample chart data
-    var options = {
-        chart: {
-            type: '', // You can change the chart type here
-        },
-        series: [{
-            name: 'Sales',
-            data: [30, 40, 45, 50, 49, 60, 70, 91, 125],
-        }],
-        xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        },
-    };
 
-    var chart = new ApexCharts(document.querySelector("#sales_chart"), options);
-    chart.render();
-</script> -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <script>
-    function handleYearChange() {
-        var selectedYear = document.getElementById("year-select").value;
+    document.addEventListener("DOMContentLoaded", function () {
+        let financialChartData = JSON.parse('{{ financial_chart_data|safe }}');
+        console.log("Loaded Financial Data:", financialChartData);
 
-        // You may want to fetch the data for the selected year using AJAX
-        // For simplicity, I'll simulate updating the URL with the selected year using window.location
-        // Update the URL to include the selected year as a query parameter
-        window.location.href = "{% url 'admin_home' %}?selected_year=" + selectedYear;
-    }
+        let ctx = document.getElementById("financialChart").getContext("2d");
+        let currentChartType = "Yearly";  // Default to Yearly
+        let financialChart;
 
-    // Chart rendering function
-    function renderChart(creditData, debitData, categories) {
-        var options = {
-            series: [{
-                name: 'Credit',
-                data: creditData,
-                color: 'rgb(118, 56, 255)'
-            }, {
-                name: 'Debit',
-                data: debitData,
-                color: 'rgb(255, 165, 0)'
-            }],
-            chart: {
-                type: 'bar',
-                height: 350
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '55%',
-                    endingShape: 'rounded'
+        function updateChart(chartType) {
+            let labels = [];
+            let creditData = [];
+            let debitData = [];
+
+            if (chartType === "Yearly") {
+                let yearlyData = financialChartData.yearly;
+                labels = Object.keys(yearlyData); // Use financial years as labels
+                creditData = labels.map(year => yearlyData[year]?.credit?.reduce((a, b) => a + b, 0) || 0);
+                debitData = labels.map(year => yearlyData[year]?.debit?.reduce((a, b) => a + b, 0) || 0);
+            } 
+            else if (chartType === "Monthly") {
+                let latestYear = Object.keys(financialChartData.yearly).pop(); // Get latest financial year
+                let monthlyData = financialChartData.yearly[latestYear];
+                labels = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
+                creditData = monthlyData?.credit || new Array(12).fill(0);
+                debitData = monthlyData?.debit || new Array(12).fill(0);
+            } 
+            else if (chartType === "Weekly") {
+                let currentMonth = new Date().getMonth() + 1;
+                let latestYear = Object.keys(financialChartData.yearly).pop(); // Latest year
+                let weeklyData = financialChartData.weekly;
+                labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+                creditData = weeklyData?.credit || new Array(5).fill(0);
+                debitData = weeklyData?.debit || new Array(5).fill(0);
+            }
+
+            // Destroy old chart before creating a new one
+            if (financialChart) {
+                financialChart.destroy();
+            }
+
+             // **Set default dropdown selection to "Yearly"**
+                let dropdownButton = document.getElementById("invoiceDropdownSALES");
+                let dropdownOptions = document.querySelectorAll("#invoiceDropdownSALES + .dropdown-menu .dropdown-item");
+
+                if (dropdownButton) {
+                    dropdownButton.textContent = "Yearly"; // Set default
+                }
+                
+
+            // Create new chart
+            financialChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Credit",
+                            data: creditData,
+                            backgroundColor: "rgba(54, 162, 235, 0.6)"
+                        },
+                        {
+                            label: "Debit",
+                            data: debitData,
+                            backgroundColor: "rgba(255, 99, 132, 0.6)"
+                        }
+                    ]
                 },
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            xaxis: {
-                categories: categories,
-            },
-            yaxis: {
-                title: {
-                    text: '$ (rupees)'
-                },
-                labels: {
-                    formatter: function (value) {
-                        return value.toFixed(2); // Displaying two digits after the decimal point
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
                     }
                 }
-            },
-            fill: {
-                opacity: 1
-            },
-        };
+            });
+        }
+        
+        document.querySelectorAll("#invoiceDropdownSALES + .dropdown-menu .dropdown-item").forEach(item => {
 
-        var chart = new ApexCharts(document.querySelector("#sales_chart"), options);
-        chart.render();
-    }
+            item.addEventListener("click", function () {
+                let selectedType = this.textContent.trim();
+                document.getElementById("invoiceDropdownSALES").textContent = selectedType; // Update button text
+                updateChart(selectedType); // Updates only Sales Analysis
+                console.log("Sales Analysis changed to:", selectedType); // Debugging
+            });
+        });
 
-    // Assuming credit_data, debit_data, and months_categories are passed from Django template
-    renderChart({{ credit_data | safe }}, {{ debit_data | safe }}, ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
+
+        // Initial chart load
+        updateChart(currentChartType);
+
+     
+    });
 </script>
 
 
-<!-- <script>
- function handleYearChange() {
-        var selectedYear = document.getElementById("year-select").value;
- }  
-var options = {
-          series: [{
-          name: 'Credit',
-          data: {{ credit_data | safe }},
-          color: 'rgb(118, 56, 255)'
+<script type="application/json" id="invoice-analysis-data">
+    
+       {{ invoice_format_data|safe }}
+  
+</script>
 
-        }, {
-          name: 'Debit',
-          data: {{ debit_data | safe }},
-          color :'rgb(255, 165, 0)'
-        }],
-          chart: {
-          type: 'bar',
-          height: 350
-        },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            columnWidth: '55%',
-            endingShape: 'rounded'
-          },
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          show: true,
-          width: 2,
-          colors: ['transparent']
-        },
-        xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct','Nov','Dec'],
-        },
-        yaxis: {
-          title: {
-            text: '$ (rupees)'
-          
-        },
-        labels: {
-        formatter: function (value) {
-        return value.toFixed(2); // Displaying two digits after the decimal point
+<script>
+   
+
+document.addEventListener("DOMContentLoaded", function () {
+    let invoiceDataElement = document.getElementById("invoice-analysis-data");
+    let invoiceData = {};
+    console.log(invoiceDataElement)
+    
+
+    if (!invoiceDataElement) {
+        console.error("🚨 Invoice analysis data not found!");
+    } else {
+        try {
+            invoiceData = JSON.parse(invoiceDataElement.textContent);
+
+            console.log("✅ Invoice Data Loaded:", invoiceData);
+        } catch (error) {
+            console.error("❌ Error parsing invoice data:", error);
         }
+    }
+
+    function updateInvoiceChart(period) {
+        let data = invoiceData[period] || { invoiced: 0, received: 0, pending: 0 };
+
+        console.log("📊 Updating chart for:", period, data);
+
+        let chartContainer = document.querySelector("#invoice_chart");
+        if (!chartContainer) {
+            console.error("🚨 Chart container #invoice_chart not found!");
+            return;
         }
-        },
 
-        fill: {
-          opacity: 1
-        },
-       
-        };
-        
+        let received = Number(data.received) || 0;
+        let invoiced = Number(data.invoiced) || 0;
+        let pending = Number(data.pending) || 0;
 
-        var chart = new ApexCharts(document.querySelector("#sales_chart"), options);
-        chart.render();
-</script> -->
+          // **Check if all values are 0**
+          if (received === 0 && invoiced === 0 && pending === 0) {
+            chartContainer.innerHTML = `<div style="text-align:center; font-weight:bold; color:#666;">No Data Available</div>`;
+            return;
+        }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Donut Chart Example</title>
-<script src="/path/to/apexcharts.min.js"></script>
-</head>
-<body>
-    <div id="chart"></div>
-
-    <script>
-        var totalFreight = {{total_freight}};
-        var totalSubTotal = {{total_sub_total}};
-        var totalAmount = {{total_amount}};
-
-        var donutData = [totalFreight, totalSubTotal, totalAmount];
-        // var donutData = [20,30,40];
-        console.log("Mangesh",donutData)
-
-        var donutOptions = {
-            chart: {
-                type: 'donut',
-                height: 350,
-                width: '100%',
-            },
-            series: donutData,
-            labels: ['Received', 'Total', 'Pending'],
-            colors: ['#FF5733', '#5733FF', '#FFA500'],
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        height: 250
-                    }
-                }
-            }]
+        var options = {
+            chart: { type: 'donut', height: 350, width: '100%' },
+            series: [invoiced ],
+            labels: [ 'Total'],
+            colors: [ '#5733FF'],
         };
 
-        var chart = new ApexCharts(document.getElementById("chart"), donutOptions);
-        chart.render();
-    </script>
-</body>
-</html>
+        if (window.invoiceChart) {
+            window.invoiceChart.destroy();
+        }
 
+        window.invoiceChart = new ApexCharts(chartContainer, options);
+        window.invoiceChart.render();
+    }
 
+    let dropdownButton = document.getElementById("invoiceDropdownInvoice");
+    let dropdownOptions = document.querySelectorAll(".invoice-option");
 
-<script src="assets/js/jquery-3.6.0.min.js"></script>
-<script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/feather.min.js"></script>
-<script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="assets/plugins/apexchart/apexcharts.min.js"></script>
-<script src="assets/plugins/apexchart/chart-data.js"></script>
-<script src="assets/js/script.js"></script>
+    if (dropdownButton) {
+        dropdownButton.textContent = "Current Year"; // Default selected
+    }
 
-</body>
+    if (!dropdownButton) {
+        console.error("🚨 Dropdown button not found!");
+        return;
+    }
 
-</html>
+    dropdownOptions.forEach(item => {
+        item.addEventListener("click", function () {
+            let selectedPeriod = this.getAttribute("data-type");
+            dropdownButton.textContent = this.textContent;
+            console.log("📊 Invoice Analysis changed to:", selectedPeriod);
+            updateInvoiceChart(selectedPeriod);
+        });
+    });
+
+    updateInvoiceChart("yearly"); // Default load Monthly data
+});
+
+</script>
 {% endblock main_content %}

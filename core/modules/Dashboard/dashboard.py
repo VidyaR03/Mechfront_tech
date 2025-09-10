@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from core.modules import template_path
 from django.db.models import Sum
 from django.shortcuts import render
-from core.models import customer, vendor, payment_made,Purchase_Invoice, Invoice, Purchase_order, Login_User, payment_received
+from core.models import customer, vendor, sales_order,Purchase_Invoice, Invoice, Purchase_order, Login_User, payment_received
 from datetime import datetime
 from core.modules.login.login import login_required
+from datetime import datetime,timedelta
 
 # from django.contrib.auth.decorators import login_required
 # from django.contrib.auth import authenticate, login, logout
@@ -13,68 +14,147 @@ from core.modules.login.login import login_required
 def is_authenticated(user):
     return user.is_authenticated
 
+from collections import defaultdict
+from django.utils import timezone
+from django.db.models.functions import ExtractYear, ExtractMonth, ExtractWeek
+from django.db.models import Sum
+from datetime import datetime, timedelta
+import json
 
-@login_required
-# @user_passes_test(is_authenticated, login_url='')
 def admin_home(request):
     total_vendor = vendor.objects.count()
     tcustomer = customer.objects.count()
+    print(tcustomer,'tcustomer')
     tInvoice = Invoice.objects.count()
-    bill = Purchase_order.objects.count()
-    invoices = Invoice.objects.all()
-    pinvoice = Purchase_Invoice.objects.all()
-    lattest_invoices = Invoice.objects.order_by('-id')[:10]
-    lattest_invoices_pinvoice = Purchase_Invoice.objects.order_by('-id')[:10]
+    bill = Purchase_Invoice.objects.count()
+    salesorder = sales_order.objects.count()
 
-    # total_freight = int(sum(float(invoice.invoice_freight) for invoice in invoices if invoice.invoice_freight) or 0)
-    total_sub_total =int(sum(float(invoice.invoice_sub_total) for invoice in invoices if invoice.invoice_sub_total))
-    total_amount = int(sum(float(invoice.invoice_total) for invoice in invoices if invoice.invoice_total))
+    # Get today's date
+    today = timezone.now().date()
 
-    # Initialize empty lists to store credit and debit data for each month
-    credit_data = [0] * 12  # Initialize a list with 12 zeros for 12 months
-    debit_data = [0] * 12   # Initialize a list with 12 zeros for 12 months
+    # 🟢 Get Current Financial Year (Apr 1 - Mar 31)
+    current_year = today.year if today.month >= 4 else today.year - 1
+    start_financial_year = datetime(current_year, 4, 1)
+    end_financial_year = datetime(current_year + 1, 3, 31)
 
-    # Retrieve credit and debit data month-wise
-    payments = payment_received.objects.all()
+    # 🟢 Get Current Month's Start and End Dates
+    start_of_month = today.replace(day=1)
+    end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
 
+    # 🟢 Get Current Week's Start (Monday) and End (Sunday)
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+
+    invoice_format_data = {
+        "yearly": {
+            "invoiced": sum(float(invoice.invoice_total) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_total),
+            # "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_total and invoice.invoice_due),
+            # "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_due),
+        },
+        "monthly": {
+            "invoiced": sum(float(invoice.invoice_total) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_total),
+            # "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_total and invoice.invoice_due),
+            # "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_due),
+        },
+        "weekly": {
+            "invoiced": sum(float(invoice.invoice_total) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_total),
+            # "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_total and invoice.invoice_due),
+            # "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_due),
+        }
+    }
+
+
+    
+    seven_days_ago = datetime.now() - timedelta(days=7)
+
+    # Fetch invoices from the last 7 days
+    invoices = Invoice.objects.filter(invoice_date__gte=seven_days_ago).order_by('-invoice_date')
+
+    # If no invoices found, fetch the latest 10
+    if not invoices.exists():
+        invoices = Invoice.objects.all().order_by('-invoice_date')[:10]
+
+    # Fetch purchase invoices from the last 7 days
+    pinvoice = Purchase_Invoice.objects.filter(purchase_due_date__gte=seven_days_ago).order_by('-purchase_due_date')
+
+    # If no purchase invoices found, fetch the latest 10
+    if not pinvoice.exists():
+        pinvoice = Purchase_Invoice.objects.all().order_by('-purchase_due_date')[:10]
+    current_date = timezone.now().date()
+    
+    # Fetch min & max financial year
+    min_year = payment_received.objects.order_by('payment_received_date').values_list('payment_received_date', flat=True).first()
+    max_year = payment_received.objects.order_by('-payment_received_date').values_list('payment_received_date', flat=True).first()
+    min_year = min_year.year if min_year else datetime.now().year - 2
+    max_year = max_year.year if max_year else datetime.now().year
+    
+    # Yearly Data (Apr–Mar format)
+    yearly_data = defaultdict(lambda: {"credit": [0] * 12, "debit": [0] * 12})
+    payments = payment_received.objects.annotate(
+        year=ExtractYear('payment_received_date'),
+        month=ExtractMonth('payment_received_date')
+    ).values('year', 'month').annotate(
+        total_credit=Sum('payment_received_total'),
+        total_debit=Sum('payment_received_amount_used')
+    )
+    
     for payment in payments:
-        month_index = payment.payment_received_date.month - 1  # Month index starts from 0
-        # Convert rupees to thousands if needed
-        if  payment.payment_received_total:
-            payment_received_total = float(payment.payment_received_total)
-        else:
-            payment_received_total = 0.0
+        year = payment['year']
+        month = payment['month'] - 1
+        financial_month_index = (month - 3) % 12
+        fin_year_label = f"{year-1}/{year}" if month < 3 else f"{year}/{year+1}"
         
-        if payment.payment_received_amount_used:
-            payment_received_amount_used = float(payment.payment_received_amount_used)
-        else:
-            payment_received_amount_used = 0.0
+        yearly_data[fin_year_label]["credit"][financial_month_index] += float(payment['total_credit'] or 0)
+        yearly_data[fin_year_label]["debit"][financial_month_index] += float(payment['total_debit'] or 0)
+    
+    # Monthly Data (From Apr 22 - Mar 23 for the current year)
+    current_financial_year = f"{max_year-1}/{max_year}"
+    monthly_credit = yearly_data[current_financial_year]["credit"]
+    monthly_debit = yearly_data[current_financial_year]["debit"]
+    
+    # Weekly Data (Current month broken down by weeks)
+    weekly_data = {"credit": [0] * 5, "debit": [0] * 5}
+    current_month = timezone.now().month
+    payments_weekly = payment_received.objects.filter(payment_received_date__month=current_month).annotate(
+        week=ExtractWeek('payment_received_date')
+    ).values('week').annotate(
+        total_credit=Sum('payment_received_total'),
+        total_debit=Sum('payment_received_amount_used')
+    )
+    
+    for payment in payments_weekly:
+        week_index = (payment['week'] - 1) % 5  # Restrict to 5 weeks max
+        weekly_data["credit"][week_index] += float(payment['total_credit'] or 0)
+        weekly_data["debit"][week_index] += float(payment['total_debit'] or 0)
+    print(monthly_credit,'monthly_credit')
+    print(yearly_data,'yearly_data')
+    # Prepare financial data for frontend
+    financial_chart_data = {
+        "yearly": yearly_data,
+        "monthly": {"credit": monthly_credit, "debit": monthly_debit},
+        "weekly": weekly_data
+    }
 
 
-        credit = round(float(payment_received_total / 1000 if payment_received_total < 1000 else payment_received_total), 2)
-        debit = round(float(payment_received_amount_used / 1000 if payment_received_amount_used < 1000 else payment_received_amount_used), 2)
-
-        credit_data[month_index] += credit or 0.0
-        debit_data[month_index] += debit or 0.0
-
-
-    # Pass the data to the template
+    
     context = {
         'total_vendor': total_vendor,
         'tcustomer': tcustomer,
-        'credit_data': credit_data,
-        'debit_data': debit_data,
-        # 'total_freight':total_freight,
-        'total_sub_total':total_sub_total,
-        'total_amount':total_amount,
-        'tInvoice':tInvoice,
-        'bill':bill,
-        'pinvoice':lattest_invoices_pinvoice,
-        'invoices':lattest_invoices
+        'financial_chart_data': json.dumps(financial_chart_data),
+        'total_freight': sum(float(invoice.inv_freight_amount) for invoice in invoices if invoice.inv_freight_amount),
+        'total_sub_total': sum(float(invoice.invoice_sub_total) for invoice in invoices if invoice.invoice_sub_total),
+        'total_amount': sum(float(invoice.invoice_total) for invoice in invoices if invoice.invoice_total),
+        'tInvoice': tInvoice,
+        'bill': bill,
+        'pinvoice': pinvoice,
+        'invoices': invoices,
+        'salesorder': salesorder,
+        'invoice_format_data': json.dumps(invoice_format_data), 
+        
 
     }
 
-    return render(request,template_path.Dashboard,context)
+    return render(request, template_path.Dashboard, context)
 
 
 
