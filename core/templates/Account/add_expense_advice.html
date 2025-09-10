@@ -20,7 +20,9 @@
         background-color: LightGray;
     }
 
-    
+    .negative-padding {
+        margin-top: -60px;
+    }
 </style>
 {% endblock custom_css %}
 <!-- Main content -->
@@ -34,7 +36,7 @@
                 <div class="col-sm-12">
                     <h3 class="page-title"> <a href="{% url 'expense_advice_list_View' %}"
                             style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title=""
-                                data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Add Expence Advice</h3>
+                                data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Add Expense Advice </h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="estimates.html">Estimate</a></li>
@@ -54,30 +56,34 @@
                               
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label style="color:#f00">Deposite to <span style="color: red;">*</span></label>
-                                        <select class="form-select" name="deposite" id="deposite" required>
-                                            <option value="" disabled selected>Select Vendor</option>
-                                            {% for item in vendor_data %}
-                                            <option value="{{ item.id }}">{{item.company_name}}</option>
+                                        <label for="customer_Name_id">Deposit To</label>
+                                        <input type="hidden" id="customer_id" name="customer_id">
+                                        <!-- <input type="text" id="customer_Name_id" name="customer_Name" class="form-control" placeholder="Type to search..."> -->
+                                        <select class="form-select" name="customer_Name_id"  id="customer_Name_id" required>
+                                            <option value=""  selected hidden disabled>Select Vendor</option>
+                                            {% for i in vendor_data %}
+                                            <option value="{{i.id}}">{{i.company_name}}</option>
                                             {% endfor %}
-                                        </select>
+                                        </select> 
+                                       
                                     </div>
                                 </div>
 
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label style="color:#f00">Customer <span style="color: red;">*</span></label>
+                                        <label style="color:#f00">Vendor</label>
                                         <select class="form-select" name="customer" id="customer" required>
-                                            <option value=""hidden>Select Vendor</option>
+                                            <option value="" selected disabled hidden>Select Vendor</option>
                                             {% for i in vendor_data %}
                                             <option value="{{i.id}}">{{i.company_name}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
+                                
                                 <div class="col-md-2">
                                     <div class="form-group"> <label style="color:#f00">Date</label>
-                                        <div> <input class="form-control " type="text" name="date"
+                                        <div> <input class="form-control datetimepicker" type="text" name="date"
                                                 id="date" required>
                                         </div>
                                     </div>
@@ -98,19 +104,19 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="form-group"> <label style="color:#f00">Mobile</label>
+                                    <div class="form-group"> <label>Mobile</label>
                                         <div> <input class="form-control" type="text" name="mobile" id="mobile"
                                                 placeholder="Mobile Number" autocomplete="off">
                                          </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-2">
-                                    <div class="form-group"> <label style="color:#f00">PO No</label>
+                                <div class="col-md-2">
+                                    <div class="form-group"> <label>PO No</label>
                                         <div> <input class="form-control" type="text" name="ea_po_no" id="ea_po_no"
                                                 placeholder="PO Number" autocomplete="off">
                                          </div>
                                     </div>
-                                </div> -->
+                                </div>
                                 <div class="col-md-2">
                                     <div class="form-group"> <label>Is Balance Only? </label>
                                         <div> <input type="checkbox" name="balance" id="balance"> </div>
@@ -118,15 +124,24 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label style="color:#f00"> Amount <span style="color: red;">*</span></label>
-                                        <input type="text" name="amount" id="amount" class="form-control" readonly required>
+                                        <label style="color:#f00"> Amount</label>
+                                        <input type="text" name="amount" id="amount" class="form-control" readonly="">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>Payment Receipt No</label>
-                                        <div> <input class="form-control" type="text" name="paymentreceiptno" value="2"
-                                                id="paymentreceiptno" placeholder="Payment Receipt No" readonly="">
+                                        <label>Expence Advice No</label>
+                                        <div> 
+                                            <input class="form-control" type="text" name="paymentreceiptno" value="{{new_expense_advice_no}}"
+                                                id="paymentreceiptno" placeholder="Expence Advice No" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Advice No</label>
+                                        <div> <input class="form-control" type="text" name="ea_advice_no"
+                                                id="ea_advice_no" placeholder="Advice No" >
                                         </div>
                                     </div>
                                 </div>
@@ -150,14 +165,14 @@
                                     </div>
                                 </div>
                                 
-                                <div class="col-md-2">
+                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Reference# </label>
                                         <div>
                                             <input class="form-control " type="text" name="reference" id="reference">
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
                               
                             </div>
                             <hr>
@@ -168,10 +183,10 @@
                                         <thead>
                                             <tr>
                                                 <th>Date</th>
-                                                <th>Customer</th>
+                                                <th>Vendor</th>
                                                 <th>Invoice Number</th>
                                                 <th>Invoice Amount</th>
-                                                <th>Payment Received No</th>
+                                                <!-- <th>Expence Advice No</th> -->
                                                 <th>Due Amount </th>
                                                 <th>Payment</th>
                                             </tr>
@@ -191,7 +206,7 @@
                                         </div>
                                         <div class="col-lg-7 col-md-6 pt11">
                                             <div class="invoice-fields">
-                                                <h4 class="field-title"> Note..</h4> <textarea class="form-control"
+                                                <h4 class="field-title">T&amp;C Note...</h4> <textarea class="form-control"
                                                     name="note" id="note"></textarea>
                                             </div>
                                         </div>
@@ -212,7 +227,7 @@
 
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p> Amount Received</p>
+                                                                <p> Amount Paid</p>
                                                             </div>
                                                             <div class="col-lg-6 ">
                                                                 <input type="text" class="utrt1" name="amount_received"
@@ -232,17 +247,20 @@
 
                                                         <div class="invoice-total-footer">
                                                             <h4>Amount in excess<input class="utrt1" type="text"
-                                                                    name="amount_excess" id="amount_excess" readonly="" required>
+                                                                    name="amount_excess" id="amount_excess" readonly="">
                                                             </h4>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="upload-sign">
-                                                    <div class="form-group float-end mb-0"> <button
-                                                            class="btn btn-primary" type="submit">Cancel</button> </div>
+                                                    <div class="form-group float-end mb-0"> <a
+                                                        href="{% url 'expense_advice_list_View'%}"
+                                                        class="btn btn-primary">Cancel</a></div>
                                                     <div class="form-group float-end mb-0"> <button
                                                             class="btn btn-primary" type="submit" id="btn_submit"
                                                             name="btn_submit">Save </button> </div>
+                                                            <button type="reset" class="btn btn-outline-secondary me-1 btn-rounded">Reset</button>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -257,156 +275,95 @@
                         </form>
                     </div>
                 </div>
-                <!-- <script src="https://olatechs.in/crm/supreeno/assets/js/jquery-3.6.0.min.js"></script>
-                <script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap.bundle.min.js"></script>
-                <script src="https://olatechs.in/crm/supreeno/assets/js/feather.min.js"></script>
-                <script
-                    src="https://olatechs.in/crm/supreeno/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-                <script src="https://olatechs.in/crm/supreeno/assets/plugins/select2/js/select2.min.js"></script>
-                <script src="https://olatechs.in/crm/supreeno/assets/plugins/select2/js/custom-select.js"></script>
-                <script src="https://olatechs.in/crm/supreeno/assets/plugins/moment/moment.min.js"></script>
-                <script src="https://olatechs.in/crm/supreeno/assets/js/bootstrap-datetimepicker.min.js"></script>
-                <script src="https://olatechs.in/crm/supreeno/assets/js/script.js"></script> -->
+             
             </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const expiryDateInput = document.getElementById("date");
-    
-            // Set the current date as the default value in DD-MM-YYYY format
-            const today = new Date();
-            const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
-            expiryDateInput.value = formattedDate;
-    
-            // Initialize the datepicker with the desired format and set minDate to today
-            $(expiryDateInput).datepicker({
-                dateFormat: 'dd-mm-yy',
-                minDate: 0
-            });
-        });
-    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 
     <script type="text/javascript">
         $(document).on('change', '#customer', function () {
-            //alert();return;
-            //$('#update').removeAttr('disabled');
-            //$('.table-wrap').show();
             var customer = $('#customer').val();
-            //alert(customer);
-            //alert(divi);return;
             var paymentreceiptno = $('#paymentreceiptno').val();
-            console.log("vidyaaa",paymentreceiptno)
+            
             $.ajax({
-                type: 'ajax',
-                method: 'post',
-                //url: 'https://olatechs.in/crm/supreeno/admin/get_pending_invoice',
-                url: '/get_related_fields/',
+                type: 'POST',
+                url: "{% url 'get_related_fields' %}",
                 data: { 'customer': customer },
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                async: false,
                 dataType: 'json',
                 success: function (data) {
-                    console.log(data);
                     var html = '';
-                    var i;
                     $("#existing_row_count").val(data.length);
-                    for (i = 0; i < data.length; i++) {
-                        totalamt = data[i].invoice_total;
-                        // payments = data[i].payments;
-                        payments = 100;
-                        dueamount = totalamt - payments;
+                    
+                    data.forEach(function(item, i) {
                         html += '<tr class="tblro">' +
-                            '<td><input class="no-outline" id="invoicedate' + i + '" name= "invoicedate' + i + '" value="' + data[i].ex_invoice_date + '"></td>' +
-                            '<td><input class="no-outline" id="customername' + i + '" name= "customername' + i + '" value="' + data[i].ex_vendor_name + '"></td>' +
-                            '<td><input class="no-outline" id="invoiceno' + i + '" name= "invoiceno' + i + '" value="' + data[i].id + '"></td>' +
-                            '<td><input class="no-outline" id="invoiceamount' + i + '" name= "invoiceamount' + i + '" value="' + data[i].all_total + '"></td>' +
-                            '<td>' + '<input type="text" class="no-outline" name="paymentreceiptno' + i + '" id="paymentreceiptno' + i + '" value="' + paymentreceiptno + '"></td>' +
-                            '<td><input class="no-outline" id="dueamount' + i + '" name= "dueamount' + i + '" value="' + dueamount + '" size="8"><span> <a style="color:blue; cursor: pointer;" onclick="dueamt(\'' + i + '\');" >(Pay Full)</a></span></td>' +
-                            '<td>' + '<input class="payment" name="payment' + i + '" id="payment' + i + '" onkeyup="paymenti(\'payment_' + i + '\');"></td>' +
+                            '<td><input class="no-outline" id="id_i_' + i + '" name="id_i_' + i + '" value="' + item.id + '" hidden>' +
+                            '<input class="no-outline" id="invoicedate' + i + '" name="invoicedate' + i + '" value="' + item.ex_invoice_date + '"></td>' +
+                            '<td><input class="no-outline" id="customername' + i + '" name="customername' + i + '" value="' + item.ex_vendor_name + '"></td>' +
+                            '<td><input class="no-outline" id="invoiceno' + i + '" name="invoiceno' + i + '" value="' + item.ae_invoice_no + '"></td>' +
+                            '<td><input class="no-outline" id="invoiceamount' + i + '" name="invoiceamount' + i + '" value="' + parseFloat(item.all_total).toFixed(2) + '"></td>' +
+                            '<td><input class="no-outline" id="dueamount' + i + '" name="dueamount' + i + '" value="' + parseFloat(item.ae_due_amount).toFixed(2) + '" size="8" onchange="dueamt(\'' + i + '\');">' +
+                            '<span><a style="color:blue; cursor: pointer;" onclick="dueamt(\'' + i + '\');">(Pay Full)</a></span></td>' +
+                            '<td><input type="number" step="0.01" class="payment" name="payment' + i + '" id="payment' + i + '" onkeyup="paymenti(' + i + ');" steps="0.01"></td>' +
                             '</tr>';
-                    }
+                    });
+    
                     $('#show_tmp_data').html(html);
-                    if (html == '') {
-                        $('.nobi').html('There is no Bill Applied For this payment');
-                    }
-                    else {
-                        $('.nobi').html('');
-                    }
-
-                    //$('.nobi').html('There is no Bill Applied For this payment');
-
+                    $('.nobi').html(data.length === 0 ? 'There is no Bill Applied For this payment' : '');
                 },
                 error: function () {
                     alert('There is no Bill Applied For this payment');
                     $('.nobi').html('There is no Bill Applied For this payment');
                 }
-
             });
         });
-
-        function paymenti(inputname) {
+    
+        function paymenti(i) {
             var sum = 0;
             $(".payment").each(function () {
-                sum += +this.value;
+                sum += +this.value || 0;
             });
-            //alert(sum);
-
-            $('#total').val((sum).toFixed(2));
-            $('#amount_received').val((sum).toFixed(2));
-            $('#amount_used').val((sum).toFixed(2));
-
-
-            //alert(inputname);
-            input = inputname.split("_");
-            id_val = input[1];
-            //alert(id_val);
-
-            dueamount = Number($('#dueamount' + id_val).val());
-            console.log("oooooooooo",dueamount)
-            //alert(dueamount);
-
-            payment = Number($('#payment' + id_val).val());
-            //alert(payment);
-            //$('#amount').val(payment);
-            $('#amount').val(sum);
-
+    
+            $('#total').val(sum.toFixed(2));
+            $('#amount_received').val(sum.toFixed(2));
+            $('#amount_used').val(sum.toFixed(2));
+    
+            var dueamount = Number($('#dueamount' + i).val());
+            var payment = Number($('#payment' + i).val());
+    
             if (payment > dueamount) {
-                $('#payment' + id_val).val('0');
+                $('#payment' + i).val('0');
                 $('#amount').val('0');
+                $('#total').val();
+                $('#amount_received').val();
+                $('#amount_used').val();
             }
-
-
         }
-
-       
-    </script>
-
-    <script type="text/javascript">
-
-        function dueamt(inputname) {
-            //alert(inputname);
-            i = inputname;
-            //alert(i);
-
-            dueamount = $('#dueamount' + i).val();
-            //alert(dueamount);
-
+    
+        function dueamt(i) {
+            var dueamount = $('#dueamount' + i).val();
             $('#payment' + i).val(dueamount);
-
+    
             var sum = 0;
             $(".payment").each(function () {
-                sum += +this.value;
+                sum += +this.value || 0;
             });
-            //alert(sum);
-
-            $('#amount').val((sum).toFixed(2));
-            $('#total').val((sum).toFixed(2));
-            $('#amount_received').val((sum).toFixed(2));
-            $('#amount_used').val((sum).toFixed(2));
+    
+            $('#amount').val(sum.toFixed(2));
+            $('#total').val(sum.toFixed(2));
+            $('#amount_received').val(sum.toFixed(2));
+            $('#amount_used').val(sum.toFixed(2));
         }
     </script>
+    
+    
+
+
 
     <script type="text/javascript">
         $(function () {
@@ -455,7 +412,7 @@
                             var amount_received = $("#amount_received").val();
                             var amount_used = $("#amount_used").val();
                             var amount_excess = $("#amount_excess").val();
-                            var paymentreceiptno = $("#paymentreceiptno").val();
+                            // var paymentreceiptno = $("#paymentreceiptno").val();
 
                             if ($("#balance").is(':checked')) {
                                 var balance = 'Checked';
@@ -482,7 +439,7 @@
                             var invoiceamount = $('#invoiceamount' + i).val();
                             var dueamount = $('#dueamount' + i).val();
                             var payment = $('#payment' + i).val();
-                            var paymentreceiptno = $('#paymentreceiptno' + i).val();
+                            // var paymentreceiptno = $('#paymentreceiptno' + i).val();
 
                             if ($("#balance").is(':checked')) {
                                 var balance = 'Checked';
@@ -551,9 +508,24 @@
                 $('.cheque_date').hide();
             }
         })
+
+        
     </script>
 
 
 
+
 </div>
+
+<script>
+    // Set today's date in the format DD-MM-YYYY
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        const formattedDate = 
+            String(today.getDate()).padStart(2, '0') + '-' +
+            String(today.getMonth() + 1).padStart(2, '0') + '-' +
+            today.getFullYear(); // Format: DD-MM-YYYY
+        document.getElementById("date").value = formattedDate;
+    });
+</script>
 {% endblock main_content %}

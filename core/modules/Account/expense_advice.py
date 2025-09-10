@@ -104,21 +104,6 @@ def fnadd_expense_advice(request):
 
 
 
-# @csrf_exempt
-# def get_customer_invoice_details(request):
-#     if request.method == 'POST':
-#         customer_id = request.POST.get('customer')
-#         data = Invoice.objects.filter(invoice_customer_name = customer_id).values(
-#                 'invoice_date', 'invoice_customer_name', 'id', 'invoice_total'
-#         )
-#         data_list = list(data)
-
-#         # Convert list to JSON using DjangoJSONEncoder to handle datetime fields
-#         json_data = json.dumps(data_list, cls=DjangoJSONEncoder)
-
-#         return JsonResponse(json_data, safe=False)
-
-#     return JsonResponse({'error': 'Invalid request method'})
 
 
 @csrf_exempt
@@ -126,13 +111,10 @@ def fnadd_expense_advice(request):
 def get_vendor_expenses(request):
     if request.method == 'POST':
         customer_id = request.POST.get('customer')
-        # Assuming YourModel has fields like 'invoice_date', 'customer_name', 'invoice_no', 'totalamt', 'payments'
         data = expense_vendor.objects.filter(ex_vendor_name = customer_id).values(
                 'ex_invoice_date', 'ex_vendor_name', 'id', 'all_total'
         )
-        # Convert QuerySet to a list of dictionaries
         data_list = list(data)
-        # print("00000000000000",data_list)
         return JsonResponse(data_list, safe=False, encoder=DjangoJSONEncoder)
     return JsonResponse({'error': 'Invalid request method'})
 
