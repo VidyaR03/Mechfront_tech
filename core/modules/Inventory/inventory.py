@@ -605,11 +605,26 @@ def inventory_data_add(request):
     try:
         if request.method == "POST":
             # print(request.POST['default_discount'],"&&&&&&")
-            if not request.POST['default_discount']:
-                 default_discount = 0.0
-            else:
-                 default_discount = request.POST['default_discount']
-                 
+             # Handle default_discount
+            default_discount = request.POST.get('default_discount')
+            if not default_discount or default_discount.strip() == "":
+                default_discount = 0.0
+
+            # Handle opening_rate
+            opening_rate = request.POST.get('opening_rate')
+            if not opening_rate or opening_rate.strip() == "":
+                opening_rate = 0.0  # or None if your model allows null
+
+            # Handle purchase_rate
+            purchase_rate = request.POST.get('purchase_rate')
+            if not purchase_rate or purchase_rate.strip() == "":
+                purchase_rate = 0.0
+
+            # Handle sales_rate
+            sales_rate = request.POST.get('sale_rate')
+            if not sales_rate or sales_rate.strip() == "":
+                sales_rate = 0.0
+                
             inventory_data = {
             'inventory_name': request.POST['inventory_name'],
             'item_code': request.POST['item_code'],
@@ -704,7 +719,7 @@ def inventory_edit(request, id):
         "inventory_item": inventory_item,
         'godown_name': godown_name,
         'company_name': company_name,
-        "is_trackable": True if inventory_item.opening_stock_quantity != "0" else False,
+        "is_trackable": bool(inventory_item.opening_stock_quantity),
         "is_purchase_information": True if inventory_item.purchase_rate != "0" else False
 
     }
