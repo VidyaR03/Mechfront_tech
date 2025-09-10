@@ -56,16 +56,17 @@ CRM
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Leaves Type </label>
-                                            <select class="form-select" name="leave_type" id="leave_type" required>                                               
-                                                <option>{{form.leave_type}}</option>
-
-                                                <option value="earn">Earn Leave</option>
-                                                <option value="casual">Casual Leave</option>
-
+                                            <label>Leave Type</label>
+                                            <select class="form-select" name="leave_type" id="leave_type" required>
+                                                <option value="">Select Leave Type</option>
+                                                <option value="Full Day" {% if form.leave_type == "Full Day" %}selected{% endif %}>Full Day</option>
+                                                <option value="Half Day" {% if form.leave_type == "Half Day" %}selected{% endif %}>Half Day</option>
+                                                <option value="LOP" {% if form.leave_type == "LOP" %}selected{% endif %}>LOP</option>
                                             </select>
+
                                         </div>
                                     </div>
+
                                     <div class="col-md-3">
                                         <div class="form-group">
                                         <label>From Date</label>
@@ -81,12 +82,13 @@ CRM
                                         </div>
                                     </div> 
                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Remaining Leaves</label>
-                                            <input type="number" class="form-control" name="leaves_allocated" id="leaves_allocated" readonly
-                                                value="{{ form.leaves_allocated|default_if_none:'' }}">
-                                        </div>
-                                    </div>
+    <div class="form-group">
+        <label>Remaining Leaves</label>
+        <input type="number" step="0.5" class="form-control" name="leaves_allocated" id="leaves_allocated" readonly
+       value="{{ remaining_leaves|floatformat:1 }}">
+    </div>
+</div>
+
 
                                     <div class="col-md-3">
                                         <div class="form-group">
@@ -419,11 +421,44 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Fill value for initial employee on page load
-    if (empNameSelect.value) {
+    {% comment %} if (empNameSelect.value) {
         empNameSelect.dispatchEvent(new Event('change'));
-    }
+    } {% endcomment %}
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const empNameSelect = document.getElementById('emp_name');
+  const remainingInput = document.getElementById('remaining_leaves');
+  // endpoint should return JSON like { "remaining": 7.5 }
+  const urlTemplate = "{% url 'get_emp_remaining_leaves' 0 %}";
+
+  if (!empNameSelect || !remainingInput) return;
+
+  empNameSelect.addEventListener('change', function() {
+    const empId = empNameSelect.value;
+    if (!empId) {
+      remainingInput.value = '';
+      return;
+    }
+    const url = urlTemplate.replace('0', empId);
+    fetch(url)
+      .then(resp => resp.json())
+      .then(data => {
+        // Prefer `remaining` key (server-side), fallback to allocated if present
+        const v = (data && typeof data.remaining !== 'undefined') ? data.remaining : (data.leaves_allocated || 0);
+        remainingInput.value = v;
+      })
+      .catch(err => {
+        console.error("Error fetching remaining leaves:", err);
+        remainingInput.value = '';
+      });
+  });
+
+  // Do NOT auto-trigger change on load (server already rendered correct value).
+});
+</script>
+
 {% endblock custom_js %}    
 {% endblock main_content %}
 
