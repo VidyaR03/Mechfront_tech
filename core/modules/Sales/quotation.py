@@ -105,7 +105,7 @@ def add_quotation_data(request):
             'q_packaging_forwording_amount': request.POST.get('packaging_forwording_amount', '0'),
             'q_packaging_forwording_percentage': request.POST.get('packaging_forwording_percentage', '0'),
             'q_freight_amount': request.POST.get('freight_amount', '0'),
-            'q_freight_percentage': request.POST.get('freight_percentage', '0'),
+            'q_freight_percentage': request.POST.get('freight_percentage', '0.00'),
             'q_packaging_forwording_percentage_amt': request.POST.get('packaging_forwording_percentage_amt', '0'),
             'q_freight_percentage_amt': request.POST.get('freight_percentage_amt', '0'),
             'q_total_amt_word':request.POST['q_total_amt_word'],
@@ -306,7 +306,7 @@ def edit_quotation_data(request, id):
         quotation_data.q_packaging_forwording_amount = request.POST.get('packaging_forwording_amount', '0')
         quotation_data.q_packaging_forwording_percentage = request.POST.get('packaging_forwording_percentage', '0')
         quotation_data.q_freight_amount = request.POST.get('freight_amount', '0')
-        quotation_data.q_freight_percentage = request.POST.get('freight_percentage', '0')
+        quotation_data.q_freight_percentage = request.POST.get('freight_percentage', '0.00')
         quotation_data.q_packaging_forwording_percentage_amt = request.POST.get('packaging_forwording_percentage_amt', '0')
         quotation_data.q_freight_percentage_amt = request.POST.get('freight_percentage_amt', '0')
         quotation_data.q_total_amt_word = request.POST['q_total_amt_word']
