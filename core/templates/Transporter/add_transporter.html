@@ -203,13 +203,30 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // jQuery Validate for Form Submission
+  
+$(document).ready(function () {
+    // Add custom pattern rule for jQuery Validate
+    $.validator.addMethod("pattern", function (value, element, param) {
+        if (this.optional(element)) {
+            return true;
+        }
+        if (typeof param === "string") {
+            param = new RegExp(param);
+        }
+        return param.test(value);
+    }, "Invalid format");
+
+    // jQuery Validate for Form Submission
     $("#vendor_form").validate({
         rules: {
             name: {
                 required: true,
                 minlength: 2
             },
-         
+            address: {
+                required: true,
+                minlength: 5
+            },
             mobile: {
                 required: true,
                 minlength: 10,
@@ -235,7 +252,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 required: "Please enter the transporter's name",
                 minlength: "Name must be at least 2 characters long"
             },
-         
+            address: {
+                required: "Please enter the address",
+                minlength: "Address must be at least 5 characters long"
+            },
             mobile: {
                 required: "Please enter a mobile number",
                 minlength: "Mobile number must be 10 digits",
@@ -258,16 +278,23 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         errorElement: "span",
         errorClass: "error-message",
-        errorPlacement: function(error, element) {
+        errorPlacement: function (error, element) {
             error.insertAfter(element);
         },
-        highlight: function(element) {
+        highlight: function (element) {
             $(element).closest('.form-group').addClass('invalid').removeClass('valid');
         },
-        unhighlight: function(element) {
+        unhighlight: function (element) {
             $(element).closest('.form-group').removeClass('invalid').addClass('valid');
+        },
+        submitHandler: function (form) {
+            // ✅ Only submit if valid
+            form.submit();
         }
     });
+});
+
+
 });
 </script>
 {% endblock custom_js %}
