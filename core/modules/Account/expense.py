@@ -97,7 +97,8 @@ def add_expense_vendor_data(request):
             'ex_vendor_name': vendor.objects.filter(company_name=request.POST['ac_vendor']).first(),
             'ex_gst_number': request.POST['acc_gst'],
             'ex_freight': request.POST['freight'],
-            'all_total' : request.POST['totalamt']
+            'all_total' : request.POST['totalamt'],
+            'terms_condition' : request.POST['terms_condition'],
         }
 
         expense_vendor_object = expense_vendor(**expense_vendor_data)
@@ -132,72 +133,69 @@ def add_expense_vendor_data(request):
 
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from decimal import Decimal
-import datetime
-
-# Assume these are your models
-
-
 
 
 @login_required
 def edit_expense_vendor_data(request, id):
     if request.method == "GET":
-        expense_data = get_object_or_404(expense_vendor, id=id)
-        vendor_name = expense_data.ex_vendor_name       
-        all_dispatch_through = transporter.objects.all()
-        all_customer_name = customer.objects.all()
-        expense_item_data = expense_item.objects.filter(ex_expense_id = id)
-        len_expense_item = len(expense_item_data)
-        context ={ 
-            'customer_name' : vendor_name,
-            'all_customer_name':all_customer_name,
-            'expense_item_data':expense_item_data,
-            'expense_data': expense_data,
-            'all_dispatch_through':all_dispatch_through,
-            'len_expense_item':len_expense_item
-            }
+        # Retrieve vendor, transporter, and existing expense data
+        current_date = datetime.date.today()
+        vendor_name = vendor.objects.all()
+        dispatch_through = transporter.objects.all()
+        expense = expense_vendor.objects.get(id=id)
+        expense_items = expense_item.objects.filter(ex_expense_id=id)
 
-        return render(request, template_path.expense_vendor_edit_path, context)
-    elif request.method == "POST":
-        expense_data = get_object_or_404(expense_vendor, id=id)
-        id = expense_data.id
-        q_date_str = request.POST['acc_date']
-        # q_date = datetime.strptime(q_date_str, '%d-%m-%Y').date()
-        # q_date = datetime.datetime.strptime(q_date_str, '%d-%m-%Y').date()
-        expense_data = {
-            'id':id,
-            'ex_invoice_date':request.POST['acc_date'],
-            'ex_vendor_name': vendor.objects.filter(id=request.POST['ac_vendor']).first(),
-            'ex_gst_number':request.POST['acc_gst'],
-            'ex_freight':request.POST['acc_freight'],
-          
+        context = {
+            'vendor_name': vendor_name,
+            'dispatch_through': dispatch_through,
+            'current_date': current_date,
+            'expense_data': expense,
+            'expense_items': expense_items,
         }
-        expense_object = expense_vendor(**expense_data)
-        expense_object.save()
-        i = 1
-        max_row = int(request.POST.get('iid[]',0))
-        expense_item.objects.filter(ex_expense_id = id).delete()
+        return render(request, template_path.expense_vendor_edit_path, context)
 
-        while i <= max_row:
-            q_item = expense_item(
-                q_item_code = request.POST.get(f'itemcode_{i}'),
-                q_description_goods = request.POST.get(f'item_{i}'),
-                q_hsn = request.POST.get(f'hsn_{i}'),
-                q_qantity = request.POST.get(f'qty_{i}'),
-                q_uom = request.POST.get(f'uom_{i}'),
-                q_unit_price = request.POST.get(f'rate_{i}'),
-                q_discount = request.POST.get(f'discount_{i}'),
-                q_tax_rate = request.POST.get(f'taxrate_{i}'),
-                q_tax_amount = request.POST.get(f'taxamt_{i}'),
-                q_total = request.POST.get(f'total_{i}'),
-                q_quotation_id = id
+    elif request.method == "POST":
+        # Handle the form submission for updating expense data
+        expense = expense_vendor.objects.get(id=id)
+        
+        expense_vendor_data = {
+            'ex_invoice_date': request.POST['acc_date'],
+            'ex_vendor_name': vendor.objects.filter(company_name=request.POST['ac_vendor']).first(),
+            'ex_gst_number': request.POST['acc_gst'],
+            'ex_freight': request.POST['freight'],
+            'all_total': request.POST['totalamt'],
+            'terms_condition': request.POST['terms_condition'],
+        }
+
+        # Update the expense vendor object
+        for key, value in expense_vendor_data.items():
+            setattr(expense, key, value)
+        expense.save()
+
+        # Delete existing expense items to replace with new ones
+        expense_item.objects.filter(ex_expense_id=id).delete()
+
+        # Add new expense items
+        max_row_str = int(request.POST.get('iid[]', 0))
+        i = 0
+        while i <= max_row_str:
+            ex_item = expense_item(
+                ex_item_code=request.POST.get(f'itemcode_{i}'),
+                ex_description_goods=request.POST.get(f'item_{i}'),
+                ex_hsn=request.POST.get(f'hsn_{i}'),
+                ex_qantity=request.POST.get(f'qty_{i}'),
+                ex_uom=request.POST.get(f'uom_{i}'),
+                ex_unit_price=request.POST.get(f'rate_{i}'),
+                ex_discount=request.POST.get(f'discount_{i}'),
+                ex_tax_rate=request.POST.get(f'taxrate_{i}'),
+                ex_tax_amount=request.POST.get(f'taxamt_{i}'),
+                ex_total=request.POST.get(f'total_{i}'),
+                ex_expense_id=id
             )
-            q_item.save()
-            i = i+1
+            ex_item.save()
+            i += 1
+
         return redirect('expense_vendor_list')
-    
 
 @login_required
 def delete_expense_vendor_data(request,expense_vendor_id):

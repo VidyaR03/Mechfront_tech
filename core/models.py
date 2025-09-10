@@ -295,6 +295,7 @@ class expense_vendor(models.Model):
     ex_gst_number = models.CharField(max_length=255, null=True,blank=True)
     ex_freight = models.DecimalField(max_digits=10, decimal_places=2, null=True,blank=True)
     all_total = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    terms_condition = models.CharField(max_length=25, null=True)
 
     class Meta:
         db_table = 'expense_vendor'
