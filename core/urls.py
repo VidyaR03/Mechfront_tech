@@ -77,6 +77,7 @@ urlpatterns = [
     path('edit_hr_leaves/<int:id>/', views.edit_employee_leaves, name='edit_hr_leaves'),
     path('delete_hr_leaves/<int:id>/', views.delete_employee_leaves, name='delete_hr_leaves'), 
     path('get_emp_leaves_allocated/<int:emp_id>/', views.get_emp_leaves_allocated, name='get_emp_leaves_allocated'),
+    path("get_emp_remaining_leaves/<int:emp_id>/", views.get_emp_remaining_leaves, name="get_emp_remaining_leaves"),
 
    
     path('add_emp_slary/',views.add_employee_salary , name="add_emp_slary"),

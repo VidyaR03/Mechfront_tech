@@ -53,16 +53,16 @@ CRM
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-    <div class="form-group">
-        <label>Leave Type</label>
-        <select class="form-select" name="leave_type" id="leave_type" required>
-            <option value="">Select Leave</option>
-            <option value="Full Day">Full Day</option>
-            <option value="Half Day">Half Day</option>
-            <option value="LOP">LOP</option>
-        </select>
-    </div>
-</div>
+                                        <div class="form-group">
+                                            <label>Leave Type</label>
+                                            <select class="form-select" name="leave_type" id="leave_type" required>
+                                                <option value="">Select Leave</option>
+                                                <option value="Full Day">Full Day</option>
+                                                <option value="Half Day">Half Day</option>
+                                                <option value="LOP">LOP</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
                                     <!-- <div class="col-md-3">
                                         <div class="form-group">
@@ -213,14 +213,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     empNameSelect.addEventListener('change', function() {
         const selectedId = empNameSelect.value;
-        let url = "{% url 'get_emp_leaves_allocated' 0 %}".replace("0",selectedId);
-       
+        let url = "{% url 'get_emp_remaining_leaves' 0 %}".replace("0", selectedId);
+
         if (selectedId) {
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    console.log("AJAX response:", data); // <-- Debug line
-                    remainingDaysInput.value = data.leaves_allocated || 0;
+                    console.log("AJAX response:", data);
+                    if (data.remaining !== undefined) {
+                        remainingDaysInput.value = data.remaining;
+                    } else {
+                        remainingDaysInput.value = data.leaves_allocated || 0;
+                    }
                 });
         } else {
             remainingDaysInput.value = '';
