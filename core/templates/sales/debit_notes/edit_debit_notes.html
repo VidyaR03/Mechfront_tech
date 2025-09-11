@@ -500,7 +500,7 @@
                                                                     class="form-control taxrate_{{ forloop.counter }}"
                                                                     name="taxrate_{{ forloop.counter }}"
                                                                     id="taxrate_{{ forloop.counter }}"
-                                                                    value="{{j.cn_tax_rate}}"
+                                                                    value="{{j.cn_tax_rate}}" step="0.001"
                                                                     onkeyup="taxrate('taxrate_{{ forloop.counter }}')" required>
                                                             </td>
 
@@ -1047,86 +1047,201 @@
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-    i_field = $('#i_field').val();
+$(document).ready(function () {
+    // Initialize autocomplete for existing item code fields
+    initializeAutocomplete();
+
+    // Initialize autocomplete for dynamically added rows
     var max_fields = 500;
-    var i = i_field;
+    var i = parseInt($('#i_field').val()) || 1;
     var x = 1;
+
+    // Handle row removal
     $(".add-table-items").on('click', '.remove-btn', function () {
         $(this).closest('.add-row').remove();
-        
         subtotal();
-
         calculateTotalTaxAmount();
-        $(document).ready(function() {
-            subtotal();
-        });
-        // 
         updateTotalInWords();
-
         return false;
     });
 
-   
-
-    // var i = 1;
+    // Handle row addition
     $(document).on("click", ".add-btn", function () {
         if (x < max_fields) {
-        i++;
-        x++;
-        var experiencecontent = '<tr class="add-row">' +
-            ' <td>' +
-            '<input type="hidden" name="iid[]" class="iid" value="' + i + '">' +
-            '</td>'+
-            '<td>' +
-            '<input type="text" class="form-control" style="width: 120px;" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\'); " onfocus="updateTotalInWords();">' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" name="item_' + i + '" id="item_' + i + '" class="form-control" onkeyup="getitemsdetails(\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\',\'itemcode_' + i + '\'); " >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" name="hsn_' + i + '" id="hsn_' + i + '" class="form-control" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="qty_' + i + '" id="qty_' + i + '" onkeyup="taxrate(\'qty_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="uom_' + i + '" id="uom_' + i + '" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="rate_' + i + '" id="rate_' + i + '" onkeyup="rate(\'rate_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control" name="discount_' + i + '" id="discount_' + i + '" onkeyup="discountamt(\'discount_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="number" class="form-control taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="taxrate(\'taxrate_' + i + '\');" >' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control taxamt" name="taxamt_' + i + '" id="taxamt_' + i + '" readonly>' +
-            '</td>' +
-
-            '<td>' +
-            '<input type="text" class="form-control totalamt" name="total_' + i + '" id="total_' + i + '" readonly>' +
-            '</td>' +
-
-            '<td class="add-remove text-end">' +
-            '<a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a> ' +
-            '<a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>' +
-            '</td>' +
-            '</tr>';
+            i++;
+            x++;
+            var experiencecontent = `
+                <tr class="add-row">
+                    <td><input type="hidden" name="iid[]" class="iid" value="${i}"></td>
+                    <td><input type="text" style="width: 120px;" class="form-control itemcode" name="itemcode_${i}" id="itemcode_${i}" onkeyup="getitemscodedetails('itemcode_${i}', 'item_${i}', 'description_${i}', 'godown_${i}', 'qty_${i}', 'rate_${i}', 'uom_${i}', 'discount_${i}', 'taxrate_${i}', 'hsn_${i}');"></td>
+                    <td><input type="text" name="item_${i}" id="item_${i}" class="form-control" onkeyup="getitemsdetails('item_${i}', 'description_${i}', 'godown_${i}', 'qty_${i}', 'rate_${i}', 'uom_${i}', 'discount_${i}', 'taxrate_${i}', 'hsn_${i}', 'itemcode_${i}');"></td>
+                    <td><input type="text" name="hsn_${i}" id="hsn_${i}" class="form-control"></td>
+                    <td><input type="text" class="form-control" name="qty_${i}" id="qty_${i}" onkeyup="qty('qty_${i}');"></td>
+                    <td><input type="text" class="form-control" name="uom_${i}" id="uom_${i}"></td>
+                    <td><input type="text" class="form-control" name="rate_${i}" id="rate_${i}" onkeyup="rate('rate_${i}');" readonly></td>
+                    <td><input type="text" class="form-control" name="discount_${i}" id="discount_${i}" onkeyup="discountamt('discount_${i}');"></td>
+                    <td><input type="number" class="form-control taxrate_${i}" name="taxrate_${i}" id="taxrate_${i}" step="0.001" onkeyup="taxrate('taxrate_${i}');" required></td>
+                    <td><input type="text" class="form-control taxamt" name="taxamt_${i}" id="taxamt_${i}" readonly></td>
+                    <td><input type="text" class="form-control totalamt" name="total_${i}" id="total_${i}" readonly></td>
+                    <td class="add-remove text-end">
+                        <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
+                        <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
+                    </td>
+                </tr>`;
+            $(".add-table-items tbody").append(experiencecontent);
+            // Initialize autocomplete for the new item code and item fields
+            initializeAutocompleteForField(`#itemcode_${i}`, `item_${i}`, `description_${i}`, `godown_${i}`, `qty_${i}`, `rate_${i}`, `uom_${i}`, `discount_${i}`, `taxrate_${i}`, `hsn_${i}`);
+            initializeAutocompleteForItemField(`#item_${i}`, `description_${i}`, `godown_${i}`, `qty_${i}`, `rate_${i}`, `uom_${i}`, `discount_${i}`, `taxrate_${i}`, `hsn_${i}`, `itemcode_${i}`);
         }
-        $(".add-table-items").append(experiencecontent);
         return false;
     });
+
+    // Function to initialize autocomplete for all item code and item fields
+    function initializeAutocomplete() {
+        $('.itemcode').each(function () {
+            initializeAutocompleteForField(`#${this.id}`, `item_${this.id.split('_')[1]}`, `description_${this.id.split('_')[1]}`, `godown_${this.id.split('_')[1]}`, `qty_${this.id.split('_')[1]}`, `rate_${this.id.split('_')[1]}`, `uom_${this.id.split('_')[1]}`, `discount_${this.id.split('_')[1]}`, `taxrate_${this.id.split('_')[1]}`, `hsn_${this.id.split('_')[1]}`);
+        });
+        $('input[id^="item_"]').each(function () {
+            initializeAutocompleteForItemField(`#${this.id}`, `description_${this.id.split('_')[1]}`, `godown_${this.id.split('_')[1]}`, `qty_${this.id.split('_')[1]}`, `rate_${this.id.split('_')[1]}`, `uom_${this.id.split('_')[1]}`, `discount_${this.id.split('_')[1]}`, `taxrate_${this.id.split('_')[1]}`, `hsn_${this.id.split('_')[1]}`, `itemcode_${this.id.split('_')[1]}`);
+        });
+    }
+
+    // Function to initialize autocomplete for a specific item code field
+    function initializeAutocompleteForField(selector, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
+        $(selector).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "{% url 'getitemscodedetails' %}",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: selector.split('_')[1]
+                    },
+                    success: function (data) {
+                        if (data.length === 0) {
+                            response([{ label: "No result found", value: "" }]);
+                        } else {
+                            response($.map(data, function (item) {
+                                var code = item.split("|");
+                                return {
+                                    label: code[0],
+                                    value: code[0],
+                                    data: item
+                                };
+                            }));
+                        }
+                    },
+                    error: function () {
+                        response([{ label: "Error fetching data", value: "" }]);
+                    }
+                });
+            },
+            minLength: 1,
+            autoFocus: true,
+            select: function (event, ui) {
+                if (ui.item.label === "No result found" || ui.item.label === "Error fetching data") {
+                    event.preventDefault();
+                    return false;
+                }
+                var names = ui.item.data.split("|");
+                $(selector).val(names[0]);
+                $(`#${item}`).val(names[1]);
+                $(`#${godown}`).val(names[2]);
+                $(`#${qty}`).val('1');
+                $(`#${rate}`).val(names[5]);
+                $(`#${uom}`).val(names[7]);
+                $(`#${discount}`).val(names[4]);
+                $(`#${taxrate}`).val(names[6]);
+                $(`#${hsn}`).val(names[2]);
+
+                calculateTotalTaxAmount();
+                updateTaxFields();
+                discountamt(`discount_${selector.split('_')[1]}`);
+                subtotal();
+                calculatePFPercentage();
+                calculateFreightPercentage();
+                updateTotalInWords();
+                updatePFAmount();
+                updateFreightPercentage();
+                updatePFPercentage();
+            },
+            response: function (event, ui) {
+                if (ui.content.length === 0) {
+                    ui.content.push({ label: "No result found", value: "" });
+                }
+            }
+        });
+    }
+
+    // Function to initialize autocomplete for a specific item description field
+    function initializeAutocompleteForItemField(selector, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
+        $(selector).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "#", // Replace with the correct URL for item description autocomplete
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: selector.split('_')[1]
+                    },
+                    success: function (data) {
+                        if (data.length === 0) {
+                            response([{ label: "No result found", value: "" }]);
+                        } else {
+                            response($.map(data, function (item) {
+                                var code = item.split("|");
+                                return {
+                                    label: code[0],
+                                    value: code[0],
+                                    data: item
+                                };
+                            }));
+                        }
+                    },
+                    error: function () {
+                        response([{ label: "Error fetching data", value: "" }]);
+                    }
+                });
+            },
+            minLength: 1,
+            autoFocus: true,
+            select: function (event, ui) {
+                if (ui.item.label === "No result found" || ui.item.label === "Error fetching data") {
+                    event.preventDefault();
+                    return false;
+                }
+                var names = ui.item.data.split("|");
+                $(selector).val(names[0]);
+                $(`#${description}`).val(names[1]);
+                $(`#${godown}`).val(names[2]);
+                $(`#${qty}`).val('1');
+                $(`#${rate}`).val(names[5]);
+                $(`#${uom}`).val(names[7]);
+                $(`#${discount}`).val(names[4]);
+                $(`#${taxrate}`).val(names[6]);
+                $(`#${hsn}`).val(names[2]);
+                $(`#${itemcode}`).val(names[11]);
+
+                calculateTotalTaxAmount();
+                updateTaxFields();
+                discountamt(`discount_${selector.split('_')[1]}`);
+                subtotal();
+                calculatePFPercentage();
+                calculateFreightPercentage();
+                updateTotalInWords();
+                updatePFAmount();
+                updateFreightPercentage();
+                updatePFPercentage();
+            },
+            response: function (event, ui) {
+                if (ui.content.length === 0) {
+                    ui.content.push({ label: "No result found", value: "" });
+                }
+            }
+        });
+    }
 });
 </script>
 
