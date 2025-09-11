@@ -220,7 +220,8 @@ def performa_edit_invoice_data(request, id):
         invoice_buyer_order_date_str = request.POST.get('buyer_order_date')
         customer_id = request.POST['customer_id']
         if customer_id:
-            q_customer_name = delivery_challan.objects.get(id=customer_id)
+            q_customer_name = customer.objects.get(id=customer_id)
+
         else:
             q_customer_name = None
 
@@ -235,8 +236,8 @@ def performa_edit_invoice_data(request, id):
         # Optional: Check if customer_id exists
         customer_id_customer = request.POST.get('customer_id_select', None)
 
-        if customer_id_customer:
-            inv_customer_name = customer.objects.filter(id=customer_id_customer).first()
+        if customer_id_customer and customer_id_customer.isdigit():
+            inv_customer_name = customer.objects.filter(id=int(customer_id_customer)).first()
         else:
             inv_customer_name = None
         
