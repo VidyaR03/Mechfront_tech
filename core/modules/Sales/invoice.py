@@ -20,7 +20,7 @@ from io import BytesIO
 from django.contrib import messages
 
 
-
+from django.db import transaction
 
 @login_required
 def invoice_list_view(request):
@@ -332,121 +332,141 @@ def edit_invoice_data(request, id):
 
         return render(request, template_path.edit_invoice, context)
     elif request.method == "POST":
-        invoice_data = get_object_or_404(Invoice, id=id)
-        id = invoice_data.id
-        invoice_date_str = request.POST['invoice_date']
-        invoice_due_date_str = request.POST['due_date']
-        invoice_buyer_order_date_str = request.POST['buyer_order_date']
-       
-        invoice_due_date_date = datetime.strptime( invoice_due_date_str, '%d-%m-%Y').date()
-        invoice_buyerorder_date = datetime.strptime( invoice_buyer_order_date_str, '%d-%m-%Y').date()
-        invoice_date = datetime.strptime( invoice_date_str, '%d-%m-%Y').date()
-        customer_id = request.POST['customer_id']
-        # customer_id_id = delivery_challan.objects.get(id=customer_id)
+        invoice_obj = get_object_or_404(Invoice, id=id)
 
-        invoice_data = {
-            'id': id,
-            'inv_number':request.POST['invoice_no'],
+        # parse dates safely (existing code)
+        invoice_date_str = request.POST.get('invoice_date', '')
+        invoice_due_date_str = request.POST.get('due_date', '')
+        invoice_buyer_order_date_str = request.POST.get('buyer_order_date', '')
+
+        invoice_date = datetime.strptime(invoice_date_str, '%d-%m-%Y').date() if invoice_date_str else None
+        invoice_due_date_date = datetime.strptime(invoice_due_date_str, '%d-%m-%Y').date() if invoice_due_date_str else None
+        invoice_buyerorder_date = datetime.strptime(invoice_buyer_order_date_str, '%d-%m-%Y').date() if invoice_buyer_order_date_str else None
+
+        customer_id = request.POST.get('customer_id')
+
+        # Build update dict for the Invoice fields (use conservative .get())
+        update_fields = {
+            'inv_number': request.POST.get('invoice_no'),
             'invoice_date': invoice_date,
-            'invoice_payment_terms':request.POST['payment_term'],
-            # 'invoice_customer_name':delivery_challan.objects.get(id=customer_id),
-            'invoice_customer_name_customer':customer.objects.get(id=customer_id),
-            # 'invoice_customer_name':delivery_challan.objects.filter(id=request.POST['customer_Name']).first(),
-            'invoice_eway_bill_no':request.POST['ewaybill_no'],
-            'invoice_supply_place':request.POST['place_of_supply'],
-            'invoice_delivery_no':request.POST['order_no'],
-            'invoice_destination':request.POST['destination'],
+            'invoice_payment_terms': request.POST.get('payment_term'),
+            'invoice_eway_bill_no': request.POST.get('ewaybill_no',''),
+            'invoice_supply_place': request.POST.get('place_of_supply',''),
+            'invoice_delivery_no': request.POST.get('order_no',''),
+            'invoice_destination': request.POST.get('destination',''),
             'invoice_due_date': invoice_due_date_date,
-            'invoice_landing_LR_RR_No':request.POST['lrno'],
-            'invoice_dispatch':request.POST['transporter_name'],
-            'invoice_shipping_address':request.POST['shipping_address'],
-            'invoice_sales_person':request.POST['sales_person'],
-            'invoice_format_type':request.POST['invoice_format'],
-            'invoice_vehicle_no':request.POST['vehicle_no'],
-            'invoice_gst_no':request.POST['gst_no'],
-            'invoice_term_of_delivery':request.POST['invoice_format'],
-            'invoice_buyer_order_no':request.POST['buyer_order_no'],
-            'invoice_buyer_order_date':invoice_buyerorder_date,
-            # ' invoice_packing':request.POST['packing'],
-            'invoice_dispatch':transporter.objects.filter(id=request.POST['transporter_name']).first(),
-            # 'invoice_freight':request.POST['freight'],
-            'invoice_sub_total':request.POST['subtotal'],
-            # 'invoice_cgstper':request.POST['cgstper'],
-            'invoice_cgstval':request.POST['cgst'],
-            # 'invoice_sgstper':request.POST['sgstper'],
-            'invoice_sgstval':request.POST['sgst'],
-            # 'invoice_igstper':request.POST['igstper'],
-            'invoice_igstval':request.POST['igst'],
-            'invoice_adjustment':request.POST['adjustment'],
-            'invoice_sale_of_good':request.POST['sale_of_good'],
-            'invoice_note':request.POST['note'],
-            'invoice_total':request.POST['totalamt'],
-            'gst_option':request.POST['gst_option'],
+            'invoice_landing_LR_RR_No': request.POST.get('lrno',''),
+            'invoice_shipping_address': request.POST.get('shipping_address',''),
+            'invoice_sales_person': request.POST.get('sales_person',''),
+            'invoice_format_type': request.POST.get('invoice_format',''),
+            'invoice_vehicle_no': request.POST.get('vehicle_no',''),
+            'invoice_gst_no': request.POST.get('gst_no',''),
+            'invoice_buyer_order_no': request.POST.get('buyer_order_no',''),
+            'invoice_buyer_order_date': invoice_buyerorder_date,
+            'invoice_sub_total': request.POST.get('subtotal','0'),
+            'invoice_cgstval': request.POST.get('cgst','0'),
+            'invoice_sgstval': request.POST.get('sgst','0'),
+            'invoice_igstval': request.POST.get('igst','0'),
+            'invoice_adjustment': request.POST.get('adjustment','0'),
+            'invoice_sale_of_good': request.POST.get('sale_of_good','0'),
+            'invoice_note': request.POST.get('note',''),
+            'invoice_total': request.POST.get('totalamt','0'),
+            'gst_option': request.POST.get('gst_option',''),
             'inv_packaging_forwording_amount': request.POST.get('packaging_forwording_amount', '0'),
             'inv_packaging_forwording_percentage': request.POST.get('packaging_forwording_percentage', '0'),
             'inv_freight_amount': request.POST.get('freight_amount', '0'),
             'inv_freight_percentage': request.POST.get('freight_percentage', '0'),
             'inv_packaging_forwording_percentage_amt': request.POST.get('packaging_forwording_percentage_amt', '0'),
             'inv_freight_percentage_amt': request.POST.get('freight_percentage_amt', '0'),
-            'inv_total_amt_word':request.POST['inv_total_amt_word'],
+            'inv_total_amt_word': request.POST.get('inv_total_amt_word',''),
             'inv_packaging_forwording_amt_amt': request.POST.get('packaging_forwording_amt_amt', '0'),
             'inv_freight_amt_amt': request.POST.get('freight_amt_amt', '0'),
-            # 'inv_Dispatch_document_no': request.POST['inv_Dispatch_document_no'],
-            # 'invoice_term_of_delivery': request.POST['delivery_term'],
-
-
         }
-        Invoice_object = Invoice(**invoice_data)
-        Invoice_object.save()
-        i = 1
-        max_row = int(request.POST.get('iid[]',0))
-        # print(max_row)
-        invoice_items.objects.filter(invoice_id = id).delete()
-        # while i <= max_row:
-        for i in range(1, max_row + 1):
-            dc_item_code = request.POST.get(f'itemcode_{i}')
 
-            quantity_sold = float(request.POST.get(f'qty_{i}'))
-            quantity_sold_old = float(request.POST.get(f'qty_old_{i}'))
-            remaining_qty = abs(quantity_sold_old - quantity_sold)
-            p/rint(remaining_qty,"remaining_qty")
+        # Attach FK objects safely (if you need actual model instances)
+        if customer_id:
+            try:
+                update_fields['invoice_customer_name_customer'] = customer.objects.get(id=customer_id)
+            except customer.DoesNotExist:
+                update_fields['invoice_customer_name_customer'] = None
 
+        transporter_id = request.POST.get('transporter_name')
+        if transporter_id:
+            update_fields['invoice_dispatch'] = transporter.objects.filter(id=transporter_id).first()
 
-            inventory_item = inventory.objects.filter(item_code=dc_item_code).first()
+        # Start DB transaction to avoid partial updates
+        with transaction.atomic():
+            # update invoice_obj instance (assign attributes then save)
+            for k, v in update_fields.items():
+                setattr(invoice_obj, k, v)
+            invoice_obj.save()
 
-            if inventory_item:
-                t_qty = float(inventory_item.opening_stock_quantity)
-                if t_qty >= float(remaining_qty):
-                    inventory_item.opening_stock_quantity = t_qty - float(remaining_qty)
-                    # print(inventory_item.opening_stock_quantity,"inventory_item.opening_stock_quantity,,,,,,,")
-                    inventory_item.save()
+            # Rebuild items: remove old items and add new ones
+            invoice_items.objects.filter(invoice_id = invoice_obj.id).delete()
+
+            # Determine which row indices are present in POST by scanning keys
+            indices = set()
+            for key in request.POST.keys():
+                if '_' in key:
+                    name, _, idx = key.rpartition('_')
+                    if name in ('itemcode','qty','qty_old','uom','rate','hsn','discount','taxrate','total'):
+                        try:
+                            indices.add(int(idx))
+                        except ValueError:
+                            pass
+
+            # iterate sorted indices (this is robust even if some rows were removed/added in UI)
+            for idx in sorted(indices):
+                # fetch itemcode; skip if empty
+                dc_item_code = (request.POST.get(f'itemcode_{idx}') or '').strip()
+                if not dc_item_code:
+                    continue
+
+                # safe float conversion with fallback
+                def safe_float(val):
+                    try:
+                        # treat empty string or None as 0.0
+                        if val is None or val == '':
+                            return 0.0
+                        return float(val)
+                    except (ValueError, TypeError):
+                        return 0.0
+
+                quantity_sold = safe_float(request.POST.get(f'qty_{idx}'))
+                quantity_sold_old = safe_float(request.POST.get(f'qty_old_{idx}'))
+                remaining_qty = abs(quantity_sold_old - quantity_sold)
+
+                inventory_item = inventory.objects.filter(item_code=dc_item_code).first()
+                if inventory_item:
+                    # opening stock might be None in DB; use safe_float
+                    t_qty = safe_float(inventory_item.opening_stock_quantity)
+                    if t_qty >= remaining_qty:
+                        inventory_item.opening_stock_quantity = t_qty - remaining_qty
+                        inventory_item.save()
+                    else:
+                        # not enough stock: handle as you want (log / messages)
+                        print(f"Error: Insufficient stock for item code {dc_item_code}. Available: {inventory_item.opening_stock_quantity}, Requested change: {remaining_qty}")
                 else:
-                    print(f"Error: Insufficient stock for item code {dc_item_code}. Available: {inventory_item.opening_stock_quantity}, Requested: {quantity_sold}")
-            else:
-                print(f"Error: Item with code {dc_item_code} not found in inventory.")
-                
+                    print(f"Error: Item with code {dc_item_code} not found in inventory.")
 
-            # Only proceed if dc_item_code is not null or empty
-            if dc_item_code:
+                # Save invoice item if at least itemcode present
                 invoice_item = invoice_items(
-                    invoice_item_code = request.POST.get(f'itemcode_{i}'),
-                    invoice_description_goods = request.POST.get(f'item_{i}'),
-                    invoice_hsn = request.POST.get(f'hsn_{i}'),
-                    invoice_qantity = request.POST.get(f'qty_{i}'),
-                    invoice_uom = request.POST.get(f'uom_{i}'),
-                    invoice_unit_price = request.POST.get(f'rate_{i}'),
-                    invoice_discount = request.POST.get(f'discount_{i}'),
-                    invoice_tax_rate = request.POST.get(f'taxrate_{i}'),
-                    invoice_tax_amount = request.POST.get(f'taxamt_{i}'),
-                    invoice_total = request.POST.get(f'total_{i}'),
-                    invoice_id = id
-                    )
+                    invoice_item_code = dc_item_code,
+                    invoice_description_goods = request.POST.get(f'item_{idx}',''),
+                    invoice_hsn = request.POST.get(f'hsn_{idx}',''),
+                    invoice_qantity = request.POST.get(f'qty_{idx}','0'),
+                    invoice_uom = request.POST.get(f'uom_{idx}',''),
+                    invoice_unit_price = request.POST.get(f'rate_{idx}','0'),
+                    invoice_discount = request.POST.get(f'discount_{idx}','0'),
+                    invoice_tax_rate = request.POST.get(f'taxrate_{idx}','0'),
+                    invoice_tax_amount = request.POST.get(f'taxamt_{idx}','0'),
+                    invoice_total = request.POST.get(f'total_{idx}','0'),
+                    invoice_id = invoice_obj.id
+                )
                 invoice_item.save()
-                i = i+1
+
         messages.success(request, 'Invoice Updated Successfully.')
-
         return redirect('invoice_list')
-
 
 @login_required
 def delete_invoice_data(request, id):
