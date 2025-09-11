@@ -112,7 +112,7 @@ CRM - Edit Expense
                                                         <td><input type="text" class="form-control" name="uom_{{ forloop.counter0 }}" id="uom_{{ forloop.counter0 }}" value="{{ item.ex_uom }}"></td>
                                                         <td><input type="text" class="form-control" name="rate_{{ forloop.counter0 }}" id="rate_{{ forloop.counter0 }}" value="{{ item.ex_unit_price }}" onkeyup="rate('rate_{{ forloop.counter0 }}');"></td>
                                                         <td><input type="text" class="form-control" name="discount_{{ forloop.counter0 }}" id="discount_{{ forloop.counter0 }}" value="{{ item.ex_discount }}" onkeyup="discountamt('discount_{{ forloop.counter0 }}');"></td>
-                                                        <td><input type="number" class="form-control taxrate_{{ forloop.counter0 }}" name="taxrate_{{ forloop.counter0 }}" id="taxrate_{{ forloop.counter0 }}" value="{{ item.ex_tax_rate }}" onkeyup="rate('taxrate_{{ forloop.counter0 }}');" required></td>
+                                                        <td><input type="number" class="form-control taxrate_{{ forloop.counter0 }}" name="taxrate_{{ forloop.counter0 }}" id="taxrate_{{ forloop.counter0 }}" value="{{ item.ex_tax_rate }}" step="0.001" onkeyup="rate('taxrate_{{ forloop.counter0 }}');" required></td>
                                                         <td><input type="text" class="form-control taxamt" name="taxamt_{{ forloop.counter0 }}" id="taxamt_{{ forloop.counter0 }}" value="{{ item.ex_tax_amount }}" readonly></td>
                                                         <td><input type="text" class="form-control totalamt" name="total_{{ forloop.counter0 }}" id="total_{{ forloop.counter0 }}" value="{{ item.ex_total }}" readonly></td>
                                                         <td class="add-remove text-end">
@@ -510,7 +510,7 @@ $(document).ready(function () {
                 <td><input type="text" class="form-control" name="uom_${i}" id="uom_${i}"></td>
                 <td><input type="text" class="form-control" name="rate_${i}" id="rate_${i}"></td>
                 <td><input type="text" class="form-control" name="discount_${i}" id="discount_${i}"></td>
-                <td><input type="number" class="form-control taxrate_${i}" name="taxrate_${i}" id="taxrate_${i}" required></td>
+                <td><input type="number" class="form-control taxrate_${i}" name="taxrate_${i}" id="taxrate_${i}" step="0.001" required></td>
                 <td><input type="text" class="form-control taxamt" name="taxamt_${i}" id="taxamt_${i}" readonly></td>
                 <td><input type="text" class="form-control totalamt" name="total_${i}" id="total_${i}" readonly></td>
                 <td class="add-remove text-end">

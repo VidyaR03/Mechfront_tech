@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from core.models import transporter
 from core.modules import template_path
@@ -41,6 +42,13 @@ def edit_transporter(request, transporter_id):
     transporter_instance = get_object_or_404(transporter, id=transporter_id)
 
     if request.method == 'POST':
+        mobile = request.POST.get('mobile', '').strip()
+
+        # Validate mobile server-side
+        if not re.match(r'^[6-9][0-9]{9}$', mobile):
+            messages.error(request, 'Mobile number must start with 6-9 and be exactly 10 digits.')
+            return render(request, template_path.Edittransporter_path, {'transporter_instance': transporter_instance})
+
         # Update the customer data with the new values
         transporter_instance.name = request.POST['name']
         transporter_instance.address = request.POST['address']
@@ -48,7 +56,7 @@ def edit_transporter(request, transporter_id):
         transporter_instance.bank_name = request.POST['bank_name']
         transporter_instance.account_number = request.POST['account_number']
         transporter_instance.branch_name = request.POST['branch_name']
-        transporter_instance.mobile = request.POST['mobile']
+        transporter_instance.mobile = mobile
         transporter_instance.vendor_email = request.POST['vendor_email']
         transporter_instance.ifsc_code = request.POST['ifsc_code']
         transporter_instance.save()
