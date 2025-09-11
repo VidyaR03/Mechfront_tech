@@ -4,22 +4,49 @@ CRM - Edit Expense
 {% endblock %}
 
 {% block custom_css %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     /* Inactive tab styles */
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
         color: #ccc;
-        /* Faint gray color for inactive tabs */
     }
-
     /* Active tab style */
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
         color: #000;
-        /* Black color for active tab */
+    }
+    /* Toast styles */
+    .toast {
+        min-width: 250px;
+        font-size: 14px;
+    }
+    .toast-success {
+        background-color: #28a745;
+        color: white;
+    }
+    .toast-error {
+        background-color: #dc3545;
+        color: white;
+    }
+    .toast-container {
+        z-index: 9999; /* High z-index to appear above header */
+        top: 70px; /* Adjust based on header height */
+        right: 10px; /* Slight offset from edge */
+    }
+    /* Prevent clipping by parent containers */
+    .page-wrapper, .content, .container-fluid {
+        overflow: visible !important;
     }
 </style>
 {% endblock custom_css %}
 
 {% block main_content %}
+<!-- Toast Container -->
+<div aria-live="polite" aria-atomic="true">
+    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- Toasts will be appended here -->
+    </div>
+</div>
+
 <div class="page-wrapper" data-select2-id="8" style="min-height: 432px;">
     <div class="content container-fluid" data-select2-id="7">
         <div class="page-header invoices-page-header">
@@ -29,7 +56,7 @@ CRM - Edit Expense
                                 class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
                                 aria-label="fa fa-arrow-left"></i></a> Edit Expense</h3>
                 </div>
-                <div class="col-auto"> </div>
+                <div class="col-auto"></div>
             </div>
         </div>
         <div class="row">
@@ -37,33 +64,27 @@ CRM - Edit Expense
                 <div class="card invoices-add-card">
                     <div class="card-body">
                         <form class="invoices-form" method="post" id="invoice_form"
-                            action="{% url 'edit_expense_vendor_data' id=expense_data.id%}" enctype="multipart/form-data"
+                            action="{% url 'edit_expense_vendor_data' id=expense_data.id %}" enctype="multipart/form-data"
                             autocomplete="off">
                             {% csrf_token %}
                             <div class="invoices-main-form">
                                 <div class="row">
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <div>
-                                                <label>Vendor Name <span style="color: red;">*</span></label>
-                                                <select class="form-control" name="ac_vendor" id="ac_vendor" required>
-                                                    <option value="" disabled>Select Vendor</option>
-                                                    {% for item in vendor_name %}
-                                                    <option value="{{ item.company_name }}" {% if item.company_name == expense_data.ex_vendor_name.company_name %}selected{% endif %}>{{ item.company_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
+                                            <label>Vendor Name <span style="color: red;">*</span></label>
+                                            <select class="form-control" name="ac_vendor" id="ac_vendor" required>
+                                                <option value="" disabled>Select Vendor</option>
+                                                {% for item in vendor_name %}
+                                                <option value="{{ item.company_name }}" {% if item.company_name == expense_data.ex_vendor_name.company_name %}selected{% endif %}>{{ item.company_name }}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>Invoice Date <span style="color: red;">*</span></label>
-                                                    <input type="date" class="form-control" name="acc_date"
-                                                        id="acc_date" placeholder="Date" value="{{ expense_data.ex_invoice_date|date:'Y-m-d' }}" required>
-                                                </span>
-                                            </div>
+                                            <label>Invoice Date <span style="color: red;">*</span></label>
+                                            <input type="date" class="form-control" name="acc_date"
+                                                id="acc_date" placeholder="Date" value="{{ expense_data.ex_invoice_date|date:'Y-m-d' }}" required>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -71,7 +92,7 @@ CRM - Edit Expense
                                             <label>GST No.<span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" name="acc_gst" id="acc_gst" value="{{ expense_data.ex_gst_number }}" required>
                                             <span id="gstError" style="color: red;"></span>
-                                            <input type="hidden" id="gst_option" name="gst_option">
+                                            <input type="hidden" id="gst_option" name="gst_option" value="{{ expense_data.ex_gst_type }}">
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -128,8 +149,8 @@ CRM - Edit Expense
                                     <div class="row">
                                         <div class="col-lg-7 col-md-6">
                                             <div class="invoice-fields">
-                                                <h4 class="field-title">Terms and Conditions</h4> <br> <textarea
-                                                    class="form-control" name="terms_condition">{{expense_data.terms_condition}}</textarea>
+                                                <h4 class="field-title">Terms and Conditions</h4>
+                                                <textarea class="form-control" name="terms_condition">{{ expense_data.terms_condition }}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-lg-5 col-md-6">
@@ -143,71 +164,64 @@ CRM - Edit Expense
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>Sub Total </p>
+                                                                <p>Sub Total</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input type="text" class="subtotal billamt utrt1"
-                                                                    name="subtotal" id="subtotal" value="0.00"
-                                                                    readonly="">
+                                                            <div class="col-lg-6">
+                                                                <input type="text" class="subtotal billamt utrt1" name="subtotal" id="subtotal" value="0.00" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>CGST </p>
+                                                                <p>CGST</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input type="text" class="utrt1 billamt" name="cgst"
-                                                                    id="cgst" value="0.00" readonly="">
+                                                            <div class="col-lg-6">
+                                                                <input type="text" class="utrt1 billamt" name="cgst" id="cgst" value="0.00" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>SGST </p>
+                                                                <p>SGST</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input type="text" class="utrt1 billamt" name="sgst"
-                                                                    id="sgst" value="0.00" readonly="">
+                                                            <div class="col-lg-6">
+                                                                <input type="text" class="utrt1 billamt" name="sgst" id="sgst" value="0.00" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>IGST </p>
+                                                                <p>IGST</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input type="text" class="billamt utrt1" name="igst"
-                                                                    id="igst" value="0.00" readonly="">
+                                                            <div class="col-lg-6">
+                                                                <input type="text" class="billamt utrt1" name="igst" id="igst" value="0.00" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <p>Adjustments</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input class="billamt utrt1" type="text"
-                                                                    name="adjustment" id="adjustment" value="0.00"
-                                                                    onkeyup="subtotal();" readonly>
+                                                            <div class="col-lg-6">
+                                                                <input class="billamt utrt1" type="text" name="adjustment" id="adjustment" value="0.00" onkeyup="subtotal();" readonly>
                                                             </div>
                                                         </div>
                                                         <div id="pfamtgst" style="display: none;">
                                                             <div class="row">
                                                                 <div class="col-lg-6"><p>P&F (Amount) + GST</p></div>
-                                                                <div class="col-lg-6 ">
-                                                                    <input class="billamt utrt1 " name="packaging_forwording_amt_amt" type="text" id="pf_amount" value="0.00" readonly>
+                                                                <div class="col-lg-6">
+                                                                    <input class="billamt utrt1" name="packaging_forwording_amt_amt" type="text" id="pf_amount" value="0.00" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div id="pfpergst" style="display: none;">
                                                             <div class="row">
                                                                 <div class="col-lg-6"><p>P&F (Percentage) + GST</p></div>
-                                                                <div class="col-lg-6 ">
-                                                                    <input class="billamt utrt1 " type="text" name="packaging_forwording_percentage_amt" id="pf_percentage" value="0.00" readonly>
+                                                                <div class="col-lg-6">
+                                                                    <input class="billamt utrt1" type="text" name="packaging_forwording_percentage_amt" id="pf_percentage" value="0.00" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div id="freight_amount_gst_row" style="display: none;">
                                                             <div class="row">
                                                                 <div class="col-lg-6"><p>Freight (Amount) + GST</p></div>
-                                                                <div class="col-lg-6 ">
+                                                                <div class="col-lg-6">
                                                                     <input class="billamt utrt1" type="text" name="freight_amt_amt" id="fr_amount" value="0.00" readonly>
                                                                 </div>
                                                             </div>
@@ -215,41 +229,36 @@ CRM - Edit Expense
                                                         <div id="freight_percentage_gst_row" style="display: none;">
                                                             <div class="row">
                                                                 <div class="col-lg-6"><p>Freight (Percentage) + GST</p></div>
-                                                                <div class="col-lg-6 ">
+                                                                <div class="col-lg-6">
                                                                     <input class="billamt utrt1" type="text" name="freight_percentage_amt" id="fr_percentage" value="0.00" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>TCS on Sale Of any Goods </p>
+                                                                <p>TCS on Sale Of any Goods</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input class="billamt utrt1" type="text"
-                                                                    name="sale_of_good" id="sale_of_good"
-                                                                    value="0.00" onkeyup="subtotal();" readonly>
+                                                            <div class="col-lg-6">
+                                                                <input class="billamt utrt1" type="text" name="sale_of_good" id="sale_of_good" value="0.00" onkeyup="subtotal();" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="invoice-total-footer">
-                                                            <h4>Total Amount <input class="finalamt utrt1"
-                                                                    type="text" name="totalamt" id="totalamt"
-                                                                    value="{{ expense_data.all_total }}" readonly="">(Rs.)
-                                                            </h4>
+                                                            <h4>Total Amount <input class="finalamt utrt1" type="text" name="totalamt" id="totalamt" value="{{ expense_data.all_total }}" readonly>(Rs.)</h4>
                                                         </div>
                                                         <div class="invoice-total-footer">
                                                             <h4>Total Amount in Words
-                                                                <textarea name="so_total_amt_word" id="totalamt_word" readonly="" style="width: 370px; border: none;"></textarea>
+                                                                <textarea name="so_total_amt_word" id="totalamt_word" readonly style="width: 370px; border: none;"></textarea>
                                                             </h4>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="upload-sign">
-                                                    <div class="form-group float-end mb-0"> <a
-                                                            href="{% url 'expense_vendor_list' %}"
-                                                            class="btn btn-primary">Cancel</a></div>
-                                                    <div class="form-group float-end mb-0"> <button
-                                                            class="btn btn-primary" type="submit" id="btn_submit"
-                                                            name="btn_submit">Update</button> </div>
+                                                    <div class="form-group float-end mb-0">
+                                                        <a href="{% url 'expense_vendor_list' %}" class="btn btn-primary">Cancel</a>
+                                                    </div>
+                                                    <div class="form-group float-end mb-0">
+                                                        <button class="btn btn-primary" type="submit" id="btn_submit" name="btn_submit">Update</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -272,10 +281,13 @@ CRM - Edit Expense
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
 <script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Consolidated JavaScript -->
 <script>
 $(document).ready(function () {
+    // Test toast to verify visibility
+
     // Assume company's GST state code (e.g., Maharashtra - 27)
     const companyStateCode = "27"; // Replace with dynamic value from server if available
 
@@ -293,6 +305,7 @@ $(document).ready(function () {
     // Determine GST type based on GST number
     function setGstOption(gstNo) {
         if (!validateGST(gstNo)) {
+            showToast("Invalid GST Number (must be 15 characters, correct format).", "error");
             $('#gstError').text("Invalid GST Number");
             $('#gst_option').val("");
             updateTaxFields();
@@ -308,7 +321,7 @@ $(document).ready(function () {
 
     // GST number input handler
     $('#acc_gst').on('input', function () {
-        const gstNo = $(this).val().toUpperCase();
+        const gstNo = $(this).val().toUpperCase().trim();
         if (gstNo.length === 15) {
             setGstOption(gstNo);
             $('.add-row').each(function (index) {
@@ -317,11 +330,18 @@ $(document).ready(function () {
             subtotal();
             updateTotalInWords();
         } else {
+            showToast("GST Number must be 15 characters.", "error");
             $('#gstError').text("GST Number must be 15 characters");
             $('#gst_option').val("");
             updateTaxFields();
         }
     });
+
+    // Initialize GST option on page load
+    const initialGstNo = $('#acc_gst').val().toUpperCase().trim();
+    if (initialGstNo) {
+        setGstOption(initialGstNo);
+    }
 
     // Clear related fields
     function clearRelatedFields(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
@@ -575,6 +595,7 @@ $(document).ready(function () {
         var email = this.value;
         var errorMsg = $('#email-error-message');
         if (!isValidEmail(email) && email !== "") {
+            showToast("Invalid email address.", "error");
             errorMsg.show();
             this.setCustomValidity('Invalid email address');
         } else {
@@ -583,9 +604,19 @@ $(document).ready(function () {
         }
     });
 
+    // Form submission validation
     $('#invoice_form').on('submit', function (event) {
-        if (!isValidEmail($('#contact_person_email').val())) {
+        const gstNo = $('#acc_gst').val().trim();
+        if (!validateGST(gstNo)) {
+            showToast("Please enter a valid GST Number (15 characters, correct format).", "error");
+            $('#acc_gst').focus();
             event.preventDefault();
+            return false;
+        }
+        if (!isValidEmail($('#contact_person_email').val())) {
+            showToast("Please enter a valid email address.", "error");
+            event.preventDefault();
+            return false;
         }
     });
 
@@ -732,7 +763,7 @@ $(document).ready(function () {
         const id_val = input[1];
 
         if (!isGstSelected()) {
-            alert("Please select GST type first.");
+            showToast("Please select GST type first.", "error");
             return;
         }
 
@@ -834,6 +865,36 @@ $(document).ready(function () {
         const totalAmt = parseFloat($('#totalamt').val()) || 0;
         $('#totalamt_word').val(isNaN(totalAmt) ? '' : test(totalAmt));
     }
+
+    // Toast function
+    function showToast(message, type = "success") {
+        const toastId = "toast-" + Date.now();
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center text-white toast-${type}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+        $("#toast-container").append(toastHtml);
+        const toastEl = document.getElementById(toastId);
+        if (toastEl) {
+            console.log("Toast element created:", toastId);
+            const bsToast = new bootstrap.Toast(toastEl);
+            bsToast.show();
+            toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
+        } else {
+            console.error("Toast element not found for ID:", toastId);
+        }
+    }
+
+    // Handle Django messages
+    {% if messages %}
+    {% for message in messages %}
+    showToast("{{ message }}", "{{ message.tags }}");
+    {% endfor %}
+    {% endif %}
 
     $('#freight_amount, #freight_percentage, #packaging_forwording_amount, #packaging_forwording_percentage, #gst_option, #igst').on('input', function () {
         subtotal();
