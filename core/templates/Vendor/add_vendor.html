@@ -202,7 +202,7 @@ CRM
                                               <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label">Balance</label>
                                                 <div class="col-lg-9">
-                                                   <input type="number" class="form-control" name="balance" id="balance" placeholder="Balance"   pattern="\d{8}" title="Please enter exactly 8 digits.>
+                                                   <input type="number" class="form-control" name="balance" id="balance" placeholder="Balance"   pattern="\d{8}" title="Please enter exactly 8 digits".>
                                                    <span id="balance" style="color: red;"></span>
   
                                                 </div>
@@ -316,7 +316,8 @@ CRM
                                                    <div class="form-group row">
                                                       <label class="col-lg-3 col-form-label">Contact Number:</label>
                                                       <div class="col-lg-9">
-                                                            <input type="text" class="form-control" name="contact_number" id="contact_number" placeholder="Enter 10-digit number">
+                                                            <input type="text" class="form-control" name="contact_number" minlength="10" maxlength="10"
+                                                            id="contact_number" placeholder="Enter 10-digit number">
                                                       </div>
                                                    </div>
 
@@ -410,13 +411,14 @@ CRM
                                           <div class="form-group row">
                                              <label class="col-lg-3 col-form-label">Vendor Contact Number:</label>
                                              <div class="col-lg-9">
-                                                   <input type="text" class="form-control" name="vendor_contact_number" id="vendor_contact_number" placeholder="Enter 10-digit number">
+                                                   <input type="text" class="form-control" name="vendor_contact_number" minlength="10" maxlength="10"
+                                                   id="vendor_contact_number" placeholder="Enter 10-digit number">
                                              </div>
                                           </div>
 
 
                   
-                        </div>
+                                    </div>
                                        </div>
                                        <div class="tab-pane" id="bottom-tab3">
                                           <div class="row">
@@ -825,7 +827,49 @@ CRM
             messageDiv.classList.add("d-none"); // Hide error if all valid
         }
     });
+
+
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the form
+    const form = document.getElementById("vendor_form"); // Use your actual form ID
+    const validationMessage = document.getElementById("validation-message");
+
+    form.addEventListener("submit", function (e) {
+        let errors = [];
+
+        // Get contact numbers
+        const contactNumber = document.getElementById("contact_number").value.trim();
+        const vendorContactNumber = document.getElementById("vendor_contact_number").value.trim();
+
+        const regex = /^\d{10}$/; // 10-digit number
+
+        // Validate contact_number
+        if (!regex.test(contactNumber)) {
+            errors.push("Address Contact Number must be exactly 10 digits.");
+        }
+
+        // Validate vendor_contact_number
+        if (!regex.test(vendorContactNumber)) {
+            errors.push("Vendor Contact Number must be exactly 10 digits.");
+        }
+
+        // If there are errors, prevent submission and show messages
+        if (errors.length > 0) {
+            e.preventDefault();
+            validationMessage.innerHTML = errors.join("<br>");
+            validationMessage.classList.remove("d-none");
+            validationMessage.scrollIntoView({ behavior: "smooth" });
+        } else {
+            validationMessage.classList.add("d-none"); // hide error
+        }
+    });
+});
+</script>
+
+
 {% endblock custom_js %}    
 {% endblock main_content %}
 
