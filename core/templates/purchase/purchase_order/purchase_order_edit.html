@@ -551,7 +551,7 @@
                                                             <td><input type="number" class="form-control"
                                                                     name="taxrate_{{ forloop.counter }}"
                                                                     id="taxrate_{{ forloop.counter }}"
-                                                                    value="{{j.po_tax_rate}}"
+                                                                    value="{{j.po_tax_rate}}" step="0.001"
                                                                     onkeyup="taxrate('taxrate_{{ forloop.counter }}')" required>
                                                             </td>
 
@@ -1238,6 +1238,7 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
             '</tr>';
         }
         $(".add-table-items").append(experiencecontent);
+        
         return false;
     });
 });
@@ -1273,7 +1274,7 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
                 });
             },
             autoFocus: true,
-            minLength: 0,
+            minLength: 1,
             change: function (event, ui) {
                 if (ui.item == null) {
                 }
@@ -1343,7 +1344,7 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
                 });
             },
             autoFocus: true,
-            minLength: 0,
+            minLength: 1,
             change: function (event, ui) {
                 if (ui.item == null) {
                 }

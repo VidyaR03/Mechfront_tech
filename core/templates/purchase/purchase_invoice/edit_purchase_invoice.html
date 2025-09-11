@@ -389,7 +389,7 @@
 
                                                             <td><input type="number" class="form-control taxrate_{{ forloop.counter }}"
                                                                     name="taxrate_{{ forloop.counter }}" id="taxrate_{{ forloop.counter }}"
-                                                                    value="{{j.purchase_invoice_tax_rate}}"
+                                                                    value="{{j.purchase_invoice_tax_rate}}" step="0.001"
                                                                     onkeyup="taxrate('taxrate_{{ forloop.counter }}')" required></td>
 
                                                             <td><input type="text" class="form-control taxamt"
