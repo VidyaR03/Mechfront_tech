@@ -1109,7 +1109,7 @@
             '</td>' +
 
             '<td>' +
-            '<input type="number" class="form-control taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="rate(\'taxrate_' + i + '\');" >' +
+            '<input type="number" class="form-control" step="0.001" taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="rate(\'taxrate_' + i + '\');" >' +
             '</td>' +
 
             '<td>' +
@@ -1127,31 +1127,36 @@
             '</tr>';
         }
         $(".add-table-items").append(experiencecontent);
+        // ✅ Initialize autocomplete right away
+        initItemCodeAutocomplete('itemcode_' + i, 'item_' + i, 'description_' + i, 'godown_' + i, 'qty_' + i, 'rate_' + i, 'uom_' + i, 'discount_' + i, 'taxrate_' + i, 'hsn_' + i);
+        initItemDetailsAutocomplete('item_' + i, 'description_' + i, 'godown_' + i, 'qty_' + i, 'rate_' + i, 'uom_' + i, 'discount_' + i, 'taxrate_' + i, 'hsn_' + i, 'itemcode_' + i);
         return false;
     });
 });
 </script>
 
 <script type="text/javascript">
-    function getitemsdetails(inputname, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
+    // Bind autocomplete once when row is added
+function initItemDetailsAutocomplete(inputname, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
+    let input = inputname.split("_");
 
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: '#',
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                    },
-                    success: function (data) {
+    $('#' + inputname).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: '#',  // replace with your correct URL
+                dataType: "json",
+                type: "POST",
+                data: {
+                    name_startsWith: request.term,
+                    itemsdetails: input,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (data) {
+                    if (data.length === 0) {
+                        response([{ label: "No results found", value: "", disabled: true }]);
+                    } else {
                         response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
+                            let code = item.split("|");
                             return {
                                 label: code[0],
                                 value: code[0],
@@ -1159,69 +1164,62 @@
                             }
                         }));
                     }
-                });
-            },
-            autoFocus: true,
-            minLength: 0,
-            change: function (event, ui) {
-                if (ui.item == null) {
+                },
+                error: function () {
+                    response([{ label: "No results found", value: "", disabled: true }]);
                 }
-            },
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log(names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
-                $('#' + itemcode).val(names[11]);
+            });
+        },
+        autoFocus: true,
+        minLength: 1,
+        select: function (event, ui) {
+            if (ui.item.disabled) return false;
 
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
+            let names = ui.item.data.split("|");
+            $('#' + inputname).val(names[0]);
+            $('#' + description).val(names[1]);
+            $('#' + godown).val(names[2]);
+            $('#' + qty).val('1');
+            $('#' + rate).val(names[5]);
+            $('#' + uom).val(names[7]);
+            $('#' + discount).val(names[4]);
+            $('#' + taxrate).val(names[6]);
+            $('#' + hsn).val(names[2]);
+            $('#' + itemcode).val(names[11]);
 
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
+            calculateTotalTaxAmount();
+            updateTaxFields();
+            discountamt(inputname);
+            subtotal();
+            calculatePFPercentage();
+            calculateFreightPercentage();
+            updateTotalInWords();
+            updatePFAmount();
+            updateFreightPercentage();
+        }
+    });
+}
 
-                
+function initItemCodeAutocomplete(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
+    let input = inputname.split("_");
 
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
-                updatePFPercentage();
-            }
-
-        });
-    }
-
-    function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
-        
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                    },
-                    success: function (data) {
+    $('#' + inputname).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "{% url 'getitemscodedetails' %}",
+                dataType: "json",
+                type: "POST",
+                data: {
+                    name_startsWith: request.term,
+                    itemsdetails: input,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (data) {
+                    if (data.length === 0) {
+                        response([{ label: "No results found", value: "", disabled: true }]);
+                    } else {
                         response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
+                            let code = item.split("|");
                             return {
                                 label: code[0],
                                 value: code[0],
@@ -1229,50 +1227,43 @@
                             }
                         }));
                     }
-                });
-            },
-            autoFocus: true,
-            minLength: 0,
-            change: function (event, ui) {
-                if (ui.item == null) {
+                },
+                error: function () {
+                    response([{ label: "No results found", value: "", disabled: true }]);
                 }
-            },
-            
-            
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log("Mangesh",names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
+            });
+        },
+        autoFocus: true,
+        minLength: 1,
+        select: function (event, ui) {
+            if (ui.item.disabled) return false;
 
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
+            let names = ui.item.data.split("|");
+            $('#' + inputname).val(names[0]);
+            $('#' + description).val(names[1]);
+            $('#' + godown).val(names[2]);
+            $('#' + qty).val('1');
+            $('#' + rate).val(names[5]);
+            $('#' + uom).val(names[7]);
+            $('#' + discount).val(names[4]);
+            $('#' + taxrate).val(names[6]);
+            $('#' + hsn).val(names[2]);
+            $('#' + item).val(names[1]);
 
-                
+            calculateTotalTaxAmount();
+            updateTaxFields();
+            discountamt(inputname);
+            subtotal();
+            calculatePFPercentage();
+            calculateFreightPercentage();
+            updateTotalInWords();
+            updatePFAmount();
+            updateFreightPercentage();
+        }
+    });
+}
 
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
 
-                
-            }
-
-        });
-    }
 
     function calculatePFPercentage() {
         var subtotal2 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
@@ -1856,7 +1847,7 @@
 
                                     <td><input type="text" class="form-control" name="discount_`+ index + `" id="discount_` + index + `" value="` + obj.discount + `"></td>
 
-                                    <td><input type="text" class="form-control" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
+                                    <td><input type="text" class="form-control" step="0.001" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
 
                                     <td><input type="text" class="form-control taxamt" name="taxamt_`+ index + `" id="taxamt_` + index + `" value="` + obj.taxamt + `"></td>
 
@@ -1948,59 +1939,6 @@
     };
 </script>
 
-<!-- 
-<script>
-    function test(n) {
-        if (n < 0) return false;
-        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-        if (n === 0) return 'Zero';
-
-        function translate(n) {
-            let word = "";
-            if (n < 10) {
-                word = single_digit[n] + ' ';
-            } else if (n < 20) {
-                word = double_digit[n - 10] + ' ';
-            } else if (n < 100) {
-                const rem = translate(n % 10);
-                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
-            } else if (n < 1000) {
-                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
-            } else if (n < 1000000) {
-                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
-            } else if (n < 1000000000) {
-                word = translate(Math.floor(n / 1000000)).trim() + ' Million ' + translate(n % 1000000);
-            } else {
-                word = translate(Math.floor(n / 1000000000)).trim() + ' Billion ' + translate(n % 1000000000);
-            }
-            return word;
-        }
-
-        let [integerPart, decimalPart] = n.toString().split('.');
-
-        let result = translate(parseInt(integerPart)).trim();
-
-        if (decimalPart) {
-            result += ' and ' + translate(parseInt(decimalPart)) + ' Cents';
-        }
-
-        return result.trim() + '.';
-    }
-
-    function updateTotalInWords() {
-        const totalAmt = parseFloat(document.getElementById('totalamt').value);
-        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
-        document.getElementById('totalamt_word').value = totalAmtInWords;
-    }
-
-    window.onload = function() {
-        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
-        updateTotalInWords(); // Update on page load
-    };
-</script> -->
 
 
 <script>
