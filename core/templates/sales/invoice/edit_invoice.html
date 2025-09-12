@@ -1402,15 +1402,21 @@ Ecoway
         autoFocus: true,
         minLength: 0,
         change: function (event, ui) {
-            if (ui.item == null) {
-                console.log("No item selected");
-                // Set default values if no item is selected
+            // FIXED: Only reset if no valid item code is present (empty or invalid)
+            if (ui.item == null && $('#' + inputname).val().trim() === '') {
+                console.log("No item selected - resetting defaults");
+                // Set default values only if field is empty
                 $('#' + qty).val('0');
                 $('#' + rate).val('0.00');
                 $('#' + discount).val('0');
                 $('#' + taxrate).val('0');
-                $('#' + taxamt).val('0.00');
-                $('#' + total).val('0.00');
+                $('#' + taxamt).val('0.00');  // Note: taxamt may need full ID like taxamt_${id}
+                $('#' + total).val('0.00');   // Note: total may need full ID like total_${id}
+                // Optionally trigger recalculation
+                taxrate(qty);  // Or call subtotal() if needed
+            } else {
+                console.log("Valid item code present - no reset needed");
+                // Do nothing - keep the selected values intact
             }
         },
         select: function (event, ui) {
@@ -1426,8 +1432,8 @@ Ecoway
             $('#' + discount).val(names[4] || '0');
             $('#' + taxrate).val(names[6] || '0');
             $('#' + hsn).val(names[2] || '');
-            $('#' + taxamt).val('0.00');
-            $('#' + total).val('0.00');
+            $('#' + taxamt).val('0.00');  // Reset taxamt initially, then calculate
+            $('#' + total).val('0.00');   // Reset total initially, then calculate
 
             calculateTotalTaxAmount();
             updateTaxFields();
@@ -1440,8 +1446,7 @@ Ecoway
             updateFreightPercentage();
         }
     });
-
-    }
+}
 
     function calculatePFPercentage() {
         var subtotal2 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
