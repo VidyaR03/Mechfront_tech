@@ -343,7 +343,9 @@ urlpatterns = [
     path('add_expense_advice_data/',views.fnadd_expense_advice , name="add_expense_advice_data"),
     path('expense_advice_list_View/',views.fn_expense_advice_list_View , name="expense_advice_list_View"),
     path('edit_expense_advice/<int:expense_advice_id>/', views.fnedit_expense_advice, name='edit_expense_advice'),
-    path('delete_expense_advice/<int:expense_advice_id>/', views.delete_expense_advice, name='delete_expense_advice'),
+    # path('delete_expense_advice/<int:expense_advice_id>/', views.delete_expense_advice, name='delete_expense_advice'),
+    path('delete_expense_advice/<int:expense_advice_id>/',views.delete_expense_advice,name='delete_expense_advice'),
+
     path('get_related_fields/', views.get_vendor_expenses, name='get_related_fields'),
     path('enter-date/', views.display_data, name='enter_date'),
     path('venautocomplete/', views.autocomplete_vendor_name, name='autocomplete_vendor_name'),
