@@ -411,9 +411,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var options = {
             chart: { type: 'donut', height: 350, width: '100%' },
-            series: [invoiced ],
-            labels: [ 'Total'],
-            colors: [ '#5733FF'],
+            series: [received, invoiced, pending],
+            labels: ['Received', 'Total', 'Pending'],
+            colors: ['#FF5733', '#5733FF', '#FFA500'],
         };
 
         if (window.invoiceChart) {
