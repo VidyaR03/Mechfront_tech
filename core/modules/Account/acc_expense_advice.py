@@ -40,14 +40,19 @@ def fn_expense_advice_list_View(request):
         }
     return render(request,template_path.expense_advice_list,context)
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 
 # @login_required
 def delete_expense_advice(request, expense_advice_id):
-    # Get the customer instance based on the provided ID
-    # expense_advice_data = get_object_or_404(expense_advice, id=expense_advice_id)    
-    # expense_advice_data.delete()
-    return redirect('expense_advice_list_View') 
-  
+    expense = get_object_or_404(expense_advice, id=expense_advice_id)
+
+    if request.method == "POST":
+        expense.delete()
+        messages.success(request, "Expense advice deleted successfully.")
+        return redirect('expense_advice_list_View')
+
+    return redirect('expense_advice_list_View')
 import re
     
 def fnadd_expense_advice(request):

@@ -12,7 +12,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers.json import DjangoJSONEncoder
-from core.models import  customer, Account_Expense, inventory, vendor, Invoice, expense_advice, expense_advice_item,acc_expense
+from core.models import  Account_Expense_Item, customer, Account_Expense, inventory, vendor, Invoice, expense_advice, expense_advice_item,acc_expense
 from core.modules.login.login import login_required
 import inflect
 from django.db.models import DecimalField
@@ -42,12 +42,30 @@ def fn_expense_advice_list_View(request):
 
 
 # @login_required
-def delete_expense_advice(request, expense_advice_id):
-    # Get the customer instance based on the provided ID
-    # expense_advice_data = get_object_or_404(expense_advice, id=expense_advice_id)    
-    # expense_advice_data.delete()
-    return redirect('expense_advice_list_View') 
+# def delete_expense_advice(request, expense_advice_id):
+#     # Get the customer instance based on the provided ID
+#     # expense_advice_data = get_object_or_404(expense_advice, id=expense_advice_id)    
+#     # expense_advice_data.delete()
+#     return redirect('expense_advice_list_View') 
   
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+
+
+
+
+def delete_expense_advice(request, expense_advice_id):
+    expense = get_object_or_404(expense_advice, id=expense_advice_id)
+
+    if request.method == "POST":
+        expense.delete()
+        messages.success(request, "Expense advice deleted successfully.")
+        return redirect('expense_advice_list_View')
+
+    return redirect('expense_advice_list_View')
+
+
+
 import re
     
 def fnadd_expense_advice(request):

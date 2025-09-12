@@ -85,124 +85,7 @@ crm
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="col-xl-2 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>Expiry Date</label>
-                                                    <input class="form-control datetimepicker" type="text"
-                                                        name="expiry_date" id="expiry_date"
-                                                        value="{{quotation_data.q_expiry_date}} 'Y-d-m' ">
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div> -->
-
-                                    <!-- <div class="col-xl-2 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label>Place Of Supply </label>
-                                            <select class="form-control" name="place_of_supply" id="place_of_supply"
-                                                onchange="totaltaxamt();">
-                                                <option value="{{quotation_data.q_supply_place}}">{{quotation_data.q_supply_place}}</option>
-                                                <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
-
-                                                <option value="ANDHRA PRADESH (BEFORE DIVISION)">ANDHRA PRADESH (BEFORE DIVISION)</option>
-
-                                                <option value="ANDHRA PRADESH (NEW)">ANDHRA PRADESH (NEW)</option>
-
-                                                <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
-
-                                                <option value="ASSAM">ASSAM</option>
-
-                                                <option value="BIHAR">BIHAR</option>
-
-                                                <option value="CHANDIGARH">CHANDIGARH</option>
-
-                                                <option value="CHHATTISGARH">CHHATTISGARH</option>
-
-                                                <option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
-
-                                                <option value="DAMAN AND DIU">DAMAN AND DIU</option>
-
-                                                <option value="DELHI">DELHI</option>
-
-                                                <option value="GOA">GOA</option>
-
-                                                <option value="GUJARAT">GUJARAT</option>
-
-                                                <option value="HARYANA">HARYANA</option>
-
-                                                <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
-
-                                                <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
-
-                                                <option value="JHARKHAND">JHARKHAND</option>
-
-                                                <option value="KARNATAKA">KARNATAKA</option>
-
-                                                <option value="KERALA">KERALA</option>
-
-                                                <option value="LADAKH">LADAKH</option>
-
-                                                <option value="LAKSHADWEEP">LAKSHADWEEP</option>
-
-                                                <option value="MADHYA PRADESH">MADHYA PRADESH</option>
-
-                                                <option value="MAHARASHTRA">MAHARASHTRA</option>
-
-                                                <option value="MANIPUR">MANIPUR</option>
-
-                                                <option value="MEGHALAYA">MEGHALAYA</option>
-
-                                                <option value="MIZORAM">MIZORAM</option>
-
-                                                <option value="NAGALAND">NAGALAND</option>
-
-                                                <option value="ODISHA">ODISHA</option>
-
-                                                <option value="OTHER TERRITORY">OTHER TERRITORY</option>
-
-                                                <option value="PUDUCHERRY">PUDUCHERRY</option>
-
-                                                <option value="PUNJAB">PUNJAB</option>
-
-                                                <option value="RAJASTHAN">RAJASTHAN</option>
-
-                                                <option value="SIKKIM">SIKKIM</option>
-
-                                                <option value="TAMIL NADU">TAMIL NADU</option>
-
-                                                <option value="TELANGANA">TELANGANA</option>
-
-                                                <option value="TRIPURA">TRIPURA</option>
-
-                                                <option value="UTTAR PRADESH">UTTAR PRADESH</option>
-
-                                                <option value="UTTARAKHAND">UTTARAKHAND</option>
-
-                                                <option value="WEST BENGAL">WEST BENGAL</option>
-
-                                            </select>
-                                        </div>
-                                    </div> -->
-
-
-                                    <!-- <div class="col-xl-2 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label style="color:black">Dispatch Through</label>
-                                            <div>
-                                                <select class="form-control"  name="transporter_name"
-                                                    id="transporter_name">
-                                                    <option value="{{quotation_data.q_dispatch.id}}">{{quotation_data.q_dispatch.name}}</option>
-                                                    {% for i in all_dispatch_through %}
-                                                    <option value="{{i.id}}">{{i.name}}</option>
-                                                    {% endfor %}
-
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div> -->
-
+                                    
                                     <div class="col-xl-2 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight</label>
@@ -353,7 +236,7 @@ crm
                                                             <td><input type="number" class="form-control"
                                                                     name="taxrate_{{ forloop.counter }}"
                                                                     id="taxrate_{{ forloop.counter }}"
-                                                                    value="{{j.ae_tax_rate}}"
+                                                                    value="{{j.ae_tax_rate}}" step="0.001"
                                                                     onkeyup="rate('taxrate_{{ forloop.counter }}')">
                                                             </td>
 
@@ -598,7 +481,7 @@ crm
                     '<input type="number" class="form-control" step="0.01" name="discount_' + i + '" id="discount_' + i + '" onkeyup="discountamt(\'discount_' + i + '\');">' +
                     '</td>' +
                     '<td>' +
-                    '<input type="number" class="form-control" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="rate(\'taxrate_' + i + '\');">' +
+                    '<input type="number" class="form-control" step="0.001" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="rate(\'taxrate_' + i + '\');">' +
                     '</td>' +
                     '<td>' +
                     '<input type="text" class="form-control taxamt" name="taxamt_' + i + '" id="taxamt_' + i + '" readonly>' +
@@ -619,9 +502,9 @@ crm
 
         // Initialize autocomplete for pre-existing rows
         function initializeAutocompleteForRow(index) {
-            purchasegetitemscodedetails(`itemcode_${index}`, `item_${index}`,  `qty_${index}`, `rate_${index}`, `hsn_${index}`, `sac_${index}`, `uom_${index}`, `discount_${index}`, `taxrate_${index}`);
-            purchasegetitemsdetails(`itemcode_${index}`, `item_${index}`,  `qty_${index}`, `rate_${index}`, `hsn_${index}`, `sac_${index}`, `uom_${index}`, `discount_${index}`, `taxrate_${index}`);
-        }
+    purchasegetitemscodedetails(`itemcode_${index}`, `item_${index}`, `qty_${index}`, `rate_${index}`, `hsn_${index}`, `sac_${index}`, `uom_${index}`, `discount_${index}`, `taxrate_${index}`, `taxamt_${index}`);
+    purchasegetitemsdetails(`itemcode_${index}`, `item_${index}`, `qty_${index}`, `rate_${index}`, `hsn_${index}`, `sac_${index}`, `uom_${index}`, `discount_${index}`, `taxrate_${index}`, `taxamt_${index}`);
+}
 
         // Apply the function to all existing rows on page load
         for (var j = 1; j <= i; j++) {
@@ -634,33 +517,40 @@ crm
 
 <script type="text/javascript">
     
-function purchasegetitemscodedetails(inputname, item, qty, rate, hsn, sac, uom, discount, taxrate, itemcode) {
-$('#' + inputname).autocomplete({
-    source: function (request, response) {
-        $.ajax({
-            url: "{% url 'purchasegetitemscodedetails' %}",
-            dataType: "json",
-            type: "POST",
-            data: {
-                name_startsWith: request.term,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function (data) {
-                response($.map(data, function (item) {
-                    var code = item.split("|");
-                    return {
-                        label: code[0],
-                        value: code[0],
-                        data: item
+function purchasegetitemscodedetails(inputname, item, qty, rate, hsn, sac, uom, discount, taxrate, taxamt) {
+    $('#' + inputname).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "{% url 'purchasegetitemscodedetails' %}",
+                dataType: "json",
+                type: "POST",
+                data: {
+                    name_startsWith: request.term,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    if (data.length === 0) {
+                        response([{ label: "No results found", value: "", noSelect: true }]);
+                    } else {
+                        response($.map(data, function (item) {
+                            var code = item.split("|");
+                            return {
+                                label: code[0],
+                                value: code[0],
+                                data: item
+                            }
+                        }));
                     }
-                }));
+                }
+            });
+        },
+        autoFocus: true,
+        minLength: 1,
+        select: function (event, ui) {
+            if (ui.item.noSelect) {
+                return false;
             }
-        });
-    },
-    autoFocus: true,
-    minLength: 1,
-    select: function (event, ui) {
-        var names = ui.item.data.split("|");
+            var names = ui.item.data.split("|");
             $('#' + inputname).val(names[0]); // item_code
             $('#' + qty).val(1); // qty
             $('#' + rate).val(names[5]); // purchase_rate
@@ -670,43 +560,52 @@ $('#' + inputname).autocomplete({
             $('#' + taxrate).val(0.0); // taxrate
             $('#' + uom).val(names[7] || ''); // units
             $('#' + item).val(names[1]); // inventory_name
-            $('#' + taxamt).val(0.0); // taxamt (set to 0.0 as it’s calculated later)
-
-        discountamt(inputname);
-        subtotal();
-        totaltaxamt();
-        getbillamt();
-    }
-});
+            $('#' + taxamt).val(0.0); // taxamt
+            discountamt(inputname);
+            subtotal();
+            totaltaxamt();
+            getbillamt();
+        },
+        open: function(event, ui) {
+            $('.ui-menu-item').has(':contains("No results found")').addClass('ui-menu-item-no-results');
+        }
+    });
 }
 
-function purchasegetitemsdetails(inputname, item, qty, rate, hsn, sac, uom, discount, taxrate, itemcode) {
-$('#' + item).autocomplete({
-    source: function (request, response) {
-        $.ajax({
-            url: "{% url 'purchasegetitemscodedetails' %}",
-            dataType: "json",
-            type: "POST",
-            data: {
-                description_startsWith: request.term,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function (data) {
-                response($.map(data, function (item) {
-                    var code = item.split("|");
-                    return {
-                        label: code[1], // Display inventory_name
-                        value: code[1], // Set the input field value to inventory_name
-                        data: item
+function purchasegetitemsdetails(inputname, item, qty, rate, hsn, sac, uom, discount, taxrate, taxamt) {
+    $('#' + item).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "{% url 'purchasegetitemscodedetails' %}",
+                dataType: "json",
+                type: "POST",
+                data: {
+                    description_startsWith: request.term,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    if (data.length === 0) {
+                        response([{ label: "No results found", value: "", noSelect: true }]);
+                    } else {
+                        response($.map(data, function (item) {
+                            var code = item.split("|");
+                            return {
+                                label: code[1],
+                                value: code[1],
+                                data: item
+                            }
+                        }));
                     }
-                }));
+                }
+            });
+        },
+        autoFocus: true,
+        minLength: 1,
+        select: function (event, ui) {
+            if (ui.item.noSelect) {
+                return false;
             }
-        });
-    },
-    autoFocus: true,
-    minLength: 1,
-    select: function (event, ui) {
-        var names = ui.item.data.split("|");
+            var names = ui.item.data.split("|");
             $('#' + inputname).val(names[0]); // item_code
             $('#' + qty).val(1); // qty
             $('#' + rate).val(names[5]); // purchase_rate
@@ -716,16 +615,17 @@ $('#' + item).autocomplete({
             $('#' + taxrate).val(0.0); // taxrate
             $('#' + uom).val(names[7] || ''); // units
             $('#' + item).val(names[1]); // inventory_name
-            $('#' + taxamt).val(0.0); // taxamt (set to 0.0 as it’s calculated later)
-
-        discountamt(inputname);
-        subtotal();
-        totaltaxamt();
-        getbillamt();
-    }
-});
-}
-    
+            $('#' + taxamt).val(0.0); // taxamt
+            discountamt(inputname);
+            subtotal();
+            totaltaxamt();
+            getbillamt();
+        },
+        open: function(event, ui) {
+            $('.ui-menu-item').has(':contains("No results found")').addClass('ui-menu-item-no-results');
+        }
+    });
+}    
 
     function discountamt(inputname) {
         //alert(inputname);
@@ -1165,7 +1065,113 @@ $('#' + item).autocomplete({
     $(document).on("mouseenter", ".item-input", function () {
   var currentValue = $(this).val();
   $(this).attr("title", currentValue);
-});</script>
+});
+</script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const gstNoInput = document.getElementById("gst_no_input");
+    const gstError = document.getElementById("gstError");
+    const form = document.getElementById("quotation_form"); // Use correct form ID
+
+    // List of valid Indian state codes for GST (01-38)
+    const validStateCodes = [
+        "01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
+        "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+        "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+        "31", "32", "33", "34", "35", "36", "37", "38"
+    ];
+
+    function validateGSTNo(gstNoValue) {
+        if (gstNoValue.trim() === '') {
+            return { valid: false, message: "GST number is required." };
+        }
+
+        // Convert to uppercase and remove spaces
+        gstNoValue = gstNoValue.toUpperCase().replace(/\s/g, '');
+
+        // Basic length and format check (15 chars: 2 digits + 10 PAN-like + 1 entity + Z + 1 checksum)
+        const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/;
+        if (!gstNoRegex.test(gstNoValue)) {
+            return { valid: false, message: "Invalid GST format. Expected: 12ABCDE1234F1Z5 (15 chars, ends with Z)" };
+        }
+
+        // Validate state code (positions 1-2)
+        const stateCode = gstNoValue.substring(0, 2);
+        if (!validStateCodes.includes(stateCode)) {
+            return { valid: false, message: "Invalid state code (must be 01-38)." };
+        }
+
+        // Validate PAN part (positions 3-12: 5 letters + 4 digits + 1 letter)
+        const pan = gstNoValue.substring(2, 12);
+        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+        if (!panRegex.test(pan)) {
+            return { valid: false, message: "Invalid PAN format in GST number." };
+        }
+
+        // Validate entity code (position 13: 1-9 or A-Z)
+        const entityCode = gstNoValue.charAt(12);
+        if (!/[1-9A-Z]/.test(entityCode)) {
+            return { valid: false, message: "Invalid entity code (position 13: 1-9 or A-Z)." };
+        }
+
+        // Position 14 must be 'Z'
+        if (gstNoValue.charAt(13) !== 'Z') {
+            return { valid: false, message: "14th character must be 'Z'." };
+        }
+
+        // Checksum (position 15: 0-9 or A-Z)
+        const checksum = gstNoValue.charAt(14);
+        if (!/[0-9A-Z]/.test(checksum)) {
+            return { valid: false, message: "Invalid checksum (position 15: 0-9 or A-Z)." };
+        }
+
+        return { valid: true, message: "" };
+    }
+
+    // Real-time validation on input
+    gstNoInput.addEventListener("input", function () {
+        const gstNoValue = this.value;
+        const validation = validateGSTNo(gstNoValue);
+        gstError.textContent = validation.message;
+        gstError.style.display = validation.valid ? "none" : "block";
+        if (validation.valid) {
+            this.setCustomValidity(''); // Clear browser validation
+        } else {
+            this.setCustomValidity(validation.message);
+        }
+    });
+
+    // Form submission validation (prevents submit if invalid)
+    form.addEventListener("submit", function (event) {
+        const gstNoValue = gstNoInput.value;
+        const validation = validateGSTNo(gstNoValue);
+        if (!validation.valid) {
+            event.preventDefault();
+            event.stopPropagation();
+            gstError.textContent = validation.message;
+            gstError.style.display = "block";
+            gstNoInput.focus();
+            gstNoInput.style.borderColor = "red"; // Visual feedback
+            setTimeout(() => {
+                gstNoInput.style.borderColor = ""; // Reset after 3 seconds
+            }, 3000);
+            alert("Please enter a valid GST number before submitting.");
+            return false;
+        }
+    });
+
+    // Optional: Validate on blur (when user leaves the field)
+    gstNoInput.addEventListener("blur", function () {
+        const gstNoValue = this.value;
+        const validation = validateGSTNo(gstNoValue);
+        if (!validation.valid) {
+            this.setCustomValidity(validation.message);
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+});
+</script>
 
 {% endblock main_content %}

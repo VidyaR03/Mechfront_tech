@@ -215,15 +215,17 @@ def delete_accexpense_data(request, id):
     expense = get_object_or_404(Account_Expense, id=id)
 
     if request.method == "POST":
-        # Delete related items (or rely on CASCADE if set)
+        # Delete related items first (if not using CASCADE in models)
         Account_Expense_Item.objects.filter(ae_quotation_id=expense.id).delete()
+
+        # Delete expense record
         expense.delete()
+
         messages.success(request, "Account expense deleted successfully.")
         return redirect('accexpense_list')
 
-    # For GET request, just redirect back — no separate delete template
-    return redirect('accexpense_list')
-
+    # If GET request, show confirmation page
+    return render(request, template_path.acc_expense_list, {'expense': expense})
 
 
 import json

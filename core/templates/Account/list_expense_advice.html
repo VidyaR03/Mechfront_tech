@@ -110,9 +110,13 @@
                             
                                         <!-- Link directly to the delete view with the customer ID -->
                                       
-                                        <a class="btn btn-sm btn-white text-danger confirm_delete" href="{% url 'delete_expense_advice' expense_advice_id=t.id %}">
-                                          <i class="far fa-trash-alt me-1"></i>
-                                      </a>
+                                          <form method="post" action="{% url 'delete_expense_advice' expense_advice_id=t.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-white text-danger" >
+                                                        <i class="far fa-trash-alt me-1"></i>
+                                                    </button>
+</form>
+
                                     </div>
                                 </td>
                             </tr>
