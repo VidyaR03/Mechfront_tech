@@ -99,11 +99,13 @@ def add_deliverychallan_data(request):
         dispatch_through = transporter.objects.all()
         item_data = inventory.objects.all()
         sales_order_list = sales_order.objects.all()
+        current_date = datetime.now().strftime('%d-%m-%Y')
         context ={ 
             'customer_name' : customer_name,
             'dispatch_through' : dispatch_through,
             'item_data': item_data,
-            'sales_order_list':sales_order_list
+            'sales_order_list':sales_order_list,
+            'current_date':current_date
             }
 
         return render(request, template_path.add_delivery_challan, context)
