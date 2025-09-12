@@ -1171,18 +1171,19 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
     });
 
     // Extend jQuery UI Autocomplete to show "No results found"
-    $.widget("ui.autocomplete", $.ui.autocomplete, {
-        _renderMenu: function (ul, items) {
-            var that = this;
-            if (items.length === 0) {
-                ul.append("<li class='ui-state-disabled' style='padding: 8px 12px; color: #888; font-style: italic;'>No results found</li>");
-            } else {
-                $.each(items, function (index, item) {
-                    that._renderItemData(ul, item);
-                });
-            }
+   // Keep your jQuery UI "No results found" extension ONCE
+$.widget("ui.autocomplete", $.ui.autocomplete, {
+    _renderMenu: function (ul, items) {
+        var that = this;
+        if (items.length === 0) {
+            ul.append("<li class='ui-state-disabled' style='padding: 8px 12px; color: #888; font-style: italic;'>No results found</li>");
+        } else {
+            $.each(items, function (index, item) {
+                that._renderItemData(ul, item);
+            });
         }
-    });
+    }
+});
 
     // Initialize autocomplete for existing rows
     {% for j in purchase_order_data_item %}
@@ -1245,9 +1246,7 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                 },
                 success: function (data) {
-                    console.log("Server Response for " + inputname + ":", data);
                     if (data.length === 0) {
-                        // Explicitly pass an empty array with a "No results found" placeholder
                         response([{ label: "No results found", value: "", disabled: true }]);
                     } else {
                         response($.map(data, function (item) {
@@ -1260,9 +1259,7 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
                         }));
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error for " + inputname + ":", status, error);
-                    // Handle AJAX errors by showing "No results found"
+                error: function () {
                     response([{ label: "No results found", value: "", disabled: true }]);
                 }
             });
@@ -1270,11 +1267,11 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
         autoFocus: true,
         minLength: 1,
         select: function (event, ui) {
-            // Only process selection if the item is not disabled
             if (!ui.item.disabled) {
                 var names = ui.item.data.split("|");
-                console.log("Selected Item Data for " + inputname + ":", names);
                 var id_val = inputname.split('_')[1];
+
+                // Fill values in row fields
                 $('#' + inputname).val(names[0]);
                 $('#item_' + id_val).val(names[1]);
                 $('#hsn_' + id_val).val(names[2]);
@@ -1284,18 +1281,16 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
                 $('#discount_' + id_val).val(names[4]);
                 $('#taxrate_' + id_val).val(names[6]);
 
-                calculateTotalTaxAmount();
-                updateTaxFields();
+                // Trigger calculations
                 discountamt('discount_' + id_val);
+                taxrate('taxrate_' + id_val);
                 subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage();
-                updateTotalInWords();
+                calculateTotalTaxAmount();
                 updatePFAmount();
                 updateFreightAmount();
+                updateTotalInWords();
             }
-            // Prevent default behavior for disabled items
-            return false;
+            return false; // prevent default
         },
         change: function (event, ui) {
             if (ui.item == null) {
@@ -1304,163 +1299,13 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
         }
     });
 }
-});
+    });
+
 
 </script>
 
 <script type="text/javascript">
-    function getitemsdetails(inputname, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
-
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: '#',
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-
-                    },
-                    success: function (data) {
-                        if (data.length === 0) {
-                            response([{ label: "No results found", value: "" }]);
-                        } else {
-                        response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
-                            return {
-                                label: code[0],
-                                value: code[0],
-                                data: item
-                            }
-                        }));
-                    }
-                }
-                });
-            },
-            autoFocus: true,
-            minLength: 1,
-            change: function (event, ui) {
-                if (ui.item == null) {
-                }
-            },
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log(names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
-                $('#' + itemcode).val(names[11]);
-
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
-
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
-
-                
-
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
-                updatePFPercentage();
-            }
-
-        });
-    }
-
-    function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
-        
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input,
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-
-                    },
-                    success: function (data) {
-                        if (data.length === 0) {
-                            response([{ label: "No results found", value: "" }]);
-                        } else {
-                        response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
-                            return {
-                                label: code[0],
-                                value: code[0],
-                                data: item
-                            }
-                        }));
-                    }
-                }
-                });
-            },
-            autoFocus: true,
-            minLength: 1,
-            change: function (event, ui) {
-                if (ui.item == null) {
-                }
-            },
-            
-            
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log("Mangesh",names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
-
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
-
-                
-
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
-
-                
-            }
-
-        });
-    }
+    
 
     function calculatePFPercentage() {
         var subtotal2 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
