@@ -269,6 +269,12 @@ def fnedit_expense_advice(request, expense_advice_id):
                 return float(value)
             except (ValueError, TypeError):
                 return 0.0
+        
+        mobile = request.POST.get("ea_mobile")
+    
+        if not mobile.isdigit() or len(mobile) != 10:
+            messages.error(request, "Mobile number must be exactly 10 digits.")
+            return redirect(request.path)
 
         # Update the main expense_advice record
         expense_advice_date_str = request.POST.get('ea_date')

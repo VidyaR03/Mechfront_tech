@@ -100,8 +100,15 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Mobile</label>
-                                        <input type="number" name="ea_mobile" value="{{expense_advice_object.ea_mobile}}" id="ea_mobile" class="form-control"
-                                            placeholder="Mobile" >
+                                        <input type="text" name="ea_mobile" 
+                                            value="{{ expense_advice_object.ea_mobile }}" 
+                                            id="ea_mobile" 
+                                            class="form-control"
+                                            placeholder="Mobile" 
+                                            pattern="\d{10}" 
+                                            title="Mobile number must be 10 digits" 
+                                            required>
+
                                     </div>
                                 </div>
                   
