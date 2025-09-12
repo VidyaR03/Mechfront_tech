@@ -42,6 +42,8 @@ from core.modules.Documents.inventory_doc import *
 from core.modules.Documents.customer_doc import *
 
 from core.modules.Account.new_expense import *
+from core.modules.Account.account_expense import *
+from core.modules.Account.acc_expense_advice import *
 from django.contrib.auth.decorators import user_passes_test
 
 from core.modules.Leads.leads import *

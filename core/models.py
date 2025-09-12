@@ -320,7 +320,6 @@ class expense_item(models.Model):
 
 
 
-
 class expense_advice(models.Model):
     ea_deposit = models.ForeignKey(vendor, on_delete=models.CASCADE, null=True, related_name='expenses')
     ea_vendor = models.ForeignKey(vendor,on_delete=models.CASCADE, null=True)
@@ -333,7 +332,7 @@ class expense_advice(models.Model):
     ea_bank_charges = models.CharField(max_length=10,  null=True, blank=True)
     ea_cheque_no = models.CharField(max_length=50, null=True, blank=True)
     ea_cheque_date = models.DateField(null=True, blank=True)
-    ea_reference = models.CharField(max_length=255, null=True, blank=True)
+    ea_reference = models.CharField(max_length=100, null=True, blank=True)
     ea_po_no = models.CharField(max_length=50, null=True, blank=True)
     ea_note = models.TextField(null=True, blank=True)
     ea_payment = models.CharField(max_length=10,  null=True)
@@ -342,6 +341,9 @@ class expense_advice(models.Model):
     ea_amount_received = models.CharField(max_length=10, null=True)
     ea_amount_used = models.CharField(max_length=10, null=True)
     ea_amount_excess = models.CharField(max_length=10, null=True)
+    ea_advice_no = models.CharField(max_length=10, null=True)
+
+
 
     class Meta:
         db_table = 'expense_advice'
@@ -355,10 +357,12 @@ class expense_advice_item(models.Model):
     ea_payment_receive = models.CharField(max_length=50, null=True, blank=True)
     ea_due_amount = models.CharField(max_length=50, null=True, blank=True)
     ea_payment = models.CharField(max_length=50, null=True, blank=True)
-    ex_expense_adv_id = models.CharField(max_length=255)
+    ex_expense_adv_id = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'expense_advice_item'
+
+
 
 
 
@@ -921,6 +925,49 @@ class payment_received(models.Model):
     payment_received_amount_used = models.CharField(max_length=50, null=True)
     payment_received_amount_excess = models.CharField(max_length=50, null=True)
     payment_received_bank_name = models.CharField(max_length=250, null=True)
+
+
+
+class Account_Expense(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    ae_deposit_to = models.ForeignKey(vendor,on_delete=models.CASCADE, null=True, related_name='deposit_to')
+    ae_vendor_name = models.ForeignKey(vendor,on_delete=models.CASCADE, null=True)
+    ae_invoice_date = models.DateField(null=True)
+    ae_gst_number = models.CharField(max_length=100, null=True)
+    ae_freight = models.DecimalField(max_digits=10, decimal_places=2)
+    ae_sub_total = models.CharField(max_length=100,blank=True)
+    ae_cgstper = models.CharField(max_length=100,blank=True)
+    ae_cgstval = models.CharField(max_length=100,blank=True)
+    ae_sgstper = models.CharField(max_length=100,blank=True)
+    ae_sgstval = models.CharField(max_length=100,blank=True)
+    ae_igstper = models.CharField(max_length=100,blank=True)
+    ae_igstval = models.CharField(max_length=100,blank=True)
+    ae_adjustment = models.CharField(max_length=100,blank=True)
+    ae_sale_of_good = models.CharField(max_length=100,blank=True)
+    ae_note = models.TextField(blank=True)
+    all_total = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    ae_invoice_no = models.CharField(max_length=256, blank=True)
+    ae_cost_center = models.CharField(max_length=256, blank=True)
+    ae_upload_file = models.ImageField(upload_to='acc_expence/',null=True,blank=True)
+    ae_due_amount = models.CharField(max_length=125,null=True,blank=True)
+
+
+class Account_Expense_Item(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    ae_item_code = models.CharField(max_length=256)
+    ae_description_goods = models.CharField(max_length=256, null=True)
+    ae_hsn = models.CharField(max_length=256)
+    ae_sac = models.CharField(max_length=256, null=True)
+    ae_qantity = models.CharField(max_length=256)
+    ae_uom = models.CharField(max_length=256)
+    ae_unit_price = models.CharField(max_length=256)
+    ae_discount = models.CharField(max_length=256)
+    ae_tax_rate = models.CharField(max_length=125)
+    ae_tax_amount = models.CharField(max_length=125)
+    ae_total = models.CharField(max_length=100)
+    ae_quotation_id = models.CharField(max_length=100)
+
+
 
 #######dummy expense
 class acc_expense(models.Model):

@@ -106,14 +106,14 @@ urlpatterns = [
     # path('getitemscodedetails/', views.get_item_code_details, name='getitemscodedetails'),
     
     
-    ###  Expense Advice
-    path('add_expense_advice_data/',views.fnadd_expense_advice , name="add_expense_advice_data"),
-    path('expense_advice_list_View/',views.fn_expense_advice_list_View , name="expense_advice_list_View"),
-    path('edit_expense_advice/<int:advice_id>/', views.fnedit_expense_advice, name='edit_expense_advice'),
-    path('delete_expenses_advice/<int:advice_id>/', views.delete_expenses_advice, name='delete_expenses_advice'),
-    path('get_related_fields/', views.get_vendor_expenses, name='get_related_fields'),
-    path('enter-date/', views.display_data, name='enter_date'),
-    # path('download/', views.download_pdf, name='download_pdf'),
+    # ###  Expense Advice
+    # path('add_expense_advice_data/',views.fnadd_expense_advice , name="add_expense_advice_data"),
+    # path('expense_advice_list_View/',views.fn_expense_advice_list_View , name="expense_advice_list_View"),
+    # path('edit_expense_advice/<int:advice_id>/', views.fnedit_expense_advice, name='edit_expense_advice'),
+    # path('delete_expenses_advice/<int:advice_id>/', views.delete_expenses_advice, name='delete_expenses_advice'),
+    # path('get_related_fields/', views.get_vendor_expenses, name='get_related_fields'),
+    # path('enter-date/', views.display_data, name='enter_date'),
+    # # path('download/', views.download_pdf, name='download_pdf'),
 
 
     ###Report Url
@@ -329,7 +329,27 @@ urlpatterns = [
     path('get-sales_order-items/<int:quotation_id>/', views.get_sales_order_items, name='get_sales_order_items'),
     path('get_dc_order_items/<int:quotation_id>/', views.get_dc_order_items, name='get_dc_order_items'),
     path('get_shipping_address/', views.get_shipping_address, name='get_shipping_address'),
-    
+
+
+######Account Expense
+    path('add_accexpense/', views.add_account_expense_data, name = "add_accexpense"),
+    path('acgetitemscodedetails/', views.acget_item_code_details, name='acgetitemscodedetails'),
+    path('accexpense_list', views.account_expense_list_view, name = "accexpense_list"),
+    path('edit_accexpense/<int:id>/', views.edit_account_expense, name='edit_accexpense'),
+    path('delete_accexpense/<int:id>/', views.delete_accexpense_data, name='delete_accexpense'),
+    path('show_acquo_pdf/<int:id>/',views.show_acpdf, name="show_acquo_pdf"),
+    path('purchasegetitemscodedetails/', views.purchase_get_item_code_details, name='purchasegetitemscodedetails'),
+      ###  Expense Advice
+    path('add_expense_advice_data/',views.fnadd_expense_advice , name="add_expense_advice_data"),
+    path('expense_advice_list_View/',views.fn_expense_advice_list_View , name="expense_advice_list_View"),
+    path('edit_expense_advice/<int:expense_advice_id>/', views.fnedit_expense_advice, name='edit_expense_advice'),
+    path('delete_expense_advice/<int:expense_advice_id>/', views.delete_expense_advice, name='delete_expense_advice'),
+    path('get_related_fields/', views.get_vendor_expenses, name='get_related_fields'),
+    path('enter-date/', views.display_data, name='enter_date'),
+    path('venautocomplete/', views.autocomplete_vendor_name, name='autocomplete_vendor_name'),
+    path('show_expe_ad_pdf/<int:id>/',views.show_expense_advise, name="show_expe_ad_pdf"), #remain
+
+     path('autocomplete/', views.autocomplete_accexpense, name='autocomplete_accexpns_name'),
 
 ]
 

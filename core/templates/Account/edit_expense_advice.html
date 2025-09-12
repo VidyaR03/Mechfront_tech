@@ -1,6 +1,5 @@
 {% extends 'dashboard/base_template.html' %}
 {% block title %}
-CRM - Edit Expense Advice
 {% endblock %}
 
 {% block custom_css %}
@@ -29,6 +28,8 @@ CRM - Edit Expense Advice
     </div>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        <input name="row_count" id="existing_row_count" value="{{ payment_advice_item_data.count }}" hidden>
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -36,48 +37,47 @@ CRM - Edit Expense Advice
                         <form method="post" id="vendor_form" action="" autocomplete="off">
                             <div class="row">
 
+
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>Deposite</label>
-                                        <select class="form-select" name="ea_deposit" id="ea_deposit" required>
-                                            <option value="{{expense_advice_object.ea_deposit.id}}">{{expense_advice_object.ea_deposit.company_name}}</option>
-                                            {% for item in vendor_data %}
-                                            <option value="{{ item.id }}">{{ item.company_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Vendor</label>
-                                        <select class="form-select" name="ea_vendor" id="ea_vendor" required>
-                                            <option value="{{expense_advice_object.ea_vendor.id}}">{{expense_advice_object.ea_vendor.company_name}}</option>
+                                        <label for="customer_Name_id">Deposit To</label>
+                                        <span>
+                                            <select class="form-select" name="customer_Name_id"  id="customer_Name_id" required>  
+                                                <option value="{{ expense_advice_object.ea_deposit.id }}" selected>{{ expense_advice_object.ea_deposit.company_name }}</option>
                                             {% for item in vendor_data %}
                                             <option value="{{ item.id }}">{{item.company_name }}</option>
                                             {% endfor %}
                                         </select>
+                                            <!-- Hidden field to store customer ID -->
+                                            <input type="hidden" id="customer_id" name="customer_id" value="{{ expense_advice_object.ea_deposit.id }}">
+                                </span>    
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-2">
-                            <div class="form-group">
-                                <label>Vendor</label>
-                                <select class="form-select" name="ea_vendor" id="ea_vendor" required>
-                                    <option value="" disabled selected>Select Vendor</option>
-                                    {% for item in Expense %}
-                                    <option value="{{ item.id}}">{{ item.ex_vendor_name.company_name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>  -->
 
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label for="inputDefault">Date</label>
-                                        <input type="date" class="form-control" name="date" placeholder="Date"
-                                            required value="{{expense_advice_object.ea_date|date:'Y-m-d' }}">
+                                        <label>Vendor</label>
+                                        
+                                        <select class="form-select" name="ea_vendor" id="ea_vendor" required>
+                                            <option value="{{expense_advice_object.ea_vendor.id}}" selected>{{expense_advice_object.ea_vendor.company_name}}</option>
+                                            {% for item in vendor_data %}
+                                            <option value="{{ item.id }}">{{item.contact_person }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
+                               
+                              
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="inputDefault">Date</label>
+                                <span>
+                                    <input class="form-control datetimepicker" type="text" name="ea_date" id="ea_date" value="{{ expense_advice_object.ea_date | date:'d-m-Y' }}" required>
+                                      
+                                </span>
+                            </div>
+                        </div>
+                        
 
 
 
@@ -85,14 +85,13 @@ CRM - Edit Expense Advice
                                     <div class="form-group">
                                         <label>Payment Mode</label>
                                         <select class="form-control " name="ea_payment_mode" id="ea_payment_mode">
-                                            <option value="{{expense_advice_object.ea_payment_mode}}">{{expense_advice_object.ea_payment_mode}}</option>
+                                            <option>{{expense_advice_object.ea_payment_mode}}</option>
                                             <option value="cash">Cash</option>
                                             <option value="cheque">Cheque</option>
                                             <option value="credit_card">Credit Card</option>
                                             <option value="bank_transfer">Bank Transfer</option>
                                             <option value="others">Others</option>
                                             <option value="online">Online</option>
-                                        </select>
                                         </select>
                                     </div>
                                 </div>
@@ -107,25 +106,17 @@ CRM - Edit Expense Advice
                                 </div>
                   
 
-                                <!-- <div class="col-md-2">
-                            <div class="form-group">
-                                <label>Balance</label>
-                                <input type="text" class="form-control" name="ea_balance" id="ea_balance" placeholder="Balance" required>
-                            </div>
-                        </div>
--->
-
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Amount</label>
                                         <input type="text" class="form-control"  value="{{expense_advice_object.ea_amount}}"  name="ea_amount" id="ea_amount"
-                                            placeholder="Amount">
+                                            placeholder="Amount" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Expense Advice No</label>
-                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_expense_advice_no}}"  name="ea_expense_advice_no"
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_expense_advice_no}}"  name="ea_expense_advice_no" 
                                             id="ea_expense_advice_no" required>
                                     </div>
                                 </div>
@@ -133,162 +124,152 @@ CRM - Edit Expense Advice
                                     <div class="form-group">
                                         <label>Bank Chargers</label>
                                         <input type="text" class="form-control"  value="{{expense_advice_object.ea_bank_charges}}"  name="ea_bank_charges"
-                                            id="ea_bank_charges" >
+                                            id="ea_bank_charges" required>
 
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Cheque Number</label>
-                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_cheque_no}}"  name="ea_cheque_no" id="ea_cheque_no"
-                                            placeholder="Cheque Number" >
-                                    </div>
-                                </div>
+       
 
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label for="inputDefault">Cheque Date</label>
-                                        <input type="date" class="form-control" name="cheque_date" placeholder="Date"
-                                             >
-                                    </div>
-                                </div> -->
-                                <!-- <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Cheque Date</label>
-                                        <input type="date" class="form-control" name="ea_cheque_date"
-                                            id="ea_cheque_date"  value="{{expense_advice_object.ea_cheque_date}}"  placeholder="Cheque Date">
-                                    </div>
-                                </div> -->
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Reference</label>
-                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_reference}}"  name="ea_reference" id="ea_reference"
-                                            >
+                                        <label>Advice No:</label>
+                                        <input class="form-control" type="text" id="ea_advice_no" name="ea_advice_no" value="{{ expense_advice_object.ea_advice_no }}">
+                                      
                                     </div>
                                 </div>
-                                <!-- <div class="col-md-2">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>PO Number</label>
-                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_po_no}}"  name="ea_po_no" id="ea_po_no" >
+                                        <input type="text" class="form-control"  value="{{expense_advice_object.ea_po_no}}"  name="ea_po_no" id="ea_po_no">
 
                                     </div>
-                                </div> -->
-
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                        <!-- Table headers -->
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Vendor</th>
-                                                <th>Invoice Number</th>
-                                                <th>Invoice Amount</th>
-                                                <th>Expense Advice no</th>
-                                                <th>Payment</th>
-                                                <th>Due Amount</th>
-
-
-                                            </tr>
-                                        </thead>
-                                        <!-- Table body to be populated -->
-                                        <tbody id="related_fields">
-                                            <tr>
-                                                <td>{{expense_advice_object.ea_date}}</td>
-                                                <td>{{expense_advice_object.ea_vendor.company_name}}</td>
-                                                <td>Invoice Number</td>
-                                                <td>Invoice Amount</td>
-                                                <td>{{expense_advice_object.}}</td>
-                                                <td>Payment</td>
-
-
-                                            </tr>
-                                        </tbody>
-
-                                    </table>
                                 </div>
-
-
-                                <div class="row">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <hr>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Reference# </label>
+                                        <div>
+                                            <input class="form-control " type="text" name="reference"  value="{{expense_advice_object.ea_reference}}" id="reference">
                                         </div>
-                                        <div class="col-lg-7 col-md-6 pt11">
-                                            <div class="invoice-fields">
-                                                <h4 class="field-title"> Note..</h4> <textarea class="form-control"
-                                                    name="ea_note"  id="ea_note"></textarea>
+                                    </div>
+                                </div> 
+
+
+                                    
+                                    
+                                    <!-- Other form fields here -->
+                                    
+                                    <div class="col-lg-12 pt11">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Customer</th>
+                                                        <th>Invoice Number</th>
+                                                        <th>Invoice Amount</th>
+                                                        <!-- <th>Expense Advice No</th> -->
+                                                        <th>Due Amount</th>
+                                                        <th>Payment</th>
+                                                    </tr>
+                                                    </thead>
+                                                <tbody id="show_tmp_data">
+                                                    {% for item in payment_advice_item_data %}
+                                                   
+                                                        <tr class="invoice-item">
+
+                                                            <td>
+                                                                <input class="no-outline" id="id_i_{{ forloop.counter }}" name="id_i_{{ forloop.counter }}" value="{{item.id }}" hidden>
+                                                                <input class="form-control"  type="text" id="invoicedate{{ forloop.counter }}" name="invoicedate{{ forloop.counter }}" value="{{ item.ea_date|date:'Y-m-d' }}" readonly>
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control"  type="text" id="customername{{ forloop.counter }}" name="customername{{ forloop.counter }}" value="{{ item.vendor }}" readonly>
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control"  type="text" id="invoiceno{{ forloop.counter }}" name="invoiceno{{ forloop.counter }}" value="{{ item.ea_invoice_no }}" readonly>
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control"  type="text" id="invoiceamount{{ forloop.counter }}" name="invoiceamount{{ forloop.counter }}" value="{{ item.ea_invoice_amt|floatformat:2 }}" readonly>
+                                                            </td>
+                                                            <!-- <td>
+                                                                <input type="text" id="paymentreceiptno{{ forloop.counter0 }}" name="paymentreceiptno{{ forloop.counter0 }}" value="{{ item.ea_payment_receive }}">
+                                                            </td> -->
+                                                            <td>
+                                                                <input class="form-control"  type="text" id="dueamount{{ forloop.counter }}" name="dueamount{{ forloop.counter }}" value="{{ item.ea_due_amount|floatformat:2 }}" readonly>
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control"  type="text" id="payment{{ forloop.counter }}" name="payment{{ forloop.counter }}" value="{{ item.ea_payment|floatformat:2 }}" readonly>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                <p></p>
+                                        <div class="row">
+                 <div class="col-lg-7 col-md-6">
+                                                <!-- <div class="form-group float-end mb-0"> <button class="btn btn-primary" type="submit">Add Item</button> </div> -->
+                                                <div class="invoice-fields">
+                                                    <h4 class="field-title">Terms and Conditions</h4> <br> <textarea
+                                                        class="form-control" name="note" >{{expense_advice_object.ea_note}}</textarea>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-lg-5 col-md-6 pt11">
-                                            <div class="invoice-total-card">
-                                                <div class="invoice-total-box">
-                                                    <div class="invoice-total-inner">
-
-
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <p>Total</p>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <input type="text" class="utrt1" value="{{expense_advice_object.ea_total}}" name="ea_total"
-                                                                    id="total">
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <p> Amount Received</p>
-                                                            </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input type="text" class="utrt1 amount-paid"
-                                                                    name="amount_received">
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <p>Amount Used For Payments</p>
-                                                            </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input type="text" class="utrt1 amount-used"
-                                                                    name="amount_used">
-
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <p>Amount in excess</p>
-                                                            </div>
-                                                            <div class="col-lg-6 ">
-                                                                <input type="text" class="utrt1 amount-excess"
-                                                                    name="amount_excess">
-
+                                                <div class="col-lg-5 col-md-6 pt11">
+                                                    <div class="invoice-total-card">
+                                                        <div class="invoice-total-box">
+                                                            <div class="invoice-total-inner">
+        
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <p>Total </p>
+                                                                    </div>
+                                                                    <div class="col-lg-6 ">
+                                                                        <input type="text" class="utrt1" name="total" id="total" value="{{ expense_advice_object.ea_total|floatformat:2}}"
+                                                                            readonly="">
+                                                                    </div>
+                                                                </div>
+        
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <p> Amount Paid</p>
+                                                                    </div>
+                                                                    <div class="col-lg-6 ">
+                                                                        <!-- <input type="text" class="utrt1" name="amount_received" id="amount_received" > -->
+                                                                        <input type="text"  class="utrt1" id="amount_received" name="amount_received" value="{{ expense_advice_object.ea_amount_received|floatformat:2 }}" readonly="">
+                                                                    </div>
+                                                                </div>
+        
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <p>Amount Used For Payments</p>
+                                                                    </div>
+                                                                    <div class="col-lg-6 ">
+                                                                        <input class="utrt1" type="text" name="amount_used" value="{{ expense_advice_object.ea_amount_used|floatformat:2 }}"
+                                                                            id="amount_used">
+                                                                    </div>
+                                                                </div>
+        
+                                                                <div class="invoice-total-footer">
+                                                                    <h4>Amount in excess<input class="utrt1" type="text"  value="{{ expense_advice_object.ea_amount_received|floatformat:2 }}"
+                                                                            name="amount_excess" id="amount_excess" readonly="">
+                                                                    </h4>
+                                                                </div>
                                                             </div>
                                                         </div>
-
-                                                        <!-- <div class="invoice-total-footer">
-                                                        <h4>Amount in excess <input type="number" class="utrt1 amount-excess" name="amount_excess"></h4>
-                                                    </h4>
-                                                    </div> -->
+                                                        <div class="upload-sign">
+                                                            <div class="form-group float-end mb-0"> <a
+                                                                href="{% url 'expense_advice_list_View'%}"
+                                                                class="btn btn-primary">Cancel</a></div>
+                                                            <div class="form-group float-end mb-0"> <button
+                                                                    class="btn btn-primary" type="submit" id="btn_submit"
+                                                                    name="btn_submit">Save </button> </div>
+                                                                    <button type="reset" class="btn btn-outline-secondary me-1 btn-rounded">Reset</button>
+        
+                                                        </div>
                                                     </div>
                                                 </div>
-
-                                                <div class="add-customer-btns text-end">
-                                                    <a href="{% url 'expense_advice_list_View' %}"
-                                                        class="btn customer-btn-cancel btn-outline-danger me-1 btn-rounded">Cancel</a>
-                                                    <button type="submit"
-                                                        class="btn btn-outline-primary me-1 btn-rounded">Update Expense
-                                                        Advice</button>
-                                                </div>
                                             </div>
-                                        </div>
-                                                                                        </div>
-
 
 
 
@@ -298,17 +279,301 @@ CRM - Edit Expense Advice
             </div>
         </div>
     </form>
+
+     
+    
 </div>
 </div>
 
 
 
 {% block custom_js %}
+<script>
+    $(function() {
+        $("#customer_Name_id").autocomplete({
+            source: "{% url 'autocomplete_customer_name' %}",
+            minLength: 1,
+            select: function(event, ui) {
+                // Set the selected customer's ID in the hidden field
+                $("#customer_id").val(ui.item.id);
+            }
+        });
+    
+        // Retrieve the initial value of the customer name field and set the corresponding customer ID
+        var initialCustomerName = $("#customer_Name_id").val();
+        $.ajax({
+            url: "{% url 'autocomplete_accexpns_name' %}",
+            dataType: "json",
+            data: {
+                term: initialCustomerName
+            },
+            success: function(data) {
+                // Check if the initial customer name matches any existing customer
+                var matchedCustomer = data.find(function(item) {
+                    return item.label === initialCustomerName;
+                });
+                if (matchedCustomer) {
+                    // Set the corresponding customer ID
+                    $("#customer_id").val(matchedCustomer.id);
+                }
+            }
+        });
+    });
+    </script>
+
+
+<script type="text/javascript">
+    $(document).on('change', '#customer', function () {
+        //alert();return;
+        //$('#update').removeAttr('disabled');
+        //$('.table-wrap').show();
+        var customer = $('#customer').val();
+        //alert(customer);
+        //alert(divi);return;
+        var paymentreceiptno = $('#paymentreceiptno').val();
+        $.ajax({
+            type: 'ajax',
+            method: 'post',
+            //url: 'https://olatechs.in/crm/supreeno/admin/get_pending_invoice',
+            url: '/get_related_fields/',
+            data: { 'customer': customer },
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                var html = '';
+                var i;
+                $("#existing_row_count").val(data.length);
+                for (i = 0; i < data.length; i++) {
+                    totalamt = data[i].invoice_total;
+                    // payments = data[i].payments;
+                    // payments = 100;
+                    dueamount = totalamt - data[i].ae_due_amount;
+                    console.log("54645");
+                    html += '<tr class="tblro">' +
+                        '<td><input class="no-outline" id="id_i_' + i + '" name="id_i_' + i + '" value="' + data[i].id + '" ><input class="no-outline" id="invoicedate' + i + '" name= "invoicedate' + i + '" value="' + data[i].ae_invoice_date + '"></td>' +
+                            '<td><input class="no-outline" id="customername' + i + '" name= "customername' + i + '" value="' + data[i].ae_vendor_name + '"></td>' +
+                            '<td><input class="no-outline" id="invoiceno' + i + '" name= "invoiceno' + i + '" value="' + data[i].ae_invoice_no + '"></td>' +
+                            '<td><input class="no-outline" id="invoiceamount' + i + '" name= "invoiceamount' + i + '" value="' + data[i].all_total + '"></td>' +
+                            // '<td>' + '<input type="text" class="no-outline" name="paymentreceiptno' + i + '" id="paymentreceiptno' + i + '" value="' + paymentreceiptno + '"></td>' +
+                            '<td><input class="no-outline" id="dueamount' + i + '" name= "dueamount' + i + '" value="' + dueamount + '" size="8"><span> <a style="color:blue; cursor: pointer;" onclick="dueamt(\'' + i + '\');" >(Pay Full)</a></span></td>' +
+                            '<td>' + '<input  type="number" step="0.000000001" class="payment" name="payment' + i + '" id="payment' + i + '" onkeyup="paymenti(\'payment_' + i + '\');"></td>' +
+                        '</tr>';
+                }
+                $('#show_tmp_data').html(html);
+                if (html == '') {
+                    $('.nobi').html('There is no Bill Applied For this payment');
+                }
+                else {
+                    $('.nobi').html('');
+                }
+
+                //$('.nobi').html('There is no Bill Applied For this payment');
+
+            },
+            error: function () {
+                alert('There is no Bill Applied For this payment');
+                $('.nobi').html('There is no Bill Applied For this payment');
+            }
+
+        });
+    });
+
+    function paymenti(inputname) {
+        var sum = 0;
+        $(".payment").each(function () {
+            sum += +this.value;
+        });
+        //alert(sum);
+
+        $('#total').val((sum).toFixed(2));
+        $('#amount_received').val((sum).toFixed(2));
+        $('#amount_used').val((sum).toFixed(2));
+
+
+        //alert(inputname);
+        input = inputname.split("_");
+        id_val = input[1];
+        //alert(id_val);
+
+        dueamount = Number($('#dueamount' + id_val).val());
+        console.log("oooooooooo",dueamount)
+        //alert(dueamount);
+
+        payment = Number($('#payment' + id_val).val());
+        //alert(payment);
+        //$('#amount').val(payment);
+        $('#amount').val(sum);
+
+        if (payment > dueamount) {
+            $('#payment' + id_val).val('0');
+            $('#amount').val('0');
+        }
+
+
+    }
+
+   
+</script>
+
+<script type="text/javascript">
+
+    function dueamt(inputname) {
+        //alert(inputname);
+        i = inputname;
+        //alert(i);
+
+        dueamount = $('#dueamount' + i).val();
+        //alert(dueamount);
+
+        $('#payment' + i).val(dueamount);
+
+        var sum = 0;
+        $(".payment").each(function () {
+            sum += +this.value;
+        });
+        //alert(sum);
+
+        $('#amount').val((sum).toFixed(2));
+        $('#total').val((sum).toFixed(2));
+        $('#amount_received').val((sum).toFixed(2));
+        $('#amount_used').val((sum).toFixed(2));
+    }
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#expense_advice_form").ajaxForm({
+            beforeSend: function () {
+                $('#btn_submit').prop('disabled', true);
+                $('.form_error_msg').html('');
+                //$('.success_message').html('<br><div class="alert alert-info">Data analyzing...please wait...</div>');
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+                //albumprogressbar.width(percentComplete + '%');
+            },
+            beforeSubmit: function () {
+                return $("#expense_advice_form").valid(); // TRUE when form is valid, FALSE will cancel submit
+            },
+            complete: function (response) {
+                //alert(response);
+                var customer = $("#customer").val();
+                var amount = $("#amount").val();
+
+                if (customer == '') {
+                    alert('please Enter Vendor')
+                }
+                else if (amount == '') {
+                    alert('Please Enter Amount')
+                }
+                else {
+                    
+
+                    $('.paym').each(function (i, obj) {
+                        //alert(i);
+
+                        var deposit = $("#deposit").val();
+                        var customer = $("#customer").val();
+                        var date = $("#date").val();
+                        var payment_mode = $("#payment_mode").val();
+                        var mobile = $("#mobile").val();
+                        var balance = $("#balance").val();
+                        var amount = $("#amount").val();
+                        var bank_charges = $("#bank_charges").val();
+                        var cheque_no = $("#cheque_no").val();
+                        var cheque_date = $("#cheque_date").val();
+                        var reference = $("#reference").val();
+                        var note = $("#note").val();
+                        var total = $("#total").val();
+                        var amount_received = $("#amount_received").val();
+                        var amount_used = $("#amount_used").val();
+                        var amount_excess = $("#amount_excess").val();
+                        // var paymentreceiptno = $("#paymentreceiptno").val();
+
+                        if ($("#balance").is(':checked')) {
+                            var balance = 'Checked';
+                        }
+                        else {
+                            var balance = 'UnChecked';
+                            //alert('unchecked');
+                        }
+
+                        //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
+
+                        $.post('#', { deposit: deposit, customer: customer, date: date, payment_mode: payment_mode, mobile: mobile, balance: balance, amount: amount, bank_charges: bank_charges, cheque_no: cheque_no, cheque_date: cheque_date, reference: reference, note: note, total: total, amount_received: amount_received, amount_used: amount_used, amount_excess: amount_excess, paymentreceiptno: paymentreceiptno }, function (data) {
+                            //alert('aaaa'); return;
+                        });
+
+
+                    });
+
+                    $('.tblro').each(function (i, obj) {
+                        //alert(i);
+                        var invoicedate = $("#invoicedate" + i).val();
+                        var customername = $("#customername" + i).val();
+                        var invoiceno = $('#invoiceno' + i).val();
+                        var invoiceamount = $('#invoiceamount' + i).val();
+                        var dueamount = $('#dueamount' + i).val();
+                        var payment = $('#payment' + i).val();
+                        var paymentreceiptno = $('#paymentreceiptno' + i).val();
+
+                        if ($("#balance").is(':checked')) {
+                            var balance = 'Checked';
+                        }
+                        else {
+                            var balance = 'UnChecked';
+                            //alert('unchecked');
+                        }
+
+                        //console.log(i+" - "+stdid+" - " +stdname+" - " +rno+" - " +tch+" - " +chk+" - " +std_class+" - " +division);
+
+                        //console.log(i+" - "+paymentreceiptno);
+
+                        $.post('#', { invoicedate: invoicedate, customername: customername, invoiceno: invoiceno, invoiceamount: invoiceamount, dueamount: dueamount, payment: payment, paymentreceiptno: paymentreceiptno }, function (data) {
+                            //alert(paymentreceiptno); return;
+                        });
+
+
+                    });
+
+                    //alert('Payment Received SucessFull');
+
+                    var temp = 'success';
+
+                    if (temp == 'success') {
+                        //alert('success');
+                        $('.success_message').show().html('<div class="alert alert-info"><strong>Payment Received Added Successfully. </strong></div>');
+                        setTimeout(function () {
+                            window.location.href = '#';
+                        }, 3000);
+                    }
+                    else if (temp.status == 'error') {
+                        alert('error');
+                        $('#btn_submit').prop('disabled', false);
+                        $('.success_message').html('');
+                        $.each(temp.errors, function (key, val) {
+                            $('.' + key).html(val);
+                        });
+                    }
+
+                }
+
+
+            }
+        });
+
+        $('.cheque_date').hide();
+        $('.cheque_no').hide();
+    });
+</script>
+
+
+
 <!-- Add your custom JavaScript here -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Your custom JavaScript code -->
-<script>
-    // Your JavaScript code here for any necessary functionalities
-</script>
+
 {% endblock custom_js %}
 {% endblock main_content %}
+

@@ -76,10 +76,6 @@ expense_vendor_list = "Account/list_expense.html"
 expense_vendor_edit_path ="Account/edit_expense.html"
 
 
-add_expense_advice_path="Account/add_expense_advice.html"
-expense_advice_list = "Account/list_expense_advice.html"
-expense_advice_edit_path ="Account/edit_expense_advice.html"
-
 
 customer_ledger = "Account/add_date.html"
 display_custom ="Account/display_customer.html"
@@ -257,3 +253,10 @@ sales_order_report_date = "Report/sales_order_report_date.html"
 inventory_report_date = "Report/inventory_division_date.html"
 cash_voucher_date = "Report/cash_voucher_date.html"
 
+add_account_expense = "Account/expense/add_accexpense.html"
+edit_account_expense = "Account/expense/edit_accexpense.html"
+acc_expense_list = "Account/expense/list_accexpense.html"
+
+add_expense_advice_path="Account/add_expense_advice.html"
+expense_advice_list = "Account/list_expense_advice.html"
+expense_advice_edit_path ="Account/edit_expense_advice.html"

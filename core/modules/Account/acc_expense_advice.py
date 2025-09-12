@@ -149,27 +149,6 @@ def fnadd_expense_advice(request):
 
 
 
-# # @login_required
-# @csrf_exempt
-# def get_vendor_expenses(request):
-#     try:
-#         if request.method == 'POST':
-#             customer_id = request.POST.get('customer')
-#             data = Account_Expense.objects.annotate(
-#                     due_amount_numeric=Cast('ae_due_amount', DecimalField())
-#                 ).filter(
-#                     ae_vendor_name=customer_id, due_amount_numeric__gt=0
-#                 ).values(
-#                     'id', 'ae_invoice_date', 'ae_vendor_name', 'ae_invoice_no', 'all_total', 'ae_due_amount'
-#                 )
-#             # Convert QuerySet to a list of dictionaries
-#             data_list = list(data)
-#             print("00000000000000",data_list)
-#             return JsonResponse(data_list, safe=False, encoder=DjangoJSONEncoder)
-#     except Exception as e:
-#         print(e,"DDDD")
-#     return JsonResponse({'error': 'Invalid request method'})
-
 @csrf_exempt
 def get_vendor_expenses(request):
     try:
@@ -185,7 +164,7 @@ def get_vendor_expenses(request):
                 'id', 'ae_invoice_date', 'ae_vendor_name', 'ae_invoice_no', 'all_total', 'ae_due_amount'
             )
             data_list = list(data)
-            # print("00000000000000", data_list)
+            print("00000000000000", data_list)
             return JsonResponse(data_list, safe=False, encoder=DjangoJSONEncoder)
     except Exception as e:
         print(e, "DDDD")
@@ -257,6 +236,7 @@ def expense_pdf_download(request, id):
         return response
     except Exception as e:
         return HttpResponse(f'Error generating PDF: {str(e)}')
+
 
 def fnedit_expense_advice(request, expense_advice_id):
     # Fetch the main object and related items
@@ -339,6 +319,7 @@ def fnedit_expense_advice(request, expense_advice_id):
         # Redirect to the list view after saving
         return redirect('expense_advice_list_View')
 
+
 def autocomplete_accexpense(request):
     term = request.GET.get('term', '')
     customers = customer.objects.filter(customer__icontains=term)
@@ -351,8 +332,8 @@ def autocomplete_accexpense(request):
 def show_expense_advise(request, id):
     ex_advice = get_object_or_404(expense_advice, id=id)
     expense_advice_items = expense_advice_item.objects.filter(ex_expense_adv_id=id, ea_due_amount = '0.0')
-    # for i in expense_advice_items:
-    #     print("$$$$$$$", i.ea_due_amount, type(i.ea_due_amount), i.ea_due_amount == '0.0', i.ea_due_amount == 0.0)
+    for i in expense_advice_items:
+        print("$$$$$$$", i.ea_due_amount, type(i.ea_due_amount), i.ea_due_amount == '0.0', i.ea_due_amount == 0.0)
 
 
     p = inflect.engine()
@@ -377,3 +358,5 @@ def show_expense_advise(request, id):
 
         }
     return render(request, template_path.expense_advice,context)
+
+
