@@ -110,10 +110,13 @@
 
                                                 <!-- Link directly to the delete view with the customer ID -->
                                                 <!-- <a class="btn btn-sm btn-white text-danger confirm_delete" onclick="confirmDelete('{% url 'delete_quotation' id=t.id %}')"> -->
-                                                    <a class="btn btn-sm btn-white text-danger confirm_delete" href="{% url 'delete_accexpense' id=t.id %}">
+                                                    <form method="post" action="{% url 'delete_accexpense' id=t.id %}" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-white text-danger" >
                                                         <i class="far fa-trash-alt me-1"></i>
-                                                    </a>
-                                                    
+                                                    </button>
+                                                    </form>
+
                                                 </a>
                                             </div>
                                         </td>

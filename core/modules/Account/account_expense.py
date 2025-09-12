@@ -198,15 +198,31 @@ def acget_item_code_details(request):
 
 
 # @login_required
-def delete_accexpense_data(request, id):
-    # Get the customer instance based on the provided ID
-    quotation_instance = get_object_or_404(Account_Expense, id=id)    
-    quotation_item_instance = Account_Expense_Item.objects.filter(ae_quotation_id = id)
-    # if request.method == 'POST':
-    # quotation_instance.delete()
-    # quotation_item_instance.delete()
-    return redirect('accexpense_list')  # Redirect to a success page or customer list
+# def delete_accexpense_data(request, id):
+#     # Get the customer instance based on the provided ID
+#     quotation_instance = get_object_or_404(Account_Expense, id=id)    
+#     quotation_item_instance = Account_Expense_Item.objects.filter(ae_quotation_id = id)
+#     # if request.method == 'POST':
+#     # quotation_instance.delete()
+#     # quotation_item_instance.delete()
+#     return redirect('accexpense_list')  # Redirect to a success page or customer list
 
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+
+def delete_accexpense_data(request, id):
+    expense = get_object_or_404(Account_Expense, id=id)
+
+    if request.method == "POST":
+        # Delete related items (or rely on CASCADE if set)
+        Account_Expense_Item.objects.filter(ae_quotation_id=expense.id).delete()
+        expense.delete()
+        messages.success(request, "Account expense deleted successfully.")
+        return redirect('accexpense_list')
+
+    # For GET request, just redirect back — no separate delete template
+    return redirect('accexpense_list')
 
 
 
