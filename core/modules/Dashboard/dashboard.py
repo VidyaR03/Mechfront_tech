@@ -24,7 +24,6 @@ import json
 def admin_home(request):
     total_vendor = vendor.objects.count()
     tcustomer = customer.objects.count()
-    print(tcustomer,'tcustomer')
     tInvoice = Invoice.objects.count()
     bill = Purchase_Invoice.objects.count()
     salesorder = sales_order.objects.count()
@@ -48,18 +47,18 @@ def admin_home(request):
     invoice_format_data = {
         "yearly": {
             "invoiced": sum(float(invoice.invoice_total) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_total),
-            # "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_total and invoice.invoice_due),
-            # "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_due),
+            "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_total and invoice.invoice_due),
+            "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_financial_year, end_financial_year]) if invoice.invoice_due),
         },
         "monthly": {
             "invoiced": sum(float(invoice.invoice_total) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_total),
-            # "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_total and invoice.invoice_due),
-            # "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_due),
+            "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_total and invoice.invoice_due),
+            "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_month, end_of_month]) if invoice.invoice_due),
         },
         "weekly": {
             "invoiced": sum(float(invoice.invoice_total) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_total),
-            # "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_total and invoice.invoice_due),
-            # "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_due),
+            "received": sum(float(invoice.invoice_total) - float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_total and invoice.invoice_due),
+            "pending": sum(float(invoice.invoice_due) for invoice in Invoice.objects.filter(invoice_date__range=[start_of_week, end_of_week]) if invoice.invoice_due),
         }
     }
 
@@ -111,6 +110,8 @@ def admin_home(request):
     current_financial_year = f"{max_year-1}/{max_year}"
     monthly_credit = yearly_data[current_financial_year]["credit"]
     monthly_debit = yearly_data[current_financial_year]["debit"]
+    print('monthly_credit',monthly_credit)
+    print('monthly_debit',monthly_debit)
     
     # Weekly Data (Current month broken down by weeks)
     weekly_data = {"credit": [0] * 5, "debit": [0] * 5}
@@ -126,8 +127,7 @@ def admin_home(request):
         week_index = (payment['week'] - 1) % 5  # Restrict to 5 weeks max
         weekly_data["credit"][week_index] += float(payment['total_credit'] or 0)
         weekly_data["debit"][week_index] += float(payment['total_debit'] or 0)
-    print(monthly_credit,'monthly_credit')
-    print(yearly_data,'yearly_data')
+    
     # Prepare financial data for frontend
     financial_chart_data = {
         "yearly": yearly_data,

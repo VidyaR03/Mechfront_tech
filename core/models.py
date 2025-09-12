@@ -662,6 +662,7 @@ class Invoice(models.Model):
     invoice_sale_of_good = models.CharField(max_length=255,blank=True)
     invoice_note = models.TextField(blank=True)
     invoice_total = models.CharField(max_length=255,blank=True)
+    invoice_due = models.CharField(max_length=255,blank=True)
     gst_option = models.CharField(max_length=255,blank=True)
     inv_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
     inv_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
