@@ -14,6 +14,33 @@ Ecoway
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
         color: #000;
     }
+
+    /* Existing styles ... */
+
+    /* jQuery Validate: Red border for invalid fields (Bootstrap fallback) */
+    .form-control.is-invalid {
+        border-color: #dc3545 !important;  /* Red border */
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;  /* Red glow */
+    }
+
+    /* Red text for error messages */
+    .invalid-feedback {
+        color: #dc3545 !important;  /* Red text */
+        font-size: 0.875em;  /* Smaller font for messages */
+        display: block !important;  /* Ensure visible */
+    }
+
+    /* Optional: Red text for field labels when invalid (targets parent form-group) */
+    .form-group.has-error label,
+    .form-group .is-invalid + .invalid-feedback ~ label {
+        color: #dc3545 !important;
+    }
+
+    /* For selects (e.g., payment_term) - ensure red border */
+    select.is-invalid {
+        border-color: #dc3545 !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");  /* Red dropdown arrow */
+    }
 </style>
 {% endblock custom_css %}
 
@@ -1012,6 +1039,106 @@ $('#qty_0, #rate_0, #discount_0, #taxrate_0').on('keyup', function () {
     calculateRow(0);
 });
 
+});
+</script>
+<script>
+// Form validation with jQuery Validate
+$('#invoice_form').validate({
+    // Basic rules (add more as needed for custom logic like email)
+    rules: {
+        quotation_date: "required",
+        payment_term: "required",
+        customer_Name: "required",
+        expiry_date: "required",
+        place_of_supply: "required",
+        destination: "required",
+        delivery: "required",
+        contact_person_name: "required",
+        contact_person_email: {
+            required: true,
+            email: {
+                depends: function(element) {
+                    // Allow 'na' or 'nan' as valid for email
+                    return $(element).val().toLowerCase() !== 'na' && $(element).val().toLowerCase() !== 'nan';
+                }
+            }
+        },
+        transporter_name: "required",
+        gst_option: "required",
+        // Add rules for dynamic table fields if needed (e.g., at least one row with required qty/rate)
+        'qty_0': "required",
+        'rate_0': "required",
+        'taxrate_0': "required"
+        // Extend for dynamic rows: validate dynamically added fields on submit
+    },
+    messages: {
+        quotation_date: "Quotation Date is required",
+        payment_term: "Payment Term is required",
+        customer_Name: "Customer Name is required",
+        expiry_date: "Validity Date is required",
+        place_of_supply: "Place of Supply is required",
+        destination: "Destination is required",
+        delivery: "Delivery Period is required",
+        contact_person_name: "Company Name is required",
+        contact_person_email: {
+            required: "Contact Person Email is required",
+            email: "Please enter a valid email address (or 'na')"
+        },
+        transporter_name: "Transporter is required",
+        gst_option: "GST option is required",
+        'qty_0': "Quantity is required",
+        'rate_0': "Unit Price is required",
+        'taxrate_0': "Tax Rate is required"
+    },
+    // Bootstrap integration: Highlight invalid fields with red border
+    highlight: function(element) {
+        $(element).addClass('is-invalid');
+    },
+    unhighlight: function(element) {
+        $(element).removeClass('is-invalid');
+    },
+    errorElement: 'span',  // Wrap errors in <span> instead of <label>
+    errorClass: 'invalid-feedback',  // Use Bootstrap's error message class
+    errorPlacement: function(error, element) {
+        error.insertAfter(element);  // Place error message right after the field
+    },
+    // Scroll to first error on submit (keeps your "form goes up" behavior)
+    invalidHandler: function(event, validator) {
+        var errors = validator.numberOfInvalids();
+        if (errors) {
+            $("html, body").animate({
+                scrollTop: $(validator.errorList[0].element).offset().top - 100
+            }, 500);
+        }
+    },
+    submitHandler: function(form) {
+        // Custom email check (fallback for 'na')
+        var email = $('#contact_person_email').val();
+        if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
+            alert('Invalid email address.');
+            return false;
+        }
+        form.submit();  // Submit if all good
+    }
+});
+
+// Re-validate dynamic rows on add/remove (call this after adding/removing rows)
+function revalidateDynamicRows() {
+    $('#invoice_form').validate().form();  // Re-run full validation
+}
+
+// Update your add-btn and remove-btn click handlers to call this
+$(document).on('click', '.add-btn', function () {
+    // ... your existing add row code ...
+    revalidateDynamicRows();  // Add this line
+});
+
+$(document).on('click', '.remove-btn', function () {
+    $(this).closest('.add-row').remove();
+    calculateTotalTaxAmount();
+    subtotal();
+    updateTotalInWords();
+    revalidateDynamicRows();  // Add this line
 });
 </script>
 {% endblock main_content %}
