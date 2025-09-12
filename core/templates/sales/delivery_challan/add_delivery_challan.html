@@ -474,12 +474,19 @@ Ecoway
     };
 
     // Form Validation
-    document.getElementById('invoice_form').addEventListener('submit', function(event) {
+    let form = document.getElementById('invoice_form');
+    form.addEventListener('submit', function(event) {
+        alert()
         const customerSelect = document.getElementById('customer_id_select').value;
         const customerDatalist = document.getElementById('customer_Name').value;
         if (!customerSelect && !customerDatalist) {
             event.preventDefault();
             toastr.error('Please select a Customer Name.');
+        }
+        alert("Submit...")
+        if(!form.checkValidity()){
+            alert("Invalid Forma and report")
+            form.reportValidity();
         }
     });
 

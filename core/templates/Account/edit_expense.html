@@ -332,6 +332,7 @@ $(document).ready(function () {
         } else {
             showToast("GST Number must be 15 characters.", "error");
             $('#gstError').text("GST Number must be 15 characters");
+            $('#gstError').text("Enter a valid GST number (e.g., 12ABCDE1234F1Z5).");
             $('#gst_option').val("");
             updateTaxFields();
         }
