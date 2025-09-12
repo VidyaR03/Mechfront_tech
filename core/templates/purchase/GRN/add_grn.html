@@ -961,7 +961,7 @@ Ecoway
             '</td>' +
 
             '<td>' +
-            '<input type="number" class="form-control taxrate_0" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="rate(\'taxrate_' + i + '\');" required>' +
+            '<input type="number" class="form-control taxrate_0" step="0.001" name="taxrate_' + i + '" id="taxrate_' + i + '" onkeyup="rate(\'taxrate_' + i + '\');" required>' +
             '</td>' +
 
             '<td>' +
@@ -985,144 +985,151 @@ Ecoway
 
 <script type="text/javascript">
     function getitemsdetails(inputname, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
+    let input = inputname.split("_");
 
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: '#',
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                    },
-                    success: function (data) {
+    $('#' + inputname).autocomplete({
+        minLength: 1,
+        autoFocus: true,
+        delay: 0, // 👈 ensures first key triggers immediately
+        source: function (request, response) {
+            $.ajax({
+                url: "#", 
+                type: "POST",
+                dataType: "json",
+                data: {
+                    name_startsWith: request.term,
+                    itemsdetails: input,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (data) {
+                    if (Array.isArray(data) && data.length > 0) {
                         response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
+                            let code = item.split("|");
                             return {
                                 label: code[0],
                                 value: code[0],
                                 data: item
                             }
                         }));
+                    } else {
+                        response([{ label: "No results found", value: "", disabled: true }]);
                     }
-                });
-            },
-            autoFocus: true,
-            minLength: 0,
-            change: function (event, ui) {
-                if (ui.item == null) {
+                },
+                error: function () {
+                    response([{ label: "No results found", value: "", disabled: true }]);
                 }
-            },
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                console.log(names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[8]);
-                $('#' + uom).val(names[10]);
-                $('#' + discount).val(names[6]);
-                $('#' + taxrate).val(names[7]);
-                $('#' + hsn).val(names[5]);
-                $('#' + itemcode).val(names[11]);
-
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
-
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
-
-                
-
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
-                updatePFPercentage();
+            });
+        },
+        focus: function (event, ui) {
+            if (ui.item.disabled) {
+                event.preventDefault();
+            }
+        },
+        select: function (event, ui) {
+            if (ui.item.disabled) {
+                event.preventDefault();
+                return false;
             }
 
-        });
-    }
+            let names = ui.item.data.split("|");
+            $('#' + inputname).val(names[0]);
+            $('#' + description).val(names[1]);
+            $('#' + godown).val(names[2]);
+            $('#' + qty).val('1');
+            $('#' + rate).val(names[8]);
+            $('#' + uom).val(names[10]);
+            $('#' + discount).val(names[6]);
+            $('#' + taxrate).val(names[7]);
+            $('#' + hsn).val(names[5]);
+            $('#' + itemcode).val(names[11]);
 
-    function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        //alert();return;
-        input = inputname.split("_");
-        //alert(input);return;
-        
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input
-                    },
-                    success: function (data) {
+            calculateTotalTaxAmount();
+            updateTaxFields();
+            discountamt(inputname);
+            subtotal();
+            calculatePFPercentage();
+            calculateFreightPercentage();
+            updateTotalInWords();
+            updatePFAmount();
+            updateFreightPercentage();
+            updatePFPercentage();
+        }
+    }).autocomplete("search", $('#' + inputname).val()); // 👈 force search on first key
+}
+
+
+function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
+    let input = inputname.split("_");
+
+    $('#' + inputname).autocomplete({
+        minLength: 1,
+        autoFocus: true,
+        delay: 0,
+        source: function (request, response) {
+            $.ajax({
+                url: "{% url 'getitemscodedetails' %}",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    name_startsWith: request.term,
+                    itemsdetails: input,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (data) {
+                    if (Array.isArray(data) && data.length > 0) {
                         response($.map(data, function (item) {
-                            var code = item.split("|");
-                            //alert(data);
+                            let code = item.split("|");
                             return {
                                 label: code[0],
                                 value: code[0],
                                 data: item
                             }
                         }));
+                    } else {
+                        response([{ label: "No results found", value: "", disabled: true }]);
                     }
-                });
-            },
-            autoFocus: true,
-            minLength: 0,
-            change: function (event, ui) {
-                if (ui.item == null) {
+                },
+                error: function () {
+                    response([{ label: "No results found", value: "", disabled: true }]);
                 }
-            },
-            
-            
-            select: function (event, ui) {
-                var names = ui.item.data.split("|");
-                // console.log("Mangesh",names)
-                $('#' + inputname).val(names[0]);
-                $('#' + description).val(names[1]);
-                $('#' + godown).val(names[2]);
-                //$('#'+qty).val(names[3]);
-                $('#' + qty).val('1');
-                $('#' + rate).val(names[5]);
-                $('#' + uom).val(names[7]);
-                $('#' + discount).val(names[4]);
-                $('#' + taxrate).val(names[6]);
-                $('#' + hsn).val(names[2]);
-                $('#' + item).val(names[1]);
-
-                calculateTotalTaxAmount();
-                updateTaxFields();
-                discountamt(inputname);
-                subtotal();
-                calculatePFPercentage();
-                calculateFreightPercentage()
-
-                
-
-                
-                updateTotalInWords();
-                updatePFAmount();
-                updateFreightPercentage();
-
-                
+            });
+        },
+        focus: function (event, ui) {
+            if (ui.item.disabled) {
+                event.preventDefault();
+            }
+        },
+        select: function (event, ui) {
+            if (ui.item.disabled) {
+                event.preventDefault();
+                return false;
             }
 
-        });
-    }
+            let names = ui.item.data.split("|");
+            $('#' + inputname).val(names[0]);
+            $('#' + description).val(names[1]);
+            $('#' + godown).val(names[2]);
+            $('#' + qty).val('1');
+            $('#' + rate).val(names[5]);
+            $('#' + uom).val(names[7]);
+            $('#' + discount).val(names[4]);
+            $('#' + taxrate).val(names[6]);
+            $('#' + hsn).val(names[2]);
+            $('#' + item).val(names[1]);
+
+            calculateTotalTaxAmount();
+            updateTaxFields();
+            discountamt(inputname);
+            subtotal();
+            calculatePFPercentage();
+            calculateFreightPercentage();
+            updateTotalInWords();
+            updatePFAmount();
+            updateFreightAmount();
+        }
+    }).autocomplete("search", $('#' + inputname).val()); // 👈 force search immediately
+}
+
 
     function calculatePFPercentage() {
         var subtotal2 = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
@@ -1709,7 +1716,7 @@ Ecoway
 
                                     <td><input type="text" class="form-control" name="discount_`+ index + `" id="discount_` + index + `" value="` + obj.discount + `"></td>
 
-                                    <td><input type="text" class="form-control" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
+                                    <td><input type="text" class="form-control" step="0.001" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
 
                                     <td><input type="text" class="form-control taxamt" name="taxamt_`+ index + `" id="taxamt_` + index + `" value="` + obj.taxamt + `"></td>
 
