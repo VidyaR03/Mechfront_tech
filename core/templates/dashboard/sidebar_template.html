@@ -475,27 +475,25 @@
 
               <a href="{{ fn_cash_coucher_List_View }}"
                 class="nav-link {% if request.path == fn_cash_coucher_List_View or request.path == add_cash_voucher  %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cash Voucher
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Cash Voucher
               </a>
             </li>
 
             <li class="nav-item">
-              {% url 'expense_vendor_list' as expense_vendor_list %}
-              {% url 'add_expense_vendor_data' as add_expense_vendor_data %}
-
-              <a href="{{ expense_vendor_list }}"
-                class="nav-link {% if request.path == expense_vendor_list or request.path == add_expense_vendor_data %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expense
+              {% url 'accexpense_list' as accexpense_list %}
+              {% url 'add_accexpense' as add_accexpense_url %}
+              {% url 'edit_accexpense' id=0 as edit_accexpense_url %} <!-- This is just to resolve the URL -->
+              <a href="{{ accexpense_list }}" class="nav-link {% if request.path == accexpense_list or request.path == add_accexpense_url or 'edit_accexpense' in request.path %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Expense
               </a>
             </li>
 
             <li class="nav-item">
               {% url 'expense_advice_list_View' as expense_advice_list_View %}
-              {% url 'add_expense_advice_data' as add_expense_advice_data %}
-
-              <a href="{{ expense_advice_list_View }}"
-                class="nav-link {% if request.path == expense_advice_list_View or request.path == add_expense_advice_data %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expense Advice
+              {% url 'add_expense_advice_data' as add_expense_advice_data_url %}
+              {% url 'edit_expense_advice' id=0 as edit_expense_advice_url %} <!-- This is just to resolve the URL -->
+              <a href="{{ expense_advice_list_View }}" class="nav-link {% if request.path == expense_advice_list_View or request.path == add_expense_advice_data_url or 'edit_expense_advice' in request.path %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Expense Advice
               </a>
             </li>
 

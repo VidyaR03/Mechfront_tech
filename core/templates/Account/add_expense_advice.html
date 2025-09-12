@@ -105,10 +105,13 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group"> <label>Mobile</label>
-                                        <div> <input class="form-control" type="text" name="mobile" id="mobile"
-                                                placeholder="Mobile Number" autocomplete="off">
+                                        <div>    <input type="text" class="form-control" name="mobile" id="mob_no"
+                                             placeholder="Mobile"  pattern="\d{10}"
+                                             title="Enter a 10-digit number">
+                                          <span id="mobileError" style="color: red;"></span>
                                          </div>
                                     </div>
+                             
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group"> <label>PO No</label>
@@ -125,7 +128,10 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label style="color:#f00"> Amount</label>
-                                        <input type="text" name="amount" id="amount" class="form-control" readonly="">
+                                        <!-- <input type="text" name="amount" id="amount" class="form-control"  readonly=""> -->
+                                             <input class="form-control" type="text"
+                                                                    name="amount" id="amount" readonly="">
+                                                            
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -303,8 +309,8 @@
                     data.forEach(function(item, i) {
                         html += '<tr class="tblro">' +
                             '<td><input class="no-outline" id="id_i_' + i + '" name="id_i_' + i + '" value="' + item.id + '" hidden>' +
-                            '<input class="no-outline" id="invoicedate' + i + '" name="invoicedate' + i + '" value="' + item.ex_invoice_date + '"></td>' +
-                            '<td><input class="no-outline" id="customername' + i + '" name="customername' + i + '" value="' + item.ex_vendor_name + '"></td>' +
+                            '<input class="no-outline" id="invoicedate' + i + '" name="invoicedate' + i + '" value="' + item.ae_invoice_date + '"></td>' +
+                            '<td><input class="no-outline" id="customername' + i + '" name="customername' + i + '" value="' + item.ae_vendor_name + '"></td>' +
                             '<td><input class="no-outline" id="invoiceno' + i + '" name="invoiceno' + i + '" value="' + item.ae_invoice_no + '"></td>' +
                             '<td><input class="no-outline" id="invoiceamount' + i + '" name="invoiceamount' + i + '" value="' + parseFloat(item.all_total).toFixed(2) + '"></td>' +
                             '<td><input class="no-outline" id="dueamount' + i + '" name="dueamount' + i + '" value="' + parseFloat(item.ae_due_amount).toFixed(2) + '" size="8" onchange="dueamt(\'' + i + '\');">' +
@@ -332,6 +338,8 @@
             $('#total').val(sum.toFixed(2));
             $('#amount_received').val(sum.toFixed(2));
             $('#amount_used').val(sum.toFixed(2));
+            $('#amount_excess').val(sum.toFixed(2));
+            $('#amount').val(sum.toFixed(2));
     
             var dueamount = Number($('#dueamount' + i).val());
             var payment = Number($('#payment' + i).val());
@@ -342,6 +350,7 @@
                 $('#total').val();
                 $('#amount_received').val();
                 $('#amount_used').val();
+                $('#amount_excess').val();
             }
         }
     
@@ -358,11 +367,23 @@
             $('#total').val(sum.toFixed(2));
             $('#amount_received').val(sum.toFixed(2));
             $('#amount_used').val(sum.toFixed(2));
+            $('#amount_excess').val(sum.toFixed(2));
         }
     </script>
     
     
-
+    <script>
+        $(function() {
+            $("#customer_Name_id").autocomplete({
+                source: "{% url 'autocomplete_accexpns_name' %}",
+                minLength: 1,
+                select: function(event, ui) {
+                    // Set the selected customer's ID in the hidden field
+                    $("#customer_id").val(ui.item.id);
+                }
+            });
+        });
+        </script>
 
 
     <script type="text/javascript">
@@ -527,5 +548,24 @@
             today.getFullYear(); // Format: DD-MM-YYYY
         document.getElementById("date").value = formattedDate;
     });
+</script>
+
+
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+      const mobileError = document.getElementById("mobileError");
+
+      mobileInput.addEventListener("input", function () {
+         const mobileValue = this.value;
+         const mobileRegex = /^[0-9]{10}$/; // Regular expression for a 10-digit mobile number
+
+         if (!mobileRegex.test(mobileValue)) {
+            mobileError.textContent = "Enter a valid 10-digit phone number.";
+         } else {
+            mobileError.textContent = "";
+         }
+      });
+   });
+
 </script>
 {% endblock main_content %}
