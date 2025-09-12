@@ -84,7 +84,7 @@ CRM
                                 <div class="rowbb">
                                     <div class="invoice-add-table">
                                         <div class="table-responsive">
-                                            <table class="table table-center add-table-items">
+                                            <table class="table table-center add-table-items" id="append_table">
                                                 <thead>
                                                     <tr>
                                                         <th style="padding-left: 30px;">Item Code</th>
@@ -315,7 +315,7 @@ $(document).ready(function () {
             subtotal();
             updateTotalInWords();
         } else {
-            $('#gstError').text("GST Number must be 15 characters");
+            $('#gstError').text("Enter a valid GST number (e.g., 12ABCDE1234F1Z5).");
             $('#gst_option').val("");
             updateTaxFields();
         }
