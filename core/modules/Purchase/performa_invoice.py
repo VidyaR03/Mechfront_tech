@@ -7,6 +7,7 @@ from datetime import date, datetime
 from django.template.loader import get_template
 import inflect
 from weasyprint import HTML
+
 from core.modules import template_path
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect,HttpResponse
@@ -47,6 +48,7 @@ def performa_add_invoice_data(request):
         item_data = inventory.objects.all()
         godown_name = godown.objects.all()
         dc_list = delivery_challan.objects.all()
+        current_date = datetime.today().strftime('%d-%m-%Y')
 
 
         context ={ 
@@ -55,6 +57,7 @@ def performa_add_invoice_data(request):
             'item_data': item_data,
             'godown_name': godown_name,
             'dc_list':dc_list,
+            'current_date':current_date,
             }
 
         return render(request, template_path.performa_add_invoice, context)

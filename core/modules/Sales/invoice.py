@@ -52,6 +52,8 @@ def add_invoice_data(request):
         item_data = inventory.objects.all()
         godown_name = godown.objects.all()
         dc_list = delivery_challan.objects.all()
+        current_date = datetime.today().strftime('%d-%m-%Y')
+
 
         context ={ 
             'customer_name' : customer_name,
@@ -59,6 +61,7 @@ def add_invoice_data(request):
             'item_data': item_data,
             'godown_name': godown_name,
             'dc_list':dc_list,
+            'current_date':current_date,
             }
 
         return render(request, template_path.add_invoice, context)

@@ -69,9 +69,9 @@ CRM
                                         <div class="form-group">
                                             <div class=" ">
                                                 <span>
-                                                    <label>Invoice Date</label>
+                                                    <label>Invoice Date  <span class="text-danger">*</span></label></label>
                                                     <input class="form-control datetimepicker" type="text"
-                                                        name="invoice_date" id="invoice_date" placeholder="Date"  required>
+                                                        name="invoice_date" id="invoice_date" placeholder="Date" value="{{current_date}}"  required>
                                                 </span>
                                             </div>
                                         </div>
@@ -82,7 +82,7 @@ CRM
           
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>GST No.</label>
+                                            <label>GST No. <span class="text-danger">*</span></label></label>
                                             <input type="text" class="form-control" name="acc_gst" id="gst_no_input" placeholder="GST No." required>
                                             <span id="gstError" style="color: red;"></span>
 
@@ -92,7 +92,7 @@ CRM
 
                                     <div class="col-xl-2 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label style="color:black">Vendor Name</label>
+                                            <label style="color:black">Vendor Name  <span class="text-danger">*</span></label></label>
                                             <div>
                                                 <select class="form-control" required name="vendor_Name"
                                                     id="vendor_Name">
@@ -123,7 +123,7 @@ CRM
 
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                            <label>Cost Centre</label>
+                                            <label>Cost Centre  <span class="text-danger">*</span></label></label>
                                             <select class="form-select" name="ae_cost_center" id="ae_cost_center                                               " required>                                               
                                                 <option value="">Select Cost Center</option>
                                                 <option value="Office Cleaning">Office Cleaning</option>
@@ -370,9 +370,18 @@ CRM
 </div>
 
 
+{% block custom_js %}
+
+<!-- External Dependencies -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+
 
 <script>
     $(function () {
@@ -974,9 +983,7 @@ function subtotal() {
         getbillamt();
     });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
 
-<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 
 <script type="text/javascript">
     $(document).on('change', '#vendor_name', function () {
@@ -1218,10 +1225,106 @@ function subtotal() {
                 gstError.style.display = "block";
                 gstNoInput.focus();
                 // Optional: Show toast/alert for better UX
-                alert("Please enter a valid GST number before submitting.");
             }
         });
     });
 </script>
+
+
+
+
+
+<script>
+$(document).ready(function () {
+    // Initialize datepickers
+    $('.datetimepicker').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: 0
+    });
+
+    // Set default dates
+    const today = new Date();
+    const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
+    $('#sales_order_date, #buyer_order_date, #due_date').val(formattedDate);
+
+    // Form validation
+    $('#invoice_form').validate({
+        rules: {
+            invoice_no: "required",
+            dispatch_date: "required",
+            customer_Name_id: "required",
+            challan_type: "required",
+            payment_term: "required",
+            so_date: "required",
+            place_of_supply: "required",
+            destination: "required",
+            contact_person_name: "required",
+            transporter_name: "required",
+            invoice_type: "required",
+            delivery_type: "required",
+            buyer_order_no: "required",
+            buyer_date: "required",
+            gst_option: "required",
+            'qty_0': "required",
+            'rate_0': "required",
+            'taxrate_0': "required"
+        },
+        messages: {
+            dispatch_date: "Dispatch Date is required",
+            invoice_no: "Invoice Number is required",
+            customer_Name_id: "Customer is required",
+            challan_type: "Challan is required",
+            payment_term: "Payment Term is required",
+            so_date: "Sales Order Date is required",
+            place_of_supply: "Place of Supply is required",
+            destination: "Destination is required",
+            contact_person_name: "Contact Person is required",
+            transporter_name: "Dispatch Through is required",
+            invoice_type: "Invoice Type is required",
+            delivery_type: "Delivery Type is required",
+            buyer_order_no: "Buyer Order No is required",
+            buyer_date: "Buyer Order Date is required",
+            gst_option: "GST option is required",
+            'qty_0': "Quantity is required",
+            'rate_0': "Unit Price is required",
+            'taxrate_0': "Tax Rate is required"
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        },
+        errorElement: 'span',
+        errorClass: 'invalid-feedback',
+        errorPlacement: function(error, element) {
+            if (element.is('select')) {
+                error.insertAfter(element.closest('.form-group'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        invalidHandler: function(event, validator) {
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                $("html, body").animate({
+                    scrollTop: $(validator.errorList[0].element).offset().top - 100
+                }, 500);
+            }
+        },
+        submitHandler: function(form) {
+            var email = $('#contact_person_email').val();
+            if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
+                alert('Invalid email address.');
+                return false;
+            }
+            form.submit();
+        }
+    });
+
+});
+</script>
+
+{% endblock custom_js %}
 
 {% endblock main_content %}

@@ -33,10 +33,12 @@ def add_account_expense_data(request):
         vendor_name = vendor.objects.all()
         dispatch_through = transporter.objects.all().order_by('name')
         item_data = inventory.objects.all()
+        current_date = datetime.today().strftime('%d-%m-%Y')
         context ={ 
             'vendor_name' : vendor_name,
             'dispatch_through' : dispatch_through,
-            'item_data': item_data
+            'item_data': item_data,
+            'current_date':current_date
             }
 
         return render(request, template_path.add_account_expense, context)

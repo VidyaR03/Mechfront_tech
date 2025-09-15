@@ -27,13 +27,12 @@
 <div class="page-wrapper left-align-content" style="padding-top: 0px;  padding-left: 120px;">
     <div class="content container-fluid">
           
-                        <form method="POST" enctype="multipart/form-data">
+                        <form method="POST" enctype="multipart/form-data" id="vendor_form" action="" autocomplete="off">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-body">
-                                            <form method="post" id="vendor_form" action="" autocomplete="off">
                                                 <div class="row">
                             <!-- Profile Picture Section -->
                             <div class="profile-picture d-flex justify-content-center align-items-center" style="padding-top: 50px; padding-left: 20px;">
@@ -419,7 +418,6 @@
                             <div class="row col-sm-6 p-5">
                                 <div class="success_message row"></div>
                             </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -430,7 +428,19 @@
 
 
 
+
 {% block custom_js %}
+
+<!-- External Dependencies -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
    const gstNoInput = document.getElementById("gst_no");
@@ -551,8 +561,6 @@ document.addEventListener("DOMContentLoaded", function() {
    });
 });
 </script>
-<!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
 // Get references to the dropdown and input fields
@@ -724,6 +732,101 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 </script>
+
+
+
+
+<script>
+$(document).ready(function () {
+    // Initialize datepickers
+    $('.datetimepicker').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: 0
+    });
+
+    // Set default dates
+    const today = new Date();
+    const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
+    $('#sales_order_date, #buyer_order_date, #due_date').val(formattedDate);
+
+    // Form validation
+    $('#vendor_form').validate({
+        rules: {
+            phone: "required",
+            dispatch_date: "required",
+            company_name: "required",
+            challan_type: "required",
+            payment_term: "required",
+            com_website: "required",
+            status: "required",
+            destination: "required",
+            contact_person_name: "required",
+            transporter_name: "required",
+            cin_number: "required",
+            tan_number: "required",
+            buyer_order_no: "required",
+            pan_number_input: "required",
+            gst_no_input: "required",
+            'qty_0': "required",
+            'rate_0': "required",
+            'taxrate_0': "required"
+        },
+        messages: {
+            dispatch_date: "Dispatch Date is required",
+            phone: "Phone Number is required",
+            company_name: "Customer is required",
+            challan_type: "Challan is required",
+            payment_term: "Payment Term is required",
+            com_website: "Website is required",
+            status: "Status is required",
+            destination: "Destination is required",
+            contact_person_name: "Contact Person is required",
+            transporter_name: "Dispatch Through is required",
+            cin_number: "CIN is required",
+            tan_number: "TAN is required",
+            buyer_order_no: "Buyer Order No is required",
+            pan_number_input: "Pan No is required",
+            gst_no_input: "GST No is required",
+            'qty_0': "Quantity is required",
+            'rate_0': "Unit Price is required",
+            'taxrate_0': "Tax Rate is required"
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        },
+        errorElement: 'span',
+        errorClass: 'invalid-feedback',
+        errorPlacement: function(error, element) {
+            if (element.is('select')) {
+                error.insertAfter(element.closest('.form-group'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        invalidHandler: function(event, validator) {
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                $("html, body").animate({
+                    scrollTop: $(validator.errorList[0].element).offset().top - 100
+                }, 500);
+            }
+        },
+        submitHandler: function(form) {
+            var email = $('#contact_person_email').val();
+            if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
+                alert('Invalid email address.');
+                return false;
+            }
+            form.submit();
+        }
+    });
+
+});
+</script>
+
 
 {% endblock custom_js %}    
 {% endblock main_content %}

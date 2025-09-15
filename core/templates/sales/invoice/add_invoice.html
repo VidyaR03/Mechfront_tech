@@ -74,8 +74,8 @@ Ecoway - Add Invoice
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Customer Name</label>
-                                            <select name="customer_id_select" class="form-control" id="customer_id_select">
+                                            <label>Customer Name <span style="color: red;">*</span></label>
+                                            <select name="customer_id_select" class="form-control" id="customer_id_select" required>
                                                 <option value="">Select Customer</option>
                                                 {% for i in customer_name %}
                                                 <option value="{{ i.id }}">{{ i.customer }}</option>
@@ -88,8 +88,8 @@ Ecoway - Add Invoice
                                         <div class="form-group">
                                             <input type="hidden" id="customer_id" name="customer_id">
                                             <input type="hidden" id="dc_id" name="dc_id">
-                                            <label>Customer Name (DC)</label>
-                                            <input list="customer_Name_list" id="customer_Name" name="customer_Name" class="form-control" placeholder="Select Customer">
+                                            <label>Customer Name (DC) <span style="color: red;">*</span></label></label>
+                                            <input list="customer_Name_list" id="customer_Name" name="customer_Name" class="form-control" placeholder="Select Customer" required>
                                             <datalist id="customer_Name_list">
                                                 {% for lead in dc_list %}
                                                 <option value="{{ lead.dc_number }}"
@@ -491,14 +491,20 @@ Ecoway - Add Invoice
     </div>
 </div>
 
+{% endblock main_content %}
+
+
+{% block custom_js %}
+
 <!-- External Dependencies -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 <script>
 // Toastr Configuration
 toastr.options = {
@@ -1003,4 +1009,99 @@ $('#freight_amount, #freight_percentage, #packaging_forwording_amount, #packagin
     updateTotalInWords();
 });
 </script>
-{% endblock main_content %}
+
+
+
+
+<script>
+$(document).ready(function () {
+    // Initialize datepickers
+    $('.datetimepicker').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: 0
+    });
+
+    // Set default dates
+    const today = new Date();
+    const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
+    $('#sales_order_date, #buyer_order_date, #due_date').val(formattedDate);
+
+    // Form validation
+    $('#invoice_form').validate({
+        rules: {
+            customer_Name: "required",
+            customer_id_select: "required",
+            challan_type: "required",
+            payment_term: "required",
+            customer_Name_id: "required",
+            so_date: "required",
+            place_of_supply: "required",
+            destination: "required",
+            contact_person_name: "required",
+            transporter_name: "required",
+            invoice_type: "required",
+            delivery_type: "required",
+            buyer_order_no: "required",
+            buyer_order_date: "required",
+            gst_option: "required",
+            'qty_0': "required",
+            'rate_0': "required",
+            'taxrate_0': "required"
+        },
+        messages: {
+            customer_Name: "Customer Name form DC is required",
+            customer_id_select: "Customer is required",
+            challan_type: "Challan is required",
+            payment_term: "Payment Term is required",
+            customer_Name_id: "Customer Name is required",
+            so_date: "Sales Order Date is required",
+            place_of_supply: "Place of Supply is required",
+            destination: "Destination is required",
+            contact_person_name: "Contact Person is required",
+            transporter_name: "Dispatch Through is required",
+            invoice_type: "Invoice Type is required",
+            delivery_type: "Delivery Type is required",
+            buyer_order_no: "Buyer Order No is required",
+            buyer_order_date: "Buyer Order Date is required",
+            gst_option: "GST option is required",
+            'qty_0': "Quantity is required",
+            'rate_0': "Unit Price is required",
+            'taxrate_0': "Tax Rate is required"
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        },
+        errorElement: 'span',
+        errorClass: 'invalid-feedback',
+        errorPlacement: function(error, element) {
+            if (element.is('select')) {
+                error.insertAfter(element.closest('.form-group'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        invalidHandler: function(event, validator) {
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                $("html, body").animate({
+                    scrollTop: $(validator.errorList[0].element).offset().top - 100
+                }, 500);
+            }
+        },
+        submitHandler: function(form) {
+            var email = $('#contact_person_email').val();
+            if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
+                alert('Invalid email address.');
+                return false;
+            }
+            form.submit();
+        }
+    });
+
+});
+</script>
+
+{% endblock custom_js %}

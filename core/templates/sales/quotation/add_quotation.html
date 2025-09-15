@@ -1042,7 +1042,6 @@ $('#qty_0, #rate_0, #discount_0, #taxrate_0').on('keyup', function () {
 });
 </script>
 <script>
-// Form validation with jQuery Validate
 $('#invoice_form').validate({
     // Basic rules (add more as needed for custom logic like email)
     rules: {
@@ -1127,9 +1126,7 @@ function revalidateDynamicRows() {
     $('#invoice_form').validate().form();  // Re-run full validation
 }
 
-// Update your add-btn and remove-btn click handlers to call this
 $(document).on('click', '.add-btn', function () {
-    // ... your existing add row code ...
     revalidateDynamicRows();  // Add this line
 });
 

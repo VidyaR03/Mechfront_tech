@@ -3,18 +3,44 @@
 Ecoway
 {% endblock %}
 
-{% block custom_css %}
 
+{% block custom_css %}
 <style>
     /* Inactive tab styles */
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
         color: #ccc;
-        /* Faint gray color for inactive tabs */
     }
+
     /* Active tab style */
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
         color: #000;
-        /* Black color for active tab */
+    }
+
+    /* Existing styles ... */
+
+    /* jQuery Validate: Red border for invalid fields (Bootstrap fallback) */
+    .form-control.is-invalid {
+        border-color: #dc3545 !important;  /* Red border */
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;  /* Red glow */
+    }
+
+    /* Red text for error messages */
+    .invalid-feedback {
+        color: #dc3545 !important;  /* Red text */
+        font-size: 0.875em;  /* Smaller font for messages */
+        display: block !important;  /* Ensure visible */
+    }
+
+    /* Optional: Red text for field labels when invalid (targets parent form-group) */
+    .form-group.has-error label,
+    .form-group .is-invalid + .invalid-feedback ~ label {
+        color: #dc3545 !important;
+    }
+
+    /* For selects (e.g., payment_term) - ensure red border */
+    select.is-invalid {
+        border-color: #dc3545 !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");  /* Red dropdown arrow */
     }
 </style>
 {% endblock custom_css %}
@@ -63,9 +89,10 @@ Ecoway
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Order Confirmation Number <span style="color: red;">*</span></label>
-                                        <input type="text" class="form-control" name="order_confirmation_no" id="order_confirmation_no" placeholder="Order Confirmation Number" required>
+                                        <input type="text" class="form-control" name="order_confirmation_no" id="order_confirmation_no" placeholder="Order Confirmation Number" >
                                     </div>
                                 </div>
+                                
 
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
@@ -750,12 +777,6 @@ Ecoway
                                                             </div>
                                                         </div>
 
-                                                        <!-- <div class="row">
-                                                                    <div class="col-lg-6"><p>Freight</p></div>
-                                                                    <div class="col-lg-6 ">
-                                                                        <input class="billamt utrt1" type="text" name="freight" id="freight" value="0.00" onkeyup=";" >
-                                                                    </div>
-                                                                </div> -->
 
                                                         <div class="row">
                                                             <!-- <div class="col-lg-6"><p>Tax Amt</p></div> -->
@@ -907,7 +928,13 @@ Ecoway
         </div>
     </div>
 </div>
+{% endblock main_content %}
 
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -1007,8 +1034,7 @@ Ecoway
         
     });
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+
 <script>
 
     document.getElementById('customer_Name').addEventListener('input', function() {
@@ -1188,11 +1214,6 @@ document.getElementById('customer_Name_id').addEventListener('change', function(
     
  </script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 
 
 <script>
@@ -1935,4 +1956,92 @@ $('#qty_0, #rate_0, #discount_0, #taxrate_0').on('keyup', function () {
 
 });
 </script>
-{% endblock main_content %}
+
+<script>
+$(document).ready(function () {
+    // Initialize datepickers
+    $('.datetimepicker').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: 0
+    });
+
+    // Set default dates
+    const today = new Date();
+    const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
+    $('#sales_order_date, #buyer_order_date, #due_date').val(formattedDate);
+
+    // Form validation
+    $('#sales_order_form').validate({
+        rules: {
+            order_confirmation_no: "required",
+            payment_term: "required",
+            customer_Name_id: "required",
+            so_date: "required",
+            place_of_supply: "required",
+            destination: "required",
+            contact_person_name: "required",
+            transporter_name: "required",
+            invoice_type: "required",
+            delivery_type: "required",
+            buyer_order_no: "required",
+            buyer_order_date: "required",
+            gst_option: "required",
+            'qty_0': "required",
+            'rate_0': "required",
+            'taxrate_0': "required"
+        },
+        messages: {
+            order_confirmation_no: "Order confirmation no is required",
+            payment_term: "Payment Term is required",
+            customer_Name_id: "Customer Name is required",
+            so_date: "Sales Order Date is required",
+            place_of_supply: "Place of Supply is required",
+            destination: "Destination is required",
+            contact_person_name: "Sales Person is required",
+            transporter_name: "Dispatch Through is required",
+            invoice_type: "Invoice Type is required",
+            delivery_type: "Delivery Type is required",
+            buyer_order_no: "Buyer Order No is required",
+            buyer_order_date: "Buyer Order Date is required",
+            gst_option: "GST option is required",
+            'qty_0': "Quantity is required",
+            'rate_0': "Unit Price is required",
+            'taxrate_0': "Tax Rate is required"
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        },
+        errorElement: 'span',
+        errorClass: 'invalid-feedback',
+        errorPlacement: function(error, element) {
+            if (element.is('select')) {
+                error.insertAfter(element.closest('.form-group'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        invalidHandler: function(event, validator) {
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                $("html, body").animate({
+                    scrollTop: $(validator.errorList[0].element).offset().top - 100
+                }, 500);
+            }
+        },
+        submitHandler: function(form) {
+            var email = $('#contact_person_email').val();
+            if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
+                alert('Invalid email address.');
+                return false;
+            }
+            form.submit();
+        }
+    });
+
+});
+</script>
+
+{% endblock custom_js %}

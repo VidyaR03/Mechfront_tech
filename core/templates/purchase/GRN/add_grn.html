@@ -44,12 +44,7 @@ Ecoway
                             <div class="invoices-main-form">
                                 {% csrf_token %}
                                 <div class="row">
-                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                                <div class="form-group">
-                                                    <label style="color:">GRN No.</label>
-                                                    <input type="text" class="form-control" name="grn" id="grn">
-                                                </div>
-                                            </div> -->
+                                 
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
@@ -145,7 +140,6 @@ Ecoway
                                                 {% endfor %}
                                                
                                               </select>
-                                              <div class="invalid-feedback">Please select a Transporter name.</div>
                                            </div>
                                         </div>
                                      </div>
@@ -563,6 +557,18 @@ Ecoway
 </div>
 </div>
 
+{% block custom_js %}
+
+<!-- External Dependencies -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const dateInput = document.getElementById('order_date');
@@ -653,23 +659,8 @@ Ecoway
     });
 </script>
 
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dateInput = document.getElementById('quotation_date');
-        const dateInput2 = document.getElementById('expiry_date');
 
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-        const year = today.getFullYear();
-        const formattedDate = `${day}-${month}-${year}`;
-        dateInput.value = formattedDate;
-        dateInput2.value = formattedDate;
 
-    });
-</script> -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 <script>
 
     document.getElementById('customer_Name').addEventListener('input', function() {
@@ -690,29 +681,7 @@ Ecoway
         }
     });
 </script>
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-<script>
 
-    var input = this.value;
-    var list = document.getElementById('customer_Name_list').options;
-    document.getElementById('customer_Name').addEventListener('input', function() {
-
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].value === input) {
-                console.log(list[i].dataset);
-                document.getElementById('customer_id').value = list[i].dataset.id;
-                document.getElementById('contact_person_name').value = list[i].dataset.contact_person;
-                document.getElementById('contact_person_email').value = list[i].dataset.email;
-                document.getElementById('destination').value = list[i].dataset.address;
-                //  $("#q_ser_type option").attr('selected', false);
-                // $("#q_ser_type option[value='" + list[i].dataset.service_type + "']").attr('selected', true);
-                
-                break;
-            }
-        }
-    });
-</script> -->
 
 <script>
     $(document).ready(function() {
@@ -1506,104 +1475,6 @@ function getitemscodedetails(inputname, item, description, godown, qty, rate, uo
         updateTaxFields();
     }
     </script>
-<!-- 
-<script>
-    $(document).ready(function() {
-        $('#gst_option').change(function() {
-            updateGST();
-            updateTotalInWords();
-
-        });
-    
-        // Assuming there's a trigger for the subtotal calculation
-        $('#freight_amount, .totalamt').on('input', function() {
-            subtotal();
-            updateTotalInWords();
-
-        });
-    });
-    
-    function updateGST() {
-        var gstOption = $('#gst_option').val();
-        if (gstOption === "Interstate") {
-            // Apply 18% GST and show IGST field
-            $('#cgstper').val("0%");
-            $('#sgstper').val("0%");
-            $('#igstper').val("18%");
-            $('#igst_id').show();
-        } else if (gstOption === "Intrastate") {
-            // Apply 9% CGST and 9% SGST and show fields
-            $('#cgstper').val("9%");
-            $('#sgstper').val("9%");
-            $('#igstper').val("0%");
-            $('#igst_id').hide();
-        }
-        subtotal();
-        updateTotalInWords();
-
-    }
-    
-    function subtotal() {
-        var freight = $('#freight').val() || 0;
-        var totalamt = 0;
-        $(".totalamt").each(function() {
-            totalamt += +this.value || 0;
-        });
-    
-        sub_total =  totalamt;
-        $('.subtotal').val(sub_total);
-    
-        var gstOption = $('#gst_option').val();
-        var gstRate = 0;
-        var cgstRate = 0;
-        var sgstRate = 0;
-    
-        if (gstOption === "Interstate") {
-            gstRate = 18;
-            cgstRate = 0;
-            sgstRate = 0;
-        } else if (gstOption === "Intrastate") {
-            gstRate = 0;
-            cgstRate = 9;
-            sgstRate = 9;
-        }
-    
-        var cgstAmount = (sub_total * cgstRate) / 100;
-        var sgstAmount = (sub_total * sgstRate) / 100;
-        var igstAmount = (sub_total * gstRate) / 100;
-    
-        if (gstOption === "Interstate") {
-            $('#cgst').val("0.00");
-            $('#sgst').val("0.00");
-            $('#igst').val(igstAmount.toFixed(2));
-        } else if (gstOption === "Intrastate") {
-            $('#cgst').val(cgstAmount.toFixed(2));
-            $('#sgst').val(sgstAmount.toFixed(2));
-            $('#igst').val("0.00");
-        }
-        var pf_amount=$('#packaging_forwording_amount').val();
-        var fre_amount=$('#freight_amount').val();
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var fr_percentage = parseFloat(document.getElementById('freight_percentage').value);
-        var f_Percentage_amt = (subtotal * fr_percentage) / 100;
-
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value);
-        var pfAmount_amt = (subtotal * percentage) / 100;
-        
-
-    
-        var totalTaxAmount = cgstAmount + sgstAmount + igstAmount;
-        $('.totaltaxamt').val(totalTaxAmount.toFixed(2));
-    
-        var finalamt = sub_total + totalTaxAmount + parseInt(pf_amount) + parseInt(fre_amount) + f_Percentage_amt + pfAmount_amt;
-        $('.finalamt').val(finalamt.toFixed(2));
-        updateTotalInWords();
-    }
-    </script>
-     -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
-<script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 
 
 
@@ -1808,61 +1679,6 @@ function getitemscodedetails(inputname, item, description, godown, qty, rate, uo
     };
 </script>
 
-<!-- 
-<script>
-    function test(n) {
-        if (n < 0) return false;
-        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-        if (n === 0) return 'Zero';
-
-        function translate(n) {
-            let word = "";
-            if (n < 10) {
-                word = single_digit[n] + ' ';
-            } else if (n < 20) {
-                word = double_digit[n - 10] + ' ';
-            } else if (n < 100) {
-                const rem = translate(n % 10);
-                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
-            } else if (n < 1000) {
-                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
-            } else if (n < 1000000) {
-                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
-            } else if (n < 1000000000) {
-                word = translate(Math.floor(n / 1000000)).trim() + ' Million ' + translate(n % 1000000);
-            } else {
-                word = translate(Math.floor(n / 1000000000)).trim() + ' Billion ' + translate(n % 1000000000);
-            }
-            return word;
-        }
-
-        let [integerPart, decimalPart] = n.toString().split('.');
-
-        let result = translate(parseInt(integerPart)).trim();
-
-        if (decimalPart) {
-            result += ' and ' + translate(parseInt(decimalPart)) + ' Cents';
-        }
-
-        return result.trim() + '.';
-    }
-
-    function updateTotalInWords() {
-        const totalAmt = parseFloat(document.getElementById('totalamt').value);
-        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
-        document.getElementById('totalamt_word').value = totalAmtInWords;
-    }
-
-    window.onload = function() {
-        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
-        updateTotalInWords(); // Update on page load
-    };
-</script> -->
-
-
 <script>
     // Function to validate email
     function isValidEmail(email) {
@@ -1927,5 +1743,99 @@ function getitemscodedetails(inputname, item, description, godown, qty, rate, uo
     });
 </script>
 
+
+
+
+
+<script>
+$(document).ready(function () {
+    // Initialize datepickers
+    $('.datetimepicker').datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: 0
+    });
+
+    // Set default dates
+    const today = new Date();
+    const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
+    $('#sales_order_date, #buyer_order_date, #due_date').val(formattedDate);
+
+    // Form validation
+    $('#grn_form').validate({
+        rules: {
+            invoice_no: "required",
+            dispatch_date: "required",
+            customer_Name_id: "required",
+            challan_type: "required",
+            payment_term: "required",
+            so_date: "required",
+            place_of_supply: "required",
+            destination: "required",
+            contact_person_name: "required",
+            transporter_name: "required",
+            invoice_type: "required",
+            delivery_type: "required",
+            buyer_order_no: "required",
+            buyer_date: "required",
+            'qty_0': "required",
+            'rate_0': "required",
+            'taxrate_0': "required"
+        },
+        messages: {
+            dispatch_date: "Dispatch Date is required",
+            invoice_no: "Invoice Number is required",
+            customer_Name_id: "Customer is required",
+            challan_type: "Challan is required",
+            payment_term: "Payment Term is required",
+            so_date: "Sales Order Date is required",
+            place_of_supply: "Place of Supply is required",
+            destination: "Destination is required",
+            contact_person_name: "Contact Person is required",
+            transporter_name: "Dispatch Through is required",
+            invoice_type: "Invoice Type is required",
+            delivery_type: "Delivery Type is required",
+            buyer_order_no: "Buyer Order No is required",
+            buyer_date: "Buyer Order Date is required",
+            'qty_0': "Quantity is required",
+            'rate_0': "Unit Price is required",
+            'taxrate_0': "Tax Rate is required"
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        },
+        errorElement: 'span',
+        errorClass: 'invalid-feedback',
+        errorPlacement: function(error, element) {
+            if (element.is('select')) {
+                error.insertAfter(element.closest('.form-group'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        invalidHandler: function(event, validator) {
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                $("html, body").animate({
+                    scrollTop: $(validator.errorList[0].element).offset().top - 100
+                }, 500);
+            }
+        },
+        submitHandler: function(form) {
+            var email = $('#contact_person_email').val();
+            if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
+                alert('Invalid email address.');
+                return false;
+            }
+            form.submit();
+        }
+    });
+
+});
+</script>
+
+{% endblock custom_js %}
 
 {% endblock main_content %}
