@@ -121,7 +121,7 @@
                                         <!-- <th>Status</th> -->
                                         <th>Due Date</th>
                                         <th>Amount</th>
-                                        <th>Due Amount</th>
+                                        <!-- <th>Due Amount</th> -->
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -157,9 +157,9 @@
                                         </td> -->
                                         <td>{{t.invoice_due_date}}</td>
                                         <td>
-                                            ₹{{t.invoice_sub_total}}
+                                            ₹{{t.invoice_total|floatformat:2}}
                                         </td>
-                                        <td>{{t.invoice_total}}</td>
+                                        <!-- <td>{{t.invoice_total}}</td> -->
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <a href="{% url 'edit_invoice' id=t.id %}" class="btn btn-sm btn-outline-success me-1 btn-rounded"

@@ -129,7 +129,7 @@ def add_invoice_data(request):
             'inv_total_amt_word':request.POST['inv_total_amt_word'],
             'inv_packaging_forwording_amt_amt': request.POST.get('packaging_forwording_amt_amt', '0'),
             'inv_freight_amt_amt': request.POST.get('freight_amt_amt', '0'),
-            # 'inv_Dispatch_document_no': request.POST['inv_Dispatch_document_no'],
+            'invoice_due': request.POST['totalamt'],
             # 'invoice_term_of_delivery': request.POST['delivery_term'],
 
 

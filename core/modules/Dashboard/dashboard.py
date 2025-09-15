@@ -105,14 +105,15 @@ def admin_home(request):
         
         yearly_data[fin_year_label]["credit"][financial_month_index] += float(payment['total_credit'] or 0)
         yearly_data[fin_year_label]["debit"][financial_month_index] += float(payment['total_debit'] or 0)
-    
-    # Monthly Data (From Apr 22 - Mar 23 for the current year)
-    current_financial_year = f"{max_year-1}/{max_year}"
-    monthly_credit = yearly_data[current_financial_year]["credit"]
-    monthly_debit = yearly_data[current_financial_year]["debit"]
-    print('monthly_credit',monthly_credit)
-    print('monthly_debit',monthly_debit)
-    
+    if yearly_data:
+        current_financial_year = sorted(yearly_data.keys())[-1]
+        monthly_credit = yearly_data[current_financial_year]["credit"]
+        monthly_debit = yearly_data[current_financial_year]["debit"]
+    else:
+        current_financial_year = f"{datetime.now().year-1}/{datetime.now().year}"
+        monthly_credit = [0] * 12
+        monthly_debit = [0] * 12
+
     # Weekly Data (Current month broken down by weeks)
     weekly_data = {"credit": [0] * 5, "debit": [0] * 5}
     current_month = timezone.now().month
