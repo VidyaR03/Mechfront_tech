@@ -6932,8 +6932,10 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 }
 .invoices-form label{
     font-weight:600;
-    color:#1b2559;font-size: 13px;
+    color:#1b2559;
+    font-size: 13px;
 }
+
 .invoices-form .multipleSelection .selectbox{
     border:1px solid #d0cbcb;
     border-radius:6px

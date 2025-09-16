@@ -108,7 +108,7 @@
                         <tr>
                           <td>{{ forloop.counter }}</td> 
 
-                          <td><a href="#" style="color: blue;">{{ item.formatted_id }}</a></td>
+                          <td><a href="#" style="color: blue;">{{ item.pi_number }}</a></td>
                           <td>{{ item.invoice_date|date:"j F Y" }}</td>
                           <td>{{ item.invoice_buyer_order_no }}</td>
                           <td>{{ item.invoice_payment_terms }}</td>
@@ -120,10 +120,12 @@
                         {% endfor %}
                         <tr>
                           <td colspan="6"><strong>TOTAL</strong></td>
-                          <td><strong>{{ total_invoice_amount }}</strong></td>
-                          <td><strong>{{ total_due_amount }}</strong></td>
+                          <td><strong>{{ total_invoice_amount|floatformat:2 }}</strong></td>
+                          <td><strong>{{ total_due_amount|floatformat:2 }}</strong></td>
                           <td></td>
                         </tr>
+
+
                       </tbody>
                     </table>
                   </div>

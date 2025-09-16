@@ -30,6 +30,58 @@ Ecoway - Add Invoice
         color: red;
         margin-left: 4px;
     }
+    .invoice_form .messages {
+        color: red;
+        font-size: 0.875em;
+    }
+     
+    .label.my-error-class{
+        margin-top: 0px;
+        color: red;
+    }
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #6c757d;
+    }
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+        border-bottom: 2px solid #007bff;
+    }
+    #toast-container {
+        top: 60px;
+        right: 20px;
+    }
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .add-table-items th, .add-table-items td {
+        vertical-align: middle;
+    }
+    .required::after {
+        content: '*';
+        color: red;
+        margin-left: 4px;
+    }
+    .invoice_form .messages {
+        color: red;
+        font-size: 0.875em;
+    }
+     
+    .label.my-error-class{
+        margin-top: 0px;
+        color: red;
+    }
+    .invalid-feedback {
+    color: red !important;
+    font-size: 13px;
+    display: block;
+    margin-top: 5px;
+}
+
+
+
 </style>
 {% endblock custom_css %}
 
@@ -514,10 +566,15 @@ Ecoway - Add Invoice
 {% block custom_js %}
 
 <!-- External Dependencies -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+
 <script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 
 <script>

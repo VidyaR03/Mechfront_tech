@@ -370,7 +370,8 @@ def display_sales_register_date_range(request):
 
         # Filter items within the date range
         sales_register_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
-
+        for item in sales_register_within_range:
+            print(item.inv_number)
         # Calculate totals
         total_invoice = sum(float(item.invoice_due or 0) for item in sales_register_within_range)
         total_cgst = sum(float(item.invoice_cgstval or 0) for item in sales_register_within_range)
@@ -432,6 +433,9 @@ def customer_oustanding_date(request):
 
         # Filter items within the date range
         items_within_range = Performa_Invoice.objects.filter(invoice_date__range=(start_date, end_date))
+        for i in items_within_range:
+            print(i.pi_number,'inv_number---')
+        # print(items_within_range,'items_within_range---')
 
         # Calculate Due Days
        # Calculate Due Days as absolute value
@@ -715,11 +719,11 @@ def display_invoice_by_date_range(request):
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
         # Filter items within the date range
-        invoice_items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
-
+        # invoice_items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
+        invoice_items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date)).select_related('invoice_customer_name_customer')
         # Extract specific fields for display
         filtered_items = invoice_items_within_range.values(
-            'invoice_customer_name', 'invoice_gst_no', 'invoice_gst_no', 'id', 'invoice_date', 'invoice_sub_total','invoice_cgstval','invoice_sgstval','invoice_igstval','invoice_total'
+            'invoice_customer_name_customer__customer', 'invoice_gst_no', 'invoice_gst_no', 'id', 'invoice_date', 'invoice_sub_total','invoice_cgstval','invoice_sgstval','invoice_igstval','invoice_total'
         )
 
         # Calculate total amount
@@ -1240,13 +1244,13 @@ def download_sales_excel(request):
     # Retrieve data from the database based on the date range
     sales_register_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
 
-    # Create an in-memory output file for the new workbook
+
     output = BytesIO()
     workbook = openpyxl.Workbook()
     sheet = workbook.active
 
     # Add title and date range
-    title = "SUPREENO METALS PVT LTD"
+    title = "KEYMECH TECHNOLOGIES"
     subtitle = "Sales Register Report"
     date_range = f"From {start_date_str} To {end_date_str}"
 
@@ -1281,10 +1285,10 @@ def download_sales_excel(request):
         total = float(item.invoice_total or 0)  # Convert to float
         sheet.append([
             item.invoice_date,
-            item.invoice_customer_name.customer,
+            item.invoice_customer_name.dc_customer_name.customer,
             item.invoice_gst_no,
             item.invoice_buyer_order_no,
-            item.id,
+            item.inv_number,
             item.invoice_date,
             float(item.invoice_due or 0),        # Convert to float
             float(item.invoice_cgstval or 0),    # Convert to float

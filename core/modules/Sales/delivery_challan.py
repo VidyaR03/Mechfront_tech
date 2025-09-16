@@ -117,9 +117,9 @@ def add_deliverychallan_data(request):
         dc_date = datetime.strptime(dc_date_str, '%d-%m-%Y').date()
 
          # Optional: Check if customer_id exists
+        customer_Name = request.POST.get('customer_Name', None)
         customer_id = request.POST.get('customer_id', None)
         customer_id_customer = request.POST.get('customer_id_select', None)
-
         if customer_id:
             dc_customer_name = customer.objects.filter(id=customer_id).first()
         else:
@@ -138,7 +138,7 @@ def add_deliverychallan_data(request):
             'dc_delivery_type':request.POST['delivery_type'],
             'dc_buyer_order_date':dc_buyer_order_date,
             'dc_buyer_order_no':request.POST['buyer_order_no'],
-            'dc_sales_order_no':request.POST['sales_order_no'],
+            'dc_sales_order_no':request.POST['customer_Name'],
             'dc_shipping_address':request.POST['shipping_address'],
             'dc_sales_person':request.POST['sales_person'],
             'dc_landing_LR_RR_No':request.POST['lr_no'],
@@ -245,7 +245,7 @@ def edit_delivery_challan_data(request, id):
             'dc_delivery_type':request.POST['delivery_type'],
             'dc_buyer_order_date':dc_buyer_order_date,
             'dc_buyer_order_no':request.POST['buyer_order_no'],
-            'dc_sales_order_no':request.POST['sales_order_no'],
+            'dc_sales_order_no':request.POST['customer_Name'],
             'dc_shipping_address':request.POST['shipping_address'],
             'dc_sales_person':request.POST['sales_person'],
             'dc_landing_LR_RR_No':request.POST['lr_no'],

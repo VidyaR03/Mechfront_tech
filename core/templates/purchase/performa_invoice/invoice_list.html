@@ -161,8 +161,8 @@
                                             {{t.invoice_customer_name.dc_customer_name.customer}}
                                         </td> -->
                                         <td>
-                                            {% if t.invoice_customer_name.dc_customer_name.customer  %}
-                                            <a href="{% url 'performa_invoice_show_pdf' t.id %}" style="color:blue;">{{t.invoice_customer_name.dc_customer_name.customer}}</a>
+                                            {% if t.invoice_customer.customer  %}
+                                            <a href="{% url 'performa_invoice_show_pdf' t.id %}" style="color:blue;">{{t.invoice_customer.customer}}</a>
                                             {% else %}
                                             <a href="{% url 'performa_invoice_show_pdf' t.id %}" style="color:blue;">{{t.invoice_customer.customer}}</a>
                                             {% endif %}

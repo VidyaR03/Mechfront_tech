@@ -80,6 +80,9 @@ def performa_add_invoice_data(request):
             note = ""
 
         customer_id = request.POST.get('customer_id', None)
+        customer_Name = request.POST.get('customer_Name', None)
+        print('customer_id', customer_id)
+        print('customer_Name', customer_Name)
 
         if customer_id:
             q_customer_name = delivery_challan.objects.get(id=customer_id)
@@ -95,7 +98,7 @@ def performa_add_invoice_data(request):
 
         
         
-        print(q_customer_name,'q_customer_name')
+        print(q_customer_name,'q_customer_name********')
         invoice_data = {
             'invoice_date': invoice_date,
             'pi_number':pi_number,
