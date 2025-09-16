@@ -370,26 +370,33 @@ Ecoway
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Amount)</label>
-                                            <input type="text" class="form-control " name="freight_amount" id="freight_amount"  value="{{invoice_data.inv_freight_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                              <input type="number" class="form-control " name="freight_amount" 
+                                            id="freight_amount"  value="{{invoice_data.cn_freight_amount}}" step="0.01" min="0"> 
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Percentage)</label>
-                                            <input type="text" class="form-control " name="freight_percentage" id="freight_percentage"  value="{{invoice_data.cn_freight_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <input type="number" class="form-control " name="freight_percentage" step="0.01" min="0" max="100"
+                                            id="freight_percentage"  value="{{invoice_data.cn_freight_percentage}}" 
+                                            >
                                         </div>
                                     </div>
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging &amp; Forwading (Amount)</label>
-                                            <input type="text" class="form-control " name="packaging_forwording_amount" id="packaging_forwording_amount"  value="{{invoice_data.cn_packaging_forwording_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <input type="number" class="form-control " name="packaging_forwording_amount" step="0.01" min="0"
+                                            id="packaging_forwording_amount"  value="{{invoice_data.cn_packaging_forwording_amount}}"  
+                                            >
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging &amp; Forwading (Percentage)</label>
-                                            <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage"  value="{{invoice_data.cn_packaging_forwording_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <input type="number" class="form-control" name="packaging_forwording_percentage" step="0.01" min="0" max="100"
+                                            id="packaging_forwording_percentage"  value="{{invoice_data.cn_packaging_forwording_percentage}}" 
+                                            >
                                         </div>
                                     </div>
 
@@ -679,7 +686,8 @@ Ecoway
                                                     <div class="row">
                                                         <div class="col-lg-6"><p>Freight (Amount) + GST</p></div>
                                                         <div class="col-lg-6 ">
-                                                            <input class="billamt utrt1" type="text" name="freight_amt_amt" id="fr_amount" value="{{invoice_data.inv_freight_amt_amt}}" readonly>
+                                                            <input class="billamt utrt1" type="text" name="freight_amt_amt" 
+                                                            id="fr_amount" value="{{invoice_data.inv_freight_amt_amt}}" readonly>
                                                         </div>
                                                     </div>
                                                     </div>
