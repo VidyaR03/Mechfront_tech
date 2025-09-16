@@ -780,10 +780,10 @@ class Credit_Notes(models.Model):
     # cn_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
     # cn_freight_amount = models.CharField(max_length=255,blank=True)
     # cn_freight_percentage = models.CharField(max_length=255,blank=True)
-    cn_packaging_forwarding_amount = models.DecimalField(
+    cn_packaging_forwording_amount = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True      
     )
-    cn_packaging_forwarding_percentage = models.DecimalField(
+    cn_packaging_forwording_percentage = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True
     )
     cn_freight_amount = models.DecimalField(
@@ -1272,10 +1272,10 @@ class Debit_Notes(models.Model):
     # cn_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
     # cn_freight_amount = models.CharField(max_length=255,blank=True)
     # cn_freight_percentage = models.CharField(max_length=255,blank=True)
-    cn_packaging_forwarding_amount = models.DecimalField(
+    cn_packaging_forwording_amount = models.DecimalField(
         max_digits=12, decimal_places=2, blank=True, null=True  
     )
-    cn_packaging_forwarding_percentage = models.DecimalField(
+    cn_packaging_forwording_percentage = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True    
     )   
     cn_freight_amount = models.DecimalField(
