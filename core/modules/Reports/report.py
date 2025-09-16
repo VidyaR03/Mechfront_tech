@@ -1193,7 +1193,7 @@ def download_excel(request):
             item.purchase_invoice_grn_no,
             item.purchase_invoice_date,
             float(item.purchase_invoice_sub_total or 0),  # Convert to float
-            float(item.purchase_invoice_freight or 0),    # Convert to float
+            float(item.purchase_freight_amount or 0),    # Convert to float
             float(item.purchase_invoice_cgstval or 0),    # Convert to float
             float(item.purchase_invoice_sgstval or 0),    # Convert to float
             float(item.purchase_invoice_igstval or 0),    # Convert to float
