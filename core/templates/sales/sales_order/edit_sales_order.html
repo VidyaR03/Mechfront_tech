@@ -600,26 +600,33 @@ Ecoway
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Amount)</label>
-                                            <input type="text" class="form-control " name="freight_amount" id="freight_amount" value="{{sales_order_data.so_freight_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control " name="freight_amount" id="freight_amount" value="{{sales_order_data.so_freight_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                              <input type="number" step="0.01" min="0" class="form-control" name="freight_amount" id="freight_amount" value="{{sales_order_data.so_freight_amount|default_if_none:'0.00'}}" oninput="validateFreight(this)">
+
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Percentage)</label>
-                                            <input type="text" class="form-control " name="freight_percentage" id="freight_percentage" value="{{sales_order_data.so_freight_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');" >
-                                        </div>
+                                            <!-- <input type="text" class="form-control " name="freight_percentage" id="freight_percentage" value="{{sales_order_data.so_freight_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');" > -->
+                                             <input type="number" step="0.01" min="0" class="form-control" name="freight_percentage" id="freight_percentage" value="{{sales_order_data.so_freight_percentage|default_if_none:'0.00'}}" oninput="validateFreightPercentage(this)">
+                                      </div>
                                     </div>
     
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging &amp; Forwading (Amount)</label>
-                                            <input type="text" class="form-control " name="packaging_forwording_amount" id="packaging_forwording_amount" value="{{sales_order_data.so_packaging_forwording_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control " name="packaging_forwording_amount" id="packaging_forwording_amount" value="{{sales_order_data.so_packaging_forwording_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                             <input type="number" step="0.01" min="0" class="form-control" name="packaging_forwording_amount" id="packaging_forwording_amount" value="{{sales_order_data.so_packaging_forwording_amount|default_if_none:'0.00'}}" oninput="validatePackagingAmount(this)">
+
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging &amp; Forwading (Percentage)</label>
-                                            <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="{{sales_order_data.so_packaging_forwording_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="{{sales_order_data.so_packaging_forwording_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                             <input type="number" step="0.01" min="0" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="{{sales_order_data.so_packaging_forwording_percentage|default_if_none:'0.00'}}" oninput="validatePackagingPercentage(this)">
+
                                         </div>
                                     </div>
     
