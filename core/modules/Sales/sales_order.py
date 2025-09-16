@@ -573,6 +573,7 @@ def get_quotation_items(request, quotation_id):
     items_list = list(items.values())
     return JsonResponse(items_list, safe=False)
 
+
 def get_shipping_address(request):
     customer_id = request.GET.get('customer_id')
     customer_obj = customer.objects.filter(id=customer_id).first()
