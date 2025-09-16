@@ -281,10 +281,19 @@ Ecoway - Add Invoice
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    {% comment %} <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Shipping Address</label>
                                             <input class="form-control" name="shipping_address" id="shipping_address">
+                                        </div>
+                                    </div> {% endcomment %}
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Shipping Address <span style="color: red;">*</span></label>
+                                            <select class="form-control" name="shipping_address" id="shipping_address" required>
+                                                <option value="" hidden>Select Shipping Address</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -1098,6 +1107,52 @@ $(document).ready(function () {
             form.submit();
         }
     });
+
+    $('#customer_id_select').on('change', function() {
+    const customerId = $(this).val();
+    if (customerId) {
+        $.ajax({
+            url: "{% url 'get_shipping_address' %}",
+            method: 'GET',
+            data: { customer_id: customerId },
+            success: function(response) {
+                const shippingSelect = $('#shipping_address');
+                shippingSelect.empty();
+                shippingSelect.append('<option value="" hidden>Select Shipping Address</option>');
+
+                if (response.shipping_addresses && response.shipping_addresses.length > 0) {
+                    response.shipping_addresses.forEach(function(address) {
+                        shippingSelect.append(`<option value="${address.value}" data-state="${address.state}">${address.value}</option>`);
+                    });
+                } else {
+                    shippingSelect.append('<option value="">No addresses available</option>');
+                }
+
+                $('#place_of_supply').val(response.place_of_supply || '');
+                toggleFreightAndPF();
+                subtotal();
+                calculateTotalTaxAmount();
+                updateTotalInWords();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching shipping address:", error);
+                toastr.error(`Failed to fetch shipping address: ${error}`, "Error");
+                $('#shipping_address').empty().append('<option value="" hidden>Select Shipping Address</option>');
+                $('#place_of_supply').val('');
+            }
+        });
+    } else {
+        $('#shipping_address').empty().append('<option value="" hidden>Select Shipping Address</option>');
+        $('#place_of_supply').val('');
+    }
+});
+});
+
+    $('#shipping_address').on('change', function() {
+    const selectedOption = $(this).find('option:selected');
+    const state = selectedOption.data('state') || '';
+    $('#place_of_supply').val(state);
+    updateTaxFields();
 
 });
 </script>
