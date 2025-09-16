@@ -73,26 +73,7 @@ Ecoway
                                             <input class="form-control datetimepicker" type="text" name="challan_date" id="challan_date" value="{{current_date}}" required readonly>
                                         </div>
                                     </div>
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label>Payment Term <span style="color: red;">*</span></label>
-                                            <select class="form-control" name="payment_term" id="payment_term" required>
-                                                <option value="" hidden>Select Payment Term</option>
-                                                <option value="AGAINST PROFORMA INVOICE">AGAINST PROFORMA INVOICE</option>
-                                                <option value="100% ADVANCE">100% ADVANCE</option>
-                                                <option value="50% ADVANCE BALANCE AGAINST DELIVERY">50% ADVANCE BALANCE AGAINST DELIVERY</option>
-                                                <option value="7 DAYS">7 DAYS</option>
-                                                <option value="15 DAYS">15 DAYS</option>
-                                                <option value="30 DAYS">30 DAYS</option>
-                                                <option value="45 DAYS">45 DAYS</option>
-                                                <option value="60 DAYS">60 DAYS</option>
-                                                <option value="90 DAYS">90 DAYS</option>
-                                                <option value="120 DAYS">120 DAYS</option>
-                                                <option value="AGAINST TAX INVOICE">AGAINST TAX INVOICE</option>
-                                                <option value="OTHER OPTION">OTHER OPTION</option>
-                                            </select>
-                                        </div>
-                                    </div>
+              
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Customer Name <span style="color: red;">*</span></label>
@@ -142,6 +123,26 @@ Ecoway
                                                 <option value="Job Work">Job Work</option>
                                                 <option value="Supply on Approval">Supply on Approval</option>
                                                 <option value="Others" selected>Others</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                                          <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Payment Term <span style="color: red;">*</span></label>
+                                            <select class="form-control" name="payment_term" id="payment_term" required>
+                                                <option value="" hidden>Select Payment Term</option>
+                                                <option value="AGAINST PROFORMA INVOICE">AGAINST PROFORMA INVOICE</option>
+                                                <option value="100% ADVANCE">100% ADVANCE</option>
+                                                <option value="50% ADVANCE BALANCE AGAINST DELIVERY">50% ADVANCE BALANCE AGAINST DELIVERY</option>
+                                                <option value="7 DAYS">7 DAYS</option>
+                                                <option value="15 DAYS">15 DAYS</option>
+                                                <option value="30 DAYS">30 DAYS</option>
+                                                <option value="45 DAYS">45 DAYS</option>
+                                                <option value="60 DAYS">60 DAYS</option>
+                                                <option value="90 DAYS">90 DAYS</option>
+                                                <option value="120 DAYS">120 DAYS</option>
+                                                <option value="AGAINST TAX INVOICE">AGAINST TAX INVOICE</option>
+                                                <option value="OTHER OPTION">OTHER OPTION</option>
                                             </select>
                                         </div>
                                     </div>
@@ -257,25 +258,33 @@ Ecoway
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Amount)</label>
-                                            <input type="text" class="form-control" name="freight_amount" id="freight_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control" name="freight_amount" id="freight_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                        <input type="number" step="0.01" class="form-control" name="freight_amount" id="freight_amount" value="0.00" min="0" placeholder="Freight Amount(%)">
+
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Percentage)</label>
-                                            <input type="text" class="form-control" name="freight_percentage" id="freight_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control" name="freight_percentage" id="freight_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                           <input type="number" step="0.01" class="form-control" name="freight_percentage" id="freight_percentage" value="0.00" min="0" placeholder="Freight (%)">
+
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging & Forwarding (Amount)</label>
-                                            <input type="text" class="form-control" name="packaging_forwording_amount" id="packaging_forwording_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control" name="packaging_forwording_amount" id="packaging_forwording_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                            <input type="number" step="0.01" class="form-control" name="packaging_forwording_amount" id="packaging_forwording_amount" value="0.00" min="0" placeholder="Packaging & Forwading">
+
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging & Forwarding (Percentage)</label>
-                                            <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                            <input type="number" step="0.01" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="0.00" min="0" placeholder="Packaging & Forwading (%)">
+
                                         </div>
                                     </div>
                                     <div class="col-md-3">
