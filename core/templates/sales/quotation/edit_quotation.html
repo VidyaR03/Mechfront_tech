@@ -318,7 +318,9 @@ Ecoway
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Freight(Amount)</label>
-                                            <input type="text" class="form-control " name="freight_amount" id="freight_amount"  value="{{quotation_data.q_freight_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control " name="freight_amount" id="freight_amount"  value="{{quotation_data.q_freight_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                            <input type="number" step="0.01" min="0" class="form-control" name="freight_amount" id="freight_amount" value="{{quotation_data.q_freight_amount|default_if_none:'0.00'}}" oninput="validateFreight(this)">
+
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -332,13 +334,17 @@ Ecoway
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging &amp; Forwading (Amount)</label>
-                                            <input type="text" class="form-control " name="packaging_forwording_amount" id="packaging_forwording_amount"  value="{{quotation_data.q_packaging_forwording_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');" >
+                                            <!-- <input type="text" class="form-control " name="packaging_forwording_amount" id="packaging_forwording_amount"  value="{{quotation_data.q_packaging_forwording_amount}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');" > -->
+                                            <input type="number" step="0.01" min="0" class="form-control" name="packaging_forwording_amount" id="packaging_forwording_amount" value="{{quotation_data.q_packaging_forwording_amount|default_if_none:'0.00'}}" oninput="validatePackagingAmount(this)">
+
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Packaging &amp; Forwading (Percentage)</label>
-                                            <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage"  value="{{quotation_data.q_packaging_forwording_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                            <!-- <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage"  value="{{quotation_data.q_packaging_forwording_percentage}}" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
+                                            <input type="number" step="0.01" min="0" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="{{quotation_data.q_packaging_forwording_percentage|default_if_none:'0.00'}}" oninput="validatePackagingPercentage(this)">
+
                                         </div>
                                     </div>
 
@@ -362,14 +368,6 @@ Ecoway
                                            </div>
                                         </div>
                                      </div>
-
-                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label>Freight</label>
-                                            <input type="text" class="form-control" name="freight" id="freight"
-                                                value="{{quotation_data.q_freight}}">
-                                        </div>
-                                    </div> -->
 
                                     <div class="col-lg-2" style="visibility: hidden;">
                                         <div class="form-group">
