@@ -860,10 +860,22 @@ class Purchase_order(models.Model):
     po_note = models.TextField(blank=True)
     po_total = models.CharField(max_length=255,blank=True)
     gst_option = models.CharField(max_length=255,blank=True)
-    po_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
-    po_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
-    po_freight_amount = models.CharField(max_length=255,blank=True)
-    po_freight_percentage = models.CharField(max_length=255,blank=True)
+    # po_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
+    # po_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
+    # po_freight_amount = models.CharField(max_length=255,blank=True)
+    # po_freight_percentage = models.CharField(max_length=255,blank=True)
+    po_packaging_forwording_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=True, null=True
+    )   
+    po_packaging_forwording_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True       
+    )
+    po_freight_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=True, null=True
+    )
+    po_freight_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True
+    )
     po_packaging_forwording_percentage_amt = models.CharField(max_length=512,blank=True)
     po_freight_percentage_amt = models.CharField(max_length=255,blank=True)
     po_total_amt_word = models.CharField(max_length=250,blank=True)
@@ -932,10 +944,22 @@ class Goods_received_notes(models.Model):
     grn_note = models.TextField(blank=True)
     grn_total = models.CharField(max_length=255,blank=True)
     gst_option = models.CharField(max_length=255,blank=True)
-    grn_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
-    grn_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
-    grn_freight_amount = models.CharField(max_length=255,blank=True)
-    grn_freight_percentage = models.CharField(max_length=255,blank=True)
+    # grn_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
+    # grn_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
+    # grn_freight_amount = models.CharField(max_length=255,blank=True)
+    # grn_freight_percentage = models.CharField(max_length=255,blank=True)
+    grn_packaging_forwording_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=True, null=True      
+    )   
+    grn_packaging_forwording_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True
+    )
+    grn_freight_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=True, null=True  
+    )
+    grn_freight_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True
+    )
     totalamt_word = models.CharField(max_length=250,blank=True)
     grn_packaging_forwording_percentage_amt = models.CharField(max_length=512,blank=True)
     grn_freight_percentage_amt = models.CharField(max_length=255,blank=True)
@@ -1093,10 +1117,22 @@ class Purchase_Invoice(models.Model):
     purchase_invoice_note = models.TextField(blank=True)
     purchase_invoice_total = models.CharField(max_length=255,blank=True)
     purchase_dispatch = models.ForeignKey(transporter, on_delete=models.CASCADE, null=True, blank=True)
-    purchase_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
-    purchase_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
-    purchase_freight_amount = models.CharField(max_length=255,blank=True)
-    purchase_freight_percentage = models.CharField(max_length=255,blank=True)
+    # purchase_packaging_forwording_amount = models.CharField(max_length=512,blank=True)
+    # purchase_packaging_forwording_percentage = models.CharField(max_length=512,blank=True)
+    # purchase_freight_amount = models.CharField(max_length=255,blank=True)
+    # purchase_freight_percentage = models.CharField(max_length=255,blank=True)
+    purchase_packaging_forwording_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=True, null=True      
+    )
+    purchase_packaging_forwording_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True
+    )   
+    purchase_freight_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, blank=True, null=True
+    )   
+    purchase_freight_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True
+    )
     gst_option= models.CharField(null=True,max_length=255)
     cn_packaging_forwording_percentage_amt = models.CharField(max_length=255,blank=True)
     cn_freight_percentage_amt = models.CharField(max_length=255,blank=True)
