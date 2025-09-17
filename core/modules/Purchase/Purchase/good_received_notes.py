@@ -196,3 +196,19 @@ def edit_good_note_data(request, id):
         messages.success(request, 'Good Received Updated Successfully.')
 
         return redirect('grn_list')
+
+    
+
+@login_required
+def grn_delete_view(request, id):
+    # Get the GRN instance based on the provided ID
+    grn_instance = get_object_or_404(Goods_received_notes, id=id)
+    # Filter related items using the correct foreign key field
+    grn_item_instances = good_received_note_items.objects.filter(good_received_note_id=id)
+    
+    # Delete the GRN instance and its related items
+    grn_instance.delete()
+    grn_item_instances.delete()
+    messages.success(request, f'GRN {id} Deleted Successfully.')
+    
+    return redirect('grn_list')

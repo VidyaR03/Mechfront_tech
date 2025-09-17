@@ -1969,5 +1969,202 @@ function initItemCodeAutocomplete(inputname, item, description, godown, qty, rat
     }
 </script>
 
+<script type="text/javascript">
+$(document).ready(function() {
+    // GST option change handler
+    $('#gst_option').on('change', function() {
+        $('.add-row').each(function() {
+            const indexId = $(this).find('input[id^="rate_"]').attr('id').split("_")[1];
+            rate(`rate_${indexId}`);
+        });
+        calculateTotalTaxAmount();
+        updateTaxFields();
+        subtotal();
+        updateTotalInWords();
+    });
+
+    // Calculate total tax amount
+    function calculateTotalTaxAmount() {
+        let totalTaxAmount = 0;
+        $(".taxamt").each(function() {
+            let taxAmt = parseFloat($(this).val()) || 0;
+            totalTaxAmount += taxAmt;
+        });
+        $("#total_tax_amount").val(totalTaxAmount.toFixed(2));
+        updateTaxFields();
+    }
+
+    // Update tax fields (IGST, CGST, SGST)
+    function updateTaxFields() {
+        var gstOption = $('#gst_option').val();
+        var totalTaxAmount = parseFloat($('#total_tax_amount').val()) || 0;
+
+        console.log("GST Option:", gstOption, "Total Tax Amount:", totalTaxAmount);
+
+        $('#igst').val('0.00');
+        $('#cgst').val('0.00');
+        $('#sgst').val('0.00');
+
+        if (gstOption === 'Interstate') {
+            $('#igst').val(totalTaxAmount.toFixed(2));
+        } else if (gstOption === 'Intrastate') {
+            var halfTaxAmount = (totalTaxAmount / 2).toFixed(2);
+            $('#cgst').val(halfTaxAmount);
+            $('#sgst').val(halfTaxAmount);
+        }
+
+        console.log("IGST:", $('#igst').val(), "CGST:", $('#cgst').val(), "SGST:", $('#sgst').val());
+
+        subtotal();
+        updateTotalInWords();
+    }
+
+    // Rate calculation (includes GST calculation trigger)
+    function rate(inputname) {
+        if (!isGstSelected()) {
+            alert("Please select GST type first.");
+            return;
+        }
+
+        var input = inputname.split("_");
+        var id_val = input[1];
+
+        var rate = parseFloat($('#rate_' + id_val).val()) || 0;
+        var qty = parseFloat($('#qty_' + id_val).val()) || 0;
+        var discount = parseFloat($('#discount_' + id_val).val()) || 0;
+        var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
+        var item_rate = $('#item_rate').val();
+
+        var discounted_rate = rate - (rate * discount / 100);
+        var base_amount = discounted_rate * qty;
+        var tax_amount = base_amount * taxrate / 100;
+
+        if (item_rate === 'tax_exclusive') {
+            $('#total_' + id_val).val(base_amount.toFixed(2));
+            $('#taxamt_' + id_val).val(tax_amount.toFixed(2));
+        } else {
+            var base = base_amount / (1 + taxrate / 100);
+            var tax = base_amount - base;
+            $('#total_' + id_val).val(base.toFixed(2));
+            $('#taxamt_' + id_val).val(tax.toFixed(2));
+        }
+
+        calculateTotalTaxAmount();
+        subtotal();
+        updateTotalInWords();
+    }
+
+    // Quantity calculation
+    function qty(inputname) {
+        if (!isGstSelected()) {
+            alert("Please select GST type first.");
+            return;
+        }
+
+        var input = inputname.split("_");
+        var id_val = input[1];
+
+        var rate = parseFloat($('#rate_' + id_val).val()) || 0;
+        var qty = parseFloat($('#qty_' + id_val).val()) || 0;
+        var discount = parseFloat($('#discount_' + id_val).val()) || 0;
+        var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
+        var item_rate = $('#item_rate').val();
+
+        var discounted_rate = rate - (rate * discount / 100);
+        var base_amount = discounted_rate * qty;
+        var tax_amount = base_amount * taxrate / 100;
+
+        if (item_rate === 'tax_exclusive') {
+            $('#total_' + id_val).val(base_amount.toFixed(2));
+            $('#taxamt_' + id_val).val(tax_amount.toFixed(2));
+        } else {
+            var base = base_amount / (1 + taxrate / 100);
+            var tax = base_amount - base;
+            $('#total_' + id_val).val(base.toFixed(2));
+            $('#taxamt_' + id_val).val(tax.toFixed(2));
+        }
+
+        calculateTotalTaxAmount();
+        subtotal();
+        updateTotalInWords();
+    }
+
+    // Discount calculation
+    function discountamt(inputname) {
+        if (!isGstSelected()) {
+            alert("Please select GST type first.");
+            return;
+        }
+
+        var input = inputname.split("_");
+        var id_val = input[1];
+
+        var rate = parseFloat($('#rate_' + id_val).val()) || 0;
+        var qty = parseFloat($('#qty_' + id_val).val()) || 0;
+        var discount = parseFloat($('#discount_' + id_val).val()) || 0;
+        var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
+        var item_rate = $('#item_rate').val();
+
+        var discounted_rate = rate - (rate * discount / 100);
+        var base_amount = discounted_rate * qty;
+        var tax_amount = base_amount * taxrate / 100;
+
+        if (item_rate === 'tax_exclusive') {
+            $('#total_' + id_val).val(base_amount.toFixed(2));
+            $('#taxamt_' + id_val).val(tax_amount.toFixed(2));
+        } else {
+            var base = base_amount / (1 + taxrate / 100);
+            var tax = base_amount - base;
+            $('#total_' + id_val).val(base.toFixed(2));
+            $('#taxamt_' + id_val).val(tax.toFixed(2));
+        }
+
+        calculateTotalTaxAmount();
+        subtotal();
+        updateTotalInWords();
+    }
+
+    // Tax rate calculation
+    function taxrate(inputname) {
+        if (!isGstSelected()) {
+            alert("Please select GST type first.");
+            return;
+        }
+
+        var input = inputname.split("_");
+        var id_val = input[1];
+
+        var rate = parseFloat($('#rate_' + id_val).val()) || 0;
+        var qty = parseFloat($('#qty_' + id_val).val()) || 0;
+        var discount = parseFloat($('#discount_' + id_val).val()) || 0;
+        var taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
+        var item_rate = $('#item_rate').val();
+
+        var discounted_rate = rate - (rate * discount / 100);
+        var base_amount = discounted_rate * qty;
+        var tax_amount = base_amount * taxrate / 100;
+
+        if (item_rate === 'tax_exclusive') {
+            $('#total_' + id_val).val(base_amount.toFixed(2));
+            $('#taxamt_' + id_val).val(tax_amount.toFixed(2));
+        } else {
+            var base = base_amount / (1 + taxrate / 100);
+            var tax = base_amount - base;
+            $('#total_' + id_val).val(base.toFixed(2));
+            $('#taxamt_' + id_val).val(tax.toFixed(2));
+        }
+
+        calculateTotalTaxAmount();
+        subtotal();
+        updateTotalInWords();
+    }
+
+    // Check if GST is selected
+    function isGstSelected() {
+        return $('#gst_option').val() !== '';
+    }
+});
+</script>
+
 
 {% endblock main_content %}

@@ -208,6 +208,7 @@ urlpatterns = [
     path('grn_list/', views.grn_list_view, name='grn_list'),
     path('add_good_note/', views.add_good_note_data, name='add_good_note'),
     path('edit_good_note/<int:id>/', views.edit_good_note_data, name='edit_good_note'),
+    path('grn/delete/<int:id>/', views.grn_delete_view, name='grn_delete'),
 
 
     path('purchase_invoice_list/', views.purchaseinvoice_list_view, name='purchase_invoice_list'),
