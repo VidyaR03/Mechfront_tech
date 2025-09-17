@@ -2,7 +2,6 @@
 {% block title %}
 Ecoway
 {% endblock %}
-
 {% block custom_css %}
 <style>
     /* Inactive tab styles */
@@ -15,31 +14,32 @@ Ecoway
         color: #000;
     }
 
-    /* Existing styles ... */
-
     /* jQuery Validate: Red border for invalid fields (Bootstrap fallback) */
-    .form-control.is-invalid {
-        border-color: #dc3545 !important;  /* Red border */
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;  /* Red glow */
+    .form-control.is-invalid,
+    select.is-invalid {
+        border-color: #dc3545 !important; /* Red border */
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important; /* Red glow */
     }
 
     /* Red text for error messages */
-    .invalid-feedback {
-        color: #dc3545 !important;  /* Red text */
-        font-size: 0.875em;  /* Smaller font for messages */
-        display: block !important;  /* Ensure visible */
+    #invoice_form .invalid-feedback,
+    #invoice_form span.error,
+    #invoice_form .form-control.is-invalid ~ span,
+    #invoice_form select.is-invalid ~ span {
+        color: #dc3545 !important; /* Red text */
+        font-size: 0.875em !important; /* Smaller font */
+        display: block !important; /* Ensure visible */
     }
 
-    /* Optional: Red text for field labels when invalid (targets parent form-group) */
-    .form-group.has-error label,
-    .form-group .is-invalid + .invalid-feedback ~ label {
+    /* Red text for field labels when invalid */
+    #invoice_form .form-group.has-error label,
+    #invoice_form .is-invalid + .invalid-feedback ~ label {
         color: #dc3545 !important;
     }
 
-    /* For selects (e.g., payment_term) - ensure red border */
+    /* For selects (e.g., payment_term) - red dropdown arrow */
     select.is-invalid {
-        border-color: #dc3545 !important;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");  /* Red dropdown arrow */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
     }
 </style>
 {% endblock custom_css %}
@@ -337,7 +337,7 @@ Ecoway
                                                     <tbody id="quotation-items-body">
                                                         <input type="hidden" name="iid[]" class="iid" value="0">
                                                         <tr class="add-row">
-                                                            <td><input type="text" style="width: 120px;" class="form-control" name="itemcode_0" id="itemcode_0"></td>
+                                                            <td><input type="text" style="width: 120px;" class="form-control" name="itemcode_0" id="itemcode_0" required></td>
                                                             <td><input type="text" class="form-control" name="item_0" id="item_0" placeholder=" "></td>
                                                             <td><input type="text" class="form-control" name="hsn_0" id="hsn_0"></td>
                                                             <td><input type="text" class="form-control" name="qty_0" id="qty_0" onkeyup="qty('qty_0');"></td>
@@ -536,24 +536,6 @@ $(document).ready(function() {
     // Initialize autocomplete for the initial row
     initializeItemCodeAutocomplete(0);
 
-    // Form Validation
-    $('#invoice_form').validate({
-        rules: {
-            invoice_date: { required: true },
-            payment_term: { required: true },
-            contact_person_name: { required: true },
-            ewaybill_no: { required: true },
-            place_of_supply: { required: true },
-            buyer_order_no: { required: true },
-            buyer_order_date: { required: true },
-            transporter_name: { required: true },
-            gst_option: { required: true }
-        },
-        messages: {
-            contact_person_name: "Please enter a contact person name"
-        }
-    });
-
     // Initialize Calculations
     subtotal();
 });
@@ -625,6 +607,8 @@ function initializeItemCodeAutocomplete(index) {
                 $(`#rate_${index}`).val(names[5]);
                 $(`#taxrate_${index}`).val(names[6] || '0');
                 $(`#uom_${index}`).val(names[7]);
+                $(`#taxamt_${index}`).val('0');
+                $(`#total_${index}`).val('0');
                 checkStockQuantity(`itemcode_${index}`, `qty_${index}`);
                 subtotal();
                 calculateTotalTaxAmount();
@@ -1042,7 +1026,8 @@ $(document).ready(function () {
             gst_option: "required",
             'qty_0': "required",
             'rate_0': "required",
-            'taxrate_0': "required"
+            'taxrate_0': "required",
+            'itemcode_0': "required",
         },
         messages: {
             customer_Name: "Customer Name form sales order is required",
@@ -1062,7 +1047,8 @@ $(document).ready(function () {
             gst_option: "GST option is required",
             'qty_0': "Quantity is required",
             'rate_0': "Unit Price is required",
-            'taxrate_0': "Tax Rate is required"
+            'taxrate_0': "Tax Rate is required",
+            'itemcode_0': "Item Code is required",
         },
         highlight: function(element) {
             $(element).addClass('is-invalid');
