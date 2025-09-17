@@ -560,6 +560,7 @@ function toggleFreightAndPF() {
 
 // Item Code Autocomplete
 // Item Code Autocomplete
+// Item Code Autocomplete
 function initializeItemCodeAutocomplete(index) {
     $(`#itemcode_${index}`).autocomplete({
         source: function(request, response) {
@@ -607,17 +608,15 @@ function initializeItemCodeAutocomplete(index) {
                 $(`#rate_${index}`).val(names[5]);
                 $(`#taxrate_${index}`).val(names[6] || '0');
                 $(`#uom_${index}`).val(names[7]);
-                $(`#taxamt_${index}`).val('0');
-                $(`#total_${index}`).val('0');
-                checkStockQuantity(`itemcode_${index}`, `qty_${index}`);
-                subtotal();
-                calculateTotalTaxAmount();
-                updateTotalInWords();
+                // Trigger calculation after populating fields
+                qty(`qty_${index}`);
             }
         },
         change: function(event, ui) {
             if (!ui.item || ui.item.value === "__no_result__") {
                 $(`#itemcode_${index}, #item_${index}, #hsn_${index}, #qty_${index}, #rate_${index}, #uom_${index}, #discount_${index}, #taxrate_${index}`).val('');
+                $(`#taxamt_${index}`).val('0');
+                $(`#total_${index}`).val('0');
                 subtotal();
                 calculateTotalTaxAmount();
                 updateTotalInWords();
@@ -628,11 +627,11 @@ function initializeItemCodeAutocomplete(index) {
     .data("ui-autocomplete")._renderItem = function(ul, item) {
         if (item.value === "__no_result__") {
             return $("<li>")
-                .append("<div>"+ item.label +"</div>")
+                .append("<div>" + item.label + "</div>")
                 .appendTo(ul);
         } else {
             return $("<li>")
-                .append("<div>"+ item.label +"</div>")
+                .append("<div>" + item.label + "</div>")
                 .appendTo(ul);
         }
     };
