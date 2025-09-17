@@ -537,6 +537,13 @@ def sales_order_report_date(request):
     return render(request, template_path.sales_order_report_date)
 
 
+@login_required
+def vendor_order_report_date(request):
+   
+    
+    return render(request, template_path.vendor_outs)
+
+
 
 
 

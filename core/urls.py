@@ -135,6 +135,8 @@ urlpatterns = [
 
     path('customer_outstanding/', views.customer_outstanding, name='customer_outstanding'),
     path('vendor_outstanding/', views.vendor_outstanding, name='vendor_outstanding'),
+    path('vendor_report_date/', views.vendor_order_report_date, name='vendor_report_date'),
+
     path('hsn_wise/', views.hsn_wise_date, name='hsn_wise'),
     path('expenses_report_date/', views.expenses_report_date, name='expenses_report_date'),
 
