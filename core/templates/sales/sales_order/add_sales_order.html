@@ -1812,6 +1812,10 @@ function updateTaxFields() {
         updateTotalInWords();
     }
 
+        function isGstSelected() {
+    return $('#gst_option').val() !== '';
+}
+
 function rate(inputname) {
     const input = inputname.split("_");
     const id_val = input[1];
