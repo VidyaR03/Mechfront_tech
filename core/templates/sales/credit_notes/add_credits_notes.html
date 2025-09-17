@@ -1370,7 +1370,13 @@ $(document).ready(function () {
     $('#shipping_address').on('change', function() {
     const selectedOption = $(this).find('option:selected');
     const state = selectedOption.data('state') || '';
-    $('#place_of_supply').val(state);
+    const currentPlaceOfSupply = $('#place_of_supply').val();
+
+    // Only update place_of_supply if it's empty or if you want to enforce the shipping address state
+    if (!currentPlaceOfSupply) {
+        $('#place_of_supply').val(state);
+    }
+
     updateTaxFields();
 });
 
