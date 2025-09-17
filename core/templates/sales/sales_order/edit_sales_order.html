@@ -687,7 +687,7 @@ Ecoway
                                                                     name="itemcode_{{ forloop.counter }}"
                                                                     id="itemcode_{{ forloop.counter }}"
                                                                     value="{{j.so_item_code}}"
-                                                                    onkeyup="getitemscodedetails('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');">
+                                                                    onkeyup="getitemscodedetails('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');" required>
                                                             </td>
 
                                                             <td><input type="text" class="form-control"
@@ -730,7 +730,7 @@ Ecoway
                                                                     class="form-control taxrate_{{ forloop.counter }}"
                                                                     name="taxrate_{{ forloop.counter }}"
                                                                     id="taxrate_{{ forloop.counter }}" value="{{j.so_tax_rate}}"
-                                                                    onkeyup="taxrate('taxrate_{{ forloop.counter }}')" required>
+                                                                    onkeyup="taxrate('taxrate_{{ forloop.counter }}')" step="0.001" required>
                                                             </td>
 
                                                             <td><input type="text" class="form-control taxamt"
@@ -1413,7 +1413,7 @@ $(document).ready(function() {
                     <td><input type="text" class="form-control" name="uom_${i}" id="uom_${i}"></td>
                     <td><input type="text" class="form-control" name="rate_${i}" id="rate_${i}" onkeyup="rate('rate_${i}');"></td>
                     <td><input type="text" class="form-control" name="discount_${i}" id="discount_${i}" onkeyup="discountamt('discount_${i}');"></td>
-                    <td><input type="number" class="form-control taxrate_0" name="taxrate_${i}" id="taxrate_${i}" onkeyup="taxrate('taxrate_${i}');" required></td>
+                    <td><input type="number" class="form-control taxrate_0" name="taxrate_${i}" id="taxrate_${i}" step="0.001" onkeyup="taxrate('taxrate_${i}');" required></td>
                     <td><input type="text" class="form-control taxamt" name="taxamt_${i}" id="taxamt_${i}" readonly></td>
                     <td><input type="text" class="form-control totalamt" name="total_${i}" id="total_${i}" readonly></td>
                     <td class="add-remove text-end">
@@ -2128,7 +2128,7 @@ $(document).ready(function() {
 
                                     <td><input type="text" class="form-control" name="discount_`+ index + `" id="discount_` + index + `" value="` + obj.discount + `"></td>
 
-                                    <td><input type="number" class="form-control" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
+                                    <td><input type="number" class="form-control" step="0.001" name="taxrate_`+ index + `" id="taxrate_` + index + `" value="` + obj.taxrate + `" ></td>
 
                                     <td><input type="text" class="form-control taxamt" name="taxamt_`+ index + `" id="taxamt_` + index + `" value="` + obj.taxamt + `"></td>
 
@@ -2246,4 +2246,6 @@ $(document).ready(function() {
         }
     }
 </script>
+
+
 {% endblock main_content %}
