@@ -4,24 +4,23 @@ CRM
 {% endblock %}
 
 {% block custom_css %}
-
-<style>/* Inactive tab styles */
-   .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
-       color: #ccc; /* Faint gray color for inactive tabs */
-   }
-   
-   /* Active tab style */
-   .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
-       color: #000; /* Black color for active tab */
-   }
-   </style>
+<style>
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #ccc;
+    }
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+    }
+    .custom-error {
+        max-width: 300px;
+        margin: 0 auto;
+        text-align: center;
+        color: red;
+    }
+</style>
 {% endblock custom_css %}
 
 {% block main_content %}
-
-
-
-
 <div class="page-wrapper" style="padding-top: 0px;">
     <div class="content container-fluid">
         <div class="page-header">
@@ -29,68 +28,54 @@ CRM
                 <div class="col-sm-12">
                     <h3 class="page-title">
                         <a href="{% url 'sales_order_disply' %}" style="margin-right: 10px;">
-                            <!-- <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i> -->
+                            <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="fa fa-arrow-left"></i>
                         </a>
                         Sales Order Report Datewise
                     </h3>
                 </div>
             </div>
         </div>
-                        <form class="invoices-form" method="post" action="{% url 'sales_order_disply' %}" enctype="multipart/form-data" autocomplete="off" novalidate="novalidate">
-                            {% csrf_token %}
-                            <div class="invoices-main-form">
-                                <div class="row">
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>From Date</label>
-                                                    <input class="form-control " type="date" name="start_date" id="from_date">
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <div class=" ">
-                                                <span>
-                                                    <label>To Date</label>
-                                                    <input class="form-control " type="date" name="end_date"  id="to_date" >
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="text-end mt-4">
-                                            <button type="submit" class="btn btn-primary" id="btn_submit" name="btn_submit">Submit</button>
-                                            <a href="{% url 'sales_order_disply' %}" class="btn btn-primary">Cancel</a>
-                                        </div>
-                                        <div class="row col-sm-6 p-5">
-                                            <div class="success_message row"></div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+        {% if error_message %}
+            <div class="custom-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        <form class="invoices-form" method="post" action="{% url 'sales_order_disply' %}" enctype="multipart/form-data" autocomplete="off" novalidate="novalidate">
+            {% csrf_token %}
+            <div class="invoices-main-form">
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>From Date</label>
+                            <input class="form-control" type="date" name="start_date" id="from_date">
                         </div>
                     </div>
-                </form>
+                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                        <div class="form-group">
+                            <label>To Date</label>
+                            <input class="form-control" type="date" name="end_date" id="to_date">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-primary" id="btn_submit" name="btn_submit">Submit</button>
+                            <a href="{% url 'sales_order_disply' %}" class="btn btn-primary">Cancel</a>
+                        </div>
+                    </div>
+                    <div class="row col-sm-6 p-5">
+                        <div class="success_message row"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-        
+        </form>
+    </div>
+</div>
 
-
-   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    // Get today's date
+<script>
+document.addEventListener("DOMContentLoaded", function() {
     let today = new Date().toISOString().split('T')[0];
-
-    // Set the value of the input field to today's date
     document.getElementById("from_date").value = today;
     document.getElementById("to_date").value = today;
-
 });
-
-   </script>
+</script>
 {% endblock main_content %}
-
-    

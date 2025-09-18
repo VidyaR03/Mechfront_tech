@@ -221,8 +221,8 @@ urlpatterns = [
     # Del path('expense_new_list/', views.expense_list_view, name='expense_new_list'),
 
 ### For sales order report
-    path('sales_order_disply/', views.display_items_by_date_range, name='sales_order_disply'),
-    path('sales_order_report_date/', views.sales_order_report_date, name='sales_order_report_date'),
+    # path('sales_order_disply/', views.display_items_by_date_range, name='sales_order_disply'),
+    # path('sales_order_report_date/', views.sales_order_report_date, name='sales_order_report_date'),
 ### For sales register report
     path('sales_register_disply/', views.sales_display_items_by_date_range, name='sales_register_disply'),
     path('sales_register_report_date/', views.sales_register_date, name='sales_register_report_date'),
@@ -241,7 +241,8 @@ urlpatterns = [
 ### For cash voucher report
     path('cash_voucher_display_report/', views.display_cash_voucher_by_date_range, name='cash_voucher_display_report'),
 ### For invoice voucher report
-
+    # path('invoice_date_report/', views.display_invoice_by_date_range, name='invoice_date_report'),
+    # path('invoice_display_report/', views.display_invoice_by_date_range, name='invoice_display_report'),
     path('invoice_display_report/', views.display_invoice_by_date_range, name='invoice_display_report'),
 ### For inventory voucher report
 
@@ -354,7 +355,13 @@ urlpatterns = [
     path('venautocomplete/', views.autocomplete_vendor_name, name='autocomplete_vendor_name'),
     path('show_expe_ad_pdf/<int:id>/',views.show_expense_advise, name="show_expe_ad_pdf"), #remain
 
-     path('autocomplete/', views.autocomplete_accexpense, name='autocomplete_accexpns_name'),
+    path('autocomplete/', views.autocomplete_accexpense, name='autocomplete_accexpns_name'),
+
+    path('sales-order-report-date/', views.sales_order_report_date, name='sales_order_report_date'),
+    path('sales-order-display/', views.display_items_by_date_range, name='sales_order_disply'),
+
+
+
 
 ]
 

@@ -1,161 +1,137 @@
 {% extends 'dashboard/base_template.html' %}
-    {% block custom_css %}
-        {% block page_title %}
-        {% endblock page_title %}
-        <style>
-            .custom-error {
-                max-width: 300px;
-                /* Adjust the width to your desired value */
-                margin: 0 auto;
-                /* Add this line to center the element */
-                text-align: center;
-                /* Add this line to center the text inside the element */
-              }
-              .input-group-text {
-                cursor: pointer;
-              }
-              .grey-card {
-                background-color:LightGray;
-            }
-            .negative-padding {
-              margin-top: -60px; 
-          }
-         
-    
-       
-          
+{% block custom_css %}
+<style>
+    .custom-error {
+        max-width: 300px;
+        margin: 0 auto;
+        text-align: center;
+        color: red;
+    }
+    .grey-card {
+        background-color: LightGray;
+    }
+    .right-aligned {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+    }
+    .table-container {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    .table th, .table td {
+        text-align: center;
+    }
+    .table th {
+        background-color: #f1f1f1;
+    }
+    .table td a {
+        color: blue;
+        text-decoration: none;
+    }
+    .table td a:hover {
+        text-decoration: underline;
+    }
+    .page-wrapper {
+        min-height: auto;
+    }
+</style>
+{% endblock custom_css %}
 
-        </style>
-    {% endblock custom_css %}
-    <!-- Main content -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
-    <style>
-      .right-aligned {
-          position: fixed;
-          top: 20px; /* Adjust the top position as needed */
-          right: 20px; /* Adjust the right position as needed */
-      }
-  </style>
-{% block main_content %}<div class="page-wrapper" data-select2-id="8" style="min-height: 432px;">
-  <div class="content container-fluid" data-select2-id="7">
-    
-
-<div class="row">
-    <div class="col-sm-12">
-       <div class="card card-table">
-          <div class="card-header">
-             <div class="col-lg-12">
-                <div class=" row">
-                   <div class="col-lg-8">
-                      <h3 class="card-title"><a href="{% url "vendor_report_date" %}" style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> Account Payable Summary Details</h3>
-                   </div>
-
-                   <div class="col-lg-4" style="text-align: right;">
-                      <button id="download-button" class="btn btn-white text-black-50 shadow-none" onclick="printDiv('account_payable_summary_details_pdf')"><i class="fa fa-download"></i> Download</button>
-                   </div>
-                   
+{% block main_content %}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        {% if error_message %}
+            <div class="custom-error">{{ error_message }}</div>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table">
+                    <div class="card-header">
+                        <div class="col-lg-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">
+                                    <a href="{% url 'vendor_outstanding' %}" style="margin-right: 10px;">
+                                        <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="fa fa-arrow-left"></i>
+                                    </a>
+                                    Account Payable Summary Details
+                                </h3>
+                                {% if start_date and end_date %}
+                                    <form method="post" action="{% url 'vendor_outstanding' %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="vendor_id" value="{{ selected_customer|default_if_none:'all' }}">
+                                        <input type="hidden" name="start_date" value="{{ start_date }}">
+                                        <input type="hidden" name="end_date" value="{{ end_date }}">
+                                        <input type="hidden" name="download_excel" value="true">
+                                        <button type="submit" class="btn btn-primary">Download Excel</button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn btn-primary" disabled>Download Excel</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="rport">
+                            <h2><b>M/S KEYMECH TECHNOLOGIES</b></h2>
+                            {% if customer %}
+                                <h3>{{ customer.company_name }}</h3>
+                            {% endif %}
+                            <h3 style="font-size: 20px;">Account Payable Summary Details</h3>
+                            <p><b>From</b> {{ start_date|default:'N/A' }} <b>To</b> {{ end_date|default:'N/A' }}</p>
+                        </div>
+                        <br>
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table class="table table-center table-hover">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>SR.NO.</th>
+                                            {% if selected_customer == 'all' %}
+                                                <th>VENDOR NAME</th>
+                                            {% endif %}
+                                            <th>INVOICE NO.</th>
+                                            <th>INVOICE DATE</th>
+                                            <th>DUE DATE</th>
+                                            <th>INVOICE AMOUNT</th>
+                                            <th>DUE DAYS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if ven_entries %}
+                                            {% for data in ven_entries %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                {% if selected_customer == 'all' %}
+                                                    <td>{{ data.vendor_name|upper }}</td>
+                                                {% endif %}
+                                                <td><a href="#" style="color:blue;">{{ data.invoice_number }}</a></td>
+                                                <td>{{ data.date|date:"j F Y" }}</td>
+                                                <td>{{ data.due_date|date:"j F Y" }}</td>
+                                                <td style="text-align: right;">{{ data.amount|floatformat:2 }}</td>
+                                                <td>{{ data.due_days }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="{% if selected_customer == 'all' %}7{% else %}6{% endif %}">No data available for the selected date range.</td>
+                                            </tr>
+                                        {% endif %}
+                                        <tr>
+                                            <td colspan="{% if selected_customer == 'all' %}4{% else %}3{% endif %}"><strong>TOTAL</strong></td>
+                                            <td style="text-align: right;"><strong>{{ total_amount_main|floatformat:2 }}</strong></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-             </div>
-          </div>
-
-          <div id="account_payable_summary_details_pdf">
-             <div class="card-body">
-                <div class="rport">
-                   <h2>M/S KEYMECH TECHNOLOGIES</h2>
-                   <h3>
-                     {{customer.company_name}}</h3>
-                   <h3 style="font-size: 20px;">Account Payable Summary Details</h3>
-                    <b> From </b>&nbsp;{{ from_date}} &nbsp; <b>To</b> &nbsp; {{ to_date }}
-                </div>
-             </div>
-             <div class="table-responsive">
-                <table class="table table-center table-hover  ">
-                   <thead class="thead-light">
-                      <tr role="row">
-                         <th>SR.NO.</th>
-                         <th>INVOICE NO.</th>
-                         <th>INVOICE DATE</th>
-                         <th>DUE DATE</th>
-                         <th>INVOICE AMOUNT</th>
-                         <th>DUE AMOUNT</th>
-                         <th>DUE DAYS</th>
-                      </tr>
-                   </thead>
-                   <tbody>
-                    {% for data in ven_entries %}                                 
-                    <tr>
-                     <td>{{ forloop.counter }}</td> 
-
-                            <td><a href="" style="color:blue;">{{ data.invoice_number }}</a></td>
-                            <td>{{data.date|date:"j F Y"}}</td>
-                            
-                            <td>{{data.due_date|date:"j F Y"}}</td>
-                            <td><input type="text" class="amount no-outline" name="amount" id="amount" value="{{data.amount}}" size="10" style="text-align: right;"></td>
-
-                            <td><input type="text" class="dueamount no-outline" name="dueamount" id="{{data.due_amt}}" value="0.00" size="10" style="text-align: right;"></td>
-
-                            <td>{{data.due_days}} </td>
-                         
-                      </tr>
-                      {%  endfor %}
-                                                          
-                      <tr>
-                        <td colspan="2"><strong>TOTAL</strong></td>
-                        <td></td>
-                         <td></td>
-                         <td><b><input type="text" class="total_amount no-outline" name="total_amount" id="total_amount" size="10" style="text-align: right;"></b></td>
-
-                         <td><b><input type="text" class="total_dueamount no-outline" name="total_dueamount" id="total_dueamount" size="10" style="text-align: right;"></b></td>
-                         <td></td>
-                      </tr>
-                   </tbody>
-                </table>
-             </div>
-          </div>
-       </div>
+            </div>
+        </div>
     </div>
- </div>
 </div>
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function() 
-    {
-        var sum = 0;
-        $(".dueamount").each(function()
-        {
-          sum += +this.value;
-        });
-        //alert(sum);
-
-        $('.total_dueamount').val((sum).toFixed(2));
-
-        var sum = 0;
-        $(".amount").each(function()
-        {
-          sum += +this.value;
-        });
-        //alert(sum);
-
-        $('.total_amount').val((sum).toFixed(2));
-
-    });
- </script>
-
-
-<script>
-
-    function printDiv(divId) {
-       var printContents = document.getElementById(divId).innerHTML;
-       var originalContents = document.body.innerHTML;
-  
-       document.body.innerHTML = printContents;
-  
-       window.print();
-  
-       document.body.innerHTML = originalContents;
-  }
-  
-  </script>
-  {% endblock main_content %}
-  
+{% endblock main_content %}

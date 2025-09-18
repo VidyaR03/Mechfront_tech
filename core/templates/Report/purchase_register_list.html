@@ -136,7 +136,7 @@
           <td>{{ item.purchase_invoice_grn_no }}</td>
           <td>{{ item.purchase_invoice_date|date:"j F Y" }}</td>
           <td>{{ item.purchase_invoice_sub_total }}</td>
-          <td>{{ item.purchase_invoice_freight }}</td>
+          <td>{{ item.purchase_freight_amount }}</td>
           <td>{{ item.purchase_invoice_cgstval }}</td>
           <td>{{ item.purchase_invoice_sgstval }}</td>
           <td>{{ item.purchase_invoice_igstval }}</td>
@@ -146,7 +146,7 @@
       <tr>
           <td colspan="4"><strong>TOTAL</strong></td>
           <td><strong>{{ total_amount }}</strong></td>
-          <td></td>
+          <td><strong>{{ total_freight }}</strong></td>
           <td><strong>{{ total_cgst }}</strong></td>
           <td><strong>{{ total_sgst }}</strong></td>
           <td><strong>{{ total_igst }}</strong></td>

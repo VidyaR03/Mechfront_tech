@@ -17,8 +17,10 @@ from django.utils.dateparse import parse_date
 from io import BytesIO
 import pandas as pd
 from django.db.models import F, IntegerField
-
-#reqired to check
+from openpyxl.styles import Font, Alignment
+from django.utils import timezone
+from openpyxl.utils import get_column_letter
+from collections import defaultdict
 
 @login_required
 def debit_note_report(request):
@@ -150,8 +152,8 @@ def download_credit_note_excel(request):
 
     # Extract specific fields for display
     filtered_items = list(items_within_range.values(
-        'cn_customer_name', 'cn_date', 'cn_invoice_no',
-         'cn_igstval', 'cn_sgstval', 'cn_cgstval','cn_sub_total','cn_total',
+        'cn_customer_name__company_name', 'id','cn_date', 'cn_invoice_no','cn_cgstval',
+          'cn_sgstval', 'cn_igstval','cn_sub_total','cn_total',
     ))
 
     # Calculate the total amount
@@ -184,19 +186,20 @@ def download_credit_note_excel(request):
     date_range_cell.font = Font(size=10, bold=True)
 
     # Write headers
-    headers = [ 'Date', 'Invoice No', 'IGST Value', 'SGST Value', 'CGST Value', ' Sub Total', ' Total', ]
+    headers = ['Customer Name','Credit Note No','Credit Note Date', 'Invoice No','CGST Value', 'SGST Value', 'IGST Value', ' Sub Total', ' Total', ]
     sheet.append([])
     sheet.append(headers)
 
     # Write data rows
     for item in filtered_items:
         sheet.append([
-            # item['cn_customer_name'],
+            item['cn_customer_name__company_name'],
+            item['id'],
             item['cn_date'],
             item['cn_invoice_no'],
-            item['cn_igstval'],
-            item['cn_sgstval'],
             item['cn_cgstval'],
+            item['cn_sgstval'],
+            item['cn_igstval'],
             item['cn_sub_total'],
 
             item['cn_total'],
@@ -204,10 +207,9 @@ def download_credit_note_excel(request):
 
     # Write total row
     sheet.append([])
-    sheet.append(['', '', '', '','','','Total',total_amount])
+    sheet.append(['', '', '', '','','','','Total',total_amount])
 
-    # Set column widths for better visibility
-    column_widths = [ 15, 15, 15, 20, 15, 15, 15, 10]
+    column_widths = [ 15, 15, 15, 20, 15, 15, 15, 10,10]
     for i, column_width in enumerate(column_widths, start=1):
         sheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = column_width
 
@@ -248,8 +250,8 @@ def download_debit_note_excel(request):
 
     # Extract specific fields for display
     filtered_items = list(items_within_range.values(
-        'cn_customer_name', 'cn_date', 'cn_invoice_no',
-         'cn_igstval', 'cn_sgstval', 'cn_cgstval','cn_sub_total','cn_total',
+        'cn_customer_name__company_name','id', 'cn_date', 'cn_invoice_no','cn_cgstval',
+          'cn_sgstval','cn_igstval', 'cn_sub_total','cn_total',
     ))
 
     # Calculate the total amount
@@ -282,19 +284,20 @@ def download_debit_note_excel(request):
     date_range_cell.font = Font(size=10, bold=True)
 
     # Write headers
-    headers = [ 'Date', 'Invoice No', 'IGST Value', 'SGST Value', 'CGST Value', ' Sub Total', ' Total', ]
+    headers = [ 'Customer Name','Debit Note No','Date', 'Invoice No','CGST Value',  'SGST Value', 'IGST Value', ' Sub Total', ' Total', ]
     sheet.append([])
     sheet.append(headers)
 
     # Write data rows
     for item in filtered_items:
         sheet.append([
-            # item['cn_customer_name'],
+            item['cn_customer_name__company_name'],
+            item['id'],
             item['cn_date'],
             item['cn_invoice_no'],
-            item['cn_igstval'],
-            item['cn_sgstval'],
             item['cn_cgstval'],
+            item['cn_sgstval'],
+            item['cn_igstval'],
             item['cn_sub_total'],
 
             item['cn_total'],
@@ -302,10 +305,10 @@ def download_debit_note_excel(request):
 
     # Write total row
     sheet.append([])
-    sheet.append(['', '', '', '','','','Total',total_amount])
+    sheet.append(['', '', '', '','','','','Total',total_amount])
 
     # Set column widths for better visibility
-    column_widths = [ 15, 15, 15, 20, 15, 15, 15, 10]
+    column_widths = [ 15, 15, 15, 20, 15, 15, 15, 10,10]
     for i, column_width in enumerate(column_widths, start=1):
         sheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = column_width
 
@@ -325,6 +328,7 @@ def download_debit_note_excel(request):
 @login_required
 def inventory_summery(request):  
     companies = vendor.objects.values('company_name').distinct().order_by('company_name')
+    print(companies,'companies---')
 
     return render(request, template_path.inventory_sum, {
         'company': companies,
@@ -404,7 +408,6 @@ def purchase_register_date(request):
 
 
 
-@login_required
 def customer_outstanding(request):
     cust = customer.objects.all()
     context = {
@@ -414,117 +417,413 @@ def customer_outstanding(request):
 
 
 from django.db.models import Sum, F, ExpressionWrapper, DurationField, Func
-from django.utils import timezone
-
 
 class Abs(Func):
     function = 'ABS'
     template = '%(function)s(%(expressions)s)'
 
-
-@login_required
 def customer_oustanding_date(request):
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
         end_date_str = request.POST.get('end_date')
+        download_excel = request.POST.get('download_excel')  # Check if download button was clicked
 
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
-        # Filter items within the date range
-        items_within_range = Performa_Invoice.objects.filter(invoice_date__range=(start_date, end_date))
-        for i in items_within_range:
-            print(i.pi_number,'inv_number---')
-        # print(items_within_range,'items_within_range---')
+            if start_date > end_date:
+                return render(request, template_path.cust_out_date, {
+                    'error_message': 'End date must be after start date.'
+                })
 
-        # Calculate Due Days
-       # Calculate Due Days as absolute value
-        current_date = timezone.now().date()
-        items_within_range = items_within_range.annotate(
-            due_days=ExpressionWrapper(Abs(current_date - F('invoice_due_date')), output_field=DurationField())
-        )
+            # Filter Performa_Invoice within the date range
+            items_within_range = Performa_Invoice.objects.filter(
+                invoice_date__range=(start_date, end_date)
+            ).select_related('invoice_customer')
 
-        
+            if not items_within_range.exists():
+                return render(request, template_path.cust_out_date, {
+                    'error_message': 'No data found for the selected date range.'
+                })
 
-        # Calculate totals
-        total_invoice_amount = items_within_range.aggregate(Sum('invoice_total'))['invoice_total__sum'] or 0
-        total_due_amount = items_within_range.aggregate(Sum('invoice_due'))['invoice_due__sum'] or 0
+            # Calculate Due Days as absolute value
+            current_date = timezone.now().date()
+            items_within_range = items_within_range.annotate(
+                due_days=ExpressionWrapper(
+                    Abs(current_date - F('invoice_due_date')),
+                    output_field=DurationField()
+                )
+            )
 
-        context = {
-            'sales_register_within_range': items_within_range,
-            'total_invoice_amount': total_invoice_amount,
-            'total_due_amount': total_due_amount,
-        }
+            # Prepare data for display and Excel
+            modified_items = []
+            for item in items_within_range:
+                try:
+                    customer_name = (
+                        item.invoice_customer.customer
+                        if item.invoice_customer else 'N/A'
+                    )
+                    modified_item = {
+                        'sr_no': len(modified_items) + 1,
+                        'invoice_date': item.invoice_date,
+                        'customer_name': customer_name,
+                        'invoice_number': item.pi_number,
+                        'invoice_total': item.invoice_total,
+                        'invoice_due': item.invoice_due,
+                        'due_days': item.due_days.days if item.due_days else 0,
+                    }
+                    modified_items.append(modified_item)
+                except Exception as e:
+                    print(f"Error processing Performa_Invoice {item.id}: {str(e)}")
 
-        return render(request, template_path.cust_out_date, context)
+            print(f"Modified Items: {len(modified_items)}")  # Debug: Check items
+
+            # Calculate totals with validation for numeric values
+            total_invoice_amount = sum(
+                float(item.invoice_total) for item in items_within_range
+                if item.invoice_total and item.invoice_total.replace('.', '', 1).isdigit()
+            ) or 0
+            total_due_amount = sum(
+                float(item.invoice_due) for item in items_within_range
+                if item.invoice_due and item.invoice_due.replace('.', '', 1).isdigit()
+            ) or 0
+
+            if download_excel:
+                # Create a DataFrame for Excel
+                df = pd.DataFrame(modified_items)
+                df['invoice_date'] = df['invoice_date'].apply(lambda x: x.strftime('%d %B %Y'))
+                df = df[[
+                    'sr_no', 'invoice_date', 'customer_name', 'invoice_number',
+                    'invoice_total', 'invoice_due', 'due_days'
+                ]]
+                df.columns = [
+                    'SR.NO.', 'INVOICE DATE', 'CUSTOMER NAME', 'INVOICE NO.',
+                    'INVOICE AMOUNT', 'DUE AMOUNT', 'DUE DAYS'
+                ]
+
+                # Add total row
+                total_row = pd.DataFrame([[
+                    '', '', '', 'TOTAL', total_invoice_amount, total_due_amount, ''
+                ]], columns=df.columns)
+                df = pd.concat([df, total_row], ignore_index=True)
+
+                # Create Excel file
+                output = BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    # Write DataFrame starting at row 5 to leave space for headers
+                    df.to_excel(writer, index=False, sheet_name='Customer Outstanding Report', startrow=4)
+
+                    # Access the worksheet to add title, subtitle, and date range
+                    sheet = writer.sheets['Customer Outstanding Report']
+
+                    # Add title, subtitle, and date range
+                    title = "M/S KEYMECH TECHNOLOGIES"
+                    subtitle = "Customer Outstanding Report"
+                    date_range = f"From {start_date_str} To {end_date_str}"
+
+                    sheet.merge_cells('A1:G1')  # Merge for 7 columns
+                    sheet.merge_cells('A2:G2')
+                    sheet.merge_cells('A3:G3')
+
+                    title_cell = sheet.cell(row=1, column=1)
+                    subtitle_cell = sheet.cell(row=2, column=1)
+                    date_range_cell = sheet.cell(row=3, column=1)
+
+                    title_cell.value = title
+                    subtitle_cell.value = subtitle
+                    date_range_cell.value = date_range
+
+                    title_cell.font = Font(size=14, bold=True)
+                    subtitle_cell.font = Font(size=12, bold=True)
+                    date_range_cell.font = Font(size=10, bold=True)
+
+                    title_cell.alignment = Alignment(horizontal='center')
+                    subtitle_cell.alignment = Alignment(horizontal='center')
+                    date_range_cell.alignment = Alignment(horizontal='center')
+
+                    # Style the table headers
+                    for cell in sheet[5]:  # Row 5 is the header row
+                        cell.font = Font(bold=True)
+                        cell.alignment = Alignment(horizontal='center')
+
+                    # Adjust column widths using column indices
+                    for col_idx in range(1, len(df.columns) + 1):
+                        col_letter = get_column_letter(col_idx)
+                        max_length = 0
+                        for row_idx in range(1, sheet.max_row + 1):
+                            cell = sheet[f"{col_letter}{row_idx}"]
+                            try:
+                                if cell.value and len(str(cell.value)) > max_length:
+                                    max_length = len(str(cell.value))
+                            except:
+                                pass
+                        adjusted_width = max_length + 2
+                        sheet.column_dimensions[col_letter].width = adjusted_width
+
+                # Prepare response
+
+                # Prepare response
+                output.seek(0)
+                response = HttpResponse(
+                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                response['Content-Disposition'] = f'attachment; filename=Customer_Outstanding_Report_{start_date_str}_to_{end_date_str}.xlsx'
+                response.write(output.read())
+                return response
+
+            # Render the display page
+            context = {
+                'filtered_items': modified_items,
+                'total_invoice_amount': total_invoice_amount,
+                'total_due_amount': total_due_amount,
+                'start_date': start_date_str,
+                'end_date': end_date_str
+            }
+            return render(request, template_path.cust_out_date, context)
+
+        except ValueError:
+            return render(request, template_path.cust_out_date, {
+                'error_message': 'Invalid date format. Please use YYYY-MM-DD.'
+            })
 
     return render(request, template_path.cust_out_date)
-
-
-
-
-
-
-
 
 
 @login_required
 def vendor_outstanding(request):
     vendor_out = vendor.objects.all()
-    total_amount = sum(float(t.receive_amount) for t in vendor_out)
-
+    total_amount = sum(
+        float(t.receive_amount) for t in vendor_out
+        if t.receive_amount and isinstance(t.receive_amount, (int, float))
+    ) or 0.0
+    
     context = {
         'vendor_out': vendor_out,
         'total_amount': total_amount
     }
     
     if request.method == "POST":
-        # print(request.POST)
-        customer_nm = request.POST['vendor_id']
-        from_date_str = request.POST['from_date']
-        to_date_str = request.POST['to_date']
-        from_date = datetime.strptime(from_date_str, '%d-%m-%Y').date()
-        to_date = datetime.strptime(to_date_str, '%d-%m-%Y').date()
-        
-        if customer_nm != 'all':
-            invoices = Purchase_Invoice.objects.filter(
-                Q(purchase_invoice_vendor_name=customer_nm) &
-                Q(purchase_invoice_date__range=[from_date, to_date])
-            )
-        else:
-            invoices = Purchase_Invoice.objects.filter(
-                Q(purchase_invoice_date__range=[from_date, to_date])
-            )
-        
-        ven_entries = []
-        for invoice in invoices:
-            due_amt = 0
-            # # item = payment_in.objects.filter(invoicenumber=invoice.id).first()
-            # customer_detail = vendor.objects.get(pk=invoice.purchase_invoice_vendor_name.id)
-            # if item:
-            #     due_amt = item.dueamount  # Accessing the dueamount attribute correctly
+        customer_nm = request.POST.get('vendor_id')
+        start_date_str = request.POST.get('start_date')
+        end_date_str = request.POST.get('end_date')
+        download_excel = request.POST.get('download_excel')
 
-            # print(invoice, '**')
-            ven_entries.append({
-                'invoice_number': invoice.id,
-                'date': invoice.purchase_invoice_date,
-                'amount': invoice.purchase_invoice_total,
-                'details': invoice,
-                'due_date': invoice.purchase_due_date,
-                'due_amt': due_amt,
-                'due_days': (invoice.purchase_due_date - invoice.purchase_invoice_date).days
+        print(f"POST Data: vendor_id={customer_nm}, start_date={start_date_str}, end_date={end_date_str}, download_excel={download_excel}")  # Debug
+
+        # Validate inputs
+        if not all([customer_nm, start_date_str, end_date_str]):
+            print("Missing POST parameters")  # Debug
+            return render(request, template_path.vendor_outs_report, {
+                'error_message': 'Missing vendor or date inputs.',
+                'selected_customer': customer_nm or 'all',
+                'start_date': start_date_str,
+                'end_date': end_date_str
             })
-        ven_entries.sort(key=lambda x: x['date'])
-        return render(request, template_path.vendor_outs_report, {
-            'ven_entries': ven_entries,
-            'from_date': from_date,
-            'to_date': to_date,
-        })
+
+        # Validate date format
+        try:
+            datetime.strptime(start_date_str, '%Y-%m-%d')
+            datetime.strptime(end_date_str, '%Y-%m-%d')
+        except ValueError as e:
+            print(f"Invalid date format: start_date={start_date_str}, end_date={end_date_str}, error={str(e)}")  # Debug
+            return render(request, template_path.vendor_outs_report, {
+                'error_message': 'Invalid date format. Please use YYYY-MM-DD.',
+                'selected_customer': customer_nm or 'all',
+                'start_date': start_date_str,
+                'end_date': end_date_str
+            })
+
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+
+            if start_date > end_date:
+                return render(request, template_path.vendor_outs_report, {
+                    'error_message': 'End date must be after start date.',
+                    'selected_customer': customer_nm,
+                    'start_date': start_date_str,
+                    'end_date': end_date_str
+                })
+
+            # Filter Purchase_Invoice
+            if customer_nm != 'all':
+                try:
+                    customer_detail = vendor.objects.get(id=customer_nm)
+                    invoices = Purchase_Invoice.objects.filter(
+                        Q(purchase_invoice_vendor_name=customer_nm) &
+                        Q(purchase_invoice_date__range=[start_date, end_date])
+                    ).select_related('purchase_invoice_vendor_name')
+                except vendor.DoesNotExist:
+                    print(f"Vendor DoesNotExist: vendor_id={customer_nm}")  # Debug
+                    return render(request, template_path.vendor_outs_report, {
+                        'error_message': 'Selected vendor does not exist.',
+                        'selected_customer': customer_nm,
+                        'start_date': start_date_str,
+                        'end_date': end_date_str
+                    })
+            else:
+                invoices = Purchase_Invoice.objects.filter(
+                    Q(purchase_invoice_date__range=[start_date, end_date])
+                ).select_related('purchase_invoice_vendor_name')
+                customer_detail = ''
+
+            print(f"Invoices Count: {invoices.count()}")  # Debug
+            for invoice in invoices:
+                print(f"Invoice ID: {invoice.id}, Date: {invoice.purchase_invoice_date}, Vendor: {invoice.purchase_invoice_vendor_name_id}")  # Debug
+
+            if not invoices.exists():
+                print("No invoices found for query")  # Debug
+                return render(request, template_path.vendor_outs_report, {
+                    'error_message': 'No data found for the selected date range.',
+                    'selected_customer': customer_nm,
+                    'start_date': start_date_str,
+                    'end_date': end_date_str
+                })
+
+            total_amount_main = 0.0
+            ven_entries = []
+            vendor_totals = defaultdict(lambda: {"total_amount": 0.0})
+
+            # Prepare data
+            for invoice in invoices:
+                try:
+                    total_amount = float(invoice.purchase_invoice_total) if invoice.purchase_invoice_total and invoice.purchase_invoice_total.replace('.', '', 1).isdigit() else 0.0
+                    total_amount_main += total_amount
+                    ven_entries.append({
+                        'invoice_number': invoice.id,
+                        'date': invoice.purchase_invoice_date,
+                        'amount': invoice.purchase_invoice_total,
+                        'due_date': invoice.purchase_due_date,
+                        'due_days': (invoice.purchase_due_date - invoice.purchase_invoice_date).days if invoice.purchase_due_date and invoice.purchase_invoice_date else 0,
+                        'vendor_name': invoice.purchase_invoice_vendor_name.company_name if invoice.purchase_invoice_vendor_name else 'N/A'
+                    })
+                except Exception as e:
+                    print(f"Error processing Purchase_Invoice {invoice.id}: {str(e)}")
+
+            print(f"Vendor Entries: {len(ven_entries)}")  # Debug
+
+            ven_entries.sort(key=lambda x: x['date'])
+
+            # Group by vendor for 'all' case
+            if customer_nm == 'all':
+                for entry in ven_entries:
+                    vendor_name = entry['vendor_name']
+                    vendor_totals[vendor_name]["total_amount"] += float(entry['amount']) if entry['amount'] and entry['amount'].replace('.', '', 1).isdigit() else 0.0
+                sorted_vendor_totals = dict(sorted(vendor_totals.items()))
+            else:
+                sorted_vendor_totals = {}
+
+            if download_excel:
+                # Create DataFrame
+                df = pd.DataFrame(ven_entries)
+                df['date'] = df['date'].apply(lambda x: x.strftime('%d %B %Y') if x else '')
+                df['due_date'] = df['due_date'].apply(lambda x: x.strftime('%d %B %Y') if x else '')
+                if customer_nm == 'all':
+                    columns = ['vendor_name', 'invoice_number', 'date', 'due_date', 'amount', 'due_days']
+                    df = df[columns]
+                    df.insert(0, 'sr_no', range(1, len(df) + 1))
+                    df.columns = ['SR.NO.', 'VENDOR NAME', 'INVOICE NO.', 'INVOICE DATE', 'DUE DATE', 'INVOICE AMOUNT', 'DUE DAYS']
+                else:
+                    columns = ['invoice_number', 'date', 'due_date', 'amount', 'due_days']
+                    df = df[columns]
+                    df.insert(0, 'sr_no', range(1, len(df) + 1))
+                    df.columns = ['SR.NO.', 'INVOICE NO.', 'INVOICE DATE', 'DUE DATE', 'INVOICE AMOUNT', 'DUE DAYS']
+
+                # Add total row
+                total_row = pd.DataFrame([[
+                    '', '', '', 'TOTAL' if customer_nm == 'all' else '', total_amount_main, ''
+                ]], columns=df.columns)
+                df = pd.concat([df, total_row], ignore_index=True)
+
+                # Create Excel file
+                output = BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    df.to_excel(writer, index=False, sheet_name='Account Payable Summary', startrow=4)
+                    sheet = writer.sheets['Account Payable Summary']
+
+                    # Add title, subtitle, and date range
+                    title = "M/S KEYMECH TECHNOLOGIES"
+                    subtitle = "Account Payable Summary Details"
+                    date_range = f"From {start_date_str} To {end_date_str}"
+
+                    sheet.merge_cells('A1:G1' if customer_nm != 'all' else 'A1:H1')
+                    sheet.merge_cells('A2:G2' if customer_nm != 'all' else 'A2:H2')
+                    sheet.merge_cells('A3:G3' if customer_nm != 'all' else 'A3:H3')
+
+                    title_cell = sheet.cell(row=1, column=1)
+                    subtitle_cell = sheet.cell(row=2, column=1)
+                    date_range_cell = sheet.cell(row=3, column=1)
+
+                    title_cell.value = title
+                    subtitle_cell.value = subtitle
+                    date_range_cell.value = date_range
+
+                    if customer_nm != 'all':
+                        sheet.merge_cells('A4:G4')
+                        vendor_cell = sheet.cell(row=4, column=1)
+                        vendor_cell.value = customer_detail.company_name
+                        vendor_cell.font = Font(size=12, bold=True)
+                        vendor_cell.alignment = Alignment(horizontal='center')
+
+                    title_cell.font = Font(size=14, bold=True)
+                    subtitle_cell.font = Font(size=12, bold=True)
+                    date_range_cell.font = Font(size=10, bold=True)
+
+                    title_cell.alignment = Alignment(horizontal='center')
+                    subtitle_cell.alignment = Alignment(horizontal='center')
+                    date_range_cell.alignment = Alignment(horizontal='center')
+
+                    # Style table headers
+                    for cell in sheet[5]:
+                        cell.font = Font(bold=True)
+                        cell.alignment = Alignment(horizontal='center')
+
+                    # Set fixed column widths
+                    column_widths = [15, 15, 15, 20, 15, 15, 15] if customer_nm != 'all' else [15, 15, 15, 15, 20, 15, 15, 15]
+                    for i, column_width in enumerate(column_widths, start=1):
+                        sheet.column_dimensions[get_column_letter(i)].width = column_width
+
+                output.seek(0)
+                response = HttpResponse(
+                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                response['Content-Disposition'] = f'attachment; filename=Account_Payable_Summary_{start_date_str}_to_{end_date_str}.xlsx'
+                response.write(output.read())
+                return response
+
+            context = {
+                'selected_customer': customer_nm,
+                'ven_entries': ven_entries,
+                'customer': customer_detail,
+                'start_date': start_date_str,
+                'end_date': end_date_str,
+                'start_date_str': start_date.strftime('%d-%m-%Y') if start_date else '',
+                'end_date_str': end_date.strftime('%d-%m-%Y') if end_date else '',
+                'total_amount_main': total_amount_main,
+                'vendor_totals': dict(sorted_vendor_totals)
+            }
+            print(f"Context: selected_customer={customer_nm}, start_date={start_date_str}, end_date={end_date_str}")  # Debug
+            return render(request, template_path.vendor_outs_report, context)
+
+        except ValueError as e:
+            print(f"ValueError: {str(e)}, start_date={start_date_str}, end_date={end_date_str}")  # Debug
+            return render(request, template_path.vendor_outs_report, {
+                'error_message': 'Invalid date format. Please use YYYY-MM-DD.',
+                'selected_customer': customer_nm or 'all',
+                'start_date': start_date_str,
+                'end_date': end_date_str
+            })
+        except vendor.DoesNotExist:
+            print(f"Vendor DoesNotExist: vendor_id={customer_nm}")  # Debug
+            return render(request, template_path.vendor_outs_report, {
+                'error_message': 'Selected vendor does not exist.',
+                'selected_customer': customer_nm,
+                'start_date': start_date_str,
+                'end_date': end_date_str
+            })
 
     return render(request, template_path.vendor_outs, context)
-
-
-
 @login_required
 def expenses_report_date(request):
     return render(request, template_path.expense_date_wise)
@@ -554,111 +853,136 @@ def cash_voucher_date(request):
 
 
 
-# @login_required
-
-# def display_items_by_date_range(request):
-#     if request.method == 'POST':
-#         start_date_str = request.POST.get('start_date')
-#         end_date_str = request.POST.get('end_date')
-
-#         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-#         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-
-#         # Filter items within the date range
-#         items_within_range = sales_order_items.objects.filter(date__range=(start_date, end_date))
-
-#         # List to store modified items
-#         modified_items = []
-
-#         for item in items_within_range:
-#             orderid = item.so_sales_order_id
-#             try:
-#                 so_buyer_order_no_ = sales_order.objects.get(id=orderid)
-#                 customer = so_buyer_order_no_.so_customer_name.company_name
-
-#                 buyer_ord_no = so_buyer_order_no_.so_buyer_order_no
-
-#                 # Create a dictionary with the modified values
-#                 modified_item = {
-#                     'date': item.date,
-#                     'company_name': customer,
-#                     'so_buyer_order_no': buyer_ord_no,
-#                     'so_description_goods': item.so_description_goods,
-#                     'so_qantity': item.so_qantity,
-#                     'so_uom': item.so_uom,
-#                 }
-
-#                 # Add the modified item to the list
-#                 modified_items.append(modified_item)
-#             except sales_order.DoesNotExist:
-#                 # Handle the case where the related sales_order is not found
-#                 pass
-
-#         # Calculate total amount
-#         total_amount = items_within_range.aggregate(total_amount=Sum('so_qantity'))['total_amount'] or 0
-
-
-
-#         return render(request, template_path.sales_order_list_report, {'filtered_items': modified_items,'total_amount':total_amount})
-
-#     return render(request, template_path.sales_order_date_report)
-
-
 @login_required
 def display_items_by_date_range(request):
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
         end_date_str = request.POST.get('end_date')
+        download_excel = request.POST.get('download_excel')  # Check if download button was clicked
 
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
-        # Filter items within the date range
-        items_within_range = sales_order_items.objects.filter(date__range=(start_date, end_date))
+            if start_date > end_date:
+                return render(request, template_path.sales_order_date_report, {
+                    'error_message': 'End date must be after start date.'
+                })
 
-        # List to store modified items
-        modified_items = []
+            # Filter sales_order_items based on related sales_order's so_date
+            items_within_range = sales_order_items.objects.filter(
+                so_sales_order_id__in=sales_order.objects.filter(
+                    so_date__range=(start_date, end_date)
+                ).values_list('id', flat=True)
+            )
 
-        for item in items_within_range:
-            orderid = item.so_sales_order_id
-            try:
-                so_buyer_order_no_ = sales_order.objects.get(id=orderid)
-                customer = so_buyer_order_no_.so_customer_name.company_name
+            if not items_within_range.exists():
+                return render(request, template_path.sales_order_date_report, {
+                    'error_message': 'No data found for the selected date range.'
+                })
 
-                buyer_ord_no = so_buyer_order_no_.so_buyer_order_no
+            # List to store modified items
+            modified_items = []
 
-                # Create a dictionary with the modified values
-                modified_item = {
-                    'date': item.date,
-                    'company_name': customer,
-                    'so_buyer_order_no': buyer_ord_no,
-                    'so_description_goods': item.so_description_goods,
-                    'so_qantity': item.so_qantity,
-                    'so_uom': item.so_uom,
-                }
+            for item in items_within_range:
+                try:
+                    so = sales_order.objects.get(id=item.so_sales_order_id)
+                    customer = so.so_customer_name.company_name if so.so_customer_name else 'N/A'
+                    buyer_ord_no = so.so_buyer_order_no or 'N/A'
 
-                # Add the modified item to the list
-                modified_items.append(modified_item)
-            except sales_order.DoesNotExist:
-                # Handle the case where the related sales_order is not found
-                pass
+                    modified_item = {
+                        'sr_no': len(modified_items) + 1,
+                        'date': so.so_date,
+                        'company_name': customer,
+                        'so_buyer_order_no': buyer_ord_no,
+                        'so_description_goods': item.so_description_goods,
+                        'so_qantity': item.so_qantity,
+                        'so_uom': item.so_uom,
+                    }
+                    modified_items.append(modified_item)
+                except sales_order.DoesNotExist:
+                    pass
 
-        # Calculate total quantity
-        total_quantity = sum(float(item.so_qantity) for item in items_within_range if item.so_qantity)
+            # Calculate total quantity
+            total_quantity = sum(float(item.so_qantity) for item in items_within_range if item.so_qantity and item.so_qantity.replace('.', '', 1).isdigit())
 
-        # Pass the start_date and end_date to the template
-        context = {
-            'filtered_items': modified_items,
-            'total_quantity': total_quantity,
-            'start_date': start_date_str,
-            'end_date': end_date_str
-        }
+            if download_excel:
+                # Create a DataFrame for Excel
+                df = pd.DataFrame(modified_items)
+                df['date'] = df['date'].apply(lambda x: x.strftime('%d %B %Y'))
+                df = df[['sr_no', 'date', 'company_name', 'so_buyer_order_no', 'so_description_goods', 'so_qantity', 'so_uom']]
+                df.columns = ['SR.NO.', 'DATE', 'COMPANY NAME', 'PO NO.', 'ITEM DESCRIPTION', 'QUANTITY', 'UOM']
 
-        return render(request, template_path.sales_order_list_report, context)
+                # Add total row
+                total_row = pd.DataFrame([['', '', '', '', 'TOTAL', total_quantity, '']], columns=df.columns)
+                df = pd.concat([df, total_row], ignore_index=True)
+
+                # Create Excel file
+                output = BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    # Write DataFrame starting at row 5 to leave space for headers
+                    df.to_excel(writer, index=False, sheet_name='Sales Order Report', startrow=4)
+
+                    # Access the worksheet to add title, subtitle, and date range
+                    sheet = writer.sheets['Sales Order Report']
+
+                    # Add title, subtitle, and date range
+                    title = "M/S KEYMECH TECHNOLOGIES"
+                    subtitle = "Sales Orders Report"  # Adjusted to match context
+                    date_range = f"From {start_date_str} To {end_date_str}"
+
+                    sheet.merge_cells('A1:G1')  # Adjusted to 7 columns (A to G)
+                    sheet.merge_cells('A2:G2')
+                    sheet.merge_cells('A3:G3')
+
+                    title_cell = sheet.cell(row=1, column=1)
+                    subtitle_cell = sheet.cell(row=2, column=1)
+                    date_range_cell = sheet.cell(row=3, column=1)
+
+                    title_cell.value = title
+                    subtitle_cell.value = subtitle
+                    date_range_cell.value = date_range
+
+                    title_cell.font = Font(size=14, bold=True)
+                    subtitle_cell.font = Font(size=12, bold=True)
+                    date_range_cell.font = Font(size=10, bold=True)
+
+                    # Center align the header cells
+                    title_cell.alignment = Alignment(horizontal='center')
+                    subtitle_cell.alignment = Alignment(horizontal='center')
+                    date_range_cell.alignment = Alignment(horizontal='center')
+
+                    # Style the table headers
+                    for cell in sheet[5]:  # Row 5 is the header row (1-based indexing)
+                        cell.font = Font(bold=True)
+                        cell.alignment = Alignment(horizontal='center')
+
+                # Prepare response
+                output.seek(0)
+                response = HttpResponse(
+                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                response['Content-Disposition'] = f'attachment; filename=Sales_Order_Report_{start_date_str}_to_{end_date_str}.xlsx'
+                response.write(output.read())
+                return response
+
+            # Render the display page
+            context = {
+                'filtered_items': modified_items,
+                'total_quantity': total_quantity,
+                'start_date': start_date_str,
+                'end_date': end_date_str
+            }
+            return render(request, template_path.sales_order_list_report, context)
+
+        except ValueError:
+            return render(request, template_path.sales_order_date_report, {
+                'error_message': 'Invalid date format. Please use YYYY-MM-DD.'
+            })
 
     return render(request, template_path.sales_order_date_report)
 
-
+    
 @login_required
 def display_cash_voucher_by_date_range(request):
     start_date = None
@@ -692,66 +1016,151 @@ def display_cash_voucher_by_date_range(request):
     return render(request, template_path.cash_voucher_date_report)
 
 
-# def display_cash_voucher_by_date_range(request):
-#     if request.method == 'POST':
-#         start_date_str = request.POST.get('start_date')
-#         end_date_str = request.POST.get('end_date')
-
-#         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-#         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-
-#         # Filter items within the date range
-#         items_within_range = cash_voucher.objects.filter(date__range=(start_date, end_date))
-
-#         # Extract specific fields for display
-#         filtered_items = items_within_range.values(
-#             'date', 'bill_no', 'voucher_number', 'amount', 'particular', 'pay_to'
-#         )
-
-#         return render(request, template_path.cash_voucher_list_report, {'filtered_items': filtered_items})
-
-#     return render(request, template_path.cash_voucher_date_report)
-
-
-
 @login_required
 def display_invoice_by_date_range(request):
-    start_date = None
-    end_date = None
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
         end_date_str = request.POST.get('end_date')
+        download_excel = request.POST.get('download_excel')
 
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
-        # Filter items within the date range
-        # invoice_items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
-        invoice_items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date)).select_related('invoice_customer_name_customer')
-        # Extract specific fields for display
-        filtered_items = invoice_items_within_range.values(
-            'invoice_customer_name_customer__customer', 'invoice_gst_no', 'invoice_gst_no', 'id', 'invoice_date', 'invoice_sub_total','invoice_cgstval','invoice_sgstval','invoice_igstval','invoice_total'
-        )
+            if start_date > end_date:
+                return render(request, template_path.invoice_date_report, {
+                    'error_message': 'End date must be after start date.'
+                })
 
-        # Calculate total amount
-        total_amount = invoice_items_within_range.aggregate(total_amount=Sum('invoice_total'))['total_amount'] or 0
+            # Filter invoice_items based on related Invoice's invoice_date
+            invoice_ids = Invoice.objects.filter(
+                invoice_date__range=(start_date, end_date)
+            ).values_list('id', flat=True)
+            print(f"Invoice IDs: {list(invoice_ids)}")  # Debug: Check Invoice IDs
 
-        return render(request, template_path.invoice_list_report, {
-            'filtered_purchase_items': filtered_items,
-            'total_amount': total_amount ,
-             'start_date': start_date,
-        'end_date': end_date, # Include total_amount in the context
-        })
-   
+            items_within_range = invoice_items.objects.filter(
+                invoice_id__in=invoice_ids
+            )
+            print(f"Invoice Items Count: {items_within_range.count()}")  # Debug: Check item count
+
+            if not items_within_range.exists():
+                return render(request, template_path.invoice_date_report, {
+                    'error_message': 'No data found for the selected date range.'
+                })
+
+            # Pre-fetch Invoice objects
+            invoice_dict = {
+                str(invoice.id): invoice for invoice in Invoice.objects.filter(
+                    id__in=invoice_ids
+                ).select_related('invoice_customer_name_customer')
+            }
+            print(f"Invoice Dict: {len(invoice_dict)} invoices loaded")  # Debug: Check loaded invoices
+
+            # List to store modified items
+            modified_items = []
+
+            for item in items_within_range:
+                try:
+                    invoice_id_str = str(item.invoice_id).strip()
+                    inv = invoice_dict.get(invoice_id_str)
+                    if not inv:
+                        print(f"No Invoice found for invoice_id: {invoice_id_str}")
+                        continue
+                    customer = inv.invoice_customer_name_customer.customer if inv.invoice_customer_name_customer else 'N/A'
+                    buyer_ord_no = inv.invoice_buyer_order_no or 'N/A'
+
+                    modified_item = {
+                        'sr_no': len(modified_items) + 1,
+                        'date': inv.invoice_date,
+                        'company_name': customer,
+                        'invoice_buyer_order_no': buyer_ord_no,
+                        'invoice_description_goods': item.invoice_description_goods,
+                        'invoice_qantity': item.invoice_qantity,
+                        'invoice_uom': item.invoice_uom,
+                    }
+                    modified_items.append(modified_item)
+                except Exception as e:
+                    print(f"Error processing invoice_item {item.id}: {str(e)}")
+
+            print(f"Modified Items: {len(modified_items)}")  # Debug: Check final items
+
+            # Calculate total quantity
+            total_quantity = sum(
+                float(item.invoice_qantity) for item in items_within_range 
+                if item.invoice_qantity and item.invoice_qantity.replace('.', '', 1).isdigit()
+            )
+
+            if download_excel:
+                df = pd.DataFrame(modified_items)
+                df['date'] = df['date'].apply(lambda x: x.strftime('%d %B %Y'))
+                df = df[['sr_no', 'date', 'company_name', 'invoice_buyer_order_no', 
+                         'invoice_description_goods', 'invoice_qantity', 'invoice_uom']]
+                df.columns = ['SR.NO.', 'DATE', 'CUSTOMER NAME', 'PO NO.', 'ITEM DESCRIPTION', 
+                              'QUANTITY', 'UOM']
+
+                total_row = pd.DataFrame([['', '', '', '', 'TOTAL', total_quantity, '']], 
+                                        columns=df.columns)
+                df = pd.concat([df, total_row], ignore_index=True)
+
+                output = BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    df.to_excel(writer, index=False, sheet_name='Invoice Report', startrow=4)
+                    sheet = writer.sheets['Invoice Report']
+
+                    title = "M/S KEYMECH TECHNOLOGIES"
+                    subtitle = "Invoice Report"
+                    date_range = f"From {start_date_str} To {end_date_str}"
+
+                    sheet.merge_cells('A1:G1')
+                    sheet.merge_cells('A2:G2')
+                    sheet.merge_cells('A3:G3')
+
+                    title_cell = sheet.cell(row=1, column=1)
+                    subtitle_cell = sheet.cell(row=2, column=1)
+                    date_range_cell = sheet.cell(row=3, column=1)
+
+                    title_cell.value = title
+                    subtitle_cell.value = subtitle
+                    date_range_cell.value = date_range
+
+                    title_cell.font = Font(size=14, bold=True)
+                    subtitle_cell.font = Font(size=12, bold=True)
+                    date_range_cell.font = Font(size=10, bold=True)
+
+                    title_cell.alignment = Alignment(horizontal='center')
+                    subtitle_cell.alignment = Alignment(horizontal='center')
+                    date_range_cell.alignment = Alignment(horizontal='center')
+
+                    for cell in sheet[5]:
+                        cell.font = Font(bold=True)
+                        cell.alignment = Alignment(horizontal='center')
+
+                output.seek(0)
+                response = HttpResponse(
+                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                response['Content-Disposition'] = f'attachment; filename=Invoice_Report_{start_date_str}_to_{end_date_str}.xlsx'
+                response.write(output.read())
+                return response
+
+            context = {
+                'filtered_items': modified_items,
+                'total_quantity': total_quantity,
+                'start_date': start_date_str,
+                'end_date': end_date_str
+            }
+            return render(request, template_path.invoice_list_report, context)
+
+        except ValueError:
+            return render(request, template_path.invoice_date_report, {
+                'error_message': 'Invalid date format. Please use YYYY-MM-DD.'
+            })
 
     return render(request, template_path.invoice_date_report)
 
 
-###@login_required
-
-
-@login_required
 def display_inventory_summenry_date_range(request):
+    # Fetch all vendors, ordered by company_name
     vendors = vendor.objects.all().order_by('company_name')
     selected_company = ''
     filtered_items = []
@@ -764,43 +1173,51 @@ def display_inventory_summenry_date_range(request):
         end_date_str = request.POST.get('end_date')
         selected_company = request.POST.get('company_name', '').strip()
 
-        # Save to session if you want to remember last search
+        # Save to session for persistence
         request.session['start_date'] = start_date_str
         request.session['end_date'] = end_date_str
         request.session['company_name'] = selected_company
 
         # Convert date strings to date objects
         if start_date_str and end_date_str:
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
-            items_within_range = inventory.objects.filter(
-                date__range=(start_date, end_date)
-            )
-
-            # Filter by company if selected
-            if selected_company:
-                items_within_range = items_within_range.filter(
-                    vendor_name__company_name__icontains=selected_company
+                # Filter inventory items by date range
+                items_within_range = inventory.objects.filter(
+                    date__range=(start_date, end_date)
                 )
 
-            items_within_range = items_within_range.annotate(
-                item_code_int=Cast('item_code', IntegerField())
-            ).order_by('item_code_int')
+                # Filter by company if selected
+                if selected_company:
+                    items_within_range = items_within_range.filter(
+                        vendor_name__company_name__icontains=selected_company
+                    )
 
-            # Prepare result data
-            filtered_items = list(items_within_range.values(
-                'item_code','vendor_name__company_name', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
-            ))
+                # Annotate and order by item_code as integer
+                items_within_range = items_within_range.annotate(
+                    item_code_int=Cast('item_code', IntegerField())
+                ).order_by('item_code_int')
 
-            for item in filtered_items:
-                try:
-                    qty = float(item['opening_stock_quantity'])
-                    rate = float(item['purchase_rate'])
-                except (ValueError, TypeError):
-                    qty, rate = 0, 0
-                item['amount'] = qty * rate
-                total_amount += item['amount']
+                # Prepare result data
+                filtered_items = list(items_within_range.values(
+                    'item_code', 'vendor_name__company_name', 'inventory_name', 
+                    'opening_stock_quantity', 'purchase_rate'
+                ))
+
+                # Calculate total amount
+                for item in filtered_items:
+                    try:
+                        qty = float(item['opening_stock_quantity'])
+                        rate = float(item['purchase_rate'])
+                    except (ValueError, TypeError):
+                        qty, rate = 0, 0
+                    item['amount'] = qty * rate
+                    total_amount += item['amount']
+            except ValueError:
+                # Handle invalid date format
+                pass
 
     return render(request, template_path.inventory_summery_list_report, {
         'vendors': vendors,
@@ -836,89 +1253,6 @@ def get_companies_by_date(request):
     return JsonResponse(list(companies), safe=False)
 
 
-###
-
-# @login_required
-# def display_inventory_summenry_date_range(request):
-#     if request.method == 'POST':
-#         start_date_str = request.POST.get('start_date')
-#         end_date_str = request.POST.get('end_date')
-
-#         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-#         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-
-#         # Store the date range in the session
-#         request.session['start_date'] = start_date_str
-#         request.session['end_date'] = end_date_str
-
-
-#         items_within_range = inventory.objects.filter(
-#             date__range=(start_date, end_date)
-#         ).annotate(
-#             item_code_int=Cast('item_code', IntegerField())
-#         ).order_by('item_code_int')
-
-        
-#         # Extract specific fields for display
-#         filtered_items = list(items_within_range.values(
-#             'item_code', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
-#         ))
-
-#         total_amount = 0
-#         for item in filtered_items:
-#             item['amount'] = float(item['opening_stock_quantity']) * float(item['purchase_rate'])
-#             total_amount += item['amount']
-
-#         context = {
-#             'filtered_items': filtered_items,
-#             'total_amount': total_amount,
-#             'start_date': start_date,
-#             'end_date': end_date
-#         }
-
-#         return render(request, template_path.inventory_summery_list_report, context)
-
-#     return render(request, template_path.inventory_summery_date_report)
-
-
-
-
-
-# @login_required
-# def display_purchase_register_date_range(request):
-#     if request.method == 'POST':
-#         purchase_items_within_range = Purchase_Invoice.objects.all()
-
-#         # Calculate totals
-#         total_cgst = sum(float(item.purchase_invoice_cgstval or 0) for item in purchase_items_within_range)
-#         print(total_cgst,'total_cgst---')
-#         total_sgst = sum(float(item.purchase_invoice_sgstval or 0) for item in purchase_items_within_range)
-#         total_igst = sum(float(item.purchase_invoice_igstval or 0) for item in purchase_items_within_range)
-#         total_amount = sum(float(item.purchase_invoice_sub_total or 0) for item in purchase_items_within_range)
-#         print(total_amount,'total_amount')
-#         total_invoice = sum(float(item.purchase_invoice_total or 0) for item in purchase_items_within_range)
-#         start_date_str = request.POST.get('start_date')
-#         end_date_str = request.POST.get('end_date')
-
-#         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-#         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-
-#         # Filter items within the date range
-#         purchase_items_within_range = Purchase_Invoice.objects.filter(purchase_invoice_date__range=(start_date, end_date))
-
-
-#         context = {
-#             'purchase_items_within_range': purchase_items_within_range,
-#             'total_cgst': total_cgst,
-#             'total_sgst': total_sgst,
-#             'total_igst': total_igst,
-#             'total_amount': total_amount,
-#             'total_invoice': total_invoice,
-#         }
-#         return render(request, template_path.purchase_register_list_report,context)
-
-#     return render(request, template_path.purchase_register_date_report,context)
-
 
 @login_required
 def display_purchase_register_date_range(request):
@@ -942,6 +1276,7 @@ def display_purchase_register_date_range(request):
         total_igst = sum(float(item.purchase_invoice_igstval or 0) for item in purchase_items_within_range)
         total_amount = sum(float(item.purchase_invoice_sub_total or 0) for item in purchase_items_within_range)
         total_invoice = sum(float(item.purchase_invoice_total or 0) for item in purchase_items_within_range)
+        total_freight = sum(float(item.purchase_freight_amount or 0) for item in purchase_items_within_range)
 
         context = {
             'purchase_items_within_range': purchase_items_within_range,
@@ -1208,7 +1543,6 @@ def download_excel(request):
         ])
         total_amount += total  # Add to total amount
 
-    # Add total amount at the end
     sheet.append([])  # Empty row for spacing
     sheet.append(['', '', '', '', '', '', '', 'Total', total_amount])
 
@@ -1329,7 +1663,6 @@ def download_sales_excel(request):
     return response
 
 
-@login_required
 def download_inventory_excel(request):
     start_date_str = request.session.get('start_date')
     end_date_str = request.session.get('end_date')
@@ -1432,100 +1765,6 @@ def download_inventory_excel(request):
     )
     response['Content-Disposition'] = 'attachment; filename=inventory_summary.xlsx'
     return response
-
-# @login_required
-# def download_inventory_excel(request):
-#     start_date_str = request.session.get('start_date')
-#     end_date_str = request.session.get('end_date')
-
-#     # Validate date strings
-#     if not start_date_str or not end_date_str:
-#         return HttpResponse("Start date and end date are required.", status=400)
-
-#     try:
-#         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-#         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-#     except ValueError:
-#         return HttpResponse("Invalid date format. Please use YYYY-MM-DD.", status=400)
-
-#     # Retrieve data from the database based on the date range
-#     items_within_range = inventory.objects.filter(
-#         date__range=(start_date, end_date),
-#     ).order_by('date')
-
-#     # Extract specific fields for display
-#     filtered_items = list(items_within_range.values(
-#         'item_code', 'inventory_name', 'opening_stock_quantity', 'purchase_rate'
-#     ))
-
-#     # Calculate the amount for each item and total amount
-#     total_amount = 0
-#     for item in filtered_items:
-#         item['amount'] = float(item['opening_stock_quantity']) * float(item['purchase_rate'])
-#         total_amount += item['amount']
-
-#     # Create an in-memory output file for the new workbook
-#     output = BytesIO()
-#     workbook = openpyxl.Workbook()
-#     sheet = workbook.active
-
-#     # Add title and date range
-#     title = "M/S KEYMECH TECHNOLOGIES"
-#     subtitle = "Inventory Summary Report"
-#     date_range = f"From {start_date_str} To {end_date_str}"
-
-#     sheet.merge_cells('A1:E1')
-#     sheet.merge_cells('A2:E2')
-#     sheet.merge_cells('A3:E3')
-
-#     title_cell = sheet.cell(row=1, column=1)
-#     subtitle_cell = sheet.cell(row=2, column=1)
-#     date_range_cell = sheet.cell(row=3, column=1)
-
-#     title_cell.value = title
-#     subtitle_cell.value = subtitle
-#     date_range_cell.value = date_range
-
-#     title_cell.font = Font(size=14, bold=True)
-#     subtitle_cell.font = Font(size=12, bold=True)
-#     date_range_cell.font = Font(size=10, bold=True)
-
-#     # Write headers
-#     headers = ['Item Code', 'Item', 'Quantity', 'Rate', 'Amount']
-#     sheet.append([])
-#     sheet.append(headers)
-
-#     # Write data rows
-#     for item in filtered_items:
-#         sheet.append([
-#             item['item_code'],
-#             item['inventory_name'],
-#             item['opening_stock_quantity'],
-#             item['purchase_rate'],
-#             item['amount']
-#         ])
-
-#     # Write total row
-#     sheet.append([])
-#     sheet.append(['', '', '', 'Total', total_amount])
-
-#     # Set column widths for better visibility
-#     column_widths = [15, 30, 15, 15, 20]
-#     for i, column_width in enumerate(column_widths, start=1):
-#         sheet.column_dimensions[openpyxl.utils.get_column_letter(i)].width = column_width
-
-#     # Save the workbook to the output file
-#     workbook.save(output)
-#     output.seek(0)
-
-#     # Create the response
-#     response = HttpResponse(
-#         output,
-#         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-#     )
-#     response['Content-Disposition'] = 'attachment; filename=inventory_summary.xlsx'
-#     return response
-
 
 @login_required
 def purchase_register_detail(request, id):

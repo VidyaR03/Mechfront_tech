@@ -59,16 +59,15 @@ CRM
     <div class="form-group">
         <label>Company Name</label>
         <select class="form-control" name="company_name" id="company_name">
-    {% for c in company %}
-        <option value="{{ c.company_name }}" {% if selected_company == c.company_name %}selected{% endif %}>
-            {{ c.company_name }}
-        </option>
-    {% endfor %}
-</select>
-
+            <option value="">Select Company</option> <!-- Optional: Add a default option -->
+            {% for vendor in vendors %}
+                <option value="{{ vendor.company_name }}" {% if selected_company == vendor.company_name %}selected{% endif %}>
+                    {{ vendor.company_name }}
+                </option>
+            {% endfor %}
+        </select>
     </div>
 </div>
-
 
             <div class="col-md-3">
                 <div class="text-end mt-4">

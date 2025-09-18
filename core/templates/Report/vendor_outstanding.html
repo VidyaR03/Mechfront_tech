@@ -63,7 +63,7 @@
                                         <div class=" ">
                                             <span>
                                                 <label>From Date</label>
-                                                <input class="form-control datetimepicker" type="text" name="from_date" id="from_date" value="23-05-2024" placeholder="23-05-2024">
+                                                    <input class="form-control " type="date" name="start_date" id="from_date" >
                                             </span>
                                         </div>
                                     </div>
@@ -74,7 +74,7 @@
                                         <div class=" ">
                                             <span>
                                                 <label>To Date</label>
-                                                <input class="form-control datetimepicker" type="text" name="to_date" id="to_date" value="23-05-2024" placeholder="23-05-2024">
+                                                    <input class="form-control " type="date" name="end_date" id="to_date" >
                                             </span>
                                         </div>
                                     </div>
@@ -109,6 +109,18 @@
 </div>
 </div>
 
+     <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            // Get today's date
+            let today = new Date().toISOString().split('T')[0];
+        
+            // Set the value of the input field to today's date
+            document.getElementById("from_date").value = today;
+            document.getElementById("to_date").value = today;
+        
+        });
+        
+           </script>
 
  <script>
   function printDiv(divId) {
