@@ -22,7 +22,9 @@ from openpyxl.styles import Font, Alignment
 from django.utils import timezone
 from openpyxl.utils import get_column_letter
 from collections import defaultdict
+from django import template
 
+        
 class Abs(Func):
     function = 'ABS'
     template = '%(function)s(%(expressions)s)'
@@ -418,7 +420,6 @@ def customer_outstanding(request):
     }
     return render(request, template_path.cust_out, context)
 
-'''customer_outstanding with 0 dou amount'''
 def customer_oustanding_date(request):
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
@@ -435,40 +436,50 @@ def customer_oustanding_date(request):
         except ValueError:
             return HttpResponse("Invalid date format. Please use YYYY-MM-DD.", status=400)
 
+        # Save the date range and selected customer to the session
         request.session['start_date'] = start_date_str
         request.session['end_date'] = end_date_str
         request.session['customer_name'] = customer_name
 
-        # Define a small tolerance value
+        # Define a small tolerance value for calculations
         EPSILON = 1e-6
 
         # Filter invoices based on the date range and customer selection
         items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
 
-        # Initialize totals
+        # Initialize totals for invoice and due amounts
         total_invoice_amount = 0
         total_due_amount = 0
 
         if customer_name == 'All':
+            # Aggregating totals for "All" customers
             items_within_range = items_within_range.values('invoice_customer_name_customer__company_name').annotate(
                 total_invoice_amount=Sum('invoice_total'),
                 total_due_amount=Sum('invoice_due')
-            ) # Skip entries with due amount close to 0
+            )
 
-            # Calculate totals for "All" customers
+            # Calculate totals for all customers, adding only positive amounts
             total_invoice_amount = items_within_range.aggregate(Sum('total_invoice_amount'))['total_invoice_amount__sum'] or 0
             total_due_amount = items_within_range.aggregate(Sum('total_due_amount'))['total_due_amount__sum'] or 0
         else:
+            # Filtering invoices for a specific customer
             items_within_range = items_within_range.filter(invoice_customer_name_customer__customer=customer_name)
             current_date = timezone.now().date()
+
+            # Annotate with due days for overdue calculation
             items_within_range = items_within_range.annotate(
                 due_days=ExpressionWrapper(current_date - F('invoice_due_date'), output_field=DurationField())
-            ) # Skip entries with due amount close to 0
+            )
 
-            # Calculate totals for a specific customer
+            # Calculate totals for a specific customer, adding only positive amounts
             total_invoice_amount = items_within_range.aggregate(Sum('invoice_total'))['invoice_total__sum'] or 0
             total_due_amount = items_within_range.aggregate(Sum('invoice_due'))['invoice_due__sum'] or 0
 
+        # Ensure that only positive values are added to the total
+        total_invoice_amount = max(total_invoice_amount, 0)
+        total_due_amount = max(total_due_amount, 0)
+
+        # Create the context for rendering the template
         context = {
             'sales_register_within_range': items_within_range,
             'total_invoice_amount': total_invoice_amount,
@@ -482,7 +493,9 @@ def customer_oustanding_date(request):
 
         return render(request, template_path.cust_out_date, context)
 
+    # If not a POST request, render the page with an empty context
     return render(request, template_path.cust_out_date)
+
 
 def download_excel_customer_out(request):
     if request.method == 'POST':
@@ -498,7 +511,7 @@ def download_excel_customer_out(request):
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
         except ValueError:
             return HttpResponse("Invalid date format. Please use YYYY-MM-DD.", status=400)
-        
+
         # Define a small tolerance value
         EPSILON = 1e-6
 
@@ -509,9 +522,9 @@ def download_excel_customer_out(request):
             items_within_range = items_within_range.values('invoice_customer_name_customer__company_name').annotate(
                 total_invoice_amount=Sum('invoice_total'),
                 total_due_amount=Sum('invoice_due')
-            ) # Skip entries with 0 due amount
+            )  # Skip entries with 0 due amount
         else:
-            items_within_range = items_within_range.filter(invoice_customer_name_customer__customer=customer_name) # Skip entries with 0 due amount
+            items_within_range = items_within_range.filter(invoice_customer_name_customer__customer=customer_name)  # Skip entries with 0 due amount
             current_date = now().date()
             items_within_range = items_within_range.annotate(
                 due_days=ExpressionWrapper(Abs(current_date - F('invoice_due_date')), output_field=DurationField())
@@ -561,39 +574,53 @@ def download_excel_customer_out(request):
 
         for item in items_within_range:
             if customer_name == 'All':
+                # Ensure amounts are not negative
+                total_invoice_amount += max(item['total_invoice_amount'] or 0, 0)
+                total_due_amount += max(item['total_due_amount'] or 0, 0)
+
                 sheet.append([
                     item['invoice_customer_name_customer__company_name'], 
-                    item['total_invoice_amount'], 
-                    item['total_due_amount']
+                    max(item['total_invoice_amount'], 0),  # Ensure no negative values
+                    max(item['total_due_amount'], 0)  # Ensure no negative values
                 ])
-                total_invoice_amount += item['total_invoice_amount'] or 0
-                total_due_amount += item['total_due_amount'] or 0
             else:
                 due_days = (now().date() - item.invoice_due_date).days
+                invoice_amount = round(float(item.invoice_total or 0.0), 2)
+                due_amount = round(float(item.invoice_due or 0.0), 2)
+
+                # Ensure due amount is not negative
+                due_amount = max(due_amount, 0)  # Correct any negative due amount
+
+                # Ensure amounts are not negative
+                total_invoice_amount += max(invoice_amount, 0)
+                total_due_amount += due_amount  # Use the corrected due_amount
+
                 sheet.append([
                     item.inv_number,
                     item.invoice_date.strftime('%d-%m-%Y'), 
                     item.invoice_buyer_order_no,
                     item.invoice_payment_terms, 
                     item.invoice_due_date.strftime('%d-%m-%Y'),
-                    round(float(item.invoice_total or 0.0), 2),
-                    round(float(item.invoice_due or 0.0), 2),
+                    invoice_amount,  # Ensure no negative values
+                    due_amount,  # Ensure no negative values
                     due_days
                 ])
-                total_invoice_amount += round(float(item.invoice_total or 0.0), 2)
-                total_due_amount += round(float(item.invoice_due or 0.0), 2)
 
         # **Add Totals at the Bottom**
         sheet.append([])
         if customer_name == 'All':
             sheet.append(["TOTAL", total_invoice_amount, total_due_amount])
         else:
-            sheet.append(["","", "", "", "TOTAL", total_invoice_amount, total_due_amount])
+            sheet.append(["", "", "", "", "TOTAL", total_invoice_amount, total_due_amount])
 
         total_row = sheet.max_row
         sheet.cell(row=total_row, column=1).font = Font(bold=True)
         sheet.cell(row=total_row, column=2).font = Font(bold=True)
         sheet.cell(row=total_row, column=3).font = Font(bold=True)
+
+        # **Ensure totals are not negative**
+        total_invoice_amount = max(total_invoice_amount, 0)
+        total_due_amount = max(total_due_amount, 0)
 
         # Set column widths
         for column_cells in sheet.columns:
@@ -621,6 +648,7 @@ def download_excel_customer_out(request):
         return response
 
     return HttpResponse("Invalid request method.", status=400)
+
 
 #************** CUSTOMER OUTSTANDING END **************#
 

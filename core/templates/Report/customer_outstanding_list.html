@@ -38,6 +38,8 @@
       }
   </style>
 {% block main_content %}
+{% load custom_filters %}
+
 <div class="page-wrapper" style="min-height: 341px;">
 
     <div class="content container-fluid">
@@ -136,7 +138,9 @@
                                       <td>{{ item.invoice_payment_terms }}</td>
                                       <td>{{ item.invoice_due_date|date:"d-m-Y" }}</td>
                                       <td>{{ item.invoice_total|floatformat:2 }}</td>
-                                      <td>{{ item.invoice_due|floatformat:2 }}</td>
+<td>{{ item.invoice_due|non_negative|floatformat:2 }}</td>
+
+
                                       <td>{{ item.due_days.days }}</td>
                                   </tr>
                                   {% endfor %}
