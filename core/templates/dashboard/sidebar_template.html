@@ -193,77 +193,7 @@
           </ul>
         </li>
 
-        <li class="menu-title"><span>Report</span></li>
-        <li
-          class="nav-item has-treeview {% if 'debit_note' in request.path  or 'credit_note' in request.path or 'inventory_date' in request.path or 'invoice_display_report' in request.path or 'purchase_register_date' in request.path or 'customer_outstanding' in request.path or 'vendor_outstanding' in request.path or 'sales_order_disply' in request.path or 'cash_voucher_display_report' in request.path %} {% if 'credit_note_pdf' not in request.path %}menu-open {% endif %}{% endif %}">
-          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
-            &nbsp;&nbsp;<i class="fe fe-trending-up"></i> <span>Report</span><span class="menu-arrow"></span>
 
-          </a>
-          <ul id="sub-menu-vendor"
-            class="nav nav-treeview sub-menu {% if 'debit_note' in request.path or 'credit_note' in request.path or 'inventory_date' in request.path or 'invoice_display_report' in request.path or 'purchase_register_date' in request.path or 'customer_outstanding' in request.path or 'vendor_outstanding' in request.path or 'sales_order_disply' in request.path or 'cash_voucher_display_report' in request.path %} {% if 'credit_note_pdf' not in request.path %}active{% endif %}{% endif %}">
-            <li class="nav-item">
-              {% url 'debit_note' as debit_note %}
-              <a href="{{ debit_note }}" class="nav-link {% if request.path == debit_note %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debit Note
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'credit_note' as credit_note %}
-              <a href="{{ credit_note }}" class="nav-link {% if request.path == credit_note %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Credit Note
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'inventory_date' as inventory_date %}
-              <a href="{{ inventory_date }}" class="nav-link {% if request.path == inventory_date %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inventory Summary
-              </a>
-            </li>
-
-
-            <li class="nav-item">
-              {% url 'invoice_display_report' as invoice_display_report %}
-              <a href="{{ invoice_display_report }}"
-                class="nav-link {% if request.path == invoice_display_report %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sales Register
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'purchase_register_date' as purchase_register_date %}
-              <a href="{{ purchase_register_date }}"
-                class="nav-link {% if request.path == purchase_register_date %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Purchase Register
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'customer_outstanding' as customer_outstanding %}
-              <a href="{{ customer_outstanding }}"
-                class="nav-link {% if request.path == customer_outstanding %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer Outstanding
-              </a>
-            </li>
-            <li class="nav-item">
-              {% url 'vendor_outstanding' as vendor_outstanding %}
-              <a href="{{ vendor_outstanding }}"
-                class="nav-link {% if request.path == vendor_outstanding %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vendor Outstanding
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'sales_order_disply' as sales_order_disply %}
-              <a href="{{ sales_order_disply }}"
-                class="nav-link {% if request.path == sales_order_disply %}active{% endif %}">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sales Order Report
-              </a>
-            </li>
-          </ul>
-        </li>
         <li class="menu-title"><span>Sales</span></li>
         <li
           class="nav-item has-treeview {% if 'debitnotes_list' in request.path  or 'quotation_list' in request.path or 'sales_order_list' in request.path  or 'delivery_challan_list' in request.path or 'invoice_list' in request.path or 'creditnotes_list' in request.path or 'payment_received_list' in request.path  or 'performa_invoice_list' in request.path %} {% if 'purchase_invoice_list' not in  request.path %}menu-open {% endif %}{% endif %}">
@@ -501,7 +431,77 @@
           </ul>
         </li>
 
+        <li class="menu-title"><span>Report</span></li>
+        <li
+          class="nav-item has-treeview {% if 'debit_note' in request.path  or 'credit_note' in request.path or 'inventory_date' in request.path or 'invoice_display_report' in request.path or 'purchase_register_date' in request.path or 'customer_outstanding' in request.path or 'vendor_outstanding' in request.path or 'sales_order_disply' in request.path or 'cash_voucher_display_report' in request.path %} {% if 'credit_note_pdf' not in request.path %}menu-open {% endif %}{% endif %}">
+          <a href="#" class="nav-linkk" onclick="toggleSubMenu('sub-menu-vendor')">
+            &nbsp;&nbsp;<i class="fe fe-trending-up"></i> <span>Report</span><span class="menu-arrow"></span>
 
+          </a>
+          <ul id="sub-menu-vendor"
+            class="nav nav-treeview sub-menu {% if 'debit_note' in request.path or 'credit_note' in request.path or 'inventory_date' in request.path or 'invoice_display_report' in request.path or 'purchase_register_date' in request.path or 'customer_outstanding' in request.path or 'vendor_outstanding' in request.path or 'sales_order_disply' in request.path or 'cash_voucher_display_report' in request.path %} {% if 'credit_note_pdf' not in request.path %}active{% endif %}{% endif %}">
+            <li class="nav-item">
+              {% url 'debit_note' as debit_note %}
+              <a href="{{ debit_note }}" class="nav-link {% if request.path == debit_note %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debit Note
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'credit_note' as credit_note %}
+              <a href="{{ credit_note }}" class="nav-link {% if request.path == credit_note %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Credit Note
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'inventory_date' as inventory_date %}
+              <a href="{{ inventory_date }}" class="nav-link {% if request.path == inventory_date %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inventory Summary
+              </a>
+            </li>
+
+
+            <li class="nav-item">
+              {% url 'invoice_display_report' as invoice_display_report %}
+              <a href="{{ invoice_display_report }}"
+                class="nav-link {% if request.path == invoice_display_report %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sales Register
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'purchase_register_date' as purchase_register_date %}
+              <a href="{{ purchase_register_date }}"
+                class="nav-link {% if request.path == purchase_register_date %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Purchase Register
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'customer_outstanding' as customer_outstanding %}
+              <a href="{{ customer_outstanding }}"
+                class="nav-link {% if request.path == customer_outstanding %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer Outstanding
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'vendor_outstanding' as vendor_outstanding %}
+              <a href="{{ vendor_outstanding }}"
+                class="nav-link {% if request.path == vendor_outstanding %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vendor Outstanding
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'sales_order_disply' as sales_order_disply %}
+              <a href="{{ sales_order_disply }}"
+                class="nav-link {% if request.path == sales_order_disply %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sales Order Report
+              </a>
+            </li>
+          </ul>
+        </li>
 
 
 
