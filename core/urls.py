@@ -360,6 +360,7 @@ urlpatterns = [
     path('sales-order-report-date/', views.sales_order_report_date, name='sales_order_report_date'),
     path('sales-order-display/', views.display_items_by_date_range, name='sales_order_disply'),
 
+    path('download_excel_customer_out/', views.download_excel_customer_out, name='download_excel_customer_out'),
 
 
 

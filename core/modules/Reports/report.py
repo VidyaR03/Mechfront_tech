@@ -7,8 +7,10 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import messages
 from core.modules.Account.forms import DateRangeForm
 import datetime
+from django.db.models import Sum, F, ExpressionWrapper, DurationField, Func,IntegerField
+from django.utils.timezone import now
+
 from datetime import datetime
-from django.db.models import Sum
 from core.modules.login.login import login_required
 from django.urls import reverse
 import openpyxl
@@ -16,11 +18,17 @@ from openpyxl.styles import Font
 from django.utils.dateparse import parse_date
 from io import BytesIO
 import pandas as pd
-from django.db.models import F, IntegerField
 from openpyxl.styles import Font, Alignment
 from django.utils import timezone
 from openpyxl.utils import get_column_letter
 from collections import defaultdict
+
+class Abs(Func):
+    function = 'ABS'
+    template = '%(function)s(%(expressions)s)'
+
+
+
 
 @login_required
 def debit_note_report(request):
@@ -400,6 +408,9 @@ def purchase_register_date(request):
 
 
 
+
+#************** CUSTOMER OUTSTANDING **************#
+
 def customer_outstanding(request):
     cust = customer.objects.all()
     context = {
@@ -407,178 +418,212 @@ def customer_outstanding(request):
     }
     return render(request, template_path.cust_out, context)
 
-
-from django.db.models import Sum, F, ExpressionWrapper, DurationField, Func
-
-class Abs(Func):
-    function = 'ABS'
-    template = '%(function)s(%(expressions)s)'
-
+'''customer_outstanding with 0 dou amount'''
 def customer_oustanding_date(request):
     if request.method == 'POST':
         start_date_str = request.POST.get('start_date')
         end_date_str = request.POST.get('end_date')
-        download_excel = request.POST.get('download_excel')  # Check if download button was clicked
+        customer_name = request.POST.get('customer_name')
+
+        # Validate presence of date strings
+        if not start_date_str or not end_date_str:
+            return HttpResponse("Start date and end date are required.", status=400)
 
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return HttpResponse("Invalid date format. Please use YYYY-MM-DD.", status=400)
 
-            if start_date > end_date:
-                return render(request, template_path.cust_out_date, {
-                    'error_message': 'End date must be after start date.'
-                })
+        request.session['start_date'] = start_date_str
+        request.session['end_date'] = end_date_str
+        request.session['customer_name'] = customer_name
 
-            # Filter Performa_Invoice within the date range
-            items_within_range = Performa_Invoice.objects.filter(
-                invoice_date__range=(start_date, end_date)
-            ).select_related('invoice_customer')
+        # Define a small tolerance value
+        EPSILON = 1e-6
 
-            if not items_within_range.exists():
-                return render(request, template_path.cust_out_date, {
-                    'error_message': 'No data found for the selected date range.'
-                })
+        # Filter invoices based on the date range and customer selection
+        items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
 
-            # Calculate Due Days as absolute value
+        # Initialize totals
+        total_invoice_amount = 0
+        total_due_amount = 0
+
+        if customer_name == 'All':
+            items_within_range = items_within_range.values('invoice_customer_name_customer__company_name').annotate(
+                total_invoice_amount=Sum('invoice_total'),
+                total_due_amount=Sum('invoice_due')
+            ) # Skip entries with due amount close to 0
+
+            # Calculate totals for "All" customers
+            total_invoice_amount = items_within_range.aggregate(Sum('total_invoice_amount'))['total_invoice_amount__sum'] or 0
+            total_due_amount = items_within_range.aggregate(Sum('total_due_amount'))['total_due_amount__sum'] or 0
+        else:
+            items_within_range = items_within_range.filter(invoice_customer_name_customer__customer=customer_name)
             current_date = timezone.now().date()
             items_within_range = items_within_range.annotate(
-                due_days=ExpressionWrapper(
-                    Abs(current_date - F('invoice_due_date')),
-                    output_field=DurationField()
-                )
-            )
+                due_days=ExpressionWrapper(current_date - F('invoice_due_date'), output_field=DurationField())
+            ) # Skip entries with due amount close to 0
 
-            # Prepare data for display and Excel
-            modified_items = []
-            for item in items_within_range:
-                try:
-                    customer_name = (
-                        item.invoice_customer.customer
-                        if item.invoice_customer else 'N/A'
-                    )
-                    modified_item = {
-                        'sr_no': len(modified_items) + 1,
-                        'invoice_date': item.invoice_date,
-                        'customer_name': customer_name,
-                        'invoice_number': item.pi_number,
-                        'invoice_total': item.invoice_total,
-                        'invoice_due': item.invoice_due,
-                        'due_days': item.due_days.days if item.due_days else 0,
-                    }
-                    modified_items.append(modified_item)
-                except Exception as e:
-                    print(f"Error processing Performa_Invoice {item.id}: {str(e)}")
+            # Calculate totals for a specific customer
+            total_invoice_amount = items_within_range.aggregate(Sum('invoice_total'))['invoice_total__sum'] or 0
+            total_due_amount = items_within_range.aggregate(Sum('invoice_due'))['invoice_due__sum'] or 0
 
+        context = {
+            'sales_register_within_range': items_within_range,
+            'total_invoice_amount': total_invoice_amount,
+            'total_due_amount': total_due_amount,
+            'selected_customer': customer_name,
+            'start_date_str': start_date_str,
+            'end_date_str': end_date_str,
+            'start_date': start_date.strftime('%d-%m-%Y'),
+            'end_date': end_date.strftime('%d-%m-%Y')
+        }
 
-            # Calculate totals with validation for numeric values
-            total_invoice_amount = sum(
-                float(item.invoice_total) for item in items_within_range
-                if item.invoice_total and item.invoice_total.replace('.', '', 1).isdigit()
-            ) or 0
-            total_due_amount = sum(
-                float(item.invoice_due) for item in items_within_range
-                if item.invoice_due and item.invoice_due.replace('.', '', 1).isdigit()
-            ) or 0
-
-            if download_excel:
-                # Create a DataFrame for Excel
-                df = pd.DataFrame(modified_items)
-                df['invoice_date'] = df['invoice_date'].apply(lambda x: x.strftime('%d %B %Y'))
-                df = df[[
-                    'sr_no', 'invoice_date', 'customer_name', 'invoice_number',
-                    'invoice_total', 'invoice_due', 'due_days'
-                ]]
-                df.columns = [
-                    'SR.NO.', 'INVOICE DATE', 'CUSTOMER NAME', 'INVOICE NO.',
-                    'INVOICE AMOUNT', 'DUE AMOUNT', 'DUE DAYS'
-                ]
-
-                # Add total row
-                total_row = pd.DataFrame([[
-                    '', '', '', 'TOTAL', total_invoice_amount, total_due_amount, ''
-                ]], columns=df.columns)
-                df = pd.concat([df, total_row], ignore_index=True)
-
-                # Create Excel file
-                output = BytesIO()
-                with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                    # Write DataFrame starting at row 5 to leave space for headers
-                    df.to_excel(writer, index=False, sheet_name='Customer Outstanding Report', startrow=4)
-
-                    # Access the worksheet to add title, subtitle, and date range
-                    sheet = writer.sheets['Customer Outstanding Report']
-
-                    # Add title, subtitle, and date range
-                    title = "M/S KEYMECH TECHNOLOGIES"
-                    subtitle = "Customer Outstanding Report"
-                    date_range = f"From {start_date_str} To {end_date_str}"
-
-                    sheet.merge_cells('A1:G1')  # Merge for 7 columns
-                    sheet.merge_cells('A2:G2')
-                    sheet.merge_cells('A3:G3')
-
-                    title_cell = sheet.cell(row=1, column=1)
-                    subtitle_cell = sheet.cell(row=2, column=1)
-                    date_range_cell = sheet.cell(row=3, column=1)
-
-                    title_cell.value = title
-                    subtitle_cell.value = subtitle
-                    date_range_cell.value = date_range
-
-                    title_cell.font = Font(size=14, bold=True)
-                    subtitle_cell.font = Font(size=12, bold=True)
-                    date_range_cell.font = Font(size=10, bold=True)
-
-                    title_cell.alignment = Alignment(horizontal='center')
-                    subtitle_cell.alignment = Alignment(horizontal='center')
-                    date_range_cell.alignment = Alignment(horizontal='center')
-
-                    # Style the table headers
-                    for cell in sheet[5]:  # Row 5 is the header row
-                        cell.font = Font(bold=True)
-                        cell.alignment = Alignment(horizontal='center')
-
-                    # Adjust column widths using column indices
-                    for col_idx in range(1, len(df.columns) + 1):
-                        col_letter = get_column_letter(col_idx)
-                        max_length = 0
-                        for row_idx in range(1, sheet.max_row + 1):
-                            cell = sheet[f"{col_letter}{row_idx}"]
-                            try:
-                                if cell.value and len(str(cell.value)) > max_length:
-                                    max_length = len(str(cell.value))
-                            except:
-                                pass
-                        adjusted_width = max_length + 2
-                        sheet.column_dimensions[col_letter].width = adjusted_width
-
-                # Prepare response
-
-                # Prepare response
-                output.seek(0)
-                response = HttpResponse(
-                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                )
-                response['Content-Disposition'] = f'attachment; filename=Customer_Outstanding_Report_{start_date_str}_to_{end_date_str}.xlsx'
-                response.write(output.read())
-                return response
-
-            # Render the display page
-            context = {
-                'filtered_items': modified_items,
-                'total_invoice_amount': total_invoice_amount,
-                'total_due_amount': total_due_amount,
-                'start_date': start_date_str,
-                'end_date': end_date_str
-            }
-            return render(request, template_path.cust_out_date, context)
-
-        except ValueError:
-            return render(request, template_path.cust_out_date, {
-                'error_message': 'Invalid date format. Please use YYYY-MM-DD.'
-            })
+        return render(request, template_path.cust_out_date, context)
 
     return render(request, template_path.cust_out_date)
+
+def download_excel_customer_out(request):
+    if request.method == 'POST':
+        start_date_str = request.POST.get('start_date')
+        end_date_str = request.POST.get('end_date')
+        customer_name = request.POST.get('customer_name')
+
+        if not start_date_str or not end_date_str:
+            return HttpResponse("Start date and end date are required.", status=400)
+
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return HttpResponse("Invalid date format. Please use YYYY-MM-DD.", status=400)
+        
+        # Define a small tolerance value
+        EPSILON = 1e-6
+
+        # Filter invoices based on date range and customer selection
+        items_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
+
+        if customer_name == 'All':
+            items_within_range = items_within_range.values('invoice_customer_name_customer__company_name').annotate(
+                total_invoice_amount=Sum('invoice_total'),
+                total_due_amount=Sum('invoice_due')
+            ) # Skip entries with 0 due amount
+        else:
+            items_within_range = items_within_range.filter(invoice_customer_name_customer__customer=customer_name) # Skip entries with 0 due amount
+            current_date = now().date()
+            items_within_range = items_within_range.annotate(
+                due_days=ExpressionWrapper(Abs(current_date - F('invoice_due_date')), output_field=DurationField())
+            )
+
+        # Create an Excel workbook
+        output = BytesIO()
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+
+        # **Add Title, Subtitle, and Date Range**
+        title = "M/S KEYMECH TECHNOLOGIES"
+        subtitle = f"Customer Outstanding Report - {customer_name}"
+        date_range = f"From {start_date.strftime('%d-%m-%Y')} To {end_date.strftime('%d-%m-%Y')}"
+
+        sheet.merge_cells('A1:I1')
+        sheet.merge_cells('A2:I2')
+        sheet.merge_cells('A3:I3')
+
+        title_cell = sheet.cell(row=1, column=1)
+        subtitle_cell = sheet.cell(row=2, column=1)
+        date_range_cell = sheet.cell(row=3, column=1)
+
+        title_cell.value = title
+        subtitle_cell.value = subtitle
+        date_range_cell.value = date_range
+
+        title_cell.font = Font(size=14, bold=True)
+        subtitle_cell.font = Font(size=12, bold=True)
+        date_range_cell.font = Font(size=10, bold=True)
+
+        # Start headers from row 5
+        if customer_name == 'All':
+            headers = ['Customer Name', 'Total Invoice Amount', 'Total Due Amount']
+        else:
+            headers = ['Invoice No', 'Invoice Date', 'PO No', 'Payment Term', 'Due Date', 
+                       'Invoice Amount', 'Due Amount', 'Due Days']
+
+        sheet.append([])
+        sheet.append(headers)
+
+        for col in range(1, len(headers) + 1):
+            sheet.cell(row=5, column=col).font = Font(bold=True)
+
+        total_invoice_amount = 0
+        total_due_amount = 0
+
+        for item in items_within_range:
+            if customer_name == 'All':
+                sheet.append([
+                    item['invoice_customer_name_customer__company_name'], 
+                    item['total_invoice_amount'], 
+                    item['total_due_amount']
+                ])
+                total_invoice_amount += item['total_invoice_amount'] or 0
+                total_due_amount += item['total_due_amount'] or 0
+            else:
+                due_days = (now().date() - item.invoice_due_date).days
+                sheet.append([
+                    item.inv_number,
+                    item.invoice_date.strftime('%d-%m-%Y'), 
+                    item.invoice_buyer_order_no,
+                    item.invoice_payment_terms, 
+                    item.invoice_due_date.strftime('%d-%m-%Y'),
+                    round(float(item.invoice_total or 0.0), 2),
+                    round(float(item.invoice_due or 0.0), 2),
+                    due_days
+                ])
+                total_invoice_amount += round(float(item.invoice_total or 0.0), 2)
+                total_due_amount += round(float(item.invoice_due or 0.0), 2)
+
+        # **Add Totals at the Bottom**
+        sheet.append([])
+        if customer_name == 'All':
+            sheet.append(["TOTAL", total_invoice_amount, total_due_amount])
+        else:
+            sheet.append(["","", "", "", "TOTAL", total_invoice_amount, total_due_amount])
+
+        total_row = sheet.max_row
+        sheet.cell(row=total_row, column=1).font = Font(bold=True)
+        sheet.cell(row=total_row, column=2).font = Font(bold=True)
+        sheet.cell(row=total_row, column=3).font = Font(bold=True)
+
+        # Set column widths
+        for column_cells in sheet.columns:
+            max_length = 0
+            column_letter = None  # Initialize column letter
+
+            for cell in column_cells:
+                if cell.value and not isinstance(cell, openpyxl.cell.MergedCell):  # Skip merged cells
+                    max_length = max(max_length, len(str(cell.value)))
+                    column_letter = cell.column_letter  # Get column letter
+
+            if column_letter:  # Ensure column_letter is set
+                sheet.column_dimensions[column_letter].width = max_length + 2
+
+        # Save the workbook to the output file
+        workbook.save(output)
+        output.seek(0)
+
+        # Create the response
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename=Customer_Outstanding_Report_{start_date}_to_{end_date}.xlsx'
+        return response
+
+    return HttpResponse("Invalid request method.", status=400)
+
+#************** CUSTOMER OUTSTANDING END **************#
+
 
 
 @login_required
@@ -1348,7 +1393,7 @@ def download_hsn_wise_excel(request):
     sheet = workbook.active
 
     # Add title and date range
-    title = "SUPREENO METALS PVT LTD"
+    title = "M/S KEYMECH TECHNOLOGIES"
     subtitle = "HSN Wise Report"
     date_range = f"From {start_date_str} To {end_date_str}"
 

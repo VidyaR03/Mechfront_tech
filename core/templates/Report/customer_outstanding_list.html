@@ -1,99 +1,219 @@
-{% extends 'dashboard/base_template.html' %}
-{% block custom_css %}
-<style>
-    .custom-error {
-        max-width: 300px;
-        margin: 0 auto;
-        text-align: center;
-        color: red;
-    }
-    .grey-card {
-        background-color: LightGray;
-    }
-    .right-aligned {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-    }
-</style>
-{% endblock custom_css %}
 
+{% extends 'dashboard/base_template.html' %}
+    {% block custom_css %}
+        {% block page_title %}
+        {% endblock page_title %}
+        <style>
+            .custom-error {
+                max-width: 300px;
+                /* Adjust the width to your desired value */
+                margin: 0 auto;
+                /* Add this line to center the element */
+                text-align: center;
+                /* Add this line to center the text inside the element */
+              }
+              .input-group-text {
+                cursor: pointer;
+              }
+              .grey-card {
+                background-color:LightGray;
+            }
+            .negative-padding {
+              margin-top: -60px; 
+          }
+         
+    
+       
+          
+
+        </style>
+    {% endblock custom_css %}
+    <!-- Main content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.0/html2pdf.bundle.min.js"></script>
+    <style>
+      .right-aligned {
+          position: fixed;
+          top: 20px; /* Adjust the top position as needed */
+          right: 20px; /* Adjust the right position as needed */
+      }
+  </style>
 {% block main_content %}
 <div class="page-wrapper" style="min-height: 341px;">
+
     <div class="content container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card card-table">
-                    <div class="card-header">
-                        <div class="col-lg-12">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="mb-0">
-                                    <a href="{% url 'customer_outstanding' %}" style="margin-right: 10px;">
-                                        <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="fa fa-arrow-left"></i>
-                                    </a>
-                                    Customer Outstanding Report
-                                </h3>
-                                <form method="post" action="{% url 'customer_oustanding_date' %}" style="display:inline;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="start_date" value="{{ start_date }}">
-                                    <input type="hidden" name="end_date" value="{{ end_date }}">
-                                    <input type="hidden" name="download_excel" value="true">
-                                    <button type="submit" class="btn btn-primary">Download Excel</button>
-                                </form>
-                            </div>
+       
+       <div class="row">
+          <div class="col-sm-12">
+             <div class="card card-table">
+                <div class="card-header">
+                   <div class="col-lg-12">
+                      <div class="row">
+                         <div class="col-lg-10">
+                            <h3>
+                            <a href="{% url 'customer_outstanding' %}" style="margin-right: 10px;">
+                                <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i>
+                            </a>    
+                           Customer Outstanding Report   </h3>   
+                             </div>
+                             <div class="col-lg-2">
+                        
+                        <!-- <input type="button" onclick="printDiv('printableArea')" value="Download" class="btn btn-primary"/> -->
+                        <form method="post" action="{% url 'download_excel_customer_out' %}">
+
+                          {% csrf_token %}
+                          <input type="hidden" value="{{start_date_str}}" name="start_date" id="start_date_hidden">
+                          <input type="hidden" value="{{end_date_str}}" name="end_date" id="end_date_hidden">
+                          <input type="hidden" value="{{selected_customer}}" name="customer_name" id="customer_name_hidden">
+                        
+                     
+                            <button type="submit" class="btn btn-primary" id="btn_submit">Download Excel</button>
+                        </form>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="rport">
-                            <h2><b>M/S KEYMECH TECHNOLOGIES</b></h2>
-                            <p style="font-size: 20px;">Customer Outstanding Report</p>
-                            <p><b>From</b> {{ start_date }} <b>To</b> {{ end_date }}</p>
+
                         </div>
-                        <br>
-                        <div class="table-responsive">
-                            <table class="table table-center">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>SR.NO.</th>
-                                        <th>INVOICE DATE</th>
-                                        <th>CUSTOMER NAME</th>
-                                        <th>INVOICE NO.</th>
-                                        <th>INVOICE AMOUNT</th>
-                                        <th>DUE AMOUNT</th>
-                                        <th>DUE DAYS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% if filtered_items %}
-                                        {% for item in filtered_items %}
-                                        <tr>
-                                            <td>{{ item.sr_no }}</td>
-                                            <td>{{ item.invoice_date|date:"j F Y" }}</td>
-                                            <td>{{ item.customer_name|upper }}</td>
-                                            <td>{{ item.invoice_number }}</td>
-                                            <td>{{ item.invoice_total|floatformat:2 }}</td>
-                                            <td>{{ item.invoice_due|floatformat:2 }}</td>
-                                            <td>{{ item.due_days }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="7">No data available for the selected date range.</td>
-                                        </tr>
-                                    {% endif %}
-                                    <tr>
-                                        <td colspan="4"><strong>TOTAL</strong></td>
-                                        <td><strong>{{ total_invoice_amount|floatformat:2 }}</strong></td>
-                                        <td><strong>{{ total_due_amount|floatformat:2 }}</strong></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                         
+                      </div>
+                   </div>
                 </div>
-            </div>
-        </div>
-    </div>
+                <div id="printableArea">
+                  <div class="card-body" id="customer_ledger_pdf">
+                    <div class="rport">
+                        <h2><b>M/S KEYMECH TECHNOLOGIES </b></h2>
+                        <p style="font-size: 20px;">CUSTOMER OUTSTANDING<br>{{selected_customer}}</p>
+                        <!-- <p style="font-size: 14px;"><B>From</B> &nbsp; 01 Apr 2023 &nbsp; <B>To</B> &nbsp; 31-03-2024</p> -->
+                        <b> From </b>&nbsp;{{ start_date }} &nbsp; <b>To</b> &nbsp; {{ end_date }}
+  
+                      </div>
+                      <br>
+              
+                      {% if selected_customer == 'All' %}
+                      <div class="table-responsive">
+                          <table class="table table-center">
+                              <thead class="thead-dark">
+                                  <tr>
+                                      <th>CUSTOMER NAME</th>
+                                      <th>TOTAL INVOICE AMOUNT</th>
+                                      <th>TOTAL DUE AMOUNT</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for item in sales_register_within_range %}
+                                  <tr>
+                                      <td style="color:blue;">{{ item.invoice_customer_name_customer__company_name|upper }}</td>
+                                      <td>{{ item.total_invoice_amount|floatformat:2 }}</td>
+                                      <td>{{ item.total_due_amount|floatformat:2 }}</td>
+                                  </tr>
+                                  {% endfor %}
+                                  <tr>
+                                      <td colspan="1"><strong>TOTAL</strong></td>
+                                      <td><strong>{{ total_invoice_amount|floatformat:2 }}</strong></td>
+                                      <td><strong>{{ total_due_amount|floatformat:2 }}</strong></td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                      {% else %}
+                      <div class="table-responsive">
+                          <table class="table table-center">
+                              <thead class="thead-dark">
+                                  <tr>
+                                      <th>INVOICE NO.</th>
+                                      <th>INVOICE DATE</th>
+                                      <th>PO NO.</th>
+                                      <th>PAYMENT TERM</th>
+                                      <th>DUE DATE</th>
+                                      <th>INVOICE AMOUNT</th>
+                                      <th>DUE AMOUNT</th>
+                                      <th>DUE DAYS</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for item in sales_register_within_range %}
+                                  <tr>
+                                      <td><a href="{% url 'invoice_show_pdf' item.id %}" style="color: blue;">{{ item.inv_number }}</a></td>
+                                      <td>{{ item.invoice_date|date:"d-m-Y" }}</td>
+                                      <td>{{ item.invoice_buyer_order_no }}</td>
+                                      <td>{{ item.invoice_payment_terms }}</td>
+                                      <td>{{ item.invoice_due_date|date:"d-m-Y" }}</td>
+                                      <td>{{ item.invoice_total|floatformat:2 }}</td>
+                                      <td>{{ item.invoice_due|floatformat:2 }}</td>
+                                      <td>{{ item.due_days.days }}</td>
+                                  </tr>
+                                  {% endfor %}
+                                  <tr>
+                                      <td colspan="5"><strong>TOTAL</strong></td>
+                                      <td><strong>{{ total_invoice_amount|floatformat:2 }}</strong></td>
+                                      <td><strong>{{ total_due_amount|floatformat:2 }}</strong></td>
+                                      <td></td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                      {% endif %}
+                      
+                  </div>
+              </div>
+              
+             </div>
+          </div>
+       </div>
 </div>
+ </div>
+ <script>
+  function printDiv(divId) {
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+
+</script>
+<script>
+$(document).ready(function() 
+{
+    var sum = 0;
+    $(".dueamount").each(function()
+    {
+      sum += +this.value;
+    });
+    //alert(sum);
+
+    $('.total_dueamount').val((sum).toFixed(2));
+
+    var sum = 0;
+    $(".amount").each(function()
+    {
+      sum += +this.value;
+    });
+    //alert(sum);
+
+    $('.total_amount').val((sum).toFixed(2));
+
+});
+</script>
+
+
+<script>
+    // Before form submission, fill the hidden inputs with values from visible fields
+    document.getElementById('btn_submit').addEventListener('click', function(event) {
+        // Get values from visible inputs
+        var startDate = document.getElementById('from_date').value;
+        var endDate = document.getElementById('to_date').value;
+        var customerName = document.getElementById('visible_customer_name').value;
+    
+        // Set hidden inputs
+        document.getElementById('start_date_hidden').value = '{{ request.session.start_date }}';  // Or use your session variable here
+        document.getElementById('end_date_hidden').value = '{{ request.session.end_date }}';
+        document.getElementById('customer_name_hidden').value = '{{ request.session.customer_name }}';
+    });
+    </script>
 {% endblock main_content %}
+
+
+
+
+

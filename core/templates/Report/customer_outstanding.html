@@ -64,11 +64,12 @@ CRM
                                       <div class="form-group">
                                           <div class=" ">
                                             <label for="customer_Name_id">Customer Name</label>
-                                          
-                                            <select class="form-select" name="employee_name" id="emp_name" required>
-                                              <option value="" disabled selected>SelectCustomer Name</option>
+                                            <select class="form-select" name="customer_name" id="customer_name" required>
+                                              <option value="All">All</option>
+
                                               {% for item in cust %}
                                               <option value="{{ item.customer }}">{{ item.customer }}</option>
+
                                               {% endfor %}
                                           </select>
                                         
