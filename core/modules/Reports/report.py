@@ -1272,6 +1272,7 @@ def display_purchase_register_date_range(request):
             'total_invoice': total_invoice,
             'start_date': start_date_str,
             'end_date': end_date_str,
+            'total_freight':total_freight
         }
         return render(request, template_path.purchase_register_list_report, context)
 
