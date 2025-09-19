@@ -37,16 +37,13 @@ def debit_note_report(request):
         end_date_str = request.POST.get('end_date')
 
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        # print(start_date,'start_date--')
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-        # print(end_date,'end_date---')
 
         request.session['start_date'] = start_date_str
         request.session['end_date'] = end_date_str
 
         # Filter items within the date range
         items_within_range = Debit_Notes.objects.filter(cn_date__range=(start_date, end_date))
-        # print("items_within_range",items_within_range)
         filtered_items = list(items_within_range.values(
         'cn_customer_name', 'cn_date', 'cn_invoice_no', 'cn_total','cn_sub_total','cn_igstval','cn_sgstval','cn_cgstval'))
         total_amount = sum(float(item.cn_total or 0) for item in items_within_range)
@@ -93,16 +90,13 @@ def credit_note_report(request):
         end_date_str = request.POST.get('end_date')
 
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        # print(start_date,'start_date--')
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-        # print(end_date,'end_date---')
 
         request.session['start_date'] = start_date_str
         request.session['end_date'] = end_date_str
 
         # Filter items within the date range
         items_within_range = Credit_Notes.objects.filter(cn_date__range=(start_date, end_date))
-        # print("items_within_range",items_within_range)
         filtered_items = list(items_within_range.values(
         'cn_customer_name', 'cn_date', 'cn_invoice_no', 'cn_total','cn_sub_total','cn_igstval','cn_sgstval','cn_cgstval'))
         total_amount = sum(float(item.cn_total or 0) for item in items_within_range)
@@ -328,7 +322,6 @@ def download_debit_note_excel(request):
 @login_required
 def inventory_summery(request):  
     companies = vendor.objects.values('company_name').distinct().order_by('company_name')
-    print(companies,'companies---')
 
     return render(request, template_path.inventory_sum, {
         'company': companies,
@@ -374,8 +367,7 @@ def display_sales_register_date_range(request):
 
         # Filter items within the date range
         sales_register_within_range = Invoice.objects.filter(invoice_date__range=(start_date, end_date))
-        for item in sales_register_within_range:
-            print(item.inv_number)
+     
         # Calculate totals
         total_invoice = sum(float(item.invoice_due or 0) for item in sales_register_within_range)
         total_cgst = sum(float(item.invoice_cgstval or 0) for item in sales_register_within_range)
@@ -477,7 +469,6 @@ def customer_oustanding_date(request):
                 except Exception as e:
                     print(f"Error processing Performa_Invoice {item.id}: {str(e)}")
 
-            print(f"Modified Items: {len(modified_items)}")  # Debug: Check items
 
             # Calculate totals with validation for numeric values
             total_invoice_amount = sum(
@@ -609,11 +600,9 @@ def vendor_outstanding(request):
         end_date_str = request.POST.get('end_date')
         download_excel = request.POST.get('download_excel')
 
-        print(f"POST Data: vendor_id={customer_nm}, start_date={start_date_str}, end_date={end_date_str}, download_excel={download_excel}")  # Debug
 
         # Validate inputs
         if not all([customer_nm, start_date_str, end_date_str]):
-            print("Missing POST parameters")  # Debug
             return render(request, template_path.vendor_outs_report, {
                 'error_message': 'Missing vendor or date inputs.',
                 'selected_customer': customer_nm or 'all',
@@ -626,7 +615,6 @@ def vendor_outstanding(request):
             datetime.strptime(start_date_str, '%Y-%m-%d')
             datetime.strptime(end_date_str, '%Y-%m-%d')
         except ValueError as e:
-            print(f"Invalid date format: start_date={start_date_str}, end_date={end_date_str}, error={str(e)}")  # Debug
             return render(request, template_path.vendor_outs_report, {
                 'error_message': 'Invalid date format. Please use YYYY-MM-DD.',
                 'selected_customer': customer_nm or 'all',
@@ -655,7 +643,6 @@ def vendor_outstanding(request):
                         Q(purchase_invoice_date__range=[start_date, end_date])
                     ).select_related('purchase_invoice_vendor_name')
                 except vendor.DoesNotExist:
-                    print(f"Vendor DoesNotExist: vendor_id={customer_nm}")  # Debug
                     return render(request, template_path.vendor_outs_report, {
                         'error_message': 'Selected vendor does not exist.',
                         'selected_customer': customer_nm,
@@ -668,12 +655,8 @@ def vendor_outstanding(request):
                 ).select_related('purchase_invoice_vendor_name')
                 customer_detail = ''
 
-            print(f"Invoices Count: {invoices.count()}")  # Debug
-            for invoice in invoices:
-                print(f"Invoice ID: {invoice.id}, Date: {invoice.purchase_invoice_date}, Vendor: {invoice.purchase_invoice_vendor_name_id}")  # Debug
-
+         
             if not invoices.exists():
-                print("No invoices found for query")  # Debug
                 return render(request, template_path.vendor_outs_report, {
                     'error_message': 'No data found for the selected date range.',
                     'selected_customer': customer_nm,
@@ -701,7 +684,6 @@ def vendor_outstanding(request):
                 except Exception as e:
                     print(f"Error processing Purchase_Invoice {invoice.id}: {str(e)}")
 
-            print(f"Vendor Entries: {len(ven_entries)}")  # Debug
 
             ven_entries.sort(key=lambda x: x['date'])
 
@@ -725,15 +707,17 @@ def vendor_outstanding(request):
                     df.insert(0, 'sr_no', range(1, len(df) + 1))
                     df.columns = ['SR.NO.', 'VENDOR NAME', 'INVOICE NO.', 'INVOICE DATE', 'DUE DATE', 'INVOICE AMOUNT', 'DUE DAYS']
                 else:
-                    columns = ['invoice_number', 'date', 'due_date', 'amount', 'due_days']
+                    columns = ['vendor_name', 'invoice_number', 'date', 'due_date', 'amount', 'due_days']
                     df = df[columns]
                     df.insert(0, 'sr_no', range(1, len(df) + 1))
-                    df.columns = ['SR.NO.', 'INVOICE NO.', 'INVOICE DATE', 'DUE DATE', 'INVOICE AMOUNT', 'DUE DAYS']
+                    df.columns = ['SR.NO.', 'VENDOR NAME', 'INVOICE NO.', 'INVOICE DATE', 'DUE DATE', 'INVOICE AMOUNT', 'DUE DAYS']
 
                 # Add total row
-                total_row = pd.DataFrame([[
-                    '', '', '', 'TOTAL' if customer_nm == 'all' else '', total_amount_main, ''
-                ]], columns=df.columns)
+                if customer_nm == 'all':
+                    total_list = ['', '', '', 'TOTAL', '', total_amount_main, '']
+                else:
+                    total_list = ['', '', '', 'TOTAL', '', total_amount_main, '']
+                total_row = pd.DataFrame([total_list], columns=df.columns)
                 df = pd.concat([df, total_row], ignore_index=True)
 
                 # Create Excel file
@@ -747,9 +731,14 @@ def vendor_outstanding(request):
                     subtitle = "Account Payable Summary Details"
                     date_range = f"From {start_date_str} To {end_date_str}"
 
-                    sheet.merge_cells('A1:G1' if customer_nm != 'all' else 'A1:H1')
-                    sheet.merge_cells('A2:G2' if customer_nm != 'all' else 'A2:H2')
-                    sheet.merge_cells('A3:G3' if customer_nm != 'all' else 'A3:H3')
+                    if customer_nm == 'all':
+                        sheet.merge_cells('A1:H1')
+                        sheet.merge_cells('A2:H2')
+                        sheet.merge_cells('A3:H3')
+                    else:
+                        sheet.merge_cells('A1:H1')
+                        sheet.merge_cells('A2:H2')
+                        sheet.merge_cells('A3:H3')
 
                     title_cell = sheet.cell(row=1, column=1)
                     subtitle_cell = sheet.cell(row=2, column=1)
@@ -780,7 +769,10 @@ def vendor_outstanding(request):
                         cell.alignment = Alignment(horizontal='center')
 
                     # Set fixed column widths
-                    column_widths = [15, 15, 15, 20, 15, 15, 15] if customer_nm != 'all' else [15, 15, 15, 15, 20, 15, 15, 15]
+                    if customer_nm == 'all':
+                        column_widths = [15, 15, 15, 15, 20, 15, 15, 15]
+                    else:
+                        column_widths = [15, 15, 15, 20, 15, 15, 15, 15]
                     for i, column_width in enumerate(column_widths, start=1):
                         sheet.column_dimensions[get_column_letter(i)].width = column_width
 
@@ -803,11 +795,9 @@ def vendor_outstanding(request):
                 'total_amount_main': total_amount_main,
                 'vendor_totals': dict(sorted_vendor_totals)
             }
-            print(f"Context: selected_customer={customer_nm}, start_date={start_date_str}, end_date={end_date_str}")  # Debug
             return render(request, template_path.vendor_outs_report, context)
 
         except ValueError as e:
-            print(f"ValueError: {str(e)}, start_date={start_date_str}, end_date={end_date_str}")  # Debug
             return render(request, template_path.vendor_outs_report, {
                 'error_message': 'Invalid date format. Please use YYYY-MM-DD.',
                 'selected_customer': customer_nm or 'all',
@@ -815,7 +805,6 @@ def vendor_outstanding(request):
                 'end_date': end_date_str
             })
         except vendor.DoesNotExist:
-            print(f"Vendor DoesNotExist: vendor_id={customer_nm}")  # Debug
             return render(request, template_path.vendor_outs_report, {
                 'error_message': 'Selected vendor does not exist.',
                 'selected_customer': customer_nm,
@@ -1036,12 +1025,10 @@ def display_invoice_by_date_range(request):
             invoice_ids = Invoice.objects.filter(
                 invoice_date__range=(start_date, end_date)
             ).values_list('id', flat=True)
-            print(f"Invoice IDs: {list(invoice_ids)}")  # Debug: Check Invoice IDs
 
             items_within_range = invoice_items.objects.filter(
                 invoice_id__in=invoice_ids
             )
-            print(f"Invoice Items Count: {items_within_range.count()}")  # Debug: Check item count
 
             if not items_within_range.exists():
                 return render(request, template_path.invoice_date_report, {
@@ -1054,7 +1041,6 @@ def display_invoice_by_date_range(request):
                     id__in=invoice_ids
                 ).select_related('invoice_customer_name_customer')
             }
-            print(f"Invoice Dict: {len(invoice_dict)} invoices loaded")  # Debug: Check loaded invoices
 
             # List to store modified items
             modified_items = []
@@ -1082,7 +1068,6 @@ def display_invoice_by_date_range(request):
                 except Exception as e:
                     print(f"Error processing invoice_item {item.id}: {str(e)}")
 
-            print(f"Modified Items: {len(modified_items)}")  # Debug: Check final items
 
             # Calculate total quantity
             total_quantity = sum(
@@ -1434,7 +1419,6 @@ from django.db.models.functions import Cast
 @login_required
 def inventory_division_date(request):
     inventory_list = inventory.objects.all()  
-    # print(inventory_list, 'inventory_list---') 
     return render(request, template_path.inventory_division_date_report, {'inventory_list': inventory_list})
 
 

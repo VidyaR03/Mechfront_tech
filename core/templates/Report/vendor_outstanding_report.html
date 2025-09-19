@@ -89,9 +89,7 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>SR.NO.</th>
-                                            {% if selected_customer == 'all' %}
                                                 <th>VENDOR NAME</th>
-                                            {% endif %}
                                             <th>INVOICE NO.</th>
                                             <th>INVOICE DATE</th>
                                             <th>DUE DATE</th>
@@ -104,13 +102,11 @@
                                             {% for data in ven_entries %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                {% if selected_customer == 'all' %}
-                                                    <td>{{ data.vendor_name|upper }}</td>
-                                                {% endif %}
+                                                   <td>{{ data.vendor_name|upper }}</td>
                                                 <td><a href="#" style="color:blue;">{{ data.invoice_number }}</a></td>
                                                 <td>{{ data.date|date:"j F Y" }}</td>
                                                 <td>{{ data.due_date|date:"j F Y" }}</td>
-                                                <td style="text-align: right;">{{ data.amount|floatformat:2 }}</td>
+                                                <td style="text-align: center;">{{ data.amount|floatformat:2 }}</td>
                                                 <td>{{ data.due_days }}</td>
                                             </tr>
                                             {% endfor %}
@@ -121,7 +117,9 @@
                                         {% endif %}
                                         <tr>
                                             <td colspan="{% if selected_customer == 'all' %}4{% else %}3{% endif %}"><strong>TOTAL</strong></td>
-                                            <td style="text-align: right;"><strong>{{ total_amount_main|floatformat:2 }}</strong></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="text-align: center;"><strong>{{ total_amount_main|floatformat:2 }}</strong></td>
                                             <td></td>
                                         </tr>
                                     </tbody>
