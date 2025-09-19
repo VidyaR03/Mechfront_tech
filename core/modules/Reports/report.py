@@ -583,7 +583,7 @@ def customer_oustanding_date(request):
 
 @login_required
 def vendor_outstanding(request):
-    vendor_out = vendor.objects.all()
+    vendor_out = vendor.objects.filter(purchase_invoice__isnull=False).distinct()
     total_amount = sum(
         float(t.receive_amount) for t in vendor_out
         if t.receive_amount and isinstance(t.receive_amount, (int, float))

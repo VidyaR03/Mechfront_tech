@@ -80,7 +80,19 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label style="color:black">Vendor</label>
+                                            <select class="form-control" name="vendor_id" id="vendor_id">
+                                                <option value="all">All</option>
+                                                {% for vendor in vendor_out %}
+                                                    <option value="{{vendor.id}}" {% if vendor.id == selected_customer %}selected{% endif %}>{{vendor.company_name }}</option>
+                                                {% endfor %}
+                                            </select> 
+                                        </div>
+                                    </div>
+
+                                <!-- <div class="col-md-3">
                                     <div class="form-group">
                                         <label style="color:black">Vendor</label>
                                         <select class="form-control" name="vendor_id" id="vendor_id">
@@ -90,7 +102,7 @@
                                            {% endfor %}
                                           </select> 
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="col-md-3">
 
