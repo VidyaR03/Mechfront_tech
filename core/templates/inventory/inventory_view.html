@@ -140,6 +140,20 @@ crm
 
                             </div>
                         </div>
+                     <div>
+                            <b>Item Information</b>
+                        {% if inventory_entity_data.unit_per_case == 0.00 %}
+                        <div>
+                            INFREE
+                        </div>
+                        {% else %}
+                        <div>
+                            OUTFREE     
+                        </div>
+                        {% endif %}
+                    </div>
+             
+
 
                     </div>
 

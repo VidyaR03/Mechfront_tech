@@ -333,6 +333,15 @@ Ecoway
                                        <div class="error-message" id="opening_rate_error" style="display:none;color:red;">Please enter the opening rate.</div>
                                    </div>
                                </div>
+                                <div class="col-md-3">
+                                   <div class="form-group">
+                                       <label>Unit/Case</label>
+                                       <input class="form-control" type="number" step="0.01" name="unit_per_case" id="unit_per_case"
+                                        value="{{ inventory_item.unit_per_case }}"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(this.value.split('.').length > 2) this.value = this.value.substring(0, this.value.lastIndexOf('.'));">
+                                       <div class="error-message" id="unit_per_case_error" style="display:none;color:red;">Please enter the Unit Per Case.</div>
+                                   </div>
+                               </div>
                                <div class="col-md-3" hidden>
                                    <div class="form-group">
                                        <label>Godown</label>
