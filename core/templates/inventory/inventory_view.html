@@ -140,19 +140,8 @@ crm
 
                             </div>
                         </div>
-                     <div>
-                            <b>Item Information</b>
-                        {% if inventory_entity_data.unit_per_case == 0.00 %}
-                        <div>
-                            INFREE
-                        </div>
-                        {% else %}
-                        <div>
-                            OUTFREE     
-                        </div>
-                        {% endif %}
-                    </div>
-             
+
+              
 
 
                     </div>
@@ -253,12 +242,16 @@ crm
                                  <th>Rate</th>
                                  <th>Unit</th>
                                  <th>Qty</th>
+                                 <th>IN </th>
+                                 <th>OUT </th>
                                  <th>Balance</th>
                               </tr>
                            </thead>
 <tbody>
     <tr>
         <td>Opening Stock</td>
+        <td></td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -294,6 +287,22 @@ crm
         <td>{{ data.rate|floatformat:2 }}</td>
         <td>{{ data.unit }}</td>
         <td>{{ data.quantity|floatformat:2 }}</td>
+                {# Display IN Qty for Purchase, OUT Qty for Sales #}
+                <td>
+                    {% if data.particular == "Purchase" %}
+                        {{ data.quantity|floatformat:2 }}
+                    {% else %}
+                        &nbsp;  {# empty if not Purchase #}
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if data.particular == "Sales" %}
+                        {{ data.quantity|floatformat:2 }}
+                    {% else %}
+                        &nbsp;  {# empty if not Sales #}
+                    {% endif %}
+                </td>
         <td>{{ data.balance|floatformat:2 }}</td>
     </tr>
     {% endfor %}
@@ -302,163 +311,12 @@ crm
                         </table>
                      </div>
 
-                     <div class="tab-pane" id="bottom-tab5">
-                        <table class="invoice-table table table-center mb-0">
-                           <thead>
-                              <tr>
-                                 <th>Date</th>
-                                 <th>Note</th>
-                                 <th>Type</th>
-                                 <th>Adjustment
-                                 </th>
-                                 <th class="text-end">action</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              <tr>
-                                 <td>24-11-2022</td>
-                                 <td><a href="" data-bs-toggle="modal" data-bs-target="#add_items">test</a></td>
-                                 <td> Increse QTY </td>
-                                 <td>1</td>
-                                 <td class="text-end"><a href="javascript:void(0);" class="btn btn-sm btn-white text-danger me-2"><i class="far fa-trash-alt me-1"></i></a></td>
-                              </tr>
-                              <tr>
-                                 <td>24-11-2022</td>
-                                 <td><a href="" data-bs-toggle="modal" data-bs-target="#add_items">test</a></td>
-                                 <td> Increse QTY </td>
-                                 <td>1</td>
-                                 <td class="text-end"><a href="javascript:void(0);" class="btn btn-sm btn-white text-danger me-2"><i class="far fa-trash-alt me-1"></i></a></td>
-                              </tr>
-                           </tbody>
-                        </table>
-                     </div>
+
 
                     <div class="tab-pane" id="bottom-tab6">
                       
-                        <table class="invoice-table table table-border">
-                            <thead>
-                                <tr>
-                                    <th>Godown</th>
-                                    <th>Quantity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
 
-
-                            </tbody>
-                            <div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
-
-                                <h4>A PHP Error was encountered</h4>
-                                
-                                <p>Severity: Notice</p>
-                                <p>Message:  Undefined variable: godown_list</p>
-                                <p>Filename: admin/view_inventory.php</p>
-                                <p>Line Number: 460</p>
-                                
-                                
-                                    <p>Backtrace:</p>
-                                    
-                                        
-                                    
-                                        
-                                    
-                                        
-                                            <p style="margin-left:10px">
-                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/views/admin/view_inventory.php<br />
-                                            Line: 460<br />
-                                            Function: _error_handler			</p>
-                                
-                                        
-                                    
-                                        
-                                    
-                                        
-                                    
-                                        
-                                            <p style="margin-left:10px">
-                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/controllers/Admin.php<br />
-                                            Line: 827<br />
-                                            Function: view			</p>
-                                
-                                        
-                                    
-                                        
-                                    
-                                        
-                                            <p style="margin-left:10px">
-                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/index.php<br />
-                                            Line: 315<br />
-                                            Function: require_once			</p>
-                                
-                                        
-                                    
-                                
-                                </div>
-                                <div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
-                                
-                                <h4>A PHP Error was encountered</h4>
-                                
-                                <p>Severity: Warning</p>
-                                <p>Message:  Invalid argument supplied for foreach()</p>
-                                <p>Filename: admin/view_inventory.php</p>
-                                <p>Line Number: 460</p>
-                                
-                                
-                                    <p>Backtrace:</p>
-                                    
-                                        
-                                    
-                                        
-                                    
-                                        
-                                            <p style="margin-left:10px">
-                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/views/admin/view_inventory.php<br />
-                                            Line: 460<br />
-                                            Function: _error_handler			</p>
-                                
-                                        
-                                    
-                                        
-                                    
-                                        
-                                    
-                                        
-                                            <p style="margin-left:10px">
-                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/application/controllers/Admin.php<br />
-                                            Line: 827<br />
-                                            Function: view			</p>
-                                
-                                        
-                                    
-                                        
-                                    
-                                        
-                                            <p style="margin-left:10px">
-                                            File: /home/olatechs/public_html/supreenometals.olatechs.in/index.php<br />
-                                            Line: 315<br />
-                                            Function: require_once			</p>
-                                
-                                        
-                                    
-                                
-                                </div>                                          </tbody>
-                                                                       </table>
-                                                                    </div>
-                                
-                                                                 </div>
-                                                              </div>
-                                                           </div>
-                                                        </div>
-                                                      
-                                                     </div>
-                                
-                                                  </div>
-                                               </div>
-                                
-                                            </div>
-                                         </div>
-                                      </div>
-                                
+                                                         
                                          </div>
                                       </div>
                                       </div>

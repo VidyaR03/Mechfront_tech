@@ -143,12 +143,7 @@
                                             {% endif %}
                                         
                                         </td>
-                                        <!-- <td>
-                                            <a href="{% url 'invoice_show_pdf' t.id %}" style="color:blue;">{{t.invoice_customer_name.customer}}</a>
-                                        </td> -->
-                                        <!-- <td>
-                                            {{t.invoice_customer_name.dc_customer_name.customer}}
-                                        </td> -->
+
                                         <td>
                                             <a href="{% url 'invoice_show_pdf' t.id %}" style="color:blue;">{{t.invoice_sales_person|upper}}</a>
                                         </td>
