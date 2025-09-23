@@ -1161,6 +1161,8 @@ class Purchase_Invoice(models.Model):
     cn_total_amt_word = models.CharField(max_length=255,blank=True)
     cn_packaging_forwording_amt_amt = models.CharField(max_length=255,blank=True)
     cn_freight_percentage_amt_amt = models.CharField(max_length=255,blank=True)
+    pi_vendor_code = models.CharField(max_length=256, blank=True)
+
 
 
 

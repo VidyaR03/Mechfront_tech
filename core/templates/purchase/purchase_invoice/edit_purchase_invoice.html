@@ -80,17 +80,36 @@
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
-                                            <label>Vendor  Company Name  <span style="color: red;">*</span></label>
-                                            <div class="form-group">
-                                                <select id="vendor_name_id" name="vendor_name" class="form-control" required>
-                                                    <option value="" hidden>Choose...</option>
-                                                    {% for i in vendor_name %}
-                                                    <option value="{{i.id}}" {% if purchaseinvoice_data.purchase_invoice_vendor_name.id == i.id %} selected {% endif %}>{{i.company_name}}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
+                                            <!-- Hidden ID for vendor -->
+                                            <input type="hidden" id="vendor_name_id" name="vendor_name_id" value="{{ purchaseinvoice_data.purchase_invoice_vendor_name.id }}">
+                                            
+                                            <label for="vendor_name">Vendor Company Name <span style="color: red;">*</span></label>
+                                            <input list="vendor_Name_list"
+                                                id="vendor_name"
+                                                name="vendor_name"
+                                                class="form-control"
+                                                placeholder="Select Vendor"
+                                                value="{{ purchaseinvoice_data.purchase_invoice_vendor_name.company_name }}"
+                                                required>
+                                            <datalist id="vendor_Name_list">
+                                                {% for i in vendor_name %}
+                                                    <option value="{{ i.company_name }}"
+                                                            data-id="{{ i.id }}"
+                                                            data-code="{{ i.vendor_code }}">
+                                                    </option>
+                                                {% endfor %}
+                                            </datalist>
                                         </div>
                                     </div>
+
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Vendor Code <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="vendor_code" id="vendor_code"
+                                                value="{{ purchaseinvoice_data.purchase_invoice_vendor_name.vendor_code }}" readonly>
+                                        </div>
+                                    </div>
+
 
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -2030,6 +2049,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
     });
+</script>
+
+
+<script>
+    $('#vendor_name').on('input', function () {
+    var input = this.value;
+    var list = $('#vendor_Name_list').find('option');
+    var found = false;
+
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].value === input) {
+            $('#vendor_name_id').val(list[i].dataset.id);
+            $('#vendor_code').val(list[i].dataset.code);
+            found = true;
+            break;
+        }
+    }
+
+    // If user types something invalid (not in list), clear hidden values
+    if (!found) {
+        $('#vendor_name_id').val('');
+        $('#vendor_code').val('');
+    }
+});
+
 </script>
 
 {% endblock main_content %}

@@ -45,14 +45,18 @@ def add_purchaseinvoice_data(request):
         purchase_invoice_due_date = datetime.strptime(purchase_invoice_due_date_str, '%d-%m-%Y').date() if purchase_invoice_due_date_str else date.today()
         purchase_invoice_po_date = datetime.strptime(purchase_invoice_grn_date_str, '%d-%m-%Y').date() if purchase_invoice_grn_date_str else date.today()
         purchase_invoice_grn_date = datetime.strptime(purchase_invoice_grn_date_str, '%d-%m-%Y').date() if purchase_invoice_grn_date_str else date.today()
-       
+        vendor_id = request.POST.get('vendor_name_id')
 
-        vendor_id = request.POST['vendor_name']
+
+
+
         purchase_invoice_object = {
             'purchase_invoice_date':purchase_invoice_date,
-            'purchase_invoice_vendor_name':vendor.objects.filter(id=vendor_id).first(),
+            'purchase_invoice_vendor_name': vendor.objects.filter(id=vendor_id).first(),
+
             'purchase_due_date':purchase_invoice_due_date,
             'purchase_invoice_source_supply':request.POST['place_of_supply'],
+            'pi_vendor_code':request.POST['vendor_code'],
             'purchase_invoice_destination_of_supply':request.POST['destination_of_supply'],
             'purchase_invoice_PO_no':request.POST['order_no'],
             'purchase_invoice_PO_date':purchase_invoice_po_date,
@@ -140,6 +144,12 @@ def edit_purchaseinvoice_data(request, id):
             }
         return render(request, template_path.purchase_invoice_edit, context)
     elif request.method == "POST":
+        vendor_id = request.POST.get("vendor_name_id")  
+        if vendor_id:
+            po_vendor = vendor.objects.filter(id=vendor_id).first()
+        else:
+            po_vendor = None    
+
         purchaseinvoice_data = get_object_or_404(Purchase_Invoice, id = id)
         id = purchaseinvoice_data.id 
         purchase_invoice_date_str = request.POST['bill_date']
@@ -154,9 +164,10 @@ def edit_purchaseinvoice_data(request, id):
         purchase_invoice_object = {
             'id': id,
             'purchase_invoice_date':purchase_invoice_date,
-            'purchase_invoice_vendor_name':vendor.objects.filter(id=request.POST['vendor_name']).first(),
+            'purchase_invoice_vendor_name':po_vendor,
             'purchase_due_date':purchase_invoice_due_date,
             'purchase_invoice_source_supply':request.POST['place_of_supply'],
+            'pi_vendor_code':request.POST['vendor_code'],
             'purchase_invoice_destination_of_supply':request.POST['destination_of_supply'],
             'purchase_invoice_PO_no':request.POST['order_no'],
             'purchase_invoice_PO_date':purchase_invoice_po_date,

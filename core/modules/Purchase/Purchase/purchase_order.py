@@ -77,7 +77,7 @@ def add_purchase_order_data(request):
             'po_no':po_no,
             'po_date':po_date,
             'po_vendor_code':request.POST['vendor_code'],
-            'po_vendor_name':vendor.objects.filter(id=request.POST['vendor_name']).first(),
+            'po_vendor_name': vendor.objects.filter(id=request.POST['vendor_name_id']).first(),
             'po_payment_terms':request.POST['payment_term'],
             'po_delivery_date':po_delivery_date,
             'po_delivery_type':request.POST['delivery_type'],
@@ -168,11 +168,18 @@ def edit_purchase_order_data(request,id):
             'all_dispatch_through':all_dispatch_through,
             # 'vendor_name' : purchase_order_data.vendor_name,
             # 'dispatch_through' : purchase_order_data.dispatch_through,
-            'item_data': item_data
+            'item_data': item_data,
+             "vendor_name": vendor.objects.all()
             }
 
         return render(request, template_path.purchase_order_edit, context)
     elif request.method == "POST":
+        vendor_id = request.POST.get("vendor_name_id")  # comes from hidden field
+        if vendor_id:
+            po_vendor = vendor.objects.filter(id=vendor_id).first()
+        else:
+            po_vendor = None    
+
 
         purchase_order_data = get_object_or_404(Purchase_order, id=id)
         id = purchase_order_data.id
@@ -185,7 +192,7 @@ def edit_purchase_order_data(request,id):
             'po_no':request.POST['purchase_order_no'],
             'po_date':po_date,
             'po_vendor_code':request.POST['vendor_code'],
-            'po_vendor_name':vendor.objects.filter(id=request.POST['vendor_name']).first(),
+            'po_vendor_name':po_vendor,
             'po_payment_terms':request.POST['payment_term'],
             'po_delivery_date':po_delivery_date,
             'po_delivery_type':request.POST['delivery_type'],

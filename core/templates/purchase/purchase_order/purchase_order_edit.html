@@ -51,20 +51,7 @@
                                 value="{{purchase_order_data.id}}">
                             <div class="invoices-main-form">
                                 <div class="row">
-                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                                <div class="form-group">
-                                                    <label style="color:">Purchase Order No.</label>
-                                                    <input type="text" class="form-control" name="purchase_order" id="purchase_order" value="">
-                                                </div>
-                                            </div> -->
-
-                                    <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label >Purchase Order No.</label>
-                                            <input type="text" class="form-control" name="purchase_order"
-                                                id="purchase_order" value="{{purchase_order_data.po_no}}">
-                                        </div>
-                                    </div> -->
+                               
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Purchase Order No <span style="color: red;">*</span></label>
@@ -130,28 +117,39 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label >Vendor Code</label>
-                                            <input type="text" class="form-control" name="vendor_code" id="vendor_code"
-                                                value="{{purchase_order_data.po_vendor_code}}">
-                                        </div>
-                                    </div>
-
+                             
                                     
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                        <label>Vendor Company Name <span class="text-danger">*</span></label>
                                         <div class="form-group">
-                                            <select id="vendor_name_id" name="vendor_name" class="form-control" required>
-                                                <option value="" hidden selected disabled>Choose...</option>
-                                                {% for i in all_vendor_name %}
-                                                <option value="{{i.id}}" {% if i.id == purchase_order_data.po_vendor_name.id %} selected {% endif %}>{{i.company_name}}</option>
+                                            <!-- Hidden ID for vendor -->
+                                            <input type="hidden" id="vendor_name_id" name="vendor_name_id" value="{{ purchase_order_data.po_vendor_name.id }}">
+                                            
+                                            <label for="vendor_name">Vendor Company Name <span style="color: red;">*</span></label>
+                                            <input list="vendor_Name_list"
+                                                id="vendor_name"
+                                                name="vendor_name"
+                                                class="form-control"
+                                                placeholder="Select Vendor"
+                                                value="{{ purchase_order_data.po_vendor_name.company_name }}"
+                                                required>
+                                            <datalist id="vendor_Name_list">
+                                                {% for i in vendor_name %}
+                                                    <option value="{{ i.company_name }}"
+                                                            data-id="{{ i.id }}"
+                                                            data-code="{{ i.vendor_code }}">
+                                                    </option>
                                                 {% endfor %}
-                                            </select>
-                                            <div class="invalid-feedback">Please select a vendor company name.</div>
+                                            </datalist>
                                         </div>
                                     </div>
 
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Vendor Code <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="vendor_code" id="vendor_code"
+                                                value="{{ purchase_order_data.po_vendor_name.vendor_code }}" readonly>
+                                        </div>
+                                    </div>
 
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
@@ -1930,102 +1928,7 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
         updateTaxFields();
     }
     </script>
-<!-- 
-<script>
-    $(document).ready(function() {
-        $('#gst_option').change(function() {
-            updateGST();
-            updateTotalInWords();
-
-        });
     
-        // Assuming there's a trigger for the subtotal calculation
-        $('#freight_amount, .totalamt').on('input', function() {
-            subtotal();
-            updateTotalInWords();
-
-        });
-    });
-    
-    function updateGST() {
-        var gstOption = $('#gst_option').val();
-        if (gstOption === "Interstate") {
-            // Apply 18% GST and show IGST field
-            $('#cgstper').val("0%");
-            $('#sgstper').val("0%");
-            $('#igstper').val("18%");
-            $('#igst_id').show();
-        } else if (gstOption === "Intrastate") {
-            // Apply 9% CGST and 9% SGST and show fields
-            $('#cgstper').val("9%");
-            $('#sgstper').val("9%");
-            $('#igstper').val("0%");
-            $('#igst_id').hide();
-        }
-        subtotal();
-        updateTotalInWords();
-
-    }
-    
-    function subtotal() {
-        var freight = $('#freight').val() || 0;
-        var totalamt = 0;
-        $(".totalamt").each(function() {
-            totalamt += +this.value || 0;
-        });
-    
-        sub_total =  totalamt;
-        $('.subtotal').val(sub_total);
-    
-        var gstOption = $('#gst_option').val();
-        var gstRate = 0;
-        var cgstRate = 0;
-        var sgstRate = 0;
-    
-        if (gstOption === "Interstate") {
-            gstRate = 18;
-            cgstRate = 0;
-            sgstRate = 0;
-        } else if (gstOption === "Intrastate") {
-            gstRate = 0;
-            cgstRate = 9;
-            sgstRate = 9;
-        }
-    
-        var cgstAmount = (sub_total * cgstRate) / 100;
-        var sgstAmount = (sub_total * sgstRate) / 100;
-        var igstAmount = (sub_total * gstRate) / 100;
-    
-        if (gstOption === "Interstate") {
-            $('#cgst').val("0.00");
-            $('#sgst').val("0.00");
-            $('#igst').val(igstAmount.toFixed(2));
-        } else if (gstOption === "Intrastate") {
-            $('#cgst').val(cgstAmount.toFixed(2));
-            $('#sgst').val(sgstAmount.toFixed(2));
-            $('#igst').val("0.00");
-        }
-        var pf_amount=$('#packaging_forwording_amount').val();
-        var fre_amount=$('#freight_amount').val();
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var fr_percentage = parseFloat(document.getElementById('freight_percentage').value);
-        var f_Percentage_amt = (subtotal * fr_percentage) / 100;
-
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value);
-        var pfAmount_amt = (subtotal * percentage) / 100;
-        
-
-    
-        var totalTaxAmount = cgstAmount + sgstAmount + igstAmount;
-        $('.totaltaxamt').val(totalTaxAmount.toFixed(2));
-    
-        var finalamt = sub_total + totalTaxAmount + parseInt(pf_amount) + parseInt(fre_amount) + f_Percentage_amt + pfAmount_amt;
-        $('.finalamt').val(finalamt.toFixed(2));
-        updateTotalInWords();
-    }
-    </script>
-     -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
 <script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 
@@ -2232,60 +2135,6 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
     };
 </script>
 
-<!-- 
-<script>
-    function test(n) {
-        if (n < 0) return false;
-        const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-        const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-        if (n === 0) return 'Zero';
-
-        function translate(n) {
-            let word = "";
-            if (n < 10) {
-                word = single_digit[n] + ' ';
-            } else if (n < 20) {
-                word = double_digit[n - 10] + ' ';
-            } else if (n < 100) {
-                const rem = translate(n % 10);
-                word = below_hundred[Math.floor(n / 10) - 2] + ' ' + rem;
-            } else if (n < 1000) {
-                word = single_digit[Math.floor(n / 100)] + ' Hundred ' + translate(n % 100);
-            } else if (n < 1000000) {
-                word = translate(Math.floor(n / 1000)).trim() + ' Thousand ' + translate(n % 1000);
-            } else if (n < 1000000000) {
-                word = translate(Math.floor(n / 1000000)).trim() + ' Million ' + translate(n % 1000000);
-            } else {
-                word = translate(Math.floor(n / 1000000000)).trim() + ' Billion ' + translate(n % 1000000000);
-            }
-            return word;
-        }
-
-        let [integerPart, decimalPart] = n.toString().split('.');
-
-        let result = translate(parseInt(integerPart)).trim();
-
-        if (decimalPart) {
-            result += ' and ' + translate(parseInt(decimalPart)) + ' Cents';
-        }
-
-        return result.trim() + '.';
-    }
-
-    function updateTotalInWords() {
-        const totalAmt = parseFloat(document.getElementById('totalamt').value);
-        const totalAmtInWords = isNaN(totalAmt) ? '' : test(totalAmt);
-        document.getElementById('totalamt_word').value = totalAmtInWords;
-    }
-
-    window.onload = function() {
-        document.getElementById('totalamt').addEventListener('input', updateTotalInWords);
-        updateTotalInWords(); // Update on page load
-    };
-</script> -->
-
 
 <script>
     // Function to validate email
@@ -2312,6 +2161,30 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
             emailErrorMessage.style.display = 'none';
         }
     }
+</script>
+
+<script>
+    $('#vendor_name').on('input', function () {
+    var input = this.value;
+    var list = $('#vendor_Name_list').find('option');
+    var found = false;
+
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].value === input) {
+            $('#vendor_name_id').val(list[i].dataset.id);
+            $('#vendor_code').val(list[i].dataset.code);
+            found = true;
+            break;
+        }
+    }
+
+    // If user types something invalid (not in list), clear hidden values
+    if (!found) {
+        $('#vendor_name_id').val('');
+        $('#vendor_code').val('');
+    }
+});
+
 </script>
 
 
