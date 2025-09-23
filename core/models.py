@@ -454,6 +454,7 @@ class quotation(models.Model):
     q_quotation_number = models.CharField(max_length=250,blank=True)
     q_packaging_forwording_amt_amt = models.CharField(max_length=512,blank=True)
     q_freight_percentage_amt_amt = models.CharField(max_length=255,blank=True)
+    q_customer_code = models.CharField(max_length=255,blank=True)
 
 
 
@@ -523,6 +524,7 @@ class sales_order(models.Model):
     # so_packaging_forwording = models.CharField(max_length=512,blank=True)
     so_supply_place = models.CharField(max_length=256,blank=True)
     so_destination = models.CharField(max_length=256,blank=True)
+    so_customer_code = models.CharField(max_length=256,blank=True)
     so_dispatch = models.ForeignKey(transporter, on_delete=models.CASCADE, null=True, blank=True)
     so_sales_person = models.CharField(max_length=256,blank=True)
     so_invoice_type = models.CharField(max_length=256,blank=True)
@@ -621,6 +623,7 @@ class delivery_challan(models.Model):
     dc_dispatch = models.ForeignKey(transporter, on_delete=models.CASCADE, null=True, blank=True)
     dc_sales_order_no = models.CharField(max_length=256,blank=True)
     dc_delivery_type = models.CharField(max_length=256,blank=True)
+    dc_customer_code = models.CharField(max_length=256,blank=True)
     dc_buyer_order_no = models.CharField(max_length=256,blank=True)
     dc_buyer_order_date = models.DateField()
     dc_shipping_address = models.CharField(max_length=256,blank=True)
@@ -690,6 +693,7 @@ class Invoice(models.Model):
     invoice_eway_bill_no = models.CharField(max_length=256, blank=True)
     invoice_supply_place = models.CharField(max_length=256,blank=True)
     invoice_delivery_no = models.CharField(max_length=256,blank=True)
+    in_customer_code = models.CharField(max_length=256,blank=True)
     invoice_destination = models.CharField(max_length=256,blank=True)
     invoice_landing_LR_RR_No = models.CharField(max_length=255,blank=True)
     invoice_dispatch = models.ForeignKey(transporter, on_delete=models.CASCADE, null=True, blank=True)

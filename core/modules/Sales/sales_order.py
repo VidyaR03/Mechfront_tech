@@ -89,6 +89,7 @@ def add_sales_order_data(request):
             'so_order_confirmation_no':request.POST['order_confirmation_no'],
             'so_supply_place':request.POST['place_of_supply'],
             'so_destination':request.POST['destination'],
+            'so_customer_code':request.POST['customer_code'],
             'so_dispatch':request.POST['transporter_name'],
             'so_sales_person':request.POST['sales_person'],
             # 'so_contact_person_email':request.POST['contact_person_email'],
@@ -225,6 +226,7 @@ def edit_sales_order_data(request,id):
             'so_order_confirmation_no':request.POST['order_confirmation_no'],
             'so_supply_place':request.POST['place_of_supply'],
             'so_destination':request.POST['destination'],
+            'so_customer_code':request.POST['customer_code'],
             'so_sales_person':request.POST['sales_person'],
             # 'so_contact_person_email':request.POST['contact_person_email'],
             'so_invoice_type':request.POST['invoice_type'],
@@ -320,21 +322,6 @@ def delete_sales_order_data(request, id):
     return redirect('sales_order_list') 
 
 
-
-# @csrf_exempt
-# @require_POST
-# def get_item_code_details(request):
-#     name_starts_with = request.POST.get('name_startsWith', '')[:2]
-#     # items_details = request.POST.getlist('itemsdetails[]', '')
-#     items = inventory.objects.filter(inventory_name__istartswith=name_starts_with)
-#     data = []
-#     for item in items:
-#         item_data = (
-#             f"{item.item_code}|{item.inventory_name}|{item.hsn}|1|"
-#             f"{item.default_discount}|{item.intrastate_gst}|{item.interstate_gst}|0|"
-#         )
-#         data.append(item_data)
-#     return JsonResponse(data, safe=False)
 
 
 def show_pdf(request, id):

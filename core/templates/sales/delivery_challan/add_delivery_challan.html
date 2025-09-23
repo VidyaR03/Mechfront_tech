@@ -96,6 +96,7 @@ Ecoway
                                                         data-id="{{ sale.so_customer_name.id }}"
                                                         data-id_sales="{{ sale.id }}"
                                                         data-contact_person="{{ sale.so_sales_person }}"
+                                                        data-customer_code="{{ sale.so_customer_code }}"
                                                         data-so_customer_name="{{ sale.so_customer_name.customer }}"
                                                         data-so_igstval="{{ sale.so_igstval }}"
                                                         data-so_cgstval="{{ sale.so_cgstval }}"
@@ -262,6 +263,12 @@ Ecoway
                                         <div class="form-group">
                                             <label>Sales Person</label>
                                             <input type="text" class="form-control" name="sales_person" id="sales_person">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Customer Code</label>
+                                            <input type="text" class="form-control" name="dc_customer_code" id="dc_customer_code" readonly>
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -687,6 +694,7 @@ $('#customer_Name').on('input', function() {
             $('#sgst').val(option.dataset.dc_sgstval);
             $('#transporter_name_id').val(option.dataset.dc_dispatch);
             $('#sales_person').val(option.dataset.contact_person);
+            $('#dc_customer_code').val(option.dataset.customer_code);
             $('#shipping_address').val(option.dataset.dc_shipping_address);
             $('#payment_term').val(option.dataset.dc_payment_terms);
             $('#place_of_supply').val(option.dataset.dc_supply_place);

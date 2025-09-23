@@ -107,6 +107,7 @@ Ecoway - Add Invoice
                                                         data-id="{{ lead.dc_customer_name_id }}"
                                                         data-dc_id="{{ lead.id }}"
                                                         data-contact_person="{{ lead.dc_customer_name.customer }}"
+                                                        data-customer_code="{{ lead.dc_customer_code }}"
                                                         data-dc_destination="{{ lead.dc_destination }}"
                                                         data-gst_option="{{ lead.gst_option }}"
                                                         data-dc_number="{{ lead.dc_number }}"
@@ -134,6 +135,12 @@ Ecoway - Add Invoice
                                         <div class="form-group">
                                             <label class="required">Contact Person</label>
                                             <input type="text" class="form-control" name="contact_person_name" id="contact_person_name" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label class="required">Customer Code</label>
+                                            <input type="text" class="form-control" name="in_customer_code" id="in_customer_code" required>
                                         </div>
                                     </div>
 
@@ -710,6 +717,7 @@ $('#customer_Name').on('input', function() {
             $('#customer_id').val(option.dataset.id);
             $('#dc_id').val(option.dataset.dc_id);
             $('#contact_person_name').val(option.dataset.contact_person);
+            $('#in_customer_code').val(option.dataset.customer_code);
             $('#destination').val(option.dataset.dc_destination);
             $('#order_no').val(option.dataset.dc_number);
             $('#gst_option').val(option.dataset.gst_option);

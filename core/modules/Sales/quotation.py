@@ -87,6 +87,7 @@ def add_quotation_data(request):
             'q_delivery':request.POST['delivery'],
             'q_contact_person_name':request.POST['contact_person_name'],
             'q_contact_person_email':request.POST['contact_person_email'],
+            'q_customer_code':request.POST['customer_code'],
             'q_reference':request.POST['reference'],
             'q_packing':request.POST['packing'],
             'q_dispatch':transporter.objects.filter(id=request.POST['transporter_name']).first(),
@@ -291,6 +292,7 @@ def edit_quotation_data(request, id):
         quotation_data.q_delivery = request.POST['delivery']
         quotation_data.q_contact_person_name = request.POST['contact_person_name']
         quotation_data.q_contact_person_email = request.POST['contact_person_email']
+        quotation_data.q_customer_code = request.POST['customer_code']
         quotation_data.q_reference = request.POST['reference']
         quotation_data.q_packing = request.POST['packing']
         quotation_data.q_dispatch = transporter.objects.filter(id=request.POST['transporter_name']).first()

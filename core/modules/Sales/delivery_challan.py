@@ -138,6 +138,7 @@ def add_deliverychallan_data(request):
             'dc_delivery_type':request.POST['delivery_type'],
             'dc_buyer_order_date':dc_buyer_order_date,
             'dc_buyer_order_no':request.POST['buyer_order_no'],
+            'dc_customer_code':request.POST['dc_customer_code'],
             'dc_sales_order_no':request.POST['customer_Name'],
             'dc_shipping_address':request.POST['shipping_address'],
             'dc_sales_person':request.POST['sales_person'],
@@ -243,6 +244,7 @@ def edit_delivery_challan_data(request, id):
             'dc_supply_place':request.POST['place_of_supply'],
             'dc_destination':request.POST['destination'],
             'dc_delivery_type':request.POST['delivery_type'],
+            'dc_customer_code':request.POST['dc_customer_code'],
             'dc_buyer_order_date':dc_buyer_order_date,
             'dc_buyer_order_no':request.POST['buyer_order_no'],
             'dc_sales_order_no':request.POST['customer_Name'],
@@ -376,66 +378,7 @@ def delivery_chalan_pdf(request, id):
 
         dc_id = 'N/A'
 
-    # hsn_per = defaultdict(float)
-    # hsn_totals = defaultdict(float)
-    # hsn_tax_amt = defaultdict(float)
-
-    # for item in items:
-    #     try:
-    #         amount = float(item.dc_total)
-    #         hsn_totals[item.dc_hsn] += amount
-    #         if dchallan.gst_option == 'Interstate':  #only for igst >>   #Intrastate for sgst and cgst
-    #             pass
-    #         hsn_per[item.dc_hsn] = float(item.dc_tax_rate)
-    #         hsn_per['total'] += float(item.dc_tax_amount)
-    #     except (ValueError, TypeError):
-    #         continue  
-
-    
-    # hsn_tax_details = []
-
-
-    # print(hsn_totals,"%%", hsn_per, "##")
    
-    # for hsn, taxable_value in hsn_totals.items():
-    #     try:
-    #         # Remove '%' symbol and convert to float
-    #         igst_rate_str = hsn_per[hsn]
-    #         cgst_rate = float(igst_rate_str)/2
-    #         cgst_amount = (taxable_value * cgst_rate) / 100
-    #         print(f"{cgst_amount} = {taxable_value} * {(cgst_rate / 100)}",'cgst_amount---', cgst_amount)
-    #     except (ValueError, TypeError):
-    #         cgst_rate = cgst_amount = 0.0
-    #     try:
-    #         igst_rate_str = hsn_per[hsn]
-    #         sgst_rate = float(igst_rate_str)/2
-    #         sgst_amount = taxable_value * (sgst_rate / 100)
-    #         print(sgst_amount)
-    #     except (ValueError, TypeError):
-    #         sgst_rate = sgst_amount = 0.0
-
-    #     hsn_tax_details.append({
-    #         'hsn': hsn,
-    #         'taxable_value': taxable_value,
-    #         'cgst_rate': cgst_rate,
-    #         'cgst_amount': cgst_amount,
-    #         'sgst_rate': sgst_rate,
-    #         'sgst_amount': sgst_amount
-    #     })
-
-
-    #  hsn_tax_details.append({
-    #         'hsn': hsn,
-    #         'taxable_value': taxable_value,
-    #         'cgst_rate': cgst_rate,
-    #         'cgst_amount': cgst_amount,
-    #         'sgst_rate': sgst_rate,
-    #         'sgst_amount': sgst_amount
-    #     })
-
-    # print(hsn_tax_details,"$$$")
-
-
     p = inflect.engine()
     total_amount_in_words = p.number_to_words(dchallan.dc_total)
     total_amount_in_words = total_amount_in_words.title()
