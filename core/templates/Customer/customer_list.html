@@ -109,7 +109,9 @@
                   <tr>
                   <tr>
                     <th>Sr No.</th>
+                    <th>Customer Code</th>
                     <th>Customer Name</th>
+                    <th>Licence Number</th>
                     <th>Email</th>
                     <th>Company Name</th>
                     <th>Phone</th>
@@ -129,7 +131,13 @@
                         <a style="color: blue;" href="{% url 'show_customer' t.id%}">{{t.customer}}  </a>
                     </td> -->
                     <td>
+                      {{t.customer_code}}  
+                  </td>
+                    <td>
                       {{t.customer}}  
+                  </td>
+                    <td>
+                      {{t.licence_no}}  
                   </td>
                     <td>
                       {{ t.cust_email }}

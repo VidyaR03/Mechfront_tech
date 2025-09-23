@@ -90,6 +90,7 @@ def add_customer(request):
             'branch_name': request.POST['branch_name'],
             'ifsc_code': request.POST['ifsc_code'],
             'banking_address': request.POST['banking_address'],
+            'licence_no': request.POST['licence_no'],
 
         }
         
@@ -244,6 +245,7 @@ def edit_customer(request, customer_id):
         customer_instance.branch_name = request.POST['branch_name']
         customer_instance.ifsc_code = request.POST['ifsc_code']
         customer_instance.banking_address = request.POST['banking_address']
+        customer_instance.licence_no = request.POST['licence_no']
 
 
         

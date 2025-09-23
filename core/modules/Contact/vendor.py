@@ -57,6 +57,7 @@ def add_vendor(request):
             'account_number': request.POST['account_number'],
             'branch_name': request.POST['branch_name'],
             'ifsc_code': request.POST['ifsc_code'],
+            'licence_no': request.POST['licence_no'],
         }
 
         gst_number = request.POST['gst_number']
@@ -141,6 +142,7 @@ def edit_vendor(request, vendor_id):
         vendor_instance.account_number = request.POST['account_number']
         vendor_instance.branch_name = request.POST['branch_name']
         vendor_instance.ifsc_code = request.POST['ifsc_code']        
+        vendor_instance.licence_no = request.POST['licence_no']        
 
         vendor_instance.save()
         messages.success(request, 'Vendor Updated successfully.')

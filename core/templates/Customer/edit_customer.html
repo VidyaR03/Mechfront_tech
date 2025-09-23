@@ -114,7 +114,7 @@ CRM
                                  <div class="tab-pane show active" id="bottom-tab1">
                                     <div class="row">
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">GST Treatment :</label>
+                                          <label class="col-lg-3 col-form-label">GST Treatment:</label>
                                           <div class="col-lg-9">
                                              <select class="form-control" name="gst_treatment">
                                                 <option>{{customer_instance.gst_treatment}}</option>
@@ -124,10 +124,10 @@ CRM
                                           </div>
                                        </div>
                                        <div class="form-group row gst_no">
-                                          <label class="col-lg-3 col-form-label">GST No.</label>
+                                          <label class="col-lg-3 col-form-label">GST No.<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control" value="{{ customer_instance.gst_number }}" name="gst_number"
-                                                   id="gst_no_input" placeholder="GST No." >
+                                                   id="gst_no_input" placeholder="GST No." required>
                                              <span id="gstError" style="color: red;"></span>
                                           </div>
                                        </div>
@@ -216,38 +216,49 @@ CRM
                                              <span id="panError" style="color: red;"></span>
                                           </div>
                                        </div>
+                                       <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Licence Number <span
+                                       style="color: red;">*</span></label>
+                                          <div class="col-lg-9">
+                                             <input type="text" class="form-control"
+                                                value="{{customer_instance.licence_no}}"
+                                                name="licence_no"
+                                                id="licence_no"
+                                                placeholder="licence Number"  required >
+                                          </div>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="tab-pane" id="bottom-tab2">
                                     <div class="row">
                                        <p><strong>Billing</strong></p>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Attention:</label>
+                                          <label class="col-lg-3 col-form-label">Company Name:<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.attention}}" name="attention" id="attention"
-                                                placeholder="Attention">
+                                                placeholder="Company Name" required>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Street:</label>
+                                          <label class="col-lg-3 col-form-label">Street: <span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.street}}" name="street" id="street"
-                                                placeholder="street">
+                                                placeholder="street" required>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">City:</label>
+                                          <label class="col-lg-3 col-form-label">City: <span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control" value="{{customer_instance.city}}"
-                                                name="city" id="city" placeholder="city">
+                                                name="city" id="city" placeholder="city" required>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">State:</label>
+                                          <label class="col-lg-3 col-form-label">State:<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
-                                             <select class="form-select" name="com_state">
+                                             <select class="form-select" name="com_state" required>
                                                 <option value="{{customer_instance.com_state}}">{{customer_instance.com_state}}</option>
                                                 <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
                                                 <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
@@ -292,29 +303,29 @@ CRM
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Pincode:</label>
+                                          <label class="col-lg-3 col-form-label">Pincode:<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.pincode}}" name="pincode" id="pincode"
-                                                placeholder="pincode">
-                                             <span id="pincodeError_4" style="color: red;"></span>
+                                                placeholder="pincode" oninput="validatePIN()"  required>
+                                             <span id="pincodeError" style="color: red;"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">GST/UIN:</label>
+                                          <label class="col-lg-3 col-form-label">GST/UIN:<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control"
                                                 value="{{customer_instance.gst_uin}}" name="gst_uin" id="gst_uin"
-                                                placeholder="gst_uin">
-                                             <span class="error-message" id="gstError_1"></span>
+                                                placeholder="gst_uin" required>
+                                             <span class="error-message" id="gstError_1"  style="color: red;"></span>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Contact Number:</label>
+                                          <label class="col-lg-3 col-form-label">Contact Number:<span style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control" pattern="\d{10}" maxlength="10"
                                                 value="{{customer_instance.contact_number}}" name="contact_number"
-                                                id="contact_number" placeholder="contact_number" title="Contact number must be exactly 10 digits">
+                                                id="contact_number" placeholder="contact_number" title="Contact number must be exactly 10 digits" required>
                                              <span id="contactNumberError" style="color: red;"></span>
                                           </div>
                                        </div>
@@ -1140,4 +1151,49 @@ $(document).ready(function () {
     }
 });
 </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+      const pincodeInputs = document.querySelectorAll('input[name^="pincode"], input[name^="shipping_"]');
+      pincodeInputs.forEach(function (input) {
+         input.addEventListener("input", function () {
+            const pincodeValue = this.value.trim();
+            const pincodeErrorId = "pincodeError_" + this.id.split("_").pop(); // Get the unique error span ID
+
+            const pincodeError = document.getElementById(pincodeErrorId);
+
+            // Regular expression for a standard 6-digit pin code
+            const pincodeRegex = /^[1-9][0-9]{5}$/;
+
+            if (pincodeError) {
+               if (!pincodeRegex.test(pincodeValue)) {
+                  pincodeError.textContent = "Enter a valid 6-digit pin code.";
+               } else {
+                  pincodeError.textContent = "";
+               }
+            }
+         });
+      });
+   });
+
+
+</script>
+
+<script>
+   function validatePIN() {
+       var pincodeInput = document.getElementById('pincode');
+       var pincodeError = document.getElementById('pincodeError');
+       
+       // Regular expression for a 6-digit PIN code
+       var pincodeRegex = /^\d{6}$/;
+
+       if (pincodeRegex.test(pincodeInput.value)) {
+           // PIN code is valid
+           pincodeError.textContent = '';
+       } else {
+           // PIN code is invalid
+           pincodeError.textContent = 'Please enter a valid 6-digit PIN code.';
+       }
+   }
+</script>
+
 {% endblock %}

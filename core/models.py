@@ -11,11 +11,6 @@ class customer(models.Model):
     website = models.URLField(max_length=200, blank=True, null=True)
     mobile  = models.CharField(max_length=20)
     lead_id = models.CharField(max_length=20,default=0)
-    # lead_id = models.ForeignKey(Leads,on_delete=models.CASCADE, null=True,blank=True)
-
-    
-    # cust_receive_amount = models.FloatField(default=0.00)
-
 
     gst_treatment = models.CharField(max_length=200)
     gst_number = models.CharField(max_length=15, unique=True,blank=True, null=True)
@@ -70,12 +65,22 @@ class customer(models.Model):
     ifsc_code = models.CharField(max_length=11)
     due_date = models.DateField(null=True)
     banking_address = models.CharField(max_length=200,null=True,blank=True)
-
-
+    customer_code =models.CharField(max_length=256,verbose_name="Customer Code",null=True,blank=True)
+    licence_no = models.CharField(max_length=256,verbose_name="Licence No",null=True,blank=True)
 
     class Meta:
         db_table = 'customer'
 
+    def save(self,*args,**kwargs):
+
+        if self._state.adding:
+            last_emp = customer.objects.order_by('-id').first()
+            if last_emp and last_emp.customer_code:
+                last_number = int(last_emp.customer_code.split('_')[1])
+            else:
+                last_number = 0  # Start with 10000 if no previous employee exists
+            self.customer_code = 'KC_{:03d}'.format(last_number + 1)       
+        super().save(*args,**kwargs)
 
 class vendor(models.Model):
     gender =  models.CharField(max_length=200, blank=True, null=True)
@@ -115,10 +120,23 @@ class vendor(models.Model):
     branch_name = models.CharField(max_length=255,null=True)
     ifsc_code = models.CharField(max_length=11,null=True)
     due_date = models.DateField(null=True)
+    vendor_code =models.CharField(max_length=256,verbose_name="Vendor Code",null=True,blank=True)
+    licence_no = models.CharField(max_length=256,verbose_name="Licence No",null=True,blank=True)
 
 
     class Meta:
         db_table = 'vendor'
+
+    def save(self,*args,**kwargs):
+
+        if self._state.adding:
+            last_emp = vendor.objects.order_by('-id').first()
+            if last_emp and last_emp.vendor_code:
+                last_number = int(last_emp.vendor_code.split('_')[1])
+            else:
+                last_number = 0  # Start with 10000 if no previous employee exists
+            self.vendor_code = 'VC_{:03d}'.format(last_number + 1)       
+        super().save(*args,**kwargs)
 
 class transporter(models.Model):
     name = models.CharField(max_length=200)

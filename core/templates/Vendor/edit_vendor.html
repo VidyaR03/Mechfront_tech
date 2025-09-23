@@ -158,10 +158,11 @@ CRM
                                          </div>
 
                                           <div class="form-group row gst_no">
-                                             <label class="col-lg-3 col-form-label">GST No.</label>
+                                             <label class="col-lg-3 col-form-label">GST No.<span
+                                       style="color: red;">*</span></label>
                                              <div class="col-lg-9">
-                                                 <input type="text" class="form-control" value="{{vendor_instance.gst_number}}"  name="gst_number" id="gst_number" placeholder="GST No.">
-                                                 <span id="gst_number" style="color: red;"></span>
+                                                 <input type="text" class="form-control" value="{{vendor_instance.gst_number}}"  name="gst_number" id="gst_number" placeholder="GST No." required>
+                                                 <span id="gstError" style="color: red;"></span>
                                              </div>
                                           </div>                       
                                           <div class="form-group row">
@@ -230,6 +231,14 @@ CRM
 
                                            </div>
                                          </div>
+                                         <div class="form-group row">
+                                           <label class="col-lg-3 col-form-label">Licence Number <span
+                                       style="color: red;">*</span></label>
+                                           <div class="col-lg-9">
+                                              <input type="text" class="form-control" value="{{vendor_instance.licence_no}}"  name="licence_no" id="licence_no" placeholder="licence Number">
+
+                                           </div>
+                                         </div>
 
                                     
                                           
@@ -241,28 +250,32 @@ CRM
                                          <strong>Delivery & Billing</strong>
                                        </p>
                                           <div class="form-group row">
-                                             <label class="col-lg-3 col-form-label">Company Name:</label>
+                                             <label class="col-lg-3 col-form-label">Company Name:<span
+                                       style="color: red;">*</span></label>
                                              <div class="col-lg-9">
-                                                <input type="text" class="form-control" value="{{vendor_instance.delivery_company_name}}"  name="delivery_company_name" id="delivery_company_name" placeholder="Company Name">
+                                                <input type="text" class="form-control" value="{{vendor_instance.delivery_company_name}}"  name="delivery_company_name" id="delivery_company_name" placeholder="Company Name" required>
                                              </div>
                                           </div>
                                           <div class="form-group row">
-                                             <label class="col-lg-3 col-form-label">Street:</label>
+                                             <label class="col-lg-3 col-form-label">Street: <span
+                                       style="color: red;">*</span></label>
                                              <div class="col-lg-9">
-                                                <input type="text" class="form-control" value="{{vendor_instance.street}}"  name="street" id="street" placeholder="street">
+                                                <input type="text" class="form-control" value="{{vendor_instance.street}}"  name="street" id="street" placeholder="street" required>
                                              </div>
                                           </div>
                                           <div class="form-group row">
-                                             <label class="col-lg-3 col-form-label">City:</label>
+                                             <label class="col-lg-3 col-form-label">City: <span
+                                       style="color: red;">*</span></label>
                                              <div class="col-lg-9">
-                                                <input type="text" class="form-control" value="{{vendor_instance.city}}"  name="city" id="city" placeholder="city">
+                                                <input type="text" class="form-control" value="{{vendor_instance.city}}"  name="city" id="city" placeholder="city" required>
                                              </div>
                                           </div>
                                           
                                           <div class="form-group row">
-                                             <label class="col-lg-3 col-form-label">State:</label>
+                                             <label class="col-lg-3 col-form-label">State: <span
+                                       style="color: red;">*</span></label>
                                              <div class="col-lg-9">
-                                                <select class="form-control" name="delivery_state" id="delivery_state" aria-placeholder="state">
+                                                <select class="form-control" name="delivery_state" id="delivery_state" aria-placeholder="state" required>
                                                     <option >{{vendor_instance.delivery_state}}</option>
                                                     <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
                                                     <option value="Andhra Pradesh (Before Division)">Andhra Pradesh (Before Division)</option>
@@ -307,23 +320,28 @@ CRM
                                                </div>
                                          </div>
                                          <div class="form-group row">
-                                             <label class="col-lg-3 col-form-label">Pincode:</label>
+                                             <label class="col-lg-3 col-form-label">Pincode:<span
+                                       style="color: red;">*</span></label>
                                              <div class="col-lg-9">
-                                                <input type="text" class="form-control" value="{{vendor_instance.pincode}}"  name="pincode" id="pincode" placeholder="pincode">
+                                                <input type="text" class="form-control" value="{{vendor_instance.pincode}}"  name="pincode" id="pincode" placeholder="pincode" required>
                                              </div>
                                          </div>
                                          <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">GST/UIN:</label>
+                                          <label class="col-lg-3 col-form-label">GST/UIN: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
-                                             <input type="text" class="form-control" value="{{vendor_instance.gst_uin}}"  name="gst_uin" id="gst_uin" placeholder="gst_uin">
+                                             <input type="text" class="form-control" value="{{vendor_instance.gst_uin}}"  name="gst_uin" id="gst_uin" placeholder="gst_uin" required>
+                                                 <span id="gstError_1" style="color: red;"></span>
+
                                           </div>
                                       </div>
                                       <!-- Address Contact Number -->
 <div class="form-group row">
-    <label class="col-lg-3 col-form-label">Contact Number:</label>
+    <label class="col-lg-3 col-form-label">Contact Number: <span
+                                       style="color: red;">*</span></label>
     <div class="col-lg-9">
         <input type="number" class="form-control" value="{{vendor_instance.contact_number}}" 
-               name="contact_number" id="contact_number" placeholder="Contact Number" maxlength="10">
+               name="contact_number" id="contact_number" placeholder="Contact Number" maxlength="10" required> 
         <span id="contact_number_error" style="color:red;"></span>
     </div>
 </div>
@@ -577,29 +595,60 @@ document.addEventListener("DOMContentLoaded", function () {
     });
  </script>
 
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const gstNoInput = document.getElementById("gst_number");
+    const gstError = document.getElementById("gstError");
+
+    function validateGSTNo(gstNoValue) {
+        if (gstNoValue.trim() === '') {
+            return true;  // Allow empty value
+        }
+
+        const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
+        return gstNoRegex.test(gstNoValue);
+    }
+
+    gstNoInput.addEventListener("input", function () {
+        const gstNoValue = this.value;
+
+        if (!validateGSTNo(gstNoValue)) {
+            gstError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+        } else {
+            gstError.textContent = "";
+        }
+    });
+});
+
+</script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      const gstNoInput = document.getElementById("gst_no");
-      const gstNoError = document.getElementById("gstNoError");
+   document.addEventListener("DOMContentLoaded", function () {
+    const gstNoInput = document.getElementById("gst_uin");
+    const gstError = document.getElementById("gstError_1");
 
-      function validateGSTNo(gstNoValue) {
-          const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/; 
+    function validateGSTNo(gstNoValue) {
+        if (gstNoValue.trim() === '') {
+            return true;  // Allow empty value
+        }
 
-          return gstNoRegex.test(gstNoValue);
-      }
+        const gstNoRegex = /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1})$/;
+        return gstNoRegex.test(gstNoValue);
+    }
 
-      gstNoInput.addEventListener("input", function() {
-          const gstNoValue = this.value;
+    gstNoInput.addEventListener("input", function () {
+        const gstNoValue = this.value;
 
-          if (!validateGSTNo(gstNoValue)) {
-              gstNoError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
-          } else {
-              gstNoError.textContent = "";
-          }
-      });
-  });
+        if (!validateGSTNo(gstNoValue)) {
+            gstError.textContent = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5).";
+        } else {
+            gstError.textContent = "";
+        }
+    });
+});
+
 </script>
+
 
 
       <script>

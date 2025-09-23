@@ -172,28 +172,7 @@ crm
                                  </div>
                               </div>
 
-                              
-                              <!-- <div class="form-group row">
-                                 <label class="col-lg-3 col-form-label">Website</label>
-                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" name="website" id="website" placeholder="Website">
-                                </div>
-                              </div> -->
-
-                              <!-- <div class="form-group row">
-                                 <label class="col-lg-3 col-form-label">Service Type</label>
-                                 <div class="col-lg-9">
-                                    <select class="form-control" name="q_ser_type" id="q_ser_type" >
-
-                                       <option value="">Select..</option>
-
-                                       <option value="Manufacturing" selected>MANUFACTURING</option>
-
-                                       <option value="Lab">LAB </option>
-
-                                   </select>
-                                </div>
-                              </div> -->
+         
 
                               <div class="col-md-3">
                                  <div class="form-group">
@@ -202,16 +181,7 @@ crm
                                  </div>
                              </div>
 
-                              <!-- 
-                              <div class="form-group row">
-                                 <label class="col-lg-3 col-form-label">Has GST Registered?</label>
-                                 <div class="col-lg-9">
-                                    <label class="switch">
-                                       <input type="checkbox" id="toggleGst" checked>
-                                       <span class="slider round"></span>
-                                    </label>
-                                 </div>
-                              </div> -->
+                            
                            </div>
                         </div>
                         <div class="col-lg-6" style=" border-left: 1px solid #ccc;">
@@ -225,19 +195,13 @@ crm
                                        Details</a></li>
                               </ul>
 
-                              <!-- <ul class="nav nav-tabs nav-tabs-bottom">
-                                       <li class="nav-item"><a class="nav-link active" href="#bottom-tab1" data-bs-toggle="tab">Other Details
-                                          </a>
-                                       </li>
-                                       <li class="nav-item"><a class="nav-link" href="#bottom-tab2" data-bs-toggle="tab">Address</a></li>
-                                       <li class="nav-item"><a class="nav-link" href="#bottom-tab3" data-bs-toggle="tab">Bank Details</a></li>
-                                    </ul> -->
+                           
                               <div class="tab-content">
                                  <div class="tab-pane show active" id="bottom-tab1">
                                     <div class="row">
 
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">GST Treatment :</label>
+                                          <label class="col-lg-3 col-form-label">GST Treatment:</label>
                                           <div class="col-lg-9">
                                              <select class="form-control " name="gst_treatment">
                                                 <option value="">Select GST Treatment</option>
@@ -322,16 +286,6 @@ crm
 
 
 
-                                       <!-- <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">PAN Number</label>
-                                          <div class="col-lg-9">
-                                             <input type="text" class="form-control" name="pan_number" id="pan_number_input"
-                                                placeholder="PAN Number"  >
-                                             <span id="panError" style="color: red;"></span>
-
-                                          </div>
-                                       </div> -->
-
 
                                        <div class="form-group row">
                                           <label class="col-lg-3 col-form-label">Discount:<span
@@ -359,16 +313,16 @@ crm
 
                                           </div>
                                        </div>
-
-                                       <!-- <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Credit Limit:<span
-                                                style="color: red;">*</span></label>
+                                       <div class="form-group row">
+                                          <label class="col-lg-3 col-form-label">Licence Number:<span
+                                       style="color: red;">*</span> </label>
                                           <div class="col-lg-9">
-                                             <input type="number" class="form-control" name="credit_limit"
-                                                id="credit_limit" value="0" placeholder="Credit Limit" required min="0">
+                                             <input type="text" class="form-control" name="licence_no" id="licence_no_input"
+                                                placeholder="licence Number" required >
 
                                           </div>
-                                       </div> -->
+                                       </div>
+
 
 
                                     </div>
@@ -379,31 +333,35 @@ crm
                                           <strong>Billing</strong>
                                        </p>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Company Name:</label>
+                                          <label class="col-lg-3 col-form-label">Company Name: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control" name="attention" id="attention"
-                                                placeholder="Company Name">
+                                                placeholder="Company Name" required>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Street:</label>
+                                          <label class="col-lg-3 col-form-label">Street: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control" name="street" id="street"
-                                                placeholder="street">
+                                                placeholder="street" required>
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">City:</label>
+                                          <label class="col-lg-3 col-form-label">City: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control" name="city" id="city"
-                                                placeholder="city">
+                                                placeholder="city" required>
                                           </div>
                                        </div>
 
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">State:</label>
+                                          <label class="col-lg-3 col-form-label">State: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
-                                             <select class="form-control" name="com_state" id="com_state">
+                                             <select class="form-control" name="com_state" id="com_state" required>
                                                 <option value="">State/Province</option>
                                                 <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
                                                 </option>
@@ -452,9 +410,10 @@ crm
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Pincode:</label>
+                                          <label class="col-lg-3 col-form-label">Pincode: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
-                                             <input type="text" class="form-control" name="pincode" id="pincode" placeholder="PIN Code" oninput="validatePIN()">
+                                             <input type="text" class="form-control" name="pincode" id="pincode" placeholder="PIN Code" oninput="validatePIN()" required>
                                              <span id="pincodeError" style="color: red;"></span>
 
                                              <!-- <input type="text" class="form-control" name="pincode" id="pincode"
@@ -464,21 +423,22 @@ crm
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">GST/UIN:</label>
+                                          <label class="col-lg-3 col-form-label">GST/UIN: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
                                              <input type="text" class="form-control gst-input" name="gst_uin"
-                                                id="gst_uin" placeholder="gst_uin">
+                                                id="gst_uin" placeholder="gst_uin" required>
                                              <span class="error-message" id="gstError_1"></span>
 
                                           </div>
                                        </div>
                                        <div class="form-group row">
-                                          <label class="col-lg-3 col-form-label">Contact Number:</label>
+                                          <label class="col-lg-3 col-form-label">Contact Number: <span
+                                       style="color: red;">*</span></label>
                                           <div class="col-lg-9">
-                                             <input type="text" class="form-control" name="contact_number" id="contact_number" placeholder="Contact Number" onblur="validateContactNumber('contact_number', 'contactNumberError')">
+                                             <input type="text" class="form-control" name="contact_number" id="contact_number" placeholder="Contact Number" onblur="validateContactNumber('contact_number', 'contactNumberError')" required>
                                              <span id="contactNumberError" style="color: red;"></span>
-                                             <!-- <input type="text" class="form-control" name="contact_number"
-                                                id="contact_number" placeholder="contact_number"  pattern="\d{10}" title="Enter a 10-digit number"> -->
+
                                           </div>
                                        </div>
 
@@ -686,8 +646,7 @@ crm
                                              <input type="text" class="form-control" name="shipping_2_contact_number" id="shipping_2_contact_number" placeholder="Contact Number" onblur="validateContactNumber('shipping_2_contact_number', 'shipping2ContactNumberError')">
                                              <span id="shipping2ContactNumberError" style="color: red;"></span>
                                          
-                                             <!-- <input type="text" class="form-control" name="shipping_2_contact_number"
-                                                id="shipping_2_contact_number" placeholder="contact_number"   pattern="\d{10}" title="Enter a 10-digit number"> -->
+
                                           </div>
                                        </div>
 
