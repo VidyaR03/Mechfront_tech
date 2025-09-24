@@ -142,12 +142,13 @@ def inventory_overview(request, id):
                     'particular': 'Sales',
                     'date': invoice.invoice_date,
                     "invoice_no"  : invoice.inv_number if invoice.inv_number else getattr(invoice, "formatted_id", invoice.id),
-                    # 'invoice_no': invoice.id,   # or formatted_id
                     'customer_vendor': getattr(invoice.invoice_customer_name_customer, "customer", ""),
                     'rate': average_rate,
                     'unit': get_last_purchase_unit(inventory_entity_data.item_code, start_date,end_date) or inventory_entity_data.units,
                     'quantity': quantity,
-                    'balance': current_stock
+                    'balance': current_stock,
+                    'invoice_total': float(invoice.invoice_total) if invoice.invoice_total and invoice.invoice_total.strip() else 0,
+
                 })
 
 
@@ -187,7 +188,7 @@ def inventory_overview(request, id):
                 'quantity': total_purchase_quantity,
                 'unit':item.purchase_invoice_uom,
                 'rate': average_rate,
-                'balance': current_stock  
+                'balance': current_stock  ,
 
             })
 
@@ -202,7 +203,9 @@ def inventory_overview(request, id):
                 'rate': average_rate,
                 'unit': item.purchase_invoice_uom,
                 'quantity': total_purchase_quantity,
-                'balance': current_stock
+                'balance': current_stock,
+                'purchase_invoice_total': float(purchase_invoice.purchase_invoice_total) if purchase_invoice.purchase_invoice_total and purchase_invoice.purchase_invoice_total.strip() else 0,
+
                 })
 
 

@@ -236,6 +236,7 @@ crm
                            <thead class="thead-light">
                               <tr>
                                  <th>Particular</th>
+                                 <th>Item Description</th>
                                  <th>Date</th>
                                  <th>Invoice No</th>
                                  <th>Customer</th>
@@ -258,12 +259,20 @@ crm
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
         <td>{{ opening_stock_quantity|floatformat:2 }}</td>
     </tr> 
 
     {% for data in combined_data %}
     <tr>
         <td>{{ data.particular }}</td>
+        <td>
+        {% if data.particular == 'Sales' and data.invoice_total == 0 %}
+            Out Free
+        {% elif data.particular == 'Purchase' and data.purchase_invoice_total == 0 %}
+            In Free
+        {% endif %}
+    </td>
         <td>{{ data.date|date:"d-m-Y" }}</td>
 
         {# Invoice No / Bill No depending on type #}
