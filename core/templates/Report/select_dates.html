@@ -1,0 +1,77 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+Inventory Report
+{% endblock %}
+
+{% block custom_css %}
+<style>
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link {
+        color: #ccc;
+    }
+    .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
+        color: #000;
+    }
+    .custom-error {
+        max-width: 300px;
+        margin: 0 auto;
+        text-align: center;
+        color: red;
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<div class="page-wrapper" style="padding-top: 0px;">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">
+                        <a href="{% url 'inventory_overview_csv' %}" style="margin-right: 10px;">
+                            <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="fa fa-arrow-left"></i>
+                        </a>
+                        Inventory CSV Datewise
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {% if error_message %}
+            <div class="custom-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+<form class="invoices-form" method="get" action="{% url 'inventory_overview_csv' %}" autocomplete="off">
+    <div class="invoices-main-form">
+        <div class="row">
+            <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>From Date</label>
+                    <input class="form-control" type="date" name="start_date" id="from_date" required>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>To Date</label>
+                    <input class="form-control" type="date" name="end_date" id="to_date" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let today = new Date().toISOString().split('T')[0];
+    document.getElementById("from_date").value = today;
+    document.getElementById("to_date").value = today;
+});
+</script>
+{% endblock main_content %}

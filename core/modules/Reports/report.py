@@ -24,6 +24,13 @@ from openpyxl.utils import get_column_letter
 from collections import defaultdict
 from django import template
 
+import csv
+from openpyxl import Workbook
+from datetime import date
+from dateutil.parser import parse
+from django.utils import timezone
+
+
         
 class Abs(Func):
     function = 'ABS'
@@ -1855,3 +1862,190 @@ def sales_display_items_by_date_range(request):
     return render(request, template_path.sales_register_date_report)
 
 
+def parse_date(date_str):
+    for fmt in ('%B %d, %Y', '%Y-%m-%d'):
+        try:
+            return datetime.strptime(date_str, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError(f"Date format not recognized: {date_str}")
+
+def get_last_purchase_unit(item_code, start_date, end_date):
+    latest_purchase_invoice = Purchase_Invoice.objects.filter(
+        id__in=Purchase_Invoice_items.objects.filter(
+            purchase_invoice_item_code=item_code
+        ).values_list('purchase_invoice_id', flat=True),
+        purchase_invoice_date__range=(start_date, end_date)
+    ).order_by('-purchase_invoice_date').first()
+
+    if not latest_purchase_invoice:
+        # print("No latest purchase invoice found.")
+        return None
+
+    # print(latest_purchase_invoice.id, "latest_purchase_invoice.id")
+
+    purchase_invoice_items_data = Purchase_Invoice_items.objects.filter(
+        purchase_invoice_item_code=item_code,
+        purchase_invoice_id=latest_purchase_invoice.id
+    ).last()
+
+    if purchase_invoice_items_data:
+        # print(purchase_invoice_items_data.purchase_invoice_uom, "purchase_invoice_items_data.purchase_invoice_uom")
+        return purchase_invoice_items_data.purchase_invoice_uom
+    else:
+        # print("No purchase invoice item data found.")
+        return None
+
+
+
+def select_dates(request):
+    print('dfsdgprint')
+    
+    return render(request, 'Report/select_dates.html')
+
+
+
+def inventory_overview_csv(request):
+
+    if request.method == "POST":
+        start_date_str = request.POST.get('start_date')
+        end_date_str = request.POST.get('end_date')
+    else:
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+
+    download_csv = request.GET.get('download_csv')  # keep CSV download as GET param
+
+    # Parse dates safely
+    try:
+        if not start_date_str or not end_date_str:
+            return render(request, 'Report/select_dates.html', {
+                'error_message': 'Please select both From and To dates.'
+            })
+
+        start_date = parse(start_date_str).date()
+        end_date = parse(end_date_str).date()
+
+        if start_date > end_date:
+            raise ValueError("Start date after end date")
+    except Exception:
+        return render(request, 'Report/select_dates.html', {
+            'error_message': 'Invalid start/end date. Please check again.'
+        })
+
+    combined_data = []
+
+    all_items = inventory.objects.all()
+
+    for item in all_items:
+        item_code = item.item_code
+        item_name = item.inventory_name
+        uom = getattr(item, 'uom', '')  # assumes you have a field like this
+        units_per_case = getattr(item, 'unit_per_case', '')
+
+        # 🔽 Sales
+        invoices = Invoice.objects.filter(
+            id__in=invoice_items.objects.filter(invoice_item_code=item_code)
+                .values_list('invoice_id', flat=True),
+            invoice_date__range=(start_date, end_date)
+        )
+        sales_items = invoice_items.objects.filter(
+            invoice_item_code=item_code,
+            invoice_id__in=invoices.values_list('id', flat=True)
+        )
+
+        for inv in invoices:
+            customer = inv.invoice_customer_name_customer
+            items = sales_items.filter(invoice_id=inv.id)
+
+            for s_item in items:
+                combined_data.append({
+                    'licence_no': customer.licence_no or ""   # empty string if None
+,
+                    'contact_no': customer.phone or '',
+                    'product_code': item_code,
+                    'product_name': item_name,
+                    'company_name': getattr(customer, 'customer', ''),  # Or item.company_name if present
+                    'uom': uom,
+                    'units_per_case': units_per_case,
+                    'out_quantity': float(s_item.invoice_qantity or 0),
+                    'in_quantity': 0,
+                    'out_free': float(getattr(s_item, 'free_quantity', 0)),
+                    'in_free': 0,
+                    'bill_no': inv.inv_number or inv.id,
+                    'bill_date': inv.invoice_date,
+                })
+
+        purchase_invoices = Purchase_Invoice.objects.filter(
+            id__in=Purchase_Invoice_items.objects.filter(
+                purchase_invoice_item_code=item_code
+            ).values_list('purchase_invoice_id', flat=True),
+            purchase_invoice_date__range=(start_date, end_date)
+        )
+        purchase_items = Purchase_Invoice_items.objects.filter(
+            purchase_invoice_item_code=item_code,
+            purchase_invoice_id__in=purchase_invoices.values_list('id', flat=True)
+        )
+
+        for p_inv in purchase_invoices:
+            vendor = p_inv.purchase_invoice_vendor_name
+            items = purchase_items.filter(purchase_invoice_id=p_inv.id)
+
+            for p_item in items:
+                combined_data.append({
+                    'licence_no': vendor.licence_no or ""   # empty string if None
+,
+                    'contact_no': vendor.phone or '',
+                    'product_code': item_code,
+                    'product_name': item_name,
+                    'company_name': getattr(vendor, 'company_name', ''),
+                    'uom': uom,
+                    'units_per_case': units_per_case,
+                    'out_quantity': 0,
+                    'in_quantity': float(p_item.purchase_invoice_qantity or 0),
+                    'out_free': 0,
+                    'in_free': float(getattr(p_item, 'free_quantity', 0)),
+                    'bill_no': p_inv.purchase_invoice_PO_no or p_inv.id,
+                    'bill_date': p_inv.purchase_invoice_date,
+                })
+
+    combined_data = sorted(combined_data, key=lambda x: x['bill_date'])
+
+    # ✅ CSV Export
+    if download_csv:
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=inventory_report.csv'
+        writer = csv.writer(response)
+
+        writer.writerow([
+            'CUSTOMER /VENDOR Licence No.',
+            'CUSTOMER / VENDOR Contact No',
+            '*PRODUCTCODE',
+            '*PRODUCTNAME',
+            'COMPANYNAME',
+            'UOM',
+            'UNITSPERCASE',
+            '*OUTQUANTITY(UNITS)',
+            '*INQUANTITY(UNITS)',
+            'OUTFREE(UNITS)',
+            'INFREE(UNITS)',
+            'CHALAN / VEN# BILL NO',
+            'CHALAN / VENDOR #BILL DATE',
+        ])
+
+        for row in combined_data:
+            writer.writerow([
+                row['licence_no'], row['contact_no'], row['product_code'], row['product_name'],
+                row['company_name'], row['uom'], row['units_per_case'],
+                row['out_quantity'], row['in_quantity'], row['out_free'], row['in_free'],
+                row['bill_no'], row['bill_date'],
+            ])
+        return response
+
+    # ✅ Otherwise render HTML
+    context = {
+        'combined_data': combined_data,
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    return render(request, 'Report/inventory_entity_data.html', context)

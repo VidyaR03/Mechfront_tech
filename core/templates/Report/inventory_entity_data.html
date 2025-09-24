@@ -1,0 +1,143 @@
+{% extends 'dashboard/base_template.html' %}
+{% block title %}
+Inventory Report
+{% endblock %}
+
+{% block custom_css %}
+<style>
+    .custom-error {
+        max-width: 300px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .input-group-text {
+        cursor: pointer;
+    }
+    .grey-card {
+        background-color: LightGray;
+    }
+    .negative-padding {
+        margin-top: -60px; 
+    }
+    .table-responsive table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+    .thead-dark th {
+        background-color: #343a40;
+        color: white;
+    }
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .btn-download {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-download:hover {
+        background-color: #218838;
+    }
+    .right-aligned {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+    }
+</style>
+{% endblock custom_css %}
+
+{% block main_content %}
+<div class="page-wrapper" style="min-height: 341px;">
+    <div class="content container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table">
+                    <div class="card-header">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <h3>
+                                        <a href="{% url 'select_dates' %}" style="margin-right: 10px;">
+                                            <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back"></i>
+                                        </a>
+                                        Inventory Report
+                                    </h3>
+                                </div>
+                                <div class="col-lg-4 text-end">
+                                    <a href="?start_date={{ start_date }}&end_date={{ end_date }}&download_csv=true" class="btn btn-download">Download CSV</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="printableArea">
+                        <div class="card-body">
+                            <div class="rport">
+                                <h2><b>M/S KEYMECH TECHNOLOGIES</b></h2>
+                                <p style="font-size: 20px;">Inventory Movement Report</p>
+                                <p>
+                                    <strong>From:</strong> {{ start_date }} 
+                                    | <strong>To:</strong> {{ end_date }}
+                                </p>
+                            </div>
+                            <br>
+                            <div class="table-responsive">
+                                <table class="table table-center">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>CUSTOMER /VENDOR Licence No.</th>
+                                            <th>CUSTOMER / VENDOR Contact No</th>
+                                            <th>*PRODUCTCODE</th>
+                                            <th>*PRODUCTNAME</th>
+                                            <th>COMPANYNAME</th>
+                                            <th>UOM</th>
+                                            <th>UNITSPERCASE</th>
+                                            <th>*OUTQUANTITY(UNITS)</th>
+                                            <th>*INQUANTITY(UNITS)</th>
+                                            <th>OUTFREE(UNITS)</th>
+                                            <th>INFREE(UNITS)</th>
+                                            <th>CHALAN / VEN# BILL NO</th>
+                                            <th>CHALAN / VENDOR #BILL DATE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in combined_data %}
+                                        <tr>
+                                            <td>{{ row.licence_no }}</td>
+                                            <td>{{ row.contact_no }}</td>
+                                            <td>{{ row.product_code }}</td>
+                                            <td>{{ row.product_name }}</td>
+                                            <td>{{ row.company_name }}</td>
+                                            <td>{{ row.uom }}</td>
+                                            <td>{{ row.units_per_case }}</td>
+                                            <td>{{ row.out_quantity }}</td>
+                                            <td>{{ row.in_quantity }}</td>
+                                            <td>{{ row.out_free }}</td>
+                                            <td>{{ row.in_free }}</td>
+                                            <td>{{ row.bill_no }}</td>
+                                            <td>{{ row.bill_date|date:"Y-m-d" }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="13">No data available for the selected date range.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}

@@ -460,6 +460,12 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inventory Summary
               </a>
             </li>
+            <li class="nav-item">
+              {% url 'select_dates' as select_dates %}
+              <a href="{{ select_dates }}" class="nav-link {% if request.path == select_dates %}active{% endif %}">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inventory CSV Summary
+              </a>
+            </li>
 
 
             <li class="nav-item">

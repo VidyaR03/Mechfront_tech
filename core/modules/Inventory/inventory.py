@@ -246,9 +246,10 @@ def inventory_overview(request, id):
 
         # --- Overview ---
         writer.writerow(["Overview"])
-        writer.writerow(["Item Code","Unit","Type","HSN","Tax Type","Sales Rate","Purchase Rate", "Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
+        writer.writerow(["Item Code","Item Name","Unit","Type","HSN","Tax Type","Sales Rate","Purchase Rate", "Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
         writer.writerow([
             inventory_entity_data.item_code,
+            inventory_entity_data.inventory_name,
             inventory_entity_data.units,
             inventory_entity_data.type,
             inventory_entity_data.hsn,
@@ -317,10 +318,11 @@ def inventory_overview(request, id):
         # --- Overview Sheet ---
         ws1 = wb.active
         ws1.title = "Overview"
-        ws1.append(["Item Code","Unit","Type","HSN","Tax Type","Sales Rate","Purchase Rate","Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
+        ws1.append(["Item Code","Item Name","Unit","Type","HSN","Tax Type","Sales Rate","Purchase Rate","Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
         
         ws1.append([
             inventory_entity_data.item_code,
+            inventory_entity_data.inventory_name,
             inventory_entity_data.units,
             inventory_entity_data.type,
             inventory_entity_data.hsn,

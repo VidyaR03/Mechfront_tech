@@ -362,6 +362,9 @@ urlpatterns = [
 
     path('download_excel_customer_out/', views.download_excel_customer_out, name='download_excel_customer_out'),
 
+    path('inventory-csv/', views.inventory_overview_csv, name='inventory_overview_csv'),
+    path('inventory/', views.select_dates, name='select_dates'),
+
 
 
 ]
