@@ -1940,10 +1940,9 @@ def inventory_overview_csv(request):
     for item in all_items:
         item_code = item.item_code
         item_name = item.inventory_name
-        uom = getattr(item, 'uom', '')  # assumes you have a field like this
-        units_per_case = getattr(item, 'unit_per_case', '')
+        uom = item.units # assumes you have a field like this
+        units_per_case = item.unit_per_case   # Default to 1 if not set
 
-        # 🔽 Sales
         invoices = Invoice.objects.filter(
             id__in=invoice_items.objects.filter(invoice_item_code=item_code)
                 .values_list('invoice_id', flat=True),
@@ -1959,18 +1958,29 @@ def inventory_overview_csv(request):
             items = sales_items.filter(invoice_id=inv.id)
 
             for s_item in items:
+                is_free = (float(inv.invoice_total or 0) == 0)
                 combined_data.append({
-                    'licence_no': customer.licence_no or ""   # empty string if None
-,
+                    'type': 'Sales',
+                    'number': inv.inv_number,
+                    'Cust_vendor_code':customer.customer_code,
+                    'Cust_vendor_name':customer.customer,
+                    'Cust_vendor_area':customer.street,
+                    'Cust_vendor_billing':customer.city,
+                    'Cust_vendor_add2':customer.get_full_address_customer(),
+                    'Cust_vendor_add3': customer.com_state,                    
+                    'vendor_gst_no':customer.gst_number,
+                    'Cust_vendor_pan_no':customer.pan_number,
+                    'date': inv.invoice_date,
+                    'licence_no': customer.licence_no or "",
                     'contact_no': customer.phone or '',
                     'product_code': item_code,
                     'product_name': item_name,
-                    'company_name': getattr(customer, 'customer', ''),  # Or item.company_name if present
+                    'company_name': customer.company_name,  # Or item.company_name if present
                     'uom': uom,
                     'units_per_case': units_per_case,
                     'out_quantity': float(s_item.invoice_qantity or 0),
                     'in_quantity': 0,
-                    'out_free': float(getattr(s_item, 'free_quantity', 0)),
+                    'out_free': "Out Free" if is_free else "0",
                     'in_free': 0,
                     'bill_no': inv.inv_number or inv.id,
                     'bill_date': inv.invoice_date,
@@ -1992,20 +2002,32 @@ def inventory_overview_csv(request):
             items = purchase_items.filter(purchase_invoice_id=p_inv.id)
 
             for p_item in items:
+                is_free = (float(p_inv.purchase_invoice_total or 0) == 0)
+
                 combined_data.append({
-                    'licence_no': vendor.licence_no or ""   # empty string if None
-,
+                    'type': 'Purchase',
+                    'number': p_inv.id,
+                    'date': p_inv.purchase_invoice_date,
+                    'Cust_vendor_code':vendor.vendor_code,
+                    'Cust_vendor_name':vendor.contact_person,
+                    'Cust_vendor_area':vendor.vendor_street,
+                    'Cust_vendor_billing':vendor.vendor_city,
+                    'Cust_vendor_add2':vendor.get_full_address(),
+                    'Cust_vendor_add3': vendor.vendor_state,                    
+                    'vendor_gst_no':vendor.gst_number,
+                    'Cust_vendor_pan_no':vendor.pan_number,
+                    'licence_no': vendor.licence_no or ""  ,
                     'contact_no': vendor.phone or '',
                     'product_code': item_code,
                     'product_name': item_name,
-                    'company_name': getattr(vendor, 'company_name', ''),
+                    'company_name': vendor.company_name,
                     'uom': uom,
                     'units_per_case': units_per_case,
                     'out_quantity': 0,
                     'in_quantity': float(p_item.purchase_invoice_qantity or 0),
                     'out_free': 0,
-                    'in_free': float(getattr(p_item, 'free_quantity', 0)),
-                    'bill_no': p_inv.purchase_invoice_PO_no or p_inv.id,
+                    'in_free':  "IN Free" if is_free else "0",
+                    'bill_no': p_inv.purchase_invoice_PO_no ,
                     'bill_date': p_inv.purchase_invoice_date,
                 })
 
@@ -2018,6 +2040,17 @@ def inventory_overview_csv(request):
         writer = csv.writer(response)
 
         writer.writerow([
+            '*DOCKTYPE',
+            '*DOCNO',
+            '*DOCDATE',
+            'CUSTOMER /VENDOR CODE',
+            'CUSTOMER /VENDOR NAME',
+            'CUSTOMER /VENDOR AREA',
+            'CUSTOMER /VENDOR BILLING',
+            'CUSTOMER /VENDOR ADD2',
+            'CUSTOMER /VENDOR ADD3',
+            'CUSTOMER /VENDOR GST NO',
+            'CUSTOMER /VENDOR PAN NO',
             'CUSTOMER /VENDOR Licence No.',
             'CUSTOMER / VENDOR Contact No',
             '*PRODUCTCODE',
@@ -2035,6 +2068,8 @@ def inventory_overview_csv(request):
 
         for row in combined_data:
             writer.writerow([
+                row['type'],row['number'],row['date'], row['Cust_vendor_code'], row['Cust_vendor_name'], row['Cust_vendor_area'],
+                row['Cust_vendor_billing'],row['Cust_vendor_add2'], row['Cust_vendor_add3'], row['vendor_gst_no'], row['Cust_vendor_pan_no'],
                 row['licence_no'], row['contact_no'], row['product_code'], row['product_name'],
                 row['company_name'], row['uom'], row['units_per_case'],
                 row['out_quantity'], row['in_quantity'], row['out_free'], row['in_free'],

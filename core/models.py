@@ -71,6 +71,9 @@ class customer(models.Model):
     class Meta:
         db_table = 'customer'
 
+    def get_full_address_customer(self):
+        return f"{self.pincode}, {self.city}".strip(", ")
+
     def save(self,*args,**kwargs):
 
         if self._state.adding:
@@ -137,6 +140,9 @@ class vendor(models.Model):
                 last_number = 0  # Start with 10000 if no previous employee exists
             self.vendor_code = 'VC_{:03d}'.format(last_number + 1)       
         super().save(*args,**kwargs)
+
+    def get_full_address(self):
+        return f"{self.vendor_pincode}, {self.city}".strip(", ")
 
 class transporter(models.Model):
     name = models.CharField(max_length=200)
