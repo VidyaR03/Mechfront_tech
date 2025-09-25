@@ -2009,7 +2009,7 @@ def inventory_overview_csv(request):
 
                 combined_data.append({
                     'type': 'Purchase',
-                    'number': p_inv.id,
+                    'number': p_inv.purchase_invoice_no,
                     'date': p_inv.purchase_invoice_date,
                     'Cust_vendor_code':vendor.vendor_code,
                     'Cust_vendor_name':vendor.contact_person,

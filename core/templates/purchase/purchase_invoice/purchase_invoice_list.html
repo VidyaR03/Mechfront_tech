@@ -111,10 +111,10 @@
                                 <thead class="thead-light">
                                     <tr>
                                     <tr>
+                                        <th>Invoice No</th>
                                         <th>Date</th>
                                         <th>GRN</th>
                                         <th>Vendor Name</th>
-                                        <!-- <th>Status</th> -->
                                         <th>Amount</th>
                                         <th>Action</th>
                                     </tr>
@@ -124,6 +124,9 @@
                                     {% for purchase_invoice in purchase_invoice_list %}
                                     <tr>
                                         <td>
+                                            {{purchase_invoice.purchase_invoice_no}}
+                                        </td>
+                                        <td>
                                             {{purchase_invoice.purchase_invoice_date}}
                                         </td>
                                         <td>
@@ -132,9 +135,7 @@
                                         <td>
                                             {{purchase_invoice.purchase_invoice_vendor_name.company_name}}
                                         </td>
-                                        <!-- <td>
-                                            <span class="badge bg-success-light">Overdue</span>                                                    
-                                        </td> -->
+                                    
                                         <td>
                                             {{purchase_invoice.purchase_invoice_total}}
                                         </td>

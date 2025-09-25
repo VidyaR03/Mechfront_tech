@@ -1169,6 +1169,19 @@ class Purchase_Invoice(models.Model):
     cn_packaging_forwording_amt_amt = models.CharField(max_length=255,blank=True)
     cn_freight_percentage_amt_amt = models.CharField(max_length=255,blank=True)
     pi_vendor_code = models.CharField(max_length=256, blank=True)
+    purchase_invoice_no = models.CharField(max_length=256, blank=True)
+
+    def save(self,*args,**kwargs):
+
+        if self._state.adding:
+            last_emp = Purchase_Invoice.objects.order_by('-id').first()
+            if last_emp and last_emp.purchase_invoice_no:
+                last_number = int(last_emp.purchase_invoice_no.split('_')[1])
+            else:
+                last_number = 0  # Start with 10000 if no previous employee exists
+            self.purchase_invoice_no = 'PI_{:03d}'.format(last_number + 1)       
+        super().save(*args,**kwargs)
+
 
 
 
