@@ -2047,6 +2047,7 @@ def inventory_overview_csv(request):
             grouped_data[key]['in_free'] += row['in_free']
 
             # Optional: keep latest bill_date
+            
             if row['bill_date'] > grouped_data[key]['bill_date']:
                 grouped_data[key]['bill_date'] = row['bill_date']
             # Optional: keep latest bill_no

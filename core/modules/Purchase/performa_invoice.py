@@ -85,11 +85,15 @@ def performa_add_invoice_data(request):
         print('customer_Name', customer_Name)
 
         if customer_id:
-            q_customer_name = delivery_challan.objects.get(id=customer_id)
-            inv_customer_name = None  # Set inv_customer_name to None if customer_id exists
+            q_customer_name = delivery_challan.objects.filter(id=customer_id).first()
+            if not q_customer_name:
+                # No delivery challan found for that id
+                messages.warning(request, "No Delivery Challan found for the selected ID.")
+            inv_customer_name = None  
         else:
             q_customer_name = None
             customer_id_customer = request.POST.get('customer_id_select', None)
+
 
             if customer_id_customer:
                 inv_customer_name = customer.objects.filter(id=customer_id_customer).first()
@@ -98,7 +102,6 @@ def performa_add_invoice_data(request):
 
         
         
-        print(q_customer_name,'q_customer_name********')
         invoice_data = {
             'invoice_date': invoice_date,
             'pi_number':pi_number,
@@ -218,7 +221,6 @@ def performa_edit_invoice_data(request, id):
         return render(request, template_path.performa_edit_invoice, context)
 
     elif request.method == "POST":
-        print(request.POST)
         invoice_data = get_object_or_404(Performa_Invoice, id=id)
         id = invoice_data.id
         invoice_date_str = request.POST.get('invoice_date')
@@ -304,7 +306,6 @@ def performa_edit_invoice_data(request, id):
         Invoice_object.save()
         i = 1
         max_row = int(request.POST.get('iid[]',0))
-        # print(max_row)
         performa_invoice_items.objects.filter(invoice_id = id).delete()
         # while i <= max_row:
         for i in range(1, max_row + 1 ):
