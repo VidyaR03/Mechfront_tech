@@ -49,7 +49,7 @@
                             <div class="row" data-select2-id="6">
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label style="color:#f00">Deposite to</label>
+                                        <label >Deposite to</label>
                                         <select class="form-select" name="payment_received_bank_name" id="payment_received_bank_name" required>
                                             <option value="{{payment_received_instance.payment_received_bank_name}}">{{payment_received_instance.payment_received_bank_name}}</option>
                                             <option value="HDFC">HDFC Bank</option>
@@ -76,7 +76,7 @@
                                             </select>
                                         </div>
                                     <div class="form-group">
-                                        <label for="customer" style="color: #f00;">Customer Name</label>
+                                        <label for="customer" >Customer Name</label>
                                         <!-- Hidden field to store customer ID -->
                                         <input type="hidden" id="customer_id" name="customer_id" value="{{payment_received_instance.payment_received_customer.id}}">
                                         <!-- Input field for autocomplete -->
@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="form-group"> <label style="color:#f00">Date</label>
+                                    <div class="form-group"> <label>Date</label>
                                         <div> <input class="form-control datetimepicker" type="text" name="date"
                                                 id="date"
                                                 value="{{payment_received_instance.payment_received_date | date:'Y-m-d'}}">
@@ -110,11 +110,13 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="form-group"> <label style="color:#f00">Mobile</label>
+                                    <div class="form-group"> <label >Mobile</label>
                                         <div> <input class="form-control" type="text" name="mobile" id="mobile"
-                                                autocomplete="off"
-                                                value="{{payment_received_instance.payment_received_mobile}}"> </div>
+                                                autocomplete="off" value="{{payment_received_instance.payment_received_mobile}}" pattern="\d{10}" title="Enter a 10-digit number">    
+                                                  <span id="phoneError" style="color: red;"></span></div> 
+
                                     </div>
+                                    
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
@@ -573,7 +575,24 @@
         })
     </script>
 
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+      const mobileInput = document.getElementById("mobile");
+      const mobileError = document.getElementById("phoneError");
 
+      mobileInput.addEventListener("input", function () {
+         const mobileValue = this.value;
+         const mobileRegex = /^[0-9]{10}$/; // Regular expression for a 10-digit mobile number
+
+         if (!mobileRegex.test(mobileValue)) {
+            mobileError.textContent = "Enter a valid 10-digit phone number.";
+         } else {
+            mobileError.textContent = "";
+         }
+      });
+   });
+
+</script>
 
 </div>
 {% endblock main_content %}

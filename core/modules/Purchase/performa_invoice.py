@@ -83,6 +83,9 @@ def performa_add_invoice_data(request):
         customer_Name = request.POST.get('customer_Name', None)
         print('customer_id', customer_id)
         print('customer_Name', customer_Name)
+        print("Customer ID received:", customer_id)
+        print("IDs in delivery_challan:", list(delivery_challan.objects.values_list('id', flat=True)))
+
 
         if customer_id:
             q_customer_name = delivery_challan.objects.filter(id=customer_id).first()
