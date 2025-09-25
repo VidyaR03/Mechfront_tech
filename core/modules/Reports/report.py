@@ -1958,7 +1958,9 @@ def inventory_overview_csv(request):
             items = sales_items.filter(invoice_id=inv.id)
 
             for s_item in items:
+                qty = float(s_item.invoice_qantity or 0)
                 is_free = (float(inv.invoice_total or 0) == 0)
+                
                 combined_data.append({
                     'type': 'Sales',
                     'number': inv.inv_number,
@@ -1978,9 +1980,9 @@ def inventory_overview_csv(request):
                     'company_name': customer.company_name,  # Or item.company_name if present
                     'uom': uom,
                     'units_per_case': units_per_case,
-                    'out_quantity': float(s_item.invoice_qantity or 0),
+                    'out_quantity':qty,
                     'in_quantity': 0,
-                    'out_free': "Out Free" if is_free else "0",
+                    'out_free': qty if is_free else 0,       
                     'in_free': 0,
                     'bill_no': inv.inv_number or inv.id,
                     'bill_date': inv.invoice_date,
@@ -2002,6 +2004,7 @@ def inventory_overview_csv(request):
             items = purchase_items.filter(purchase_invoice_id=p_inv.id)
 
             for p_item in items:
+                qty = float(p_item.purchase_invoice_qantity or 0)
                 is_free = (float(p_inv.purchase_invoice_total or 0) == 0)
 
                 combined_data.append({
@@ -2024,31 +2027,31 @@ def inventory_overview_csv(request):
                     'uom': uom,
                     'units_per_case': units_per_case,
                     'out_quantity': 0,
-                    'in_quantity': float(p_item.purchase_invoice_qantity or 0),
+                    'in_quantity': qty,
                     'out_free': 0,
-                    'in_free':  "IN Free" if is_free else "0",
+                    'in_free': qty if is_free else 0,
                     'bill_no': p_inv.purchase_invoice_PO_no ,
                     'bill_date': p_inv.purchase_invoice_date,
                 })
     grouped_data = {}
+
     for row in combined_data:
         key = (row['company_name'], row['product_code'])
+
         if key not in grouped_data:
             grouped_data[key] = row.copy()
         else:
             grouped_data[key]['out_quantity'] += row['out_quantity']
             grouped_data[key]['in_quantity'] += row['in_quantity']
+            grouped_data[key]['out_free'] += row['out_free']
+            grouped_data[key]['in_free'] += row['in_free']
 
-            # For free qty: treat text ("Out Free", "IN Free") properly
-            if isinstance(row['out_free'], (int, float)):
-                grouped_data[key]['out_free'] += row['out_free']
-            elif row['out_free'] not in ["", "0"]:
-                grouped_data[key]['out_free'] = row['out_free']
+            # Optional: keep latest bill_date
+            if row['bill_date'] > grouped_data[key]['bill_date']:
+                grouped_data[key]['bill_date'] = row['bill_date']
+            # Optional: keep latest bill_no
+            grouped_data[key]['bill_no'] = row['bill_no']
 
-            if isinstance(row['in_free'], (int, float)):
-                grouped_data[key]['in_free'] += row['in_free']
-            elif row['in_free'] not in ["", "0"]:
-                grouped_data[key]['in_free'] = row['in_free']
 
     combined_data = sorted(grouped_data.values(), key=lambda x: x['bill_date'])
     # ✅ CSV Export
