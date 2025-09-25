@@ -2030,9 +2030,27 @@ def inventory_overview_csv(request):
                     'bill_no': p_inv.purchase_invoice_PO_no ,
                     'bill_date': p_inv.purchase_invoice_date,
                 })
+    grouped_data = {}
+    for row in combined_data:
+        key = (row['company_name'], row['product_code'])
+        if key not in grouped_data:
+            grouped_data[key] = row.copy()
+        else:
+            grouped_data[key]['out_quantity'] += row['out_quantity']
+            grouped_data[key]['in_quantity'] += row['in_quantity']
 
-    combined_data = sorted(combined_data, key=lambda x: x['bill_date'])
+            # For free qty: treat text ("Out Free", "IN Free") properly
+            if isinstance(row['out_free'], (int, float)):
+                grouped_data[key]['out_free'] += row['out_free']
+            elif row['out_free'] not in ["", "0"]:
+                grouped_data[key]['out_free'] = row['out_free']
 
+            if isinstance(row['in_free'], (int, float)):
+                grouped_data[key]['in_free'] += row['in_free']
+            elif row['in_free'] not in ["", "0"]:
+                grouped_data[key]['in_free'] = row['in_free']
+
+    combined_data = sorted(grouped_data.values(), key=lambda x: x['bill_date'])
     # ✅ CSV Export
     if download_csv:
         response = HttpResponse(content_type='text/csv')
