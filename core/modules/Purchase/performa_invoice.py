@@ -88,7 +88,7 @@ def performa_add_invoice_data(request):
 
 
         if customer_id:
-            q_customer_name = delivery_challan.objects.filter(id=customer_id).first()
+            q_customer_name = delivery_challan.objects.filter(customer_id=customer_id).first()
             if not q_customer_name:
                 # No delivery challan found for that id
                 messages.warning(request, "No Delivery Challan found for the selected ID.")
