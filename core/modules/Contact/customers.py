@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 import re
 from django.db.models import Q
+from django.db import transaction, IntegrityError
 
 from core.modules.login.login import login_required
 from django.contrib import messages
@@ -94,29 +95,23 @@ def add_customer(request):
 
         }
         
-        gst_number = request.POST['gst_number']
-        # if not validate_gst_number(gst_number):
-        #     error_message = "Enter a valid GST number (e.g., 12ABCDE1234F1Z5)."
-        #     return render(request, template_path.Customer_path, {'error_message': error_message})
-
-        # Check for existing customer with the same email
-        cust_email = request.POST['cust_email']
-        # existing_customer = customer.objects.filter(Q(cust_email=cust_email) | Q(gst_number=gst_number)).first()
-        # if existing_customer:
-        #     error_message = "Email or GST number already exists. Please use a different email or GST number."
-        #     return render(request, template_path.Customer_path, {'error_message': error_message,'leads': leads})
-
         try:
-            customer_instance = customer(**customer_data)
-            customer_instance.save()
-            messages.success(request, 'Customer created successfully.')
+            with transaction.atomic():
+                customer_instance = customer(**customer_data)
+                customer_instance.save()
 
-            return redirect('fn_customer_List_View')  # Redirect to customer list view upon successful creation
+                messages.success(request, 'Customer created successfully.')
+                return redirect('fn_customer_List_View')
+
         except IntegrityError as e:
-            # Handle IntegrityError (if any)
-            return HttpResponse(f"Error: {e}")
+            # Rollback happens automatically due to transaction.atomic
+            return HttpResponse(f"Database Error: {e}", status=500)
+        except Exception as e:
+            return HttpResponse(f"Unexpected Error: {e}", status=500)
 
-    return render(request, template_path.Customer_path,{'leads': leads})
+    return render(request, template_path.Customer_path, {'leads': leads})
+
+
 
 from django.views.decorators.csrf import csrf_exempt
 

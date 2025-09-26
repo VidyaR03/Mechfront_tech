@@ -24,7 +24,7 @@ class customer(models.Model):
     city = models.CharField(max_length=50, blank=True, null=True)
     com_state = models.CharField(max_length=50, blank=True, null=True)
     pincode = models.CharField(max_length=10, blank=True, null=True)
-    gst_uin = models.CharField(max_length=15, blank=True, null=True)
+    gst_uin = models.CharField(max_length=50, blank=True, null=True)
     contact_number = models.CharField(max_length=15, blank=True, null=True)
 
     shipping_1_attention = models.CharField(max_length=255, blank=True, null=True)
@@ -32,7 +32,7 @@ class customer(models.Model):
     shipping_1_city = models.CharField(max_length=50, blank=True, null=True)
     shipping_1_state = models.CharField(max_length=50, blank=True, null=True)
     shipping_1_pincode = models.CharField(max_length=10, blank=True, null=True)
-    shipping_1_gst_uin = models.CharField(max_length=15, blank=True, null=True)
+    shipping_1_gst_uin = models.CharField(max_length=50, blank=True, null=True)
     shipping_1_contact_number = models.CharField(max_length=15, blank=True, null=True)
    
     shipping_2_attention = models.CharField(max_length=255, blank=True, null=True)
@@ -40,7 +40,7 @@ class customer(models.Model):
     shipping_2_city = models.CharField(max_length=50, blank=True, null=True)
     shipping_2_state = models.CharField(max_length=50, blank=True, null=True)
     shipping_2_pincode = models.CharField(max_length=10, blank=True, null=True)
-    shipping_2_gst_uin = models.CharField(max_length=15, blank=True, null=True)
+    shipping_2_gst_uin = models.CharField(max_length=50, blank=True, null=True)
     shipping_2_contact_number = models.CharField(max_length=15, blank=True, null=True)
 
     shipping_3_attention = models.CharField(max_length=255, blank=True, null=True)
@@ -48,7 +48,7 @@ class customer(models.Model):
     shipping_3_city = models.CharField(max_length=50, blank=True, null=True)
     shipping_3_state = models.CharField(max_length=50, blank=True, null=True)
     shipping_3_pincode = models.CharField(max_length=10, blank=True, null=True)
-    shipping_3_gst_uin = models.CharField(max_length=15, blank=True, null=True)
+    shipping_3_gst_uin = models.CharField(max_length=50, blank=True, null=True)
     shipping_3_contact_number = models.CharField(max_length=15, blank=True, null=True)
   
     shipping_4_attention = models.CharField(max_length=255, blank=True, null=True)
@@ -56,7 +56,7 @@ class customer(models.Model):
     shipping_4_city = models.CharField(max_length=50, blank=True, null=True)
     shipping_4_state = models.CharField(max_length=50, blank=True, null=True)
     shipping_4_pincode = models.CharField(max_length=10, blank=True, null=True)
-    shipping_4_gst_uin = models.CharField(max_length=15, blank=True, null=True)
+    shipping_4_gst_uin = models.CharField(max_length=150, blank=True, null=True)
     shipping_4_contact_number = models.CharField(max_length=15, blank=True, null=True)
 
     bank_name = models.CharField(max_length=255)

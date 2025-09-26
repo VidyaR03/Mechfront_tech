@@ -1364,12 +1364,24 @@ $(document).ready(function () {
     var x = 1;
 
     $(".add-table-items").on('click', '.remove-btn', function () {
+        // Get the index of the row being targeted
+        var rowIndex = $(this).closest('.add-row').index();
+        
+        // Prevent deletion if it's the first row (index 0)
+        if (rowIndex === 0) {
+            alert("The first row cannot be deleted.");
+            return false;
+        }
+
+        // Proceed with deletion for other rows
         $(this).closest('.add-row').remove();
         subtotal();
         calculateTotalTaxAmount();
+        updateTaxFields();
         updateTotalInWords();
         return false;
     });
+
 
     $(document).on("click", ".add-btn", function () {
         if (x < max_fields) {
