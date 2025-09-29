@@ -72,10 +72,10 @@ CRM
                                             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                 <tbody><tr>
                                                     <td width="70%"><strong>Pay From</strong><br>
-                                                  {{deposit_name}}<br>
+                                                  {{ex_advice.ea_vendor.company_name}}<br>
                                                    </td>
-                                                    <td width="30%" valign="top">Reference number :  {{payment.payment_received_reference}}   <br>
-                                                  Transaction Type : {{payment.payment_received_payment_mode}}</td>
+                                                    <td width="30%" valign="top">Reference number :  {{ex_advice.ea_reference}}   <br>
+                                                  Transaction Type : {{ex_advice.ea_payment_mode}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>&nbsp;</td>
@@ -83,7 +83,7 @@ CRM
                                                 </tr>
                                                 <tr>
                                                     <td><strong>Pay To</strong><br>
-                                                    {{deposit_to}} <br>
+                                                   {{ex_advice.ea_vendor.company_name}} <br>
                                                     </td>
                                                     <td>&nbsp;</td>
                                                 </tr>
@@ -99,11 +99,11 @@ CRM
                                                 </tr>
                                                 <tr>
                                                     <td>Expected Value Date</td>
-                                                    <td>{{payment.payment_received_cheque_date}}</td>
+                                                    <td>{{ex_advice.ea_cheque_date}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Electronic Payment Type</td>
-                                                    <td>{{payment.payment_received_payment_mode}}</td>
+                                                    <td>{{ex_advice.ea_payment_mode}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Beneficiary Bank Location</td>
@@ -111,7 +111,7 @@ CRM
                                                 </tr>
                                                 <tr>
                                                     <td>Reference No.</td>
-                                                    <td>{{payment.payment_received_reference}}</td>
+                                                    <td>{{ex_advice.ea_reference}}</td>
                                                 </tr>
                                                
                                                 <tr>
@@ -128,43 +128,35 @@ CRM
                                     </tr>
                                     <tr>
                                         <td>
-                                            <table width="100%" border="0" cellspacing="0" cellpadding="3">
-                                              
+ <table width="100%" border="0" cellspacing="0" cellpadding="3">
+    <thead>
+        <tr>
+            <td style="border-top:1px solid #333;"><strong>DOCUMENT</strong></td>
+            <td style="border-top:1px solid #333;"><strong>PAYMENT DATE</strong></td>
+            <td style="border-top:1px solid #333;"><strong>PAYMENT AMOUNT</strong></td>
+            <td style="border-top:1px solid #333;"><strong>DUE AMOUNT</strong></td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in expense_advice_items %}
+        <tr>
+            <td style="border-top:1px solid #333;"></td>
+            <td style="border-top:1px solid #333;">{{ item.ea_date|date:"M/d/Y" }}</td>
+            <td style="border-top:1px solid #333;">{{ item.ea_invoice_amt|floatformat:2 }}</td>
+            <td style="border-top:1px solid #333;">{{ item.ea_due_amount|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
 
-                                            <tbody><tr>
-                                                <td style="border-top:1px solid #333;"><strong>DOCUMENT</strong></td>
-                                                
-                                                <td style="border-top:1px solid #333;"><strong>PAYMENT DATE</strong></td>
-                                                <td style="border-top:1px solid #333;"><strong>PAYMENT AMOUNT</strong></td>
-                                                <td style="border-top:1px solid #333;"><strong>DUE AMOUNt</strong></td>
-                                            </tr>
-                                              <tr>
-                                                
-                                                <td style="border-top:1px solid #333;"></td>
+        <!-- Sum totals -->
+        <tr>
+            <td style="border-top:1px solid #333;"><strong>SUM TOTAL</strong></td>
+            <td style="border-top:1px solid #333;"></td>
+            <td style="border-top:1px solid #333;">{{ subtotal_invoice_amount|floatformat:2 }}</td>
+            <td style="border-top:1px solid #333;">{{ subtotal_due_amount|floatformat:2 }}</td>
+        </tr>
+    </tbody>
+</table>
 
-                                                <td style="border-top:1px solid #333;">{{date}}</td>
-
-                                                <td style="border-top:1px solid #333;">{{invoice_amt}}
-                                                  
-                                                </td>
-
-                                                <td style="border-top:1px solid #333;">{{dueamount|floatformat:2}}
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td style="border-top:1px solid #333;"><strong>SUM TOTAL </strong></td>
-                                                
-                                                <td style="border-top:1px solid #333;">&nbsp;</td>
-
-                                                <td style="border-top:1px solid #333;">{{invoice_amt}}
-                                                </td>
-
-                                                <td style="border-top:1px solid #333;">{{dueamount|floatformat:2}}                                                </td>
-                                            </tr>
-                                            </tbody>
-
-                                        </table>
                                         </td>
                                     </tr>
                                 </tbody></table>

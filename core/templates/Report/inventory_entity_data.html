@@ -93,9 +93,9 @@ Inventory Report
                                 <table class="table table-center">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th>*DOCKTYPE</th>
-                                            <th>*DOCNO</th>
-                                            <th>*DOCDATE</th>
+                                            <th>DOCTYPE</th>
+                                            <th>DOCNO</th>
+                                            <th>DOCDATE</th>
                                             <th>CUSTOMER / VENDOR CODE</th>
                                             <th>CUSTOMER / VENDOR NAME</th>
                                             <th>CUSTOMER / VENDOR AREA</th>
@@ -106,17 +106,17 @@ Inventory Report
                                             <th>CUSTOMER / VENDOR PAN NO</th>
                                             <th>CUSTOMER /VENDOR Licence No.</th>
                                             <th>CUSTOMER / VENDOR Contact No</th>
-                                            <th>*PRODUCTCODE</th>
-                                            <th>*PRODUCTNAME</th>
+                                            <th>PRODUCTCODE</th>
+                                            <th>PRODUCTNAME</th>
                                             <th>COMPANYNAME</th>
                                             <th>UOM</th>
                                             <th>UNITSPERCASE</th>
-                                            <th>*OUTQUANTITY(UNITS)</th>
-                                            <th>*INQUANTITY(UNITS)</th>
+                                            <th>OUTQUANTITY(UNITS)</th>
+                                            <th>INQUANTITY(UNITS)</th>
                                             <th>OUTFREE(UNITS)</th>
                                             <th>INFREE(UNITS)</th>
-                                            <th>CHALAN / VEN# BILL NO</th>
-                                            <th>CHALAN / VENDOR #BILL DATE</th>
+                                            <th>CHALAN / VENDOR BILL NO</th>
+                                            <th>CHALAN / VENDOR BILL DATE</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -124,7 +124,7 @@ Inventory Report
                                         <tr>
                                             <td>{{ row.type }}</td>
                                             <td>{{ row.number }}</td>
-                                            <td>{{ row.date|date:"Y-m-d" }}</td>
+                                            <td>{{ row.date|date:"M/d/Y" }}</td>
                                             <td>{{ row.Cust_vendor_code }}</td>
                                             <td>{{ row.Cust_vendor_name }}</td>
                                             <td>{{ row.Cust_vendor_area }}</td>
@@ -145,7 +145,7 @@ Inventory Report
                                           <td>{{ row.out_free|default_if_none:"0" }}</td>
                                             <td>{{ row.in_free|default_if_none:"0" }}</td>
                                             <td>{{ row.bill_no }}</td>
-                                            <td>{{ row.bill_date|date:"Y-m-d" }}</td>
+                                            <td>{{ row.bill_date|date:"M/d/Y" }}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>

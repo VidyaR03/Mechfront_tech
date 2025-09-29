@@ -179,23 +179,23 @@ def get_vendor_expenses(request):
 # @login_required
 def payment_pdf(request, id):
     payment = get_object_or_404(expense_advice, id=id)
-    company_name = payment.expense_advice_deposite.company_name
-    deposit_to = payment.expense_advice_customer.company_name
+    company_name = payment.ea_deposit.company_name
+    deposit_to = payment.ea_deposit.company_name
 
-    payment_item_data = expense_advice_item.objects.filter(expense_advice_id = id)
+    payment_item_data = expense_advice_item.objects.filter(ex_expense_adv_id = id)
     for i in payment_item_data:
-        print(i.ea_due_amount,"))))))))))))))")
+        print(i.ea_due_amount)
     
     context = {
         'deposit_name':company_name.upper(),
         'deposit_to':deposit_to.upper(),
         'payment':payment,
-        'date':i.invoicedate,
-        'invoice_amt':i.invoiceamount,
-        'dueamount':i.dueamount,
+        'date':i.ea_date,
+        'invoice_amt':i.ea_invoice_amt,
+        'dueamount':i.ea_due_amount,
         'payment_item_data':payment_item_data
         }
-    return render(request, template_path.expense_advice_pdf,context)
+    return render(request, template_path.expense_advice,context)
 
 
 
@@ -342,9 +342,9 @@ def autocomplete_accexpense(request):
 
 def show_expense_advise(request, id):
     ex_advice = get_object_or_404(expense_advice, id=id)
-    expense_advice_items = expense_advice_item.objects.filter(ex_expense_adv_id=id, ea_due_amount = '0.0')
-    for i in expense_advice_items:
-        print("$$$$$$$", i.ea_due_amount, type(i.ea_due_amount), i.ea_due_amount == '0.0', i.ea_due_amount == 0.0)
+    expense_advice_items = expense_advice_item.objects.filter(ex_expense_adv_id=id)
+    # for i in expense_advice_items:
+    #     print('@#$%^&*',i.ea_invoice_amt)
 
 
     p = inflect.engine()
@@ -364,6 +364,9 @@ def show_expense_advise(request, id):
         'expense_advice_items': expense_advice_items,
         'subtotal_invoice_amount': subtotal_invoice_amount,
         'subtotal_due_amount': subtotal_due_amount,
+        'subtotal_invoice_amount' : sum(float(item.ea_invoice_amt) for item in expense_advice_items if item.ea_invoice_amt),
+        'subtotal_due_amount' : sum(float(item.ea_due_amount) for item in expense_advice_items if item.ea_due_amount)
+
 
 
 

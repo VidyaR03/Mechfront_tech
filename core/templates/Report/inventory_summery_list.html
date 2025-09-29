@@ -108,6 +108,7 @@
                                   <th>ITEM CODE</th>
                                   <th>ITEM</th>
                                   <th>QUANTITY</th>
+                                  <th>OPENING BALANCE</th>
                                   <th>RATE</th>
                                   <th>AMOUNT</th>
                               </tr>
@@ -121,6 +122,7 @@
                                   <td>{{ item.item_code }}</td>
                                   <td> <a href="#" style="color: blue;">{{ item.inventory_name|upper}}</a></td>
                                   <td>{{ item.opening_stock_quantity }}</td>
+                                  <td>{{ item.opening_rate }}</td>
                                   <td>{{ item.purchase_rate }}</td>
                                   <td>{{ item.amount|floatformat:2 }}</td>
                               </tr>

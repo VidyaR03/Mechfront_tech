@@ -2062,9 +2062,9 @@ def inventory_overview_csv(request):
         writer = csv.writer(response)
 
         writer.writerow([
-            '*DOCKTYPE',
-            '*DOCNO',
-            '*DOCDATE',
+            'DOCTYPE',
+            'DOCNO',
+            'DOCDATE',
             'CUSTOMER /VENDOR CODE',
             'CUSTOMER /VENDOR NAME',
             'CUSTOMER /VENDOR AREA',
@@ -2075,17 +2075,17 @@ def inventory_overview_csv(request):
             'CUSTOMER /VENDOR PAN NO',
             'CUSTOMER /VENDOR Licence No.',
             'CUSTOMER / VENDOR Contact No',
-            '*PRODUCTCODE',
-            '*PRODUCTNAME',
+            'PRODUCTCODE',
+            'PRODUCTNAME',
             'COMPANYNAME',
             'UOM',
             'UNITSPERCASE',
-            '*OUTQUANTITY(UNITS)',
-            '*INQUANTITY(UNITS)',
+            'OUTQUANTITY(UNITS)',
+            'INQUANTITY(UNITS)',
             'OUTFREE(UNITS)',
             'INFREE(UNITS)',
-            'CHALAN / VEN# BILL NO',
-            'CHALAN / VENDOR #BILL DATE',
+            'CHALAN / VENDOR BILL NO',
+            'CHALAN / VENDOR BILL DATE',
         ])
 
         for row in combined_data:
@@ -2099,7 +2099,6 @@ def inventory_overview_csv(request):
             ])
         return response
 
-    # ✅ Otherwise render HTML
     context = {
         'combined_data': combined_data,
         'start_date': start_date,
