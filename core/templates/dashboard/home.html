@@ -207,6 +207,42 @@
                                     {% endif %}
                                 </tbody>
                             </table>
+                            {% if invoices.has_other_pages %}
+                            <nav>
+                                <ul class="pagination justify-content-end">
+                                    {% if invoices.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?invoice_page={{ invoices.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">&laquo;</span>
+                                        </li>
+                                    {% endif %}
+
+                                    {% for num in invoices.paginator.page_range %}
+                                        <li class="page-item {% if invoices.number == num %}active{% endif %}">
+                                            <a class="page-link" href="?invoice_page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endfor %}
+
+                                    {% if invoices.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?invoice_page={{ invoices.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">&raquo;</span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
@@ -251,6 +287,42 @@
                                     {% endif %}
                                 </tbody>
                             </table>
+                            {% if pinvoice.has_other_pages %}
+                            <nav>
+                                <ul class="pagination justify-content-end">
+                                    {% if pinvoice.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?pinvoice_page={{ pinvoice.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">&laquo;</span>
+                                        </li>
+                                    {% endif %}
+
+                                    {% for num in pinvoice.paginator.page_range %}
+                                        <li class="page-item {% if pinvoice.number == num %}active{% endif %}">
+                                            <a class="page-link" href="?pinvoice_page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endfor %}
+
+                                    {% if pinvoice.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?pinvoice_page={{ pinvoice.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">&raquo;</span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>

@@ -256,7 +256,7 @@ urlpatterns = [
 
 
     # # path('get_emp_leave/<str:emp_name>/', views.get_emp_leave, name='get_emp_leave'),
-    path('admin_home/', views.admin_home, name='admin_home'),
+    # path('admin_home/', views.admin_home, name='admin_home'),
 
     path('vendor_doc/', views.upload_vendor_doc, name = 'vendor_doc'),
     path('inventory_doc/', views.upload_inventory_doc, name = 'inventory_doc'),

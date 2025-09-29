@@ -6,6 +6,7 @@ from core.models import customer, vendor, sales_order,Purchase_Invoice, Invoice,
 from datetime import datetime
 from core.modules.login.login import login_required
 from datetime import datetime,timedelta
+from django.core.paginator import Paginator
 
 # from django.contrib.auth.decorators import login_required
 # from django.contrib.auth import authenticate, login, logout
@@ -67,18 +68,27 @@ def admin_home(request):
     seven_days_ago = datetime.now() - timedelta(days=7)
 
     # Fetch invoices from the last 7 days
-    invoices = Invoice.objects.filter(invoice_date__gte=seven_days_ago).order_by('-invoice_date')
+    invoice_list = Invoice.objects.filter(invoice_date__gte=seven_days_ago).order_by('-invoice_date')
+    invoice_paginator = Paginator(invoice_list, 5)  # 5 invoices per page
+    invoice_page_number = request.GET.get('invoice_page')
+    invoices = invoice_paginator.get_page(invoice_page_number)
 
-    # If no invoices found, fetch the latest 10
-    if not invoices.exists():
-        invoices = Invoice.objects.all().order_by('-invoice_date')[:10]
+    if invoice_paginator.count == 0:
+        invoice_list = Invoice.objects.all().order_by('-invoice_date')
+        invoice_paginator = Paginator(invoice_list, 5)
+        invoices = invoice_paginator.get_page(1)
 
     # Fetch purchase invoices from the last 7 days
-    pinvoice = Purchase_Invoice.objects.filter(purchase_due_date__gte=seven_days_ago).order_by('-purchase_due_date')
+    pinvoice_list = Purchase_Invoice.objects.filter(purchase_due_date__gte=seven_days_ago).order_by('-purchase_due_date')
+    pinvoice_paginator = Paginator(pinvoice_list, 5)  # 5 bills per page
+    pinvoice_page_number = request.GET.get('pinvoice_page')
+    pinvoice = pinvoice_paginator.get_page(pinvoice_page_number)
 
-    # If no purchase invoices found, fetch the latest 10
-    if not pinvoice.exists():
-        pinvoice = Purchase_Invoice.objects.all().order_by('-purchase_due_date')[:10]
+    if pinvoice_paginator.count == 0:
+        pinvoice_list = Purchase_Invoice.objects.all().order_by('-purchase_due_date')
+        pinvoice_paginator = Paginator(pinvoice_list, 5)
+        pinvoice = pinvoice_paginator.get_page(1)
+
     current_date = timezone.now().date()
     
     # Fetch min & max financial year
