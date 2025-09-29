@@ -344,8 +344,14 @@ def show_expense_advise(request, id):
     ex_advice = get_object_or_404(expense_advice, id=id)
     expense_advice_items = expense_advice_item.objects.filter(ex_expense_adv_id=id)
     p = inflect.engine()
-    amount = float(ex_advice.ea_amount)
+    amount_str = ex_advice.ea_amount
 
+    if amount_str:
+        amount = float(amount_str)
+    else:
+        amount = 0.0  
+
+        
     total_amount_in_words = p.number_to_words(ex_advice.ea_amount)
     total_amount_in_words = p.number_to_words(amount).title()
 

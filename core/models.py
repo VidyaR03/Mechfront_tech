@@ -351,7 +351,7 @@ class expense_advice(models.Model):
     ea_payment_mode = models.CharField(max_length=50, null=True)
     ea_mobile = models.CharField(max_length=20, null=True)
     ea_balance = models.CharField(max_length=50, null=True)
-    ea_amount = models.CharField(max_length=10,  null=True)
+    ea_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     ea_expense_advice_no = models.CharField(max_length=50, null=True)
     ea_bank_charges = models.CharField(max_length=10,  null=True, blank=True)
     ea_cheque_no = models.CharField(max_length=50, null=True, blank=True)

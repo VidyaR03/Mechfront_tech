@@ -1268,7 +1268,7 @@ def display_inventory_summenry_date_range(request):
                 # Prepare result data
                 filtered_items = list(items_within_range.values(
                     'item_code', 'vendor_name__company_name', 'inventory_name', 
-                    'opening_stock_quantity', 'purchase_rate'
+                    'opening_stock_quantity','opening_rate', 'purchase_rate'
                 ))
 
                 # Calculate total amount
@@ -1762,6 +1762,7 @@ def download_inventory_excel(request):
         'item_code',
         'inventory_name',
         'opening_stock_quantity',
+        'opening_rate',
         'purchase_rate'
     ))
 
@@ -1797,7 +1798,7 @@ def download_inventory_excel(request):
     sheet.cell(row=3, column=1, value=date_range).font = Font(size=10, bold=True)
 
     # Headers
-    headers = ['Company Name', 'Item Code', 'Item', 'Quantity', 'Rate', 'Amount']
+    headers = ['Company Name', 'Item Code', 'Item', 'Quantity','Opening Rate', 'Rate', 'Amount']
     sheet.append([])
     sheet.append(headers)
 
@@ -1808,13 +1809,14 @@ def download_inventory_excel(request):
             item['item_code'],
             item['inventory_name'],
             item['opening_stock_quantity'],
+            item['opening_rate'],
             item['purchase_rate'],
             item['amount']
         ])
 
     # Total row
     sheet.append([])
-    sheet.append(['', '', '', '', 'Total', total_amount])
+    sheet.append(['', '', '', '','', 'Total', total_amount])
 
     # Column widths
     column_widths = [30, 15, 30, 15, 15, 20]
