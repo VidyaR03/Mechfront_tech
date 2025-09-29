@@ -343,20 +343,14 @@ def autocomplete_accexpense(request):
 def show_expense_advise(request, id):
     ex_advice = get_object_or_404(expense_advice, id=id)
     expense_advice_items = expense_advice_item.objects.filter(ex_expense_adv_id=id)
-    # for i in expense_advice_items:
-    #     print('@#$%^&*',i.ea_invoice_amt)
-
-
     p = inflect.engine()
+    amount = float(ex_advice.ea_amount)
+
     total_amount_in_words = p.number_to_words(ex_advice.ea_amount)
-    total_amount_in_words = total_amount_in_words.title()
+    total_amount_in_words = p.number_to_words(amount).title()
 
     subtotal_invoice_amount = sum(float(item.ea_invoice_amt) for item in expense_advice_items if item.ea_invoice_amt)
     subtotal_due_amount = sum(float(item.ea_due_amount) for item in expense_advice_items if item.ea_due_amount)
-
-
-
-
 
     context = {
         'ex_advice':ex_advice,
@@ -364,11 +358,8 @@ def show_expense_advise(request, id):
         'expense_advice_items': expense_advice_items,
         'subtotal_invoice_amount': subtotal_invoice_amount,
         'subtotal_due_amount': subtotal_due_amount,
-        'subtotal_invoice_amount' : sum(float(item.ea_invoice_amt) for item in expense_advice_items if item.ea_invoice_amt),
-        'subtotal_due_amount' : sum(float(item.ea_due_amount) for item in expense_advice_items if item.ea_due_amount)
-
-
-
+        'subtotal_invoice_amount': subtotal_invoice_amount,
+        'subtotal_due_amount': subtotal_due_amount,
 
         }
     return render(request, template_path.expense_advice,context)
