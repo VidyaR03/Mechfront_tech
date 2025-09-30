@@ -106,12 +106,9 @@
                                   <th>SR.NO.</th>
                                   <th>COMPANY NAME</th>
                                   <th>ITEM CODE</th>
-                                  <th>MM NUMBER</th>
-                                  <!-- <th>QUANTITY</th> -->
+                                  <th>ITEM</th>
+                                  <th>QUANTITY</th>
                                   <th>OPENING BALANCE</th>
-                                  <th>CLOSING BALANCE</th>
-                                  <th>INWARD</th>
-                                  <th>OUTWARD</th>
                                   <th>RATE</th>
                                   <th>AMOUNT</th>
                               </tr>
@@ -124,17 +121,14 @@
                                   <td>{{ item.vendor_name__company_name }}</td>
                                   <td>{{ item.item_code }}</td>
                                   <td> <a href="#" style="color: blue;">{{ item.inventory_name|upper}}</a></td>
-                                  <!-- <td>{{ item.opening_rate }}</td> -->
                                   <td>{{ item.opening_stock_quantity }}</td>
-                                <td>{{ item.available_balance_quantity|default:"0" }}</td>
-                                  <td>{{item.total_inward_quantity|default:"0"}}</td>
-                                  <td>{{item.total_outward_quantity|default:"0"}}</td>
+                                  <td>{{ item.opening_rate }}</td>
                                   <td>{{ item.purchase_rate }}</td>
                                   <td>{{ item.amount|floatformat:2 }}</td>
                               </tr>
                               {% endfor %}
                               <tr>
-                                  <td colspan="9"><strong>TOTAL</strong></td>
+                                  <td colspan="7"><strong>TOTAL</strong></td>
                                   <td><strong>{{ total_amount|floatformat:2 }}</strong></td>
                               </tr>
                           </tbody>

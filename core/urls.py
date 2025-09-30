@@ -247,6 +247,7 @@ urlpatterns = [
 ### For inventory voucher report
 
     path('inventory_summery_report/', views.display_inventory_summenry_date_range, name='inventory_summery_report'),
+    # path('inventory_summery_report_new/', views.display_inventory_summary_all, name='inventory_summery_report_new'),
 ### For purchase voucher report
     path("get_companies_by_date/", views.get_companies_by_date, name="get_companies_by_date"),
 
@@ -365,7 +366,7 @@ urlpatterns = [
     path('inventory-csv/', views.inventory_overview_csv, name='inventory_overview_csv'),
     path('inventory/', views.select_dates, name='select_dates'),
 
-
+    path('expense_advice/<int:id>/download/', views.download_expense_advice_pdf, name='download_expense_advice_pdf'),
 
 ]
 

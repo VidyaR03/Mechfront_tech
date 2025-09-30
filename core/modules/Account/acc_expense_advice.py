@@ -22,7 +22,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.template.loader import get_template
 from weasyprint import HTML
-
+import pdfkit
 
 # @login_required
 def fn_expense_advice_list_View(request):
@@ -92,6 +92,9 @@ def fnadd_expense_advice(request):
         
         expense_advice_date = datetime.strptime(expense_advice_date_str, '%d-%m-%Y').date()
 
+
+
+
         def safe_float_conversion(value):
             try:
                 return float(value)
@@ -108,8 +111,9 @@ def fnadd_expense_advice(request):
             'ea_amount': safe_float_conversion(request.POST['amount']),
             'ea_expense_advice_no': request.POST['paymentreceiptno'],
             'ea_bank_charges': safe_float_conversion(request.POST['bank_charges']),
-            'ea_cheque_no': request.POST['cheque_no'],
-            'ea_cheque_date': expense_advice_check_date,
+            'ea_cheque_no': request.POST['ea_cheque_no'],
+            'ea_cheque_date': expense_advice_date,
+            # 'ea_cheque_date': expense_advice_check_date,
             'ea_reference': request.POST.get('reference'),
             'ea_note': request.POST['note'],
             'ea_po_no': request.POST['ea_po_no'],
@@ -290,6 +294,8 @@ def fnedit_expense_advice(request, expense_advice_id):
         expense_advice_object.ea_bank_charges = safe_float_conversion(request.POST['ea_bank_charges'])
         expense_advice_object.ea_note = request.POST['note']
         expense_advice_object.ea_po_no = request.POST['ea_po_no']
+        expense_advice_object.ea_cheque_no = request.POST['ea_cheque_no']
+        expense_advice_object.ea_cheque_date = expense_advice_date
         expense_advice_object.ea_total = safe_float_conversion(request.POST['total'])
         expense_advice_object.ea_amount_received = safe_float_conversion(request.POST['amount_received'])
         expense_advice_object.ea_amount_used = safe_float_conversion(request.POST['amount_used'])
@@ -338,6 +344,7 @@ def autocomplete_accexpense(request):
     return JsonResponse(results, safe=False)
 
 
+
     
 def show_expense_advise(request, id):
     ex_advice = get_object_or_404(expense_advice, id=id)
@@ -372,4 +379,41 @@ def show_expense_advise(request, id):
     return render(request, template_path.expense_advice, context)
 
 
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
+from weasyprint import HTML
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+
+def download_expense_advice_pdf(request, id):
+    ex_advice = get_object_or_404(expense_advice, id=id)
+    expense_advice_items = expense_advice_item.objects.filter(ex_expense_adv_id=id)
+
+    import inflect
+    p = inflect.engine()
+    try:
+        amount = float(ex_advice.ea_amount) if ex_advice.ea_amount else 0.0
+    except (ValueError, TypeError):
+        amount = 0.0
+
+    total_amount_in_words = p.number_to_words(amount).title()
+    subtotal_invoice_amount = sum(float(item.ea_invoice_amt) for item in expense_advice_items if item.ea_invoice_amt)
+    subtotal_due_amount = sum(float(item.ea_due_amount) for item in expense_advice_items if item.ea_due_amount)
+
+    context = {
+        'ex_advice': ex_advice,
+        'expense_advice_items': expense_advice_items,
+        'total_amount_in_words': total_amount_in_words,
+        'subtotal_invoice_amount': subtotal_invoice_amount,
+        'subtotal_due_amount': subtotal_due_amount,
+    }
+
+    # Use the **minimal PDF template**
+    html_string = render_to_string('Account/expense_pdf.html', context)
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="expense_advice_{id}.pdf"'
+    return response

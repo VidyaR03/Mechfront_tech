@@ -173,6 +173,7 @@ invoice_date_report = "Report/invoice_report_date.html"
 #For Inventory report
 inventory_summery_list_report = "Report/inventory_summery_list.html"
 inventory_summery_date_report = "Report/inventory_summery_date.html"
+invoice_overview = "Report/inventory_overview.html"
 
 
 

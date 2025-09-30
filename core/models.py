@@ -517,9 +517,6 @@ class inventory(models.Model):
         db_table = "inventory"
 
 
-    class Meta:
-        db_table = "inventory"
-
 
 class sales_order(models.Model):
     id = models.AutoField(primary_key=True, editable=False)

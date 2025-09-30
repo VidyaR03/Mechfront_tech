@@ -216,10 +216,8 @@ def inventory_overview(request, id):
     balance_stock = opening_stock_quantity
     for entry in combined_data:
         if entry['particular'] == 'Purchase':
-            # Add quantity to balance for purchases
             balance_stock += float(entry['quantity'])
         elif entry['particular'] == 'Sales':
-            # Subtract quantity from balance for sales
             balance_stock -= float(entry['quantity'])
 
         # Update the new balance in the entry without changing the original quantity field
