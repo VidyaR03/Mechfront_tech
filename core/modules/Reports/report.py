@@ -1293,172 +1293,6 @@ def display_inventory_summenry_date_range(request):
         'end_date': end_date
     })
 
-# from datetime import datetime
-# from django.db.models import IntegerField
-# from django.db.models.functions import Cast
-
-# def display_inventory_summenry_date_range(request):
-#     vendors = vendor.objects.all().order_by('company_name')
-#     selected_company = ''
-#     filtered_items = []
-#     total_amount = 0
-#     available_qty = 0
-#     total_in_qty = 0
-#     total_out_qty = 0
-
-#     start_date = None
-#     end_date = None
-
-#     if request.method == 'POST':
-#         start_date_str = request.POST.get('start_date')
-#         end_date_str = request.POST.get('end_date')
-#         selected_company = request.POST.get('company_name', '').strip()
-
-#         request.session['start_date'] = start_date_str
-#         request.session['end_date'] = end_date_str
-#         request.session['company_name'] = selected_company
-
-#         if start_date_str and end_date_str:
-#             try:
-#                 start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-#                 end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-
-#                 items_within_range = inventory.objects.filter(
-#                     date__range=(start_date, end_date)
-#                 )
-
-#                 if selected_company:
-#                     items_within_range = items_within_range.filter(
-#                         vendor_name__company_name__icontains=selected_company
-#                     )
-
-#                 items_within_range = items_within_range.annotate(
-#                     item_code_int=Cast('item_code', IntegerField())
-#                 ).order_by('item_code_int')
-
-#                 # Group by item_code to calculate running stock
-#                 item_groups = {}
-
-#                 for entry in items_within_range:
-#                     code = entry.item_code
-
-#                     if code not in item_groups:
-#                         item_groups[code] = {
-#                             'entries': [],
-#                             'opening_stock_quantity': 0.0,
-#                             'purchase_rate': 0.0,
-#                             'total_in_qty': 0.0,
-#                             'total_out_qty': 0.0
-#                         }
-
-#                     # Parse opening stock
-#                     try:
-#                         opening_stock = float(entry.opening_stock_quantity)
-#                     except (ValueError, TypeError):
-#                         opening_stock = 0.0
-
-#                     item_groups[code]['opening_stock_quantity'] = opening_stock
-
-#                     # Save purchase_rate just once (for amount calc)
-#                     try:
-#                         item_groups[code]['purchase_rate'] = float(entry.purchase_rate)
-#                     except (ValueError, TypeError):
-#                         item_groups[code]['purchase_rate'] = 0.0
-
-#                     # Fetch sales data (OUT)
-#                     invoices = Invoice.objects.filter(
-#                         id__in=invoice_items.objects.filter(
-#                             invoice_item_code=entry.item_code
-#                         ).values_list('invoice_id', flat=True),
-#                         invoice_date__range=(start_date, end_date)
-#                     )
-#                     invoice_items_data = invoice_items.objects.filter(
-#                         invoice_item_code=entry.item_code,
-#                         invoice_id__in=invoices.values_list('id', flat=True)
-#                     )
-#                     total_out = sum(float(item.invoice_qantity) for item in invoice_items_data)
-
-#                     # Fetch purchase data (IN)
-#                     purchase_invoices = Purchase_Invoice.objects.filter(
-#                         id__in=Purchase_Invoice_items.objects.filter(
-#                             purchase_invoice_item_code=entry.item_code
-#                         ).values_list('purchase_invoice_id', flat=True),
-#                         purchase_invoice_date__range=(start_date, end_date)
-#                     )
-#                     purchase_invoice_items_data = Purchase_Invoice_items.objects.filter(
-#                         purchase_invoice_item_code=entry.item_code,
-#                         purchase_invoice_id__in=purchase_invoices.values_list('id', flat=True)
-#                     )
-#                     total_in = sum(float(item.purchase_invoice_qantity) for item in purchase_invoice_items_data)
-
-#                     # Store IN and OUT quantities
-#                     item_groups[code]['total_in_qty'] = total_in
-#                     item_groups[code]['total_out_qty'] = total_out
-#                     item_groups[code]['entries'].append({
-#                         'item_code': entry.item_code,
-#                         'vendor_name__company_name': entry.vendor_name.company_name if entry.vendor_name else '',
-#                         'inventory_name': entry.inventory_name,
-#                         'opening_stock_quantity': opening_stock,
-#                         'purchase_rate': entry.purchase_rate,
-#                         'type': entry.type,
-#                         'date': entry.date
-#                     })
-
-#                 processed_items = []
-
-#                 for code, data in item_groups.items():
-#                     balance_stock = data['opening_stock_quantity']
-#                     in_qty = 0.0
-#                     out_qty = 0.0
-
-#                     for entry in sorted(data['entries'], key=lambda e: e.get('date')):
-#                         try:
-#                             qty = float(entry['opening_stock_quantity'])
-#                         except (ValueError, TypeError):
-#                             qty = 0.0
-
-#                         if entry.get('type') == 'Purchase':
-#                             balance_stock += qty
-#                             in_qty += qty
-#                         elif entry.get('type') == 'Sales':
-#                             balance_stock -= qty
-#                             out_qty += qty
-
-#                         entry['balance'] = balance_stock
-
-#                     amount = balance_stock * data['purchase_rate']
-#                     total_amount += amount
-
-#                     summary_entry = data['entries'][0]  # Use the first entry as base
-#                     summary_entry['final_balance'] = balance_stock
-#                     summary_entry['in_qty'] = in_qty       # ✅ Add In Qty
-#                     summary_entry['out_qty'] = out_qty     # ✅ Add Out Qty
-#                     summary_entry['amount'] = amount
-
-#                     processed_items.append(summary_entry)
-
-
-#                     total_amount += summary_entry['amount']
-#                     total_in_qty += data['total_in_qty']
-#                     total_out_qty += data['total_out_qty']
-
-#                 filtered_items = processed_items
-#                 available_qty = sum(item['final_balance'] for item in processed_items)
-
-#             except ValueError:
-#                 pass
-
-#     return render(request, template_path.inventory_summery_list_report, {
-#         'vendors': vendors,
-#         'selected_company': selected_company,
-#         'filtered_items': filtered_items,
-#         'total_amount': total_amount,
-#         'start_date': start_date,
-#         'end_date': end_date,
-#         'available_qty': available_qty,
-#         'total_in_qty': total_in_qty,
-#         'total_out_qty': total_out_qty
-#     })
 def get_companies_by_date(request):
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
@@ -1758,6 +1592,7 @@ def download_excel(request):
 
     # Write data rows
     for item in purchase_items_within_range:
+        
         total = float(item.purchase_invoice_total or 0)  # Convert to float
         sheet.append([
             item.purchase_invoice_vendor_name.contact_person,
@@ -1770,10 +1605,16 @@ def download_excel(request):
             float(item.purchase_invoice_igstval or 0),    # Convert to float
             total
         ])
-        total_amount += total  # Add to total amount
+        total_amount += total  
+        total_cgst = sum(float(item.purchase_invoice_cgstval or 0) for item in purchase_items_within_range)
+        total_sgst = sum(float(item.purchase_invoice_sgstval or 0) for item in purchase_items_within_range)
+        total_igst = sum(float(item.purchase_invoice_igstval or 0) for item in purchase_items_within_range)
+        total_amount = sum(float(item.purchase_invoice_sub_total or 0) for item in purchase_items_within_range)
+        total_invoice = sum(float(item.purchase_invoice_total or 0) for item in purchase_items_within_range)
+        total_freight = sum(float(item.purchase_freight_amount or 0) for item in purchase_items_within_range)# Add to total amount
 
     sheet.append([])  # Empty row for spacing
-    sheet.append(['', '', '', '', '', '', '', 'Total', total_amount])
+    sheet.append(['Total','', '', total_amount, total_freight,total_cgst,total_sgst,total_igst,total_invoice ])
 
     # Set column widths
     column_widths = [20, 15, 15, 15, 10, 10, 10, 10, 15]
@@ -2273,3 +2114,203 @@ def inventory_overview_csv(request):
         'end_date': end_date,
     }
     return render(request, 'Report/inventory_entity_data.html', context)
+
+
+
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from datetime import date
+from dateutil.parser import parse as parse_date
+from django.utils import timezone
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+
+def inventory_overview_report(request, id):
+    inventory_entity_data = get_object_or_404(inventory, id=id)
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    opening_stock_quantity_os = request.GET.get('os')
+    download_excel = request.GET.get('download_excel')
+
+    # Set default start and end date to current date
+    current_date = timezone.now().date()
+    if start_date_str and end_date_str:
+        try:
+            start_date = parse_date(start_date_str)
+            end_date = parse_date(end_date_str)
+        except ValueError:
+            start_date = current_date
+            end_date = current_date
+    else:
+        start_date = current_date
+        end_date = current_date
+
+    try:
+        opening_stock_quantity = float(inventory_entity_data.opening_stock_quantity)
+    except ValueError:
+        opening_stock_quantity = 0
+
+    if opening_stock_quantity_os:
+        try:
+            opening_stock_quantity = float(opening_stock_quantity_os)
+        except ValueError:
+            opening_stock_quantity = 0
+
+    current_stock = opening_stock_quantity
+    combined_data = []
+
+    # Process sales data
+    invoices = Invoice.objects.filter(
+        id__in=invoice_items.objects.filter(invoice_item_code=inventory_entity_data.item_code).values_list('invoice_id', flat=True),
+        invoice_date__range=(start_date, end_date)
+    )
+    invoice_items_data = invoice_items.objects.filter(
+        invoice_item_code=inventory_entity_data.item_code,
+        invoice_id__in=invoices.values_list('id', flat=True)
+    )
+    total_quantity = sum(float(item.invoice_qantity) for item in invoice_items_data)
+
+    for invoice in invoices:
+        try:
+            items = invoice_items.objects.filter(
+                invoice_item_code=inventory_entity_data.item_code,
+                invoice_id=invoice.id
+            )
+            for item in items:
+                quantity = float(item.invoice_qantity)
+                total_rate = item.invoice_unit_price
+                average_rate = total_rate
+                amount = quantity * average_rate
+                combined_data.append({
+                    'particular': 'Sales',
+                    'date': invoice.invoice_date,
+                    'invoice_no': invoice.inv_number if invoice.inv_number else getattr(invoice, "formatted_id", invoice.id),
+                    'customer_vendor': getattr(invoice.invoice_customer_name_customer, "customer", ""),
+                    'rate': average_rate,
+                    'unit': get_last_purchase_unit(inventory_entity_data.item_code, start_date, end_date) or inventory_entity_data.units,
+                    'quantity': quantity,
+                    'balance': current_stock,
+                    'amount': amount,
+                })
+        except Exception as e:
+            print(f"Error processing invoice {invoice.id}: {e}")
+            continue
+
+    # Process purchase data
+    purchase_invoices = Purchase_Invoice.objects.filter(
+        id__in=Purchase_Invoice_items.objects.filter(
+            purchase_invoice_item_code=inventory_entity_data.item_code
+        ).values_list('purchase_invoice_id', flat=True),
+        purchase_invoice_date__range=(start_date, end_date)
+    )
+    purchase_invoice_items_data = Purchase_Invoice_items.objects.filter(
+        purchase_invoice_item_code=inventory_entity_data.item_code,
+        purchase_invoice_id__in=purchase_invoices.values_list('id', flat=True)
+    )
+    for purchase_invoice in purchase_invoices:
+        items = Purchase_Invoice_items.objects.filter(
+            purchase_invoice_item_code=inventory_entity_data.item_code,
+            purchase_invoice_id=purchase_invoice.id
+        )
+        for item in items:
+            total_purchase_quantity = float(item.purchase_invoice_qantity)
+            total_rate = item.purchase_invoice_unit_price
+            average_rate = total_rate
+            amount = total_purchase_quantity * average_rate
+            combined_data.append({
+                'particular': 'Purchase',
+                'date': purchase_invoice.purchase_invoice_date,
+                'invoice_no': purchase_invoice.purchase_invoice_PO_no if purchase_invoice.purchase_invoice_PO_no else getattr(purchase_invoice, "formatted_id", purchase_invoice.id),
+                'customer_vendor': getattr(purchase_invoice.purchase_invoice_vendor_name, "company_name", ""),
+                'rate': average_rate,
+                'unit': item.purchase_invoice_uom,
+                'quantity': total_purchase_quantity,
+                'balance': current_stock,
+                'amount': amount,
+            })
+
+    # Sort combined data by date and priority ('Purchase' before 'Sales')
+    combined_data = sorted(combined_data, key=lambda x: (x['date'], 0 if x['particular'] == 'Purchase' else 1))
+
+    # Recalculate balance
+    balance_stock = opening_stock_quantity
+    for entry in combined_data:
+        if entry['particular'] == 'Purchase':
+            balance_stock += float(entry['quantity'])
+        elif entry['particular'] == 'Sales':
+            balance_stock -= float(entry['quantity'])
+        entry['balance'] = balance_stock
+
+    available_quantity = balance_stock
+    total_amount = sum(float(entry['amount']) for entry in combined_data)
+
+    context = {
+        "inventory_entity_data": inventory_entity_data,
+        "gstEnabled": True,
+        "combined_data": combined_data,
+        "available_quantity": available_quantity,
+        "opening_stock_quantity": opening_stock_quantity,
+        "total_quantity": total_quantity,
+        "purchase_total_quantity": sum(float(item.purchase_invoice_qantity) for item in purchase_invoice_items_data),
+        "start_date": start_date,
+        "end_date": end_date,
+        "total_amount": total_amount,
+    }
+
+    if download_excel:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Inventory Overview"
+
+        # Overview
+        ws.append(["Inventory Overview"])
+        ws.append(["Item Code", "Item Name", "Unit", "Type", "HSN", "Tax Type", "Sales Rate", "Purchase Rate", "Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
+        ws.append([
+            inventory_entity_data.item_code,
+            inventory_entity_data.inventory_name,
+            inventory_entity_data.units,
+            inventory_entity_data.type,
+            inventory_entity_data.hsn,
+            inventory_entity_data.tax_type,
+            inventory_entity_data.sales_rate,
+            inventory_entity_data.purchase_rate,
+            opening_stock_quantity,
+            available_quantity,
+            total_quantity,
+            context["purchase_total_quantity"]
+        ])
+        ws.append([])
+
+        # Combined Transactions
+        ws.append(["Transactions"])
+        ws.append(["Particular", "Date", "Invoice No/Vendor", "Quantity", "Unit", "Rate", "Balance", "Amount"])
+        for row in combined_data:
+            ws.append([
+                row["particular"],
+                row["date"],
+                row.get("invoice_no", row.get("customer_vendor")),
+                row["quantity"],
+                row["unit"],
+                row["rate"],
+                row["balance"],
+                row["amount"]
+            ])
+
+        # Auto column width adjustment
+        for col in ws.columns:
+            max_length = 0
+            col_letter = get_column_letter(col[0].column)
+            for cell in col:
+                try:
+                    if cell.value:
+                        max_length = max(max_length, len(str(cell.value)))
+                except:
+                    pass
+            ws.column_dimensions[col_letter].width = max_length + 2
+
+        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = f'attachment; filename=inventory_{inventory_entity_data.item_code}.xlsx'
+        wb.save(response)
+        return response
+
+    return render(request, 'inventory/inventory_overview.html', context)
