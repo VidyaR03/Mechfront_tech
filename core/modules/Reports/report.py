@@ -338,12 +338,15 @@ def download_debit_note_excel(request):
 
 
 @login_required
-def inventory_summery(request):  
-    companies = vendor.objects.values('company_name').distinct().order_by('company_name')
-
+def inventory_summary(request):
+    selected_company = request.GET.get('company_name')  # or request.POST, depending on form method
+    companies = vendor.objects.values_list('company_name', flat=True).distinct().order_by('company_name')
+    
     return render(request, template_path.inventory_sum, {
-        'company': companies,
+        'companies': companies,
+        'selected_company': selected_company,
     })
+
 
 
 #  Sales Register
@@ -1271,10 +1274,10 @@ def display_inventory_summenry_date_range(request):
                 )
 
                 total_outward_query = (
-                    sales_order_items.objects.filter(
-                        so_item_code=OuterRef('item_code')
-                    ).values('so_item_code')
-                    .annotate(total=Coalesce(Sum('so_qantity'), 0,output_field=FloatField()))
+                    invoice_items.objects.filter(
+                        invoice_item_code=OuterRef('item_code')
+                    ).values('invoice_item_code')
+                    .annotate(total=Coalesce(Sum('invoice_qantity'), 0,output_field=FloatField()))
                     .values('total')[:1]
                 )
 
@@ -1333,6 +1336,31 @@ def get_companies_by_date(request):
         inventory.objects.filter(date__range=(start_date_obj, end_date_obj))
         .values_list("vendor_name__company_name", flat=True)
         .distinct()
+    )
+
+    return JsonResponse(list(companies), safe=False)
+
+
+def get_companies_by_date(request):
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
+    if not start_date or not end_date:
+        return JsonResponse([], safe=False)
+
+    try:
+        start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date()
+    except ValueError:
+        return JsonResponse([], safe=False)
+
+    # Filter inventory by date and extract distinct company names
+    companies = (
+        inventory.objects
+        .filter(date__range=(start_date_obj, end_date_obj))
+        .values_list("vendor_name__company_name", flat=True)
+        .distinct()
+        .order_by("vendor_name__company_name")
     )
 
     return JsonResponse(list(companies), safe=False)
@@ -1790,10 +1818,10 @@ def download_inventory_excel(request):
     )
 
     total_outward_query = (
-        sales_order_items.objects.filter(
-            so_item_code=OuterRef('item_code')
-        ).values('so_item_code')
-        .annotate(total=Coalesce(Sum('so_qantity'), 0,output_field=FloatField()))
+        invoice_items.objects.filter(
+            invoice_item_code=OuterRef('item_code')
+        ).values('invoice_item_code')
+        .annotate(total=Coalesce(Sum('invoice_qantity'), 0,output_field=FloatField()))
         .values('total')[:1]
     )
 

@@ -128,7 +128,7 @@ urlpatterns = [
     path('debit_note_date/', views.debit_note_date, name='debit_note_date'),
     path('download_debit_note_excel/', views.download_debit_note_excel, name='download_debit_note_excel'),
 
-    path('inventory_date/', views.inventory_summery, name='inventory_date'),
+    path('inventory_date/', views.inventory_summary, name='inventory_date'),
     path('download_inventory_excel/', views.download_inventory_excel, name='download_inventory_excel'),
     path('sales_register_date/', views.sales_register_date, name='sales_register_date'),
     path('purchase_register_date/', views.purchase_register_date, name='purchase_register_date'),
