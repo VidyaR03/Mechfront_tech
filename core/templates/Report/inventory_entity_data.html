@@ -109,14 +109,22 @@ Inventory Report
                                             <th>PRODUCTCODE</th>
                                             <th>PRODUCTNAME</th>
                                             <th>COMPANYNAME</th>
+                                            <th>COMPANYCODE</th>
                                             <th>UOM</th>
                                             <th>UNITSPERCASE</th>
                                             <th>OUTQUANTITY(UNITS)</th>
                                             <th>INQUANTITY(UNITS)</th>
                                             <th>OUTFREE(UNITS)</th>
                                             <th>INFREE(UNITS)</th>
+                                            <th>BATCHNO</th>
+                                            <th>EXPIRYDATE</th>
+                                            <th>RATE</th>
+                                            <th>AMOUNT</th>
+                                            <th>ONCONSIGMENT</th>
                                             <th>CHALAN / VENDOR BILL NO</th>
                                             <th>CHALAN / VENDOR BILL DATE</th>
+                                            <th>DISTRIBUTOR SAP CODE</th>
+                                            <th>BRANCH NAME</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -138,14 +146,22 @@ Inventory Report
                                             <td>{{ row.product_code }}</td>
                                             <td>{{ row.product_name }}</td>
                                             <td>{{ row.company_name }}</td>
+                                            <td></td>
                                             <td>{{ row.uom }}</td>
                                             <td>{{ row.units_per_case }}</td>
                                             <td>{{ row.out_quantity }}</td>
                                             <td>{{ row.in_quantity }}</td>
                                           <td>{{ row.out_free|default_if_none:"0" }}</td>
                                             <td>{{ row.in_free|default_if_none:"0" }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                             <td>{{ row.bill_no }}</td>
                                             <td>{{ row.bill_date }}</td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                         {% empty %}
                                         <tr>

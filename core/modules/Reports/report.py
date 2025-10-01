@@ -2146,7 +2146,6 @@ def inventory_overview_csv(request):
 
 
     combined_data = sorted(grouped_data.values(), key=lambda x: x['bill_date'])
-    # ✅ CSV Export
     if download_csv:
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=inventory_report.csv'
@@ -2168,6 +2167,7 @@ def inventory_overview_csv(request):
             'CUSTOMER / VENDOR Contact No',
             'PRODUCTCODE',
             'PRODUCTNAME',
+            'COMPANYCODE' ,
             'COMPANYNAME',
             'UOM',
             'UNITSPERCASE',
@@ -2175,8 +2175,16 @@ def inventory_overview_csv(request):
             'INQUANTITY(UNITS)',
             'OUTFREE(UNITS)',
             'INFREE(UNITS)',
+            'BATCHNO',
+            'EXPIRYDATE',
+            'RATE',
+            'AMOUNT',
+            'ONCONSIGMENT',
             'CHALAN / VENDOR BILL NO',
             'CHALAN / VENDOR BILL DATE',
+            'DISTRIBUTOR SAP CODE',
+            'BRANCH NAME',
+
         ])
 
         for row in combined_data:
@@ -2184,9 +2192,9 @@ def inventory_overview_csv(request):
                 row['type'],row['number'],row['date'], row['Cust_vendor_code'], row['Cust_vendor_name'], row['Cust_vendor_area'],
                 row['Cust_vendor_billing'],row['Cust_vendor_add2'], row['Cust_vendor_add3'], row['vendor_gst_no'], row['Cust_vendor_pan_no'],
                 row['licence_no'], row['contact_no'], row['product_code'], row['product_name'],
-                row['company_name'], row['uom'], row['units_per_case'],
-                row['out_quantity'], row['in_quantity'], row['out_free'], row['in_free'],
-                row['bill_no'], row['bill_date'],
+                '', row['company_name'], row['uom'], row['units_per_case'],
+                row['out_quantity'], row['in_quantity'], row['out_free'], row['in_free'],'','', '','', '',
+                row['bill_no'], row['bill_date'], '',''
             ])
         return response
 
