@@ -2193,7 +2193,7 @@ def inventory_overview_csv(request):
                 row['Cust_vendor_billing'],row['Cust_vendor_add2'], row['Cust_vendor_add3'], row['vendor_gst_no'], row['Cust_vendor_pan_no'],
                 row['licence_no'], row['contact_no'], row['product_code'], row['product_name'],
                 '', row['company_name'], row['uom'], row['units_per_case'],
-                row['out_quantity'], row['in_quantity'], row['out_free'], row['in_free'],'','', '','', '',
+                row['out_quantity'], row['in_quantity'], row['out_free'], row['in_free'],'','', 0,0, '',
                 row['bill_no'], row['bill_date'], '',''
             ])
         return response
