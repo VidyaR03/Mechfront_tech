@@ -356,7 +356,7 @@
                                                                     name="itemcode_{{ forloop.counter }}"
                                                                     id="itemcode_{{ forloop.counter }}"
                                                                     value="{{j.grn_item_code}}"
-                                                                    onkeyup="getitemscodedetails('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');">
+                                                                    onkeyup="getitemscodedetails_pur('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');">
                                                             </td>
     
                                                             <td><input type="text" class="form-control"
@@ -1087,7 +1087,7 @@
             '<input type="hidden" name="iid[]" class="iid" value="' + i + '">' +
             '</td>'+
             '<td>' +
-            '<input type="text" style="width: 120px;" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\'); " onfocus="updateTotalInWords();">' +
+            '<input type="text" style="width: 120px;" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails_pur(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\'); " onfocus="updateTotalInWords();">' +
             '</td>' +
 
             '<td>' +
@@ -1212,7 +1212,7 @@ function initItemCodeAutocomplete(inputname, item, description, godown, qty, rat
     $('#' + inputname).autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "{% url 'getitemscodedetails' %}",
+                url: "{% url 'getitemscodedetails_pur' %}",
                 dataType: "json",
                 type: "POST",
                 data: {

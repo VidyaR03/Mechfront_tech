@@ -375,6 +375,23 @@ def get_item_code_details(request):
     print(data)  # Debugging: Print the data list
     return JsonResponse(data, safe=False)  
  
+@csrf_exempt
+@require_POST
+def get_item_code_details_purchase(request):
+    name_starts_with = request.POST.get('name_startsWith', '')
+    items = inventory.objects.filter(item_code__istartswith=name_starts_with)[:10]  # Limit to 10 results for performance
+
+    data = []
+    for item in items:
+        item_data = (
+            f"{item.item_code}|{item.inventory_name}|{item.hsn}|1|"
+            f"{item.default_discount}|{item.purchase_rate}||{item.units}|{item.sales_information_description}"
+        )
+        data.append(item_data)
+
+    print(data)  # Debugging: Print the data list
+    return JsonResponse(data, safe=False)  
+ 
 
 # @csrf_exempt
 # @require_POST

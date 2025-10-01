@@ -327,7 +327,7 @@ Ecoway
                                                         <tr class="add-row">
                                                             <td><input type="text" style="width: 120px;" class="form-control"
                                                                     name="itemcode_0" id="itemcode_0"
-                                                                    onkeyup="getitemscodedetails('itemcode_0','item_0','description_0','godown_0','qty_0','rate_0','uom_0','discount_0','taxrate_0','hsn_0');" onfocus="updateTotalInWords();">
+                                                                    onkeyup="getitemscodedetails_pur('itemcode_0','item_0','description_0','godown_0','qty_0','rate_0','uom_0','discount_0','taxrate_0','hsn_0');" onfocus="updateTotalInWords();">
                                                             </td>
                                                             
                                                             <td><input type="text" class="form-control" name="item_0"
@@ -907,7 +907,7 @@ Ecoway
             '<input type="hidden" name="iid[]" class="iid" value="' + i + '">' +
 
             '<td>' +
-            '<input type="text" style="width: 120px;" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\');calculateTotalTaxAmount(); " required>' +
+            '<input type="text" style="width: 120px;" class="form-control" name="itemcode_' + i + '" id="itemcode_' + i + '" onkeyup="getitemscodedetails_pur(\'itemcode_' + i + '\',\'item_' + i + '\',\'description_' + i + '\',\'godown_' + i + '\',\'qty_' + i + '\',\'rate_' + i + '\',\'uom_' + i + '\',\'discount_' + i + '\',\'taxrate_' + i + '\',\'hsn_' + i + '\');calculateTotalTaxAmount(); " required>' +
             '</td>' +
 
             '<td>' +
@@ -1032,7 +1032,7 @@ Ecoway
 }
 
 
-function getitemscodedetails(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
+function getitemscodedetails_pur(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
     let input = inputname.split("_");
 
     $('#' + inputname).autocomplete({
@@ -1041,7 +1041,7 @@ function getitemscodedetails(inputname, item, description, godown, qty, rate, uo
         delay: 0,
         source: function (request, response) {
             $.ajax({
-                url: "{% url 'getitemscodedetails' %}",
+                url: "{% url 'getitemscodedetails_pur' %}",
                 type: "POST",
                 dataType: "json",
                 data: {

@@ -664,7 +664,7 @@ $(document).ready(function () {
         $('#' + inputname).autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
+                    url: "{% url 'getitemscodedetails_pur' %}",
                     dataType: "json",
                     type: "POST",
                     data: {
@@ -739,7 +739,7 @@ $(document).ready(function () {
         $('#' + inputname).autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
+                    url: "{% url 'getitemscodedetails_pur' %}",
                     dataType: "json",
                     type: "POST",
                     data: {

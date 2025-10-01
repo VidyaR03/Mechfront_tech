@@ -501,7 +501,7 @@
                                                                     name="itemcode_{{ forloop.counter }}"
                                                                     id="itemcode_{{ forloop.counter }}"
                                                                     value="{{j.po_item_code}}"
-                                                                    onkeyup="getitemscodedetails('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');">
+                                                                    onkeyup="getitemscodedetails_pur('itemcode_{{ forloop.counter }}','item_{{ forloop.counter }}','godown_{{ forloop.counter }}','qty_{{ forloop.counter }}','rate_{{ forloop.counter }}','hsn_{{ forloop.counter }}','uom_{{ forloop.counter }}','discount_{{ forloop.counter }}','taxrate_{{ forloop.counter }}');">
                                                             </td>
 
                                                             <td><input type="text" class="form-control"
@@ -1492,7 +1492,7 @@ function checkDuplicatePurchaseOrderNumber(purchaseOrderNumber) {
         $('#' + inputname).autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
+                    url: "{% url 'getitemscodedetails_pur' %}",
                     dataType: "json",
                     type: "POST",
                     data: {

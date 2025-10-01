@@ -961,7 +961,7 @@
         $("#itemcode_" + rowId).autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
+                    url: "{% url 'getitemscodedetails_pur' %}",
                     dataType: "json",
                     type: "POST",
                     data: {
@@ -1049,7 +1049,7 @@
         $("#item_" + rowId).autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
+                    url: "{% url 'getitemscodedetails_pur' %}",
                     dataType: "json",
                     type: "POST",
                     data: {

@@ -147,6 +147,7 @@ urlpatterns = [
 
     path('add_quotation/', views.add_quotation_data, name = "add_quotation"),
     path('getitemscodedetails/', views.get_item_code_details, name='getitemscodedetails'),
+    path('getitemscodedetails_pur/', views.get_item_code_details_purchase, name='getitemscodedetails_pur'),
     path('quotation_list', views.quotation_list_view, name = "quotation_list"),
     path('edit_quotation/<int:id>/', views.edit_quotation_data, name='edit_quotation'),
     path('delete_quotation/<int:id>/', views.delete_quotation_data, name='delete_quotation'),
