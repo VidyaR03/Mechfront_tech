@@ -56,8 +56,8 @@ Ecoway
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Company Name</label>
-                                <select class="form-control" name="company_name" id="company_name">
-                                    <option value="0" hidden>Select Company Name</option>
+                                <select class="form-control" name="company_name" id="company_name" required>
+                                    <option value="" hidden>Select Company Name</option>
                                     {% for i in company_name %}
                                         <option value="{{ i.id }}">{{ i.company_name }}</option>
                                     {% endfor %}
@@ -478,6 +478,10 @@ Ecoway
                     unitField.addEventListener('change', function () {
                         validateField(unitField, 'unit_error', !unitField.value);
                     });
+                    const companyField = form.querySelector('#company_name');
+                    companyField.addEventListener('change', function () {
+                        validateField(unitField, 'comapny_error', !companyField.value);
+                    });
 
 
 
@@ -495,10 +499,12 @@ Ecoway
                     const nameField = form.querySelector('#name');
                     const itemCodeField = form.querySelector('#item_code');
                     const unitField = form.querySelector('#unit');
+                    const companyField = form.querySelector('#company_name');
 
                     validateField(nameField, 'inventory_name_error', !nameField.value.trim());
                     validateField(itemCodeField, 'item_code_error', !itemCodeField.value.trim());
                     validateField(unitField, 'unit_error', !unitField.value);
+                    validateField(companyField, 'comapny_error', !companyField.value.trim());
 
                     isValid = !document.querySelectorAll('.is-invalid').length;
 

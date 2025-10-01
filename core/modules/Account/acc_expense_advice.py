@@ -81,16 +81,17 @@ def fnadd_expense_advice(request):
 
     elif request.method == "POST":
         expense_advice_date_str = request.POST['date']
-        expense_advice_check_str = request.POST['cheque_date']
+        ea_cheque_date_str = request.POST['ea_cheque_date']
         customer_id = request.POST['customer_Name_id']
         q_customer_name = vendor.objects.filter(id=customer_id).first()
 
-        if expense_advice_check_str is not None and expense_advice_check_str != '':
-            expense_advice_check_date = datetime.strptime(expense_advice_check_str, '%d-%m-%Y').date()
+        if ea_cheque_date_str is not None and ea_cheque_date_str != '':
+            ea_cheque_date = datetime.strptime(ea_cheque_date_str, '%d-%m-%Y').date()
         else:
-            expense_advice_check_date = None
-        
+            ea_cheque_date = None
+
         expense_advice_date = datetime.strptime(expense_advice_date_str, '%d-%m-%Y').date()
+        cheque_date = ea_cheque_date  # FIXED LINE — no need to parse again
 
 
 
@@ -112,7 +113,7 @@ def fnadd_expense_advice(request):
             'ea_expense_advice_no': request.POST['paymentreceiptno'],
             'ea_bank_charges': safe_float_conversion(request.POST['bank_charges']),
             'ea_cheque_no': request.POST['ea_cheque_no'],
-            'ea_cheque_date': expense_advice_date,
+            'ea_cheque_date': cheque_date,
             # 'ea_cheque_date': expense_advice_check_date,
             'ea_reference': request.POST.get('reference'),
             'ea_note': request.POST['note'],
@@ -295,7 +296,7 @@ def fnedit_expense_advice(request, expense_advice_id):
         expense_advice_object.ea_note = request.POST['note']
         expense_advice_object.ea_po_no = request.POST['ea_po_no']
         expense_advice_object.ea_cheque_no = request.POST['ea_cheque_no']
-        expense_advice_object.ea_cheque_date = expense_advice_date
+        expense_advice_object.ea_cheque_date =  request.POST['ea_cheque_date']
         expense_advice_object.ea_total = safe_float_conversion(request.POST['total'])
         expense_advice_object.ea_amount_received = safe_float_conversion(request.POST['amount_received'])
         expense_advice_object.ea_amount_used = safe_float_conversion(request.POST['amount_used'])
@@ -304,6 +305,7 @@ def fnedit_expense_advice(request, expense_advice_id):
         expense_advice_object.ea_reference = request.POST['reference']
 
         expense_advice_object.save()
+        print("Cheque Date in DB:", expense_advice_object.ea_cheque_date)
 
         # Handle associated items
         max_row = int(request.POST.get('row_count'))
