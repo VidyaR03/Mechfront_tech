@@ -124,7 +124,7 @@ Inventory Report
                                         <tr>
                                             <td>{{ row.type }}</td>
                                             <td>{{ row.number }}</td>
-                                            <td>{{ row.date|date:"M/d/Y" }}</td>
+                                            <td>{{ row.date }}</td>
                                             <td>{{ row.Cust_vendor_code }}</td>
                                             <td>{{ row.Cust_vendor_name }}</td>
                                             <td>{{ row.Cust_vendor_area }}</td>
@@ -145,7 +145,7 @@ Inventory Report
                                           <td>{{ row.out_free|default_if_none:"0" }}</td>
                                             <td>{{ row.in_free|default_if_none:"0" }}</td>
                                             <td>{{ row.bill_no }}</td>
-                                            <td>{{ row.bill_date|date:"M/d/Y" }}</td>
+                                            <td>{{ row.bill_date }}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>

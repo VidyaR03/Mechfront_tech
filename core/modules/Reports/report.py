@@ -1859,7 +1859,8 @@ def download_inventory_excel(request):
         except (ValueError, TypeError):
             qty, rate = 0, 0
         item['amount'] = qty * rate
-        total_amount += item['amount']
+        # total_amount += item['amount']
+        total_amount =0
 
     # Create Excel
     output = BytesIO()
@@ -1882,7 +1883,7 @@ def download_inventory_excel(request):
     sheet.cell(row=3, column=1, value=date_range).font = Font(size=10, bold=True)
 
     # Headers
-    headers = ['Company Name', 'ITEM CODE', 'MM NUMBER','OPENING BALANCE','CLOSING BALANCE','INWARD','OUTWARD','RATE', 'AMOUNT']
+    headers = ['Company Name',  'MM NUMBER','ITEM DESCRIPTION','OPENING BALANCE','CLOSING BALANCE','INWARD','OUTWARD','RATE', 'AMOUNT']
     sheet.append([])
     sheet.append(headers)
 
@@ -1896,8 +1897,10 @@ def download_inventory_excel(request):
             item['available_balance_quantity'] or 0,
             item['total_inward_quantity'] or 0,
             item['total_outward_quantity'] or 0,
-            item['purchase_rate'],
-           item['amount']
+            0,
+            0
+            # item['purchase_rate'],
+        #    item['amount']
         ])        
       
     # Total row
@@ -2060,7 +2063,7 @@ def inventory_overview_csv(request):
                     'Cust_vendor_add3': customer.com_state,                    
                     'vendor_gst_no':customer.gst_number,
                     'Cust_vendor_pan_no':customer.pan_number,
-                    'date': inv.invoice_date,
+                    'date': inv.invoice_date.strftime('%d-%m-%Y') if inv.invoice_date else '',
                     'licence_no': customer.licence_no or "",
                     'contact_no': customer.phone or '',
                     'product_code': item_code,
@@ -2073,7 +2076,7 @@ def inventory_overview_csv(request):
                     'out_free': qty if is_free else 0,       
                     'in_free': 0,
                     'bill_no': inv.inv_number or inv.id,
-                    'bill_date': inv.invoice_date,
+                    'bill_date': inv.invoice_date.strftime('%d-%m-%Y') if inv.invoice_date else '',
                 })
 
         purchase_invoices = Purchase_Invoice.objects.filter(
@@ -2098,7 +2101,7 @@ def inventory_overview_csv(request):
                 combined_data.append({
                     'type': 'Purchase',
                     'number': p_inv.purchase_invoice_no,
-                    'date': p_inv.purchase_invoice_date,
+                    'date': p_inv.purchase_invoice_date.strftime('%d-%m-%Y') if p_inv.purchase_invoice_date else '',
                     'Cust_vendor_code':vendor.vendor_code,
                     'Cust_vendor_name':vendor.contact_person,
                     'Cust_vendor_area':vendor.vendor_street,
@@ -2119,7 +2122,7 @@ def inventory_overview_csv(request):
                     'out_free': 0,
                     'in_free': qty if is_free else 0,
                     'bill_no': p_inv.purchase_invoice_PO_no ,
-                    'bill_date': p_inv.purchase_invoice_date,
+                    'bill_date': p_inv.purchase_invoice_date.strftime('%d-%m-%Y') if p_inv.purchase_invoice_date else '',
                 })
     grouped_data = {}
 

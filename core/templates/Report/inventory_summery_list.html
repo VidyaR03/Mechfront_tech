@@ -105,8 +105,8 @@
                               <tr>
                                   <th>SR.NO.</th>
                                   <th>COMPANY NAME</th>
-                                  <th>ITEM CODE</th>
                                   <th>MM NUMBER</th>
+                                  <th>ITEM DESCRIPTION</th>
                                   <!-- <th>QUANTITY</th> -->
                                   <th>OPENING BALANCE</th>
                                   <th>CLOSING BALANCE</th>
@@ -129,13 +129,16 @@
                                 <td>{{ item.available_balance_quantity|default:"0" }}</td>
                                   <td>{{item.total_inward_quantity|default:"0"}}</td>
                                   <td>{{item.total_outward_quantity|default:"0"}}</td>
-                                  <td>{{ item.purchase_rate }}</td>
-                                  <td>{{ item.amount|floatformat:2 }}</td>
+                                  <td>0</td>
+                                  <td>0</td>
+                                  <!-- <td>{{ item.purchase_rate }}</td>
+                                  <td>{{ item.amount|floatformat:2 }}</td> -->
                               </tr>
                               {% endfor %}
                               <tr>
                                   <td colspan="9"><strong>TOTAL</strong></td>
-                                  <td><strong>{{ total_amount|floatformat:2 }}</strong></td>
+                                  <td><strong>0</strong></td>
+                                  <!-- <td><strong>{{ total_amount|floatformat:2 }}</strong></td> -->
                               </tr>
                           </tbody>
                       </table>
