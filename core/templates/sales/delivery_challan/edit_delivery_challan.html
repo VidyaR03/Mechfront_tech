@@ -748,7 +748,52 @@
             .then(data => data.is_duplicate);
     }
     </script>
-    
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const freightAmount = document.getElementById('freight_amount');
+        const freightPercentage = document.getElementById('freight_percentage');
+        const packagingAmount = document.getElementById('packaging_forwording_amount');
+        const packagingPercentage = document.getElementById('packaging_forwording_percentage');
+
+        function toggleReadonlyFields(amountField, percentageField) {
+            const amountValue = parseFloat(amountField.value) || 0;
+            const percentageValue = parseFloat(percentageField.value) || 0;
+
+            if (amountValue > 0) {
+                percentageField.readOnly = true;
+                amountField.readOnly = false;
+            } else if (percentageValue > 0) {
+                amountField.readOnly = true;
+                percentageField.readOnly = false;
+            } else {
+                amountField.readOnly = false;
+                percentageField.readOnly = false;
+            }
+        }
+
+        function attachListeners(amountField, percentageField) {
+            amountField.addEventListener('input', function () {
+                toggleReadonlyFields(amountField, percentageField);
+            });
+
+            percentageField.addEventListener('input', function () {
+                toggleReadonlyFields(amountField, percentageField);
+            });
+
+            // Initial check
+            toggleReadonlyFields(amountField, percentageField);
+        }
+
+        // Apply to both Freight and Packaging fields
+        attachListeners(freightAmount, freightPercentage);
+        attachListeners(packagingAmount, packagingPercentage);
+    });
+</script>
+
+
+<!--     
 <script>
    document.addEventListener('DOMContentLoaded', function () {
     const freightAmount = document.getElementById('freight_amount');
@@ -789,7 +834,7 @@
 });
 
 
-</script>
+</script> -->
 <script>
 
 $(document).ready(function() {

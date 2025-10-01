@@ -721,47 +721,49 @@
 </div>
 
 </div>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-     const freightAmount = document.getElementById('freight_amount');
-     const freightPercentage = document.getElementById('freight_percentage');
-     const packagingAmount = document.getElementById('packaging_forwording_amount');
-     const packagingPercentage = document.getElementById('packaging_forwording_percentage');
- 
-     function toggleReadonlyFields(amountField, percentageField) {
-         if (amountField.value !== '0' && amountField.value !== '') {
-             percentageField.readOnly = true;
-         } else if (percentageField.value !== '0' && percentageField.value !== '') {
-             amountField.readOnly = true;
-         } else {
-             amountField.readOnly = false;
-             percentageField.readOnly = false;
-         }
-     }
- 
-     // Attach event listeners for Freight fields
-     freightAmount.addEventListener('input', function() {
-         toggleReadonlyFields(freightAmount, freightPercentage);
-     });
-     freightPercentage.addEventListener('input', function() {
-         toggleReadonlyFields(freightAmount, freightPercentage);
-     });
- 
-     // Attach event listeners for Packaging & Forwarding fields
-     packagingAmount.addEventListener('input', function() {
-         toggleReadonlyFields(packagingAmount, packagingPercentage);
-     });
-     packagingPercentage.addEventListener('input', function() {
-         toggleReadonlyFields(packagingAmount, packagingPercentage);
-     });
- 
-     // Initial check in case values are pre-filled from the datalist
-     toggleReadonlyFields(freightAmount, freightPercentage);
-     toggleReadonlyFields(packagingAmount, packagingPercentage);
- });
- 
- 
- </script>
+        const freightAmount = document.getElementById('freight_amount');
+        const freightPercentage = document.getElementById('freight_percentage');
+        const packagingAmount = document.getElementById('packaging_forwording_amount');
+        const packagingPercentage = document.getElementById('packaging_forwording_percentage');
+
+        function toggleReadonlyFields(amountField, percentageField) {
+            const amountValue = parseFloat(amountField.value) || 0;
+            const percentageValue = parseFloat(percentageField.value) || 0;
+
+            if (amountValue > 0) {
+                percentageField.readOnly = true;
+                amountField.readOnly = false;
+            } else if (percentageValue > 0) {
+                amountField.readOnly = true;
+                percentageField.readOnly = false;
+            } else {
+                amountField.readOnly = false;
+                percentageField.readOnly = false;
+            }
+        }
+
+        function attachListeners(amountField, percentageField) {
+            amountField.addEventListener('input', function () {
+                toggleReadonlyFields(amountField, percentageField);
+            });
+
+            percentageField.addEventListener('input', function () {
+                toggleReadonlyFields(amountField, percentageField);
+            });
+
+            // Initial check
+            toggleReadonlyFields(amountField, percentageField);
+        }
+
+        // Apply to both Freight and Packaging fields
+        attachListeners(freightAmount, freightPercentage);
+        attachListeners(packagingAmount, packagingPercentage);
+    });
+</script>
 
 <script>
 
