@@ -63,7 +63,7 @@ CRM
                                  <div class="col-lg-9">
                                     <input type="text" name="display_name" class="form-control"
                                        value="{{customer_instance.display_name}}" id="display_name_input"
-                                       onkeypress="displayname()" readonly required>
+                                        readonly required>
                                  </div>
                               </div>
                               <div class="form-group row">
@@ -1129,13 +1129,21 @@ $(document).ready(function () {
         });
     });
 
-    // Display Name update (if applicable)
-    var scustomer = document.getElementById("first_name");
-    var fromInput = document.getElementById("display_name_input");
-    scustomer.addEventListener("change", function () {
-        var selectedcustomer = scustomer.value;
-        fromInput.value = selectedcustomer;
-    });
+    // Display Name logic
+    const companyNameInput = document.getElementById("first_name"); // Company Name input
+    const displayNameInput = document.getElementById("display_name_input"); // Display Name input
+
+    // Function to update display name
+    function updateDisplayName() {
+        const companyName = companyNameInput.value.trim();
+        displayNameInput.value = companyName || "{{customer_instance.display_name}}"; // Fallback to existing display name if company name is empty
+    }
+
+    // Set display name on page load
+    updateDisplayName();
+
+    // Update display name when company name changes
+    companyNameInput.addEventListener("input", updateDisplayName);
 
     function validateEmail(emailField) {
         var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
