@@ -106,7 +106,9 @@
                                                 <td><a href="#" style="color:blue;">{{ data.invoice_number }}</a></td>
                                                 <td>{{ data.date|date:"j F Y" }}</td>
                                                 <td>{{ data.due_date|date:"j F Y" }}</td>
-                                                <td style="text-align: center;">{{ data.amount|floatformat:2 }}</td>
+                                                {% comment %} <td style="text-align: center;">{{ data.amount|floatformat:2 }}</td> {% endcomment %}
+                                                <td>{{ data.amount|floatformat:2 }}</td>
+
                                                 <td>{{ data.due_days }}</td>
                                             </tr>
                                             {% endfor %}
