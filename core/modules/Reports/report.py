@@ -1990,7 +1990,7 @@ def get_last_purchase_unit(item_code, start_date, end_date):
 
 
 def select_dates(request):
-    print('dfsdgprint')
+    
     
     return render(request, 'Report/select_dates.html')
 
