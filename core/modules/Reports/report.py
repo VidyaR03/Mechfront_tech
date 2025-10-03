@@ -2063,7 +2063,7 @@ def inventory_overview_csv(request):
                     'Cust_vendor_add3': customer.com_state,                    
                     'vendor_gst_no':customer.gst_number,
                     'Cust_vendor_pan_no':customer.pan_number,
-                    'date': inv.invoice_date.strftime('%d-%m-%Y') if inv.invoice_date else '',
+                    'date': inv.invoice_date.strftime('%d-%b-%Y') if inv.invoice_date else '',
                     'licence_no': customer.licence_no or "",
                     'contact_no': customer.phone or '',
                     'product_code': item_code,
@@ -2101,7 +2101,7 @@ def inventory_overview_csv(request):
                 combined_data.append({
                     'type': 'Purchase',
                     'number': p_inv.purchase_invoice_no,
-                    'date': p_inv.purchase_invoice_date.strftime('%d-%m-%Y') if p_inv.purchase_invoice_date else '',
+                    'date': p_inv.purchase_invoice_date.strftime('%d-%b-%Y') if p_inv.purchase_invoice_date else '',
                     'Cust_vendor_code':vendor.vendor_code,
                     'Cust_vendor_name':vendor.contact_person,
                     'Cust_vendor_area':vendor.vendor_street,
