@@ -215,8 +215,15 @@ CRM
                                            <div class="form-group row">
                                              <label class="col-lg-3 col-form-label">Balance</label>
                                              <div class="col-lg-9">
-                                                <input type="text" class="form-control" value="{{vendor_instance.balance}}"  name="balance" id="balance" placeholder="Balance" max="1000000000"   pattern="\d{10}" title="Please enter valid payment">
-                                                <span id="balance" style="color: red;"></span>
+                                                <input type="number" class="form-control" 
+                                                      value="{{vendor_instance.balance}}" 
+                                                      name="balance" id="balance" 
+                                                      placeholder="Balance" 
+                                                      min="1" 
+                                                      oninput="if(this.value.length > 10) this.value = this.value.slice(0,10);"
+                                                required>
+                                                <span id="balance-error" style="color: red;"></span>
+
 
                                              </div>
                                            </div>   
