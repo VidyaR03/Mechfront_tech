@@ -6,6 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+
 urlpatterns = [
     path('',views.loginPage , name="loginPage"),    
     path('logout/',views.log_out , name="logout"),
@@ -368,6 +369,7 @@ urlpatterns = [
     path('inventory/', views.select_dates, name='select_dates'),
 
     path('expense_advice/<int:id>/download/', views.download_expense_advice_pdf, name='download_expense_advice_pdf'),
+
 
 ]
 

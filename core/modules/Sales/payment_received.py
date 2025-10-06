@@ -239,14 +239,18 @@ def get_customer_invoice_details(request):
 
 
 
-@login_required
 def payment_pdf(request, id):
     payment = get_object_or_404(payment_received, id=id)
-    # print(payment,"ppppppppppppppppp")
+    print(payment,"ppppppppppppppppp")
     company_name = payment.payment_received_customer.company_name
     deposit_to = payment.payment_received_customer.company_name
 
-    payment_item_data = payment_received_item.objects.get(payment_received_id = id)
+    # payment_item_data = payment_received_item.objects.get(payment_received_id = id)
+    payment_item_data = payment_received_item.objects.filter(payment_received_id=id).first()
+
+    if not payment_item_data:
+        messages.error(request, "No payment item found for this payment ID.")
+        return redirect('payment_received_list')
 
     
     context = {
@@ -259,3 +263,5 @@ def payment_pdf(request, id):
         'payment_item_data':payment_item_data
         }
     return render(request, template_path.payment_received_pdf,context)
+
+
