@@ -3,7 +3,6 @@
 Ecoway
 {% endblock %}
 
-
 {% block custom_css %}
 <style>
     /* Inactive tab styles */
@@ -15,8 +14,6 @@ Ecoway
     .nav-tabs.nav-tabs-bottom .nav-item .nav-link.active {
         color: #000;
     }
-
-    /* Existing styles ... */
 
     /* jQuery Validate: Red border for invalid fields (Bootstrap fallback) */
     .form-control.is-invalid {
@@ -31,7 +28,7 @@ Ecoway
         display: block !important;  /* Ensure visible */
     }
 
-    /* Optional: Red text for field labels when invalid (targets parent form-group) */
+    /* Optional: Red text for field labels when invalid */
     .form-group.has-error label,
     .form-group .is-invalid + .invalid-feedback ~ label {
         color: #dc3545 !important;
@@ -42,6 +39,20 @@ Ecoway
         border-color: #dc3545 !important;
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");  /* Red dropdown arrow */
     }
+
+    /* Ensure table alignment */
+    .add-table-items th, .add-table-items td {
+        vertical-align: middle;
+        padding: 8px;
+    }
+
+    .add-remove a {
+        cursor: pointer;
+    }
+
+    .invoice-total-box p {
+        margin-bottom: 0.5rem;
+    }
 </style>
 {% endblock custom_css %}
 
@@ -51,11 +62,13 @@ Ecoway
         <div class="page-header invoices-page-header">
             <div class="row align-items-center">
                 <div class="col">
-                    <h3> <a href="{% url 'sales_order_list' %}" style="margin-right: 10px;"><i class="fa fa-arrow-left"
-                                data-bs-toggle="tooltip" title="" data-bs-original-title="Back"
-                                aria-label="fa fa-arrow-left"></i></a> Add Sales Order</h3>
+                    <h3>
+                        <a href="{% url 'sales_order_list' %}" style="margin-right: 10px;">
+                            <i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="Back" aria-label="Back"></i>
+                        </a>
+                        Add Sales Order
+                    </h3>
                 </div>
-                <div class="col-auto"> </div>
             </div>
         </div>
         <div class="col-md-12">
@@ -63,219 +76,139 @@ Ecoway
                 <div class="card-body">
                     <form class="invoices-form" method="post" id="sales_order_form" action="{% url 'add_sales_order' %}"
                         enctype="multipart/form-data" autocomplete="off">
+                        {% csrf_token %}
                         <div class="invoices-main-form">
-                            {% csrf_token %}
                             <div class="row">
-
-                                <!-- <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label>Sales Order No</label>
-                                        <input type="text" class="form-control" name="sales_order_no" id="sales_order_no" >
-                                    </div>
-                                </div> -->
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Sale Order Date <span style="color: red;">*</span></label>
-                                                <input class="form-control datetimepicker" type="text" name="so_date"
-                                                    id="sales_order_date" required readonly>
-                                            </span>
-                                        </div>
+                                        <label>Sale Order Date <span style="color: red;">*</span></label>
+                                        <input class="form-control datetimepicker" type="text" name="so_date"
+                                            id="sales_order_date" required readonly>
                                     </div>
                                 </div>
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Order Confirmation Number <span style="color: red;">*</span></label>
-                                        <input type="text" class="form-control" name="order_confirmation_no" id="order_confirmation_no" placeholder="Order Confirmation Number" >
+                                        <input type="text" class="form-control" name="order_confirmation_no"
+                                            id="order_confirmation_no" placeholder="Order Confirmation Number" required>
                                     </div>
                                 </div>
-                                
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Payment Term <span style="color: red;">*</span></label>
                                         <select class="form-control" name="payment_term" id="payment_term" required>
-                                            <option value=""hidden>Select Payment Term</option>
-
+                                            <option value="" hidden>Select Payment Term</option>
                                             <option value="AGAINST PROFORMA INVOICE">AGAINST PROFORMA INVOICE</option>
-
                                             <option value="100% ADVANCE">100% ADVANCE</option>
-
                                             <option value="50% ADVANCE BALANCE AGAINST DELIVERY">50% ADVANCE BALANCE AGAINST DELIVERY</option>
-
                                             <option value="7 DAYS">7 DAYS</option>
-
                                             <option value="15 DAYS">15 DAYS</option>
-
                                             <option value="30 DAYS">30 DAYS</option>
-
                                             <option value="45 DAYS">45 DAYS</option>
-
                                             <option value="60 DAYS">60 DAYS</option>
-
                                             <option value="90 DAYS">90 DAYS</option>
-
                                             <option value="120 DAYS">120 DAYS</option>
-
                                             <option value="AGAINST TAX INVOICE">AGAINST TAX INVOICE</option>
                                             <option value="OTHER OPTION">OTHER OPTION</option>
-
-
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <input type="hidden" id="customer_id" name="customer_id">
-                                        <label for="customer_Name">Quotation </label>
-                                        <input list="customer_Name_list" id="customer_Name" name="customer_Name" class="form-control" placeholder="Select Quotation" >
+                                        <label for="customer_Name">Quotation</label>
+                                        <input list="customer_Name_list" id="customer_Name" name="customer_Name"
+                                            class="form-control" placeholder="Select Quotation">
                                         <datalist id="customer_Name_list">
                                             {% for lead in quotation_list %}
-                                            <option value="{{ lead.q_quotation_number}}" 
-                                            data-id="{{ lead.id }}" 
-                                            data-id_quotation="{{ lead.id }}" 
-
-                                            data-contact_person="{{ lead.q_customer_name.customer }}"
-                                            data-email="{{ lead.cust_email }}"
-                                            data-address="{{ lead.address }}"
-                                            data-supplyplace="{{ lead.q_supply_place }}" 
-                                            data-destination="{{ lead.q_destination }}"
-                                            data-customer_code="{{ lead.q_customer_code }}"
-                                            data-p_and_f_amount="{{ lead.q_packaging_forwording_amount }}" 
-                                            data-freight_amount="{{ lead.q_freight_amount }}" 
-                                            data-p_and_f_percentage="{{ lead.q_packaging_forwording_percentage }}" 
-                                            data-freight_percentage="{{ lead.q_freight_percentage }}" 
-                                            data-gst_option="{{ lead.gst_option }}" 
-                                            data-q_igstval="{{ lead.q_igstval }}" 
-                                            data-q_sgstval="{{ lead.q_sgstval }}" 
-                                            data-q_cgstval="{{ lead.q_cgstval }}" 
-                                            data-q_payment_terms="{{ lead.q_payment_terms }}" 
-                                            data-shipping_address1="{{ lead.q_customer_name.shipping_1_attention }},{{ lead.q_customer_name.shipping_1_street }},{{ lead.q_customer_name.shipping_1_city }},{{ lead.q_customer_name.shipping_1_state }},{{ lead.q_customer_name.shipping_1_pincode }}"
-                                            data-shipping_address2="{{ lead.q_customer_name.shipping_2_attention }},{{ lead.q_customer_name.shipping_2_street }},{{ lead.q_customer_name.shipping_2_city }},{{ lead.q_customer_name.shipping_2_state }},{{ lead.q_customer_name.shipping_2_pincode }}"
-                                            data-shipping_address3="{{ lead.q_customer_name.shipping_3_attention }},{{ lead.q_customer_name.shipping_3_street }},{{ lead.q_customer_name.shipping_3_city }},{{ lead.q_customer_name.shipping_3_state }},{{ lead.q_customer_name.shipping_3_pincode }}"
-
-
-                                            data-cname = "{{lead.q_customer_name.id }}"
-                                            data-service_type="{{ lead.q_customer_name }}">{{ lead.q_customer_name.customer  }}--{{ lead.q_quotation_number }}</option>
+                                            <option value="{{ lead.q_quotation_number }}"
+                                                data-id="{{ lead.id }}"
+                                                data-id_quotation="{{ lead.id }}"
+                                                data-contact_person="{{ lead.q_customer_name.customer }}"
+                                                data-email="{{ lead.cust_email }}"
+                                                data-address="{{ lead.address }}"
+                                                data-supplyplace="{{ lead.q_supply_place }}"
+                                                data-destination="{{ lead.q_destination }}"
+                                                data-customer_code="{{ lead.q_customer_code }}"
+                                                data-p_and_f_amount="{{ lead.q_packaging_forwording_amount }}"
+                                                data-freight_amount="{{ lead.q_freight_amount }}"
+                                                data-p_and_f_percentage="{{ lead.q_packaging_forwording_percentage }}"
+                                                data-freight_percentage="{{ lead.q_freight_percentage }}"
+                                                data-gst_option="{{ lead.gst_option }}"
+                                                data-q_igstval="{{ lead.q_igstval }}"
+                                                data-q_sgstval="{{ lead.q_sgstval }}"
+                                                data-q_cgstval="{{ lead.q_cgstval }}"
+                                                data-q_payment_terms="{{ lead.q_payment_terms }}"
+                                                data-shipping_address1="{{ lead.q_customer_name.shipping_1_attention }},{{ lead.q_customer_name.shipping_1_street }},{{ lead.q_customer_name.shipping_1_city }},{{ lead.q_customer_name.shipping_1_state }},{{ lead.q_customer_name.shipping_1_pincode }}"
+                                                data-shipping_address2="{{ lead.q_customer_name.shipping_2_attention }},{{ lead.q_customer_name.shipping_2_street }},{{ lead.q_customer_name.shipping_2_city }},{{ lead.q_customer_name.shipping_2_state }},{{ lead.q_customer_name.shipping_2_pincode }}"
+                                                data-shipping_address3="{{ lead.q_customer_name.shipping_3_attention }},{{ lead.q_customer_name.shipping_3_street }},{{ lead.q_customer_name.shipping_3_city }},{{ lead.q_customer_name.shipping_3_state }},{{ lead.q_customer_name.shipping_3_pincode }}"
+                                                data-cname="{{ lead.q_customer_name.id }}"
+                                                data-service_type="{{ lead.q_customer_name }}">{{ lead.q_customer_name.customer }}--{{ lead.q_quotation_number }}</option>
                                             {% endfor %}
                                         </datalist>
                                     </div>
                                 </div>
-
-                       
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Customer Name <span style="color: red;">*</span></label>
-                                       
-                                                <select id="customer_Name_id" required name="customer_Name" class="form-control" 
-                                                onchange="fetchShippingAddresses(this.value)"> 
-                                                    <option value="">Choose...</option>
-                                                    {% for i in customer_name %}
-                                                    <option value="{{i.id}}">{{i.customer}}</option>
-                                                    {% endfor %}
-                                                </select>
-                                           
+                                        <select id="customer_Name_id" required name="customer_Name" class="form-control"
+                                            onchange="fetchShippingAddresses(this.value)">
+                                            <option value="" hidden>Choose...</option>
+                                            {% for i in customer_name %}
+                                            <option value="{{ i.id }}">{{ i.customer }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
-                          
-
-                          
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Place Of Supply <span style="color: red;">*</span></label>
                                         <select class="form-control" name="place_of_supply" id="place_of_supply"
-                                            onchange="totaltaxamt();" required>
+                                            onchange="updateTaxFields();" required>
                                             <option value="" hidden>State/Province</option>
                                             <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
-
-                                            <option value="NDHRA PRADESH (BEFORE DIVISION)">ANDHRA PRADESH (BEFORE DIVISION)</option>
-
+                                            <option value="ANDHRA PRADESH (BEFORE DIVISION)">ANDHRA PRADESH (BEFORE DIVISION)</option>
                                             <option value="ANDHRA PRADESH (NEW)">ANDHRA PRADESH (NEW)</option>
-
                                             <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
-
                                             <option value="ASSAM">ASSAM</option>
-
                                             <option value="BIHAR">BIHAR</option>
-
                                             <option value="CHANDIGARH">CHANDIGARH</option>
-
                                             <option value="CHHATTISGARH">CHHATTISGARH</option>
-
                                             <option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
-
                                             <option value="DAMAN AND DIU">DAMAN AND DIU</option>
-
                                             <option value="DELHI">DELHI</option>
-
                                             <option value="GOA">GOA</option>
-
                                             <option value="GUJARAT">GUJARAT</option>
-
                                             <option value="HARYANA">HARYANA</option>
-
                                             <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
-
                                             <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
-
                                             <option value="JHARKHAND">JHARKHAND</option>
-
                                             <option value="KARNATAKA">KARNATAKA</option>
-
                                             <option value="KERALA">KERALA</option>
-
                                             <option value="LADAKH">LADAKH</option>
-
                                             <option value="LAKSHADWEEP">LAKSHADWEEP</option>
-
                                             <option value="MADHYA PRADESH">MADHYA PRADESH</option>
-
                                             <option value="MAHARASHTRA">MAHARASHTRA</option>
-
                                             <option value="MANIPUR">MANIPUR</option>
-
                                             <option value="MEGHALAYA">MEGHALAYA</option>
-
                                             <option value="MIZORAM">MIZORAM</option>
-
                                             <option value="NAGALAND">NAGALAND</option>
-
                                             <option value="ODISHA">ODISHA</option>
-
                                             <option value="OTHER TERRITORY">OTHER TERRITORY</option>
-
                                             <option value="PUDUCHERRY">PUDUCHERRY</option>
-
                                             <option value="PUNJAB">PUNJAB</option>
-
                                             <option value="RAJASTHAN">RAJASTHAN</option>
-
                                             <option value="SIKKIM">SIKKIM</option>
-
                                             <option value="TAMIL NADU">TAMIL NADU</option>
-
                                             <option value="TELANGANA">TELANGANA</option>
-
                                             <option value="TRIPURA">TRIPURA</option>
-
                                             <option value="UTTAR PRADESH">UTTAR PRADESH</option>
-
                                             <option value="UTTARAKHAND">UTTARAKHAND</option>
-
                                             <option value="WEST BENGAL">WEST BENGAL</option>
                                             <option value="OTHER OPTION">OTHER OPTION</option>
-
-
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Destination <span style="color: red;">*</span></label>
@@ -288,41 +221,28 @@ Ecoway
                                         <input type="text" class="form-control" name="customer_code" id="customer_code" required>
                                     </div>
                                 </div>
-
-                    
-
-
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Sales Person <span style="color: red;">*</span></label>
                                         <input type="text" class="form-control" name="sales_person" id="contact_person_name" required>
                                     </div>
                                 </div>
-                                            <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
-                                        <label >Dispatch Through <span style="color: red;">*</span></label>
-                                        <div data-select2-id="4">
-                                            <div data-select2-id="4">
-                                                <select id="transporter_name" name="transporter_name" required class="form-control">
-                                                    <option value="" hidden>Choose...</option>
-                                                    {% for i in dispatch_through %}
-                                                    <option value="{{i.id}}">{{i.name}}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
+                                        <label>Dispatch Through <span style="color: red;">*</span></label>
+                                        <select id="transporter_name" name="transporter_name" required class="form-control">
+                                            <option value="" hidden>Choose...</option>
+                                            {% for i in dispatch_through %}
+                                            <option value="{{ i.id }}">{{ i.name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
-      <div class="col-xl-3 col-md-6 col-sm-12 col-12" hidden>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12" hidden>
                                     <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Due Date</label>
-                                                <input class="form-control " type="text" name="due_date"
-                                                    id="due_date"  >
-                                            </span>
-                                        </div>
+                                        <label>Due Date</label>
+                                        <input class="form-control datetimepicker" type="text" name="due_date"
+                                            id="due_date">
                                     </div>
                                 </div>
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
@@ -330,384 +250,232 @@ Ecoway
                                         <label>Invoice Type <span style="color: red;">*</span></label>
                                         <select class="form-control" name="invoice_type" id="invoice_type" required>
                                             <option value="" hidden>Select Invoice Type</option>
-
                                             <option value="DEEMED EXPORTS">DEEMED EXPORTS</option>
-
                                             <option value="SEZ SUPPLIES WITH PAYMENT">SEZ SUPPLIES WITH PAYMENT</option>
-
                                             <option value="SEZ SUPPLY WITHOUT PAYMENT">SEZ SUPPLY WITHOUT PAYMENT</option>
-
                                             <option value="SUPPLY ATTRACT REVRSE CHARGE">SUPPLY ATTRACT REVRSE CHARGE</option>
-
                                             <option value="INTRA-STATE SUPPLIES ATTRACTING IGST">INTRA-STATE SUPPLIES ATTRACTING IGST</option>
-
                                             <option value="REGULAR">REGULAR</option>
-
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label>Delivery Type <span style="color: red;">*</span></label>
-                                        <div>
-                                            <select class="form-control" name="delivery_type" id="delivery_type" required>
-                                                <option value="" hidden>Select Delivery Type </option>
-                                                <option value="PAID">PAID</option>
-
-                                                <option value="TO PAY">TO PAY</option>
-
-                                                <option value="DOOR DELIVERY">DOOR DELIVERY</option>
-
-                                                <option value="SELF COLLECTION">SELF COLLECTION</option>
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Buyer Order No.<span style="color: red;">*</span></label>
-                                                <input class="form-control" type="text" name="buyer_order_no"
-                                                    id="buyer_order_no" required>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Buyer Order Date <span style="color: red;">*</span></label>
-                                                <input class="form-control datetimepicker " type="text"
-                                                    name="buyer_order_date" id="buyer_order_date" 
-                                                     required>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Shipping Address </label>
-                                                <select class="form-control" type="text" name="shipping_address" id="shipping_address" >
-                                                    <option value="" hidden disabled selected>Select Shipping Address</option>
-                                                </select>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-
-
-                            
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan No. 1</label>
-                                                <input class="form-control" type="text" name="dc_no_1" id="dc_no_1">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan Date 1</label>
-                                                <input class="form-control datetimepicker" type="text" name="dc_date_1"
-                                                    id="dc_date_1" >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan No. 2</label>
-                                                <input class="form-control" type="text" name="dc_no_2" id="dc_no_2">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan Date 2</label>
-                                                <input class="form-control datetimepicker" type="text" name="dc_date_2"
-                                                    id="dc_date_2" >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan No. 3</label>
-                                                <input class="form-control" type="text" name="dc_no_3" id="dc_no_3">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan Date 3</label>
-                                                <input class="form-control datetimepicker" type="text" name="dc_date_3"
-                                                    id="dc_date_3" >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan No. 4</label>
-                                                <input class="form-control" type="text" name="dc_no_4" id="dc_no_4">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Delivery Challan Date 4</label>
-                                                <input class="form-control datetimepicker" type="text" name="dc_date_4"
-                                                    id="dc_date_4" >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice No. 1</label>
-                                                <input class="form-control" type="text" name="invoice_no_1"
-                                                    id="invoice_no_1">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice Date 1</label>
-                                                <input class="form-control datetimepicker" type="text"
-                                                    name="invoice_date_1" id="invoice_date_1" 
-                                                    >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice No. 2</label>
-                                                <input class="form-control" type="text" name="invoice_no_2"
-                                                    id="invoice_no_2">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice Date 2</label>
-                                                <input class="form-control datetimepicker" type="text"
-                                                    name="invoice_date_2" id="invoice_date_2" 
-                                                    >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice No. 3</label>
-                                                <input class="form-control" type="text" name="invoice_no_3"
-                                                    id="invoice_no_3">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice Date 3</label>
-                                                <input class="form-control datetimepicker" type="text"
-                                                    name="invoice_date_3" id="invoice_date_3" 
-                                                    >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice No. 4</label>
-                                                <input class="form-control" type="text" name="invoice_no_4"
-                                                    id="invoice_no_4">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Invoice Date 4</label>
-                                                <input class="form-control datetimepicker" type="text"
-                                                    name="invoice_date_4" id="invoice_date_4" 
-                                                    >
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Eway Bill No. 1</label>
-                                                <input class="form-control" type="text" name="so_ewaybill_no_1"
-                                                    id="eway_bill_no_1">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Eway Bill No. 2</label>
-                                                <input class="form-control" type="text" name="so_ewaybill_no_2"
-                                                    id="eway_bill_no_2">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Eway Bill No. 3</label>
-                                                <input class="form-control" type="text" name="so_ewaybill_no_3"
-                                                    id="eway_bill_no_3">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <div class=" ">
-                                            <span>
-                                                <label>Eway Bill No. 4</label>
-                                                <input class="form-control" type="text" name="so_ewaybill_no_4"
-                                                    id="eway_bill_no_4">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label>Freight(Amount)</label>
-                                        <!-- <input type="text" class="form-control " name="freight_amount" id="freight_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
-                                         <input type="number" step="0.01" class="form-control" name="freight_amount" id="freight_amount" value="0.00" min="0" placeholder="Freight Amount(%)">
-
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label>Freight(Percentage)</label>
-                                        <!-- <input type="text" class="form-control " name="freight_percentage" id="freight_percentage" value="0"  pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
-                                        <input type="number" step="0.01" class="form-control" name="freight_percentage" id="freight_percentage" value="0.00" min="0" placeholder="Freight (%)">
-
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label>Packaging &amp; Forwading (Amount)</label>
-                                        <!-- <input type="text" class="form-control " name="packaging_forwording_amount" id="packaging_forwording_amount" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
-                                        <input type="number" step="0.01" class="form-control" name="packaging_forwording_amount" id="packaging_forwording_amount" value="0.00" min="0" placeholder="Packaging & Forwading">
-
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label>Packaging &amp; Forwading (Percentage)</label>
-                                        <!-- <input type="text" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="0" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -->
-                                            <input type="number" step="0.01" class="form-control" name="packaging_forwording_percentage" id="packaging_forwording_percentage" value="0.00" min="0" placeholder="Packaging & Forwading (%)">
-
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 ">
-                                    <div class="form-group">
-                                       <label>GST <span style="color: red;">*</span></label>
-                                       <div>
-                                 <select class="form-control" name="gst_option" id="gst_option" onchange="updateTaxFields();" required>
-    <option value="" hidden>Select GST</option>
-    <option value="Interstate">Interstate</option>
-    <option value="Intrastate">Intrastate</option>
-</select>
-
-                                       </div>
-                                    </div>
-                                 </div>
-
-                                <div class="col-lg-2" style="visibility: hidden;">
-                                    <div class="form-group">
-                                        <label>Item Rates Are </label>
-                                        <select class="form-control" name="item_rate" id="item_rate">
-                                            <option value="tax_exclusive">Tax Exclusive</option>
-                                            <option value="tax_inclusive">Tax Inclusive </option>
+                                        <select class="form-control" name="delivery_type" id="delivery_type" required>
+                                            <option value="" hidden>Select Delivery Type</option>
+                                            <option value="PAID">PAID</option>
+                                            <option value="TO PAY">TO PAY</option>
+                                            <option value="DOOR DELIVERY">DOOR DELIVERY</option>
+                                            <option value="SELF COLLECTION">SELF COLLECTION</option>
                                         </select>
                                     </div>
                                 </div>
-
-                
-                                <div class="rowbb">
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Buyer Order No. <span style="color: red;">*</span></label>
+                                        <input class="form-control" type="text" name="buyer_order_no"
+                                            id="buyer_order_no" required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Buyer Order Date <span style="color: red;">*</span></label>
+                                        <input class="form-control datetimepicker" type="text"
+                                            name="buyer_order_date" id="buyer_order_date" required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Shipping Address</label>
+                                        <select class="form-control" name="shipping_address" id="shipping_address">
+                                            <option value="" hidden disabled selected>Select Shipping Address</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan No. 1</label>
+                                        <input class="form-control" type="text" name="dc_no_1" id="dc_no_1">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan Date 1</label>
+                                        <input class="form-control datetimepicker" type="text" name="dc_date_1"
+                                            id="dc_date_1">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan No. 2</label>
+                                        <input class="form-control" type="text" name="dc_no_2" id="dc_no_2">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan Date 2</label>
+                                        <input class="form-control datetimepicker" type="text" name="dc_date_2"
+                                            id="dc_date_2">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan No. 3</label>
+                                        <input class="form-control" type="text" name="dc_no_3" id="dc_no_3">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan Date 3</label>
+                                        <input class="form-control datetimepicker" type="text" name="dc_date_3"
+                                            id="dc_date_3">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan No. 4</label>
+                                        <input class="form-control" type="text" name="dc_no_4" id="dc_no_4">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Delivery Challan Date 4</label>
+                                        <input class="form-control datetimepicker" type="text" name="dc_date_4"
+                                            id="dc_date_4">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice No. 1</label>
+                                        <input class="form-control" type="text" name="invoice_no_1" id="invoice_no_1">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice Date 1</label>
+                                        <input class="form-control datetimepicker" type="text" name="invoice_date_1"
+                                            id="invoice_date_1">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice No. 2</label>
+                                        <input class="form-control" type="text" name="invoice_no_2" id="invoice_no_2">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice Date 2</label>
+                                        <input class="form-control datetimepicker" type="text" name="invoice_date_2"
+                                            id="invoice_date_2">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice No. 3</label>
+                                        <input class="form-control" type="text" name="invoice_no_3" id="invoice_no_3">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice Date 3</label>
+                                        <input class="form-control datetimepicker" type="text" name="invoice_date_3"
+                                            id="invoice_date_3">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice No. 4</label>
+                                        <input class="form-control" type="text" name="invoice_no_4" id="invoice_no_4">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice Date 4</label>
+                                        <input class="form-control datetimepicker" type="text" name="invoice_date_4"
+                                            id="invoice_date_4">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Eway Bill No. 1</label>
+                                        <input class="form-control" type="text" name="so_ewaybill_no_1"
+                                            id="eway_bill_no_1">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Eway Bill No. 2</label>
+                                        <input class="form-control" type="text" name="so_ewaybill_no_2"
+                                            id="eway_bill_no_2">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Eway Bill No. 3</label>
+                                        <input class="form-control" type="text" name="so_ewaybill_no_3"
+                                            id="eway_bill_no_3">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Eway Bill No. 4</label>
+                                        <input class="form-control" type="text" name="so_ewaybill_no_4"
+                                            id="eway_bill_no_4">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Freight (Amount)</label>
+                                        <input type="number" step="0.01" class="form-control" name="freight_amount"
+                                            id="freight_amount" value="0.00" min="0" placeholder="Freight Amount">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Freight (Percentage)</label>
+                                        <input type="number" step="0.01" class="form-control" name="freight_percentage"
+                                            id="freight_percentage" value="0.00" min="0" placeholder="Freight (%)">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Packaging & Forwarding (Amount)</label>
+                                        <input type="number" step="0.01" class="form-control"
+                                            name="packaging_forwording_amount" id="packaging_forwording_amount"
+                                            value="0.00" min="0" placeholder="Packaging & Forwarding">
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Packaging & Forwarding (Percentage)</label>
+                                        <input type="number" step="0.01" class="form-control"
+                                            name="packaging_forwording_percentage" id="packaging_forwording_percentage"
+                                            value="0.00" min="0" placeholder="Packaging & Forwarding (%)">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>GST <span style="color: red;">*</span></label>
+                                        <select class="form-control" name="gst_option" id="gst_option"
+                                            onchange="updateTaxFields();" required>
+                                            <option value="" hidden>Select GST</option>
+                                            <option value="Interstate">Interstate</option>
+                                            <option value="Intrastate">Intrastate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2" style="visibility: hidden;">
+                                    <div class="form-group">
+                                        <label>Item Rates Are</label>
+                                        <select class="form-control" name="item_rate" id="item_rate">
+                                            <option value="tax_exclusive">Tax Exclusive</option>
+                                            <option value="tax_inclusive">Tax Inclusive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="invoice-add-table">
                                         <div class="table-responsive">
                                             <table class="table table-center add-table-items" id="append_table">
@@ -715,7 +483,6 @@ Ecoway
                                                     <tr>
                                                         <th style="padding-left: 30px;">Item Code</th>
                                                         <th width="180px">Description of Goods</th>
-                                                        <!-- <th>Godown</th> -->
                                                         <th>HSN</th>
                                                         <th>Qty</th>
                                                         <th>UOM</th>
@@ -728,35 +495,51 @@ Ecoway
                                                         <th hidden>Date</th>
                                                     </tr>
                                                 </thead>
-  <tbody>
-                                                        <input type="hidden" name="iid[]" class="iid" value="0">
-                                                        <tr class="add-row">
-                                                            <td><input type="text" style="width: 120px;" class="form-control" name="itemcode_0" id="itemcode_0"></td>
-                                                            <td><input type="text" class="form-control" name="item_0" id="item_0" placeholder=" "></td>
-                                                            <td><input type="text" class="form-control" name="hsn_0" id="hsn_0"></td>
-                                                            <td><input type="text" class="form-control" name="qty_0" id="qty_0" onkeyup="qty('qty_0');"></td>
-                                                            <td><input type="text" class="form-control" name="uom_0" id="uom_0"></td>
-                                                            <td><input type="text" class="form-control" name="rate_0" id="rate_0" onkeyup="rate('rate_0');"></td>
-                                                            <td><input type="text" class="form-control" name="discount_0" id="discount_0" onkeyup="discountamt('discount_0');"></td>
-                                                            <td><input type="number" class="form-control taxrate_0" name="taxrate_0" id="taxrate_0" step="0.001" onkeyup="rate('taxrate_0');" required></td>
-                                                            <td><input type="text" class="form-control taxamt" name="taxamt_0" id="taxamt_0" readonly></td>
-                                                            <td><input type="text" class="form-control totalamt" name="total_0" id="total_0" readonly></td>
-                                                            <td class="add-remove text-end">
-                                                                <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
-                                                                <!-- <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a> -->
-                                                                <a class="remove-btn disabled" style="pointer-events: none; opacity: 0.5;"><i class="fe fe-trash-2"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
+                                                <tbody id="quotation-items-body">
+                                                    <input type="hidden" name="iid[]" class="iid" value="0">
+                                                    <tr class="add-row">
+                                                        <td><input type="text" style="width: 120px;" class="form-control"
+                                                                name="itemcode_0" id="itemcode_0" required></td>
+                                                        <td><input type="text" class="form-control" name="item_0"
+                                                                id="item_0" placeholder=" "></td>
+                                                        <td><input type="text" class="form-control" name="hsn_0"
+                                                                id="hsn_0"></td>
+                                                        <td><input type="text" class="form-control" name="qty_0"
+                                                                id="qty_0" onkeyup="qty('qty_0');"></td>
+                                                        <td><input type="text" class="form-control" name="uom_0"
+                                                                id="uom_0"></td>
+                                                        <td><input type="text" class="form-control" name="rate_0"
+                                                                id="rate_0" onkeyup="rate('rate_0');"></td>
+                                                        <td><input type="text" class="form-control" name="discount_0"
+                                                                id="discount_0" onkeyup="discountamt('discount_0');"></td>
+                                                        <td><input type="number" class="form-control taxrate_0"
+                                                                name="taxrate_0" id="taxrate_0" step="0.001"
+                                                                onkeyup="rate('taxrate_0');" required></td>
+                                                        <td><input type="text" class="form-control taxamt"
+                                                                name="taxamt_0" id="taxamt_0" readonly></td>
+                                                        <td><input type="text" class="form-control totalamt"
+                                                                name="total_0" id="total_0" readonly></td>
+                                                        <td class="add-remove text-end">
+                                                            <a href="javascript:void(0);" class="add-btn me-2"><i
+                                                                    class="fas fa-plus-circle"></i></a>
+                                                            <a class="remove-btn disabled"
+                                                                style="pointer-events: none; opacity: 0.5;"><i
+                                                                    class="fe fe-trash-2"></i></a>
+                                                        </td>
+                                                        <td hidden><input type="date" class="form-control" id="date_0"
+                                                                name="date_0"
+                                                                value="{{ current_date | date:'Y-m-d' }}"></td>
+                                                    </tr>
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-7 col-md-6">
-                                            <!-- <div class="form-group float-end mb-0"> <button class="btn btn-primary" type="submit">Add Item</button> </div> -->
                                             <div class="invoice-fields">
-                                                <h4 class="field-title">Terms and Conditions</h4> <br> <textarea
-                                                    class="form-control" name="note"></textarea>
+                                                <h4 class="field-title">Terms and Conditions</h4>
+                                                <br>
+                                                <textarea class="form-control" name="note"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-lg-5 col-md-6">
@@ -766,172 +549,136 @@ Ecoway
                                                     <div class="invoice-total-inner">
                                                         <div class="total-tax-amt" hidden>
                                                             <label for="total_tax_amount">Total Tax Amount:</label>
-                                                            <input type="text" id="total_tax_amount" class="form-control" readonly>
+                                                            <input type="text" id="total_tax_amount" class="form-control"
+                                                                readonly>
                                                         </div>
-
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>Sub Total </p>
+                                                                <p>Sub Total</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
+                                                            <div class="col-lg-6">
                                                                 <input type="text" class="subtotal billamt utrt1"
-                                                                    name="subtotal" id="subtotal" value="0.00"
-                                                                    readonly="">
+                                                                    name="subtotal" id="subtotal" value="0.00" readonly>
                                                             </div>
                                                         </div>
-
-
-                                                        
-
-                                                        <div class="row">
-                                                            <!-- <div class="col-lg-6"><p>Tax Amt</p></div> -->
-                                                            <div class="col-lg-6 ">
-                                                                <input type="hidden"
-                                                                    class="billamt utrt1"
-                                                                    name="total_taxamt" id="total_taxamt"
-                                                                    value="0.00" readonly="">
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row">
-                                                            <!-- <div class="col-lg-6"><p>Tax Amt</p></div> -->
-                                                            <div class="col-lg-6 ">
-                                                                <input type="hidden"
-                                                                    class="billamt utrt1"
-                                                                    name="total_taxamt" id="total_taxamt"
-                                                                    value="0.00" readonly="">
-                                                            </div>
-                                                        </div>
-
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>CGST 
-                                                                    <!-- @ <input type="text" name="cgstper"
-                                                                        id="cgstper" value="0%" size="1"
-                                                                        class="no-outline"> -->
-                                                                    </p>
+                                                                <p>CGST</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
+                                                            <div class="col-lg-6">
                                                                 <input type="text" class="utrt1 billamt" name="cgst"
-                                                                    id="cgst" value="0.00" readonly="">
+                                                                    id="cgst" value="0.00" readonly>
                                                             </div>
                                                         </div>
-
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>SGST 
-                                                                    <!-- @ <input type="text" name="sgstper"
-                                                                        id="sgstper" value="0%" size="1"
-                                                                        class="no-outline"> -->
-                                                                    </p>
+                                                                <p>SGST</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
+                                                            <div class="col-lg-6">
                                                                 <input type="text" class="utrt1 billamt" name="sgst"
-                                                                    id="sgst" value="0.00" readonly="">
+                                                                    id="sgst" value="0.00" readonly>
                                                             </div>
                                                         </div>
-
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>IGST  
-                                                                    
-                                                                    </p>
+                                                                <p>IGST</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
+                                                            <div class="col-lg-6">
                                                                 <input type="text" class="billamt utrt1" name="igst"
-                                                                    id="igst" value="0.00" readonly="">
+                                                                    id="igst" value="0.00" readonly>
                                                             </div>
                                                         </div>
-
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <p>Adjustments</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
+                                                            <div class="col-lg-6">
                                                                 <input class="billamt utrt1" type="text"
                                                                     name="adjustment" id="adjustment" value="0.00"
-                                                                    onkeyup=";" readonly>
+                                                                    readonly>
                                                             </div>
                                                         </div>
-
                                                         <div id="pfamtgst" style="display: none;">
-
-                                                        <div class="row" >
-                                                            <div class="col-lg-6"><p>P&F (Amount) + GST</p></div>
-                                                            <div class="col-lg-6 ">
-                                                                <input class="billamt utrt1 " name="packaging_forwording_amt_amt" type="text" 
-                                                                id="pf_amount" value="0.00" readonly>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>P&F (Amount) + GST</p>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <input class="billamt utrt1"
+                                                                        name="packaging_forwording_amt_amt" type="text"
+                                                                        id="pf_amount" value="0.00" readonly>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-
                                                         <div id="pfpergst" style="display: none;">
-
-                                                        <div class="row" id="pfpergst">
-                                                            <div class="col-lg-6" ><p>P&F (Percentage) + GST</p></div>
-                                                            <div class="col-lg-6 ">
-                                                                <input class="billamt utrt1 " type="text" name="packaging_forwording_percentage_amt" 
-                                                                id="pf_percentage" value="0.00" readonly>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>P&F (Percentage) + GST</p>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <input class="billamt utrt1" type="text"
+                                                                        name="packaging_forwording_percentage_amt"
+                                                                        id="pf_percentage" value="0.00" readonly>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-
-                                                        <input type="hidden" id="subtotal" value="100.00"> <!-- Replace with actual subtotal -->
                                                         <div id="freight_amount_gst_row" style="display: none;">
-
-                                                        <div class="row">
-                                                            <div class="col-lg-6"><p>Freight (Amount) + GST</p></div>
-                                                            <div class="col-lg-6 ">
-                                                                <input class="billamt utrt1" type="text" name="freight_amt_amt" id="fr_amount" 
-                                                                value="0.00" readonly>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>Freight (Amount) + GST</p>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <input class="billamt utrt1" type="text"
+                                                                        name="freight_amt_amt" id="fr_amount" value="0.00"
+                                                                        readonly>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div id="freight_percentage_gst_row" style="display: none;">
-
-                                                        <div class="row">
-                                                            <div class="col-lg-6"><p>Freight (Percentage) + GST</p></div>
-                                                            <div class="col-lg-6 ">
-                                                                <input class="billamt utrt1" type="text" name="freight_percentage_amt" 
-                                                                id="fr_percentage" value="0.00" readonly>
+                                                        <div id="freight_percentage_gst_row" style="display: none;">
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <p>Freight (Percentage) + GST</p>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <input class="billamt utrt1" type="text"
+                                                                        name="freight_percentage_amt" id="fr_percentage"
+                                                                        value="0.00" readonly>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-
                                                         <div class="row">
                                                             <div class="col-lg-6">
-                                                                <p>TCS on Sale Of any Goods </p>
+                                                                <p>TCS on Sale Of any Goods</p>
                                                             </div>
-                                                            <div class="col-lg-6 ">
+                                                            <div class="col-lg-6">
                                                                 <input class="billamt utrt1" type="text"
-                                                                    name="sale_of_good" id="sale_of_good"
-                                                                    value="0.00" onkeyup=";" readonly>
+                                                                    name="sale_of_good" id="sale_of_good" value="0.00"
+                                                                    readonly>
                                                             </div>
                                                         </div>
-
                                                         <div class="invoice-total-footer">
-                                                            <h4>Total Amount <input class="finalamt utrt1"
-                                                                    type="text" name="totalamt" id="totalamt"
-                                                                    value="0.00" readonly="">(Rs.)
+                                                            <h4>Total Amount
+                                                                <input class="finalamt utrt1" type="text" name="totalamt"
+                                                                    id="totalamt" value="0.00" readonly>(Rs.)
                                                             </h4>
                                                         </div>
                                                         <div class="invoice-total-footer">
                                                             <h4>Total Amount in Word
-                                                                -<textarea  name="so_total_amt_word" id="totalamt_word" readonly="" style="width: 370px; border: none;"></textarea>
+                                                                <textarea name="so_total_amt_word" id="totalamt_word"
+                                                                    readonly style="width: 370px; border: none;"></textarea>
                                                             </h4>
                                                         </div>
-
                                                     </div>
                                                 </div>
-
                                                 <div class="upload-sign">
-                                                    <div class="form-group float-end mb-0"> <a
-                                                            href="{% url 'sales_order_list' %}"
-                                                            class="btn btn-primary">Cancel</a></div>
-                                                    <div class="form-group float-end mb-0"> <button
-                                                            class="btn btn-primary" type="submit" id="btn_submit"
-                                                            name="btn_submit">Save</button> </div>
+                                                    <div class="form-group float-end mb-0">
+                                                        <a href="{% url 'sales_order_list' %}"
+                                                            class="btn btn-primary">Cancel</a>
+                                                    </div>
+                                                    <div class="form-group float-end mb-0">
+                                                        <button class="btn btn-primary" type="submit" id="btn_submit"
+                                                            name="btn_submit">Save</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -952,688 +699,17 @@ Ecoway
 
 {% block custom_js %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
-
 <script src="https://olatechs.in/crm/supreeno/assets/js/malsup-jquery.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        function toggleFreightFields() {
-            
-            const freightAmount = parseFloat(document.getElementById('freight_amount').value) || 0;
-            const freightPercentage = parseFloat(document.getElementById('freight_percentage').value) || 0;
-
-            if (freightAmount > 0) {
-                document.getElementById('freight_amount_gst_row').style.display = 'block';
-                document.getElementById('freight_percentage_gst_row').style.display = 'none';
-            } else if (freightPercentage > 0) {
-                document.getElementById('freight_amount_gst_row').style.display = 'none';
-                document.getElementById('freight_percentage_gst_row').style.display = 'block';
-            } else {
-                document.getElementById('freight_amount_gst_row').style.display = 'none';
-                document.getElementById('freight_percentage_gst_row').style.display = 'none';
-            }
-        }
-
-        document.getElementById('freight_amount').addEventListener('input', toggleFreightFields);
-        document.getElementById('freight_percentage').addEventListener('input', toggleFreightFields);
-        // document.getElementById('customer_Name').addEventListener('input', togglePfFields);
-
-        toggleFreightFields(); // Initialize the state q_freight_percentage_amt_amton page load
-
-        function togglePfFields() {
-            const pfAmount = parseFloat(document.getElementById('packaging_forwording_amount').value) || 0;
-            const pfPercentage = parseFloat(document.getElementById('packaging_forwording_percentage').value) || 0;
-
-            if (pfAmount > 0) {
-                document.getElementById('pfamtgst').style.display = 'block';
-                document.getElementById('pfpergst').style.display = 'none';
-            } else if (pfPercentage > 0) {
-                document.getElementById('pfamtgst').style.display = 'none';
-                document.getElementById('pfpergst').style.display = 'block';
-            } else {
-                document.getElementById('pfamtgst').style.display = 'none';
-                document.getElementById('pfpergst').style.display = 'none';
-            }
-        }
-
-        
-        document.getElementById('packaging_forwording_amount').addEventListener('input', togglePfFields);
-        document.getElementById('packaging_forwording_percentage').addEventListener('input', togglePfFields);
-        // document.getElementById('customer_Name').addEventListener('input', togglePfFields);
-
-        togglePfFields();
-
-        // Handle quotation selection
-        document.getElementById('customer_Name').addEventListener('change', function() {
-            // Call both functions directly on input change
-            toggleFreightFields();
-            togglePfFields();
-        });
-
-
-        
-    });
-</script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dateInput = document.getElementById('sales_order_date');
-        // const dateInput2 = document.getElementById('due_date');
-        const dateInput3 = document.getElementById('buyer_order_date');
-
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-        const year = today.getFullYear();
-        const formattedDate = `${day}-${month}-${year}`;
-        dateInput.value = formattedDate;
-        // dateInput2.value = formattedDate;
-        dateInput3.value = formattedDate;
-
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const expiryDateInput = document.getElementById("due_date");
-        // const buyer_order_dateInput = document.getElementById("buyer_order_date");
-
-        // Set the current date as the default value in DD-MM-YYYY format
-        const today = new Date();
-        const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
-        expiryDateInput.value = formattedDate;
-        // buyer_order_dateInput.value = formattedDate;
-
-        // Initialize the datepicker with the desired format and set minDate to today
-        $(expiryDateInput).datepicker({
-            dateFormat: 'dd-mm-yy',
-            minDate: 0
-        });
-        
-    });
-</script>
-
-<script>
-
-    document.getElementById('customer_Name').addEventListener('input', function() {
-        var input = this.value;
-        var list = document.getElementById('customer_Name_list').options;
-        var shipTo = document.getElementById('shipping_address');
- 
-
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].value === input) {
-                console.log(list[i].dataset);
-                document.getElementById('customer_id').value = list[i].dataset.id;
-                document.getElementById('contact_person_name').value = list[i].dataset.contact_person;
-                // document.getElementById('contact_person_email').value = list[i].dataset.email;
-                document.getElementById('freight_amount').value = list[i].dataset.freight_amount;
-                document.getElementById('packaging_forwording_amount').value = list[i].dataset.p_and_f_amount;
-                document.getElementById('freight_percentage').value = list[i].dataset.freight_percentage;
-                document.getElementById('packaging_forwording_percentage').value = list[i].dataset.p_and_f_percentage;
-                document.getElementById('customer_Name').value = list[i].dataset.contact_person;
-
-                document.getElementById('destination').value = list[i].dataset.destination;
-                document.getElementById('customer_code').value = list[i].dataset.customer_code;
-                document.getElementById('igst').value = list[i].dataset.q_igstval;
-                document.getElementById('sgst').value = list[i].dataset.q_sgstval;
-                document.getElementById('cgst').value = list[i].dataset.q_cgstval;
-                // document.getElementById('shipping_address').value = list[i].dataset.shipping_address1;
-
-                
-                $("#place_of_supply option").attr('selected', false);
-                $("#place_of_supply option[value='" + list[i].dataset.supplyplace + "']").attr('selected', true);
-                
-                $("#gst_option option").attr('selected', false);
-                $("#gst_option option[value='" + list[i].dataset.gst_option + "']").attr('selected', true);
-                
-                $("#customer_Name_id option").attr('selected', false);
-                $("#customer_Name_id option[value='" + list[i].dataset.cname + "']").attr('selected', true);
-                 
-                $("#payment_term option").attr('selected', false);
-                $("#payment_term option[value='" + list[i].dataset.q_payment_terms + "']").attr('selected', true);
-                 
-                
-                $("#q_ser_type option").attr('selected', false);
-                $("#q_ser_type option[value='" + list[i].dataset.service_type + "']").attr('selected', true);
-                selectedQuotationId = list[i].dataset.id_quotation;
-
-                shipTo.innerHTML = '<option value="" selected hidden disabled>Select Shipping Address</option>';
-           
-            console.log(list[i].dataset.shipping_address1,'$$$$')
-            if (list[i].dataset.shipping_address1) {
-                shipTo.innerHTML += '<option value="' + list[i].dataset.shipping_address1 + '">' + list[i].dataset.shipping_address1 + '</option>';
-              }
-            if (list[i].dataset.shipping_address2) {
-                shipTo.innerHTML += '<option value="' + list[i].dataset.shipping_address2 + '">' + list[i].dataset.shipping_address2 + '</option>';
-            }
-            if (list[i].dataset.shipping_address3) {
-                shipTo.innerHTML += '<option value="' + list[i].dataset.shipping_address3 + '">' + list[i].dataset.shipping_address3 + '</option>';
-            }
-
-              // Also fetch shipping addresses for the selected customer
-            const customerId = list[i].dataset.cname;
-            fetchShippingAddresses(customerId);
-
-                break;
-            }
-        }
-        if (selectedQuotationId) {
-        fetchQuotationItems(selectedQuotationId);
-        }
-        function fetchQuotationItems(quotationId) {
-    // Assuming you have an endpoint to fetch items based on quotation ID
-    fetch(`/get-quotation-items/${quotationId}/`)
-        .then(response => response.json())
-        .then(data => {
-            const tbody = document.getElementById('quotation-items-body');
-            tbody.innerHTML = '';  // Clear existing rowsitem
-            var sub_total = 0;
-            var tax_amt = 0;
-            var cgst_val = 0;
-            var igst_val = 0;
-            var sgst_val = 0;
-            data.forEach((item, index) => {
-                const row = document.createElement('tr');
-                    row.classList.add('add-row');
-                row.innerHTML = `
-                    <input type="hidden" name="iid[]" class="iid" value="${index}">
-                    <td><input type="text" style="width: 120px;" class="form-control" name="itemcode_${index}" id="itemcode_${index}" value="${item.q_item_code}" onkeyup="getitemscodedetails('itemcode_${index}','item_${index}','godown_${index}','qty_${index}','rate_${index}','hsn_${index}','sac_${index}','uom_${index}','discount_${index}','taxrate_${index}');" required></td>
-                    <td><input type="text" class="form-control" name="item_${index}" id="item_${index}" value="${item.q_description_goods}"></td>
-                    <td><input type="text" class="form-control" name="hsn_${index}" id="hsn_${index}" value="${item.q_hsn}"></td>
-                    <td><input type="text" class="form-control" name="qty_${index}" id="qty_${index}" value="${item.q_qantity}" onkeyup="taxrate('taxrate_${index}');"></td>
-                    <td><input type="text" class="form-control" name="uom_${index}" id="uom_${index}" value="${item.q_uom}"></td>
-                    <td><input type="text" class="form-control" name="rate_${index}" id="rate_${index}" value="${item.q_unit_price}" onkeyup="rate('rate_${index}');"></td>
-                    <td><input type="text" class="form-control" name="discount_${index}" id="discount_${index}" value="${item.q_discount}"onkeyup="discountamt('discount_${index}');" ></td>
-                    <td><input type="number" class="form-control taxrate_${index}" name="taxrate_${index}" id="taxrate_${index}" value="${item.q_tax_rate}" onkeyup="taxrate('taxrate_${index}');" ></td>
-                    <td><input type="text" class="form-control taxamt" name="taxamt_${index}" id="taxamt_${index}" value="${item.q_tax_amount}" readonly></td>
-                    <td><input type="text" class="form-control totalamt" name="total_${index}" id="total_${index}" value="${item.q_total}" readonly></td>
-                    <td class="add-remove text-end">
-                        <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
-                        <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
-                    </td>
-                    <td><input type="date" class="form-control"  id="date_${index}" name="date_${index}" value="{{current_date | date:'Y-m-d'}}" hidden></td>
-                `;
-                tbody.appendChild(row);
-                sub_total += item.q_total
-                tax_amt += item.q_tax_amount
-                if(index == 0){
-                    first_taxt = item.q_tax_rate
-                }
-                rate(`taxrate_${index}`);
-
-
-            
-            });
-            subtotal();
-
-        });
-    };
-        updatePFAmount();
-        subtotal();
-
-        calculateTotalTaxAmount();
-        updateTotalInWords();
-        updateTaxFields();
-      
-        
-    });
-
-    // Add this function to fetch shipping addresses when customer is selected
-// Add this function to fetch shipping addresses when customer is selected
-function fetchShippingAddresses(customerId) {
-    if (!customerId) return;
-    
-    // Use Django's URL template tag to generate the correct URL
-    const url = "{% url 'get_shipping_address' %}?customer_id=" + customerId;
-    
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const shipTo = document.getElementById('shipping_address');
-            shipTo.innerHTML = '<option value="" selected hidden disabled>Select Shipping Address</option>';
-            
-            if (data.shipping_addresses && data.shipping_addresses.length > 0) {
-                data.shipping_addresses.forEach(address => {
-                    shipTo.innerHTML += `<option value="${address.value}">${address.value}</option>`;
-                });
-                
-                // Auto-select the first address and update place of supply
-                if (data.place_of_supply) {
-                    $("#place_of_supply option").attr('selected', false);
-                    $("#place_of_supply option[value='" + data.place_of_supply + "']").attr('selected', true);
-                }
-            } else {
-                shipTo.innerHTML += '<option value="" disabled>No shipping addresses found</option>';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching shipping addresses:', error);
-            const shipTo = document.getElementById('shipping_address');
-            shipTo.innerHTML = '<option value="" selected hidden disabled>Error loading addresses</option>';
-        });
-}
-
-// Update the customer selection handler
-document.getElementById('customer_Name_id').addEventListener('change', function() {
-    const customerId = this.value;
-    fetchShippingAddresses(customerId);
-});
-
-</script>
-
-<!-- fetch item code from quotation -->
-<script>
-    
- </script>
-
-
-
-<script>
-    $(document).ready(function() {
-        // Hide fields initially
-        $("#pf_amount_row").hide();
-        $("#pf_percentage_row").hide();
-        $("#fr_amount_row").hide();
-        $("#fr_percentage_row").hide();
-    
-        // Show or hide P&F amount field
-        $("#packaging_forwording_amount").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#pf_amount_row").show();
-            } else {
-                $("#pf_amount_row").hide();
-            }
-        });
-    
-        // Show or hide P&F percentage field
-        $("#packaging_forwording_percentage").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#pf_percentage_row").show();
-                               
-                 
-            } else {
-                $("#pf_percentage_row").hide();
-            }
-        });
-    
-        // Show or hide Freight amount field
-        $("#freight_amount").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#fr_amount_row").show();
-            } else {
-                $("#fr_amount_row").hide();
-            }
-        });
-    
-        // Show or hide Freight percentage field
-        $("#freight_percentage").on("input", function() {
-            if ($(this).val() != "0" && $(this).val() != "") {
-                $("#fr_percentage_row").show();
-            } else {
-                $("#fr_percentage_row").hide();
-            }
-        });
-    });
-    </script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const freightAmount = document.getElementById('freight_amount');
-        const freightPercentage = document.getElementById('freight_percentage');
-        const packagingAmount = document.getElementById('packaging_forwording_amount');
-        const packagingPercentage = document.getElementById('packaging_forwording_percentage');
-
-        function toggleFreightInputs() {
-            if (freightAmount.value !== "0" && freightAmount.value !== "") {
-                freightPercentage.value = "0";
-                freightPercentage.disabled = true;
-            } else {
-                freightPercentage.disabled = false;
-            }
-        }
-
-        function toggleFreightPercentage() {
-            if (freightPercentage.value !== "0" && freightPercentage.value !== "") {
-                freightAmount.value = "0";
-                freightAmount.disabled = true;
-            } else {
-                freightAmount.disabled = false;
-            }
-        }
-
-        function togglePackagingInputs() {
-            if (packagingAmount.value !== "0" && packagingAmount.value !== "") {
-                packagingPercentage.value = "0";
-                packagingPercentage.disabled = true;
-            } else {
-                packagingPercentage.disabled = false;
-            }
-        }
-
-        function togglePackagingPercentage() {
-            if (packagingPercentage.value !== "0" && packagingPercentage.value !== "") {
-                packagingAmount.value = "0";
-                packagingAmount.disabled = true;
-            } else {
-                packagingAmount.disabled = false;
-            }
-        }
-
-        freightAmount.addEventListener('input', toggleFreightInputs);
-        freightPercentage.addEventListener('input', toggleFreightPercentage);
-        packagingAmount.addEventListener('input', togglePackagingInputs);
-        packagingPercentage.addEventListener('input', togglePackagingPercentage);
-    });
-</script>
-
-
-<script>
-    function updatePFPercentage() {
-        var subtotal = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var percentage = parseFloat(document.getElementById('packaging_forwording_percentage').value);
-        var pfAmount2 = (subtotal * percentage) / 100;
-
-        var gstAmountpf2 = (pfAmount2 * 0.18).toFixed(2);
-        var pfAmount = (pfAmount2 + parseFloat(gstAmountpf2)).toFixed(2);
-        document.getElementById('pf_percentage').value = pfAmount;
-        updateTotalInWords();
-
-    }
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('packaging_forwording_percentage').addEventListener('input', updatePFPercentage);
-    });
-
-    function updateFreightPercentage() {
-        var subtotals = parseFloat(document.getElementById('subtotal').value); // Assuming subtotal field exists
-        var fr_percentage = parseFloat(document.getElementById('freight_percentage').value);
-        var f_Percentage3 = (subtotals * fr_percentage) / 100;
-
-        var gstAmountpf3 = (f_Percentage3 * 0.18).toFixed(2);
-        var f_Percentage = (f_Percentage3 + parseFloat(gstAmountpf3)).toFixed(2);
-
-        document.getElementById('fr_percentage').value = f_Percentage;
-        updateTotalInWords();
-
-    }
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('freight_percentage').addEventListener('input', updateFreightPercentage);
-    });
-</script>
-
-<script>
-    function updatePFAmount() {
-        var pfAmount1 = parseFloat(document.getElementById('packaging_forwording_amount').value);
-        var gstAmountpf = (pfAmount1 * 0.18).toFixed(2);
-        var pfAmount = (pfAmount1 + parseFloat(gstAmountpf)).toFixed(2);
-        document.getElementById('pf_amount').value = pfAmount;
-        updateTotalInWords();
-
-        
-    }
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('packaging_forwording_amount').addEventListener('input', updatePFAmount);
-
-        
-    });
-
-
-    function updateFreightAmount() {
-    var fr_Amount = parseFloat(document.getElementById('freight_amount').value);
-    var gstAmount = (fr_Amount * 0.18).toFixed(2);
-    var totall = (fr_Amount + parseFloat(gstAmount)).toFixed(2);
-    document.getElementById('fr_amount').value = totall;
-    updateTotalInWords();
-    }
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById('freight_amount').addEventListener('input', updateFreightAmount);
-
-        
-    });
-    
-</script>
-
-<!-- Consolidated JavaScript -->
-<script>
-$(document).ready(function () {
-    // Clear related fields
-    function clearRelatedFields(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        $('#' + inputname).val('');
-        $('#' + item).val('');
-        $('#' + description).val('');
-        $('#' + godown).val('');
-        $('#' + qty).val('');
-        $('#' + rate).val('');
-        $('#' + uom).val('');
-        $('#' + discount).val('');
-        $('#' + taxrate).val('');
-        $('#' + hsn).val('');
-        calculateTotalTaxAmount();
-        subtotal();
-        updateTotalInWords();
-    }
-
-    // Autocomplete for itemcode
-    function initializeItemCodeAutocomplete(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn) {
-        let input = inputname.split("_");
-        let id_val = input[1];
-
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input,
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function (data) {
-                        console.log("Response for " + inputname + ":", data);
-                        if (data.length === 0) {
-                            response([{ label: "No results found", value: "" }]);
-                        } else {
-                            response($.map(data, function (item) {
-                                var code = item.split("|");
-                                return {
-                                    label: code[0],
-                                    value: code[0],
-                                    data: item
-                                };
-                            }));
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("AJAX error for " + inputname + ":", error);
-                        response([]);
-                    }
-                });
-            },
-            autoFocus: true,
-            minLength: 1,
-            select: function (event, ui) {
-                if (ui.item.value !== "") {
-                    var names = ui.item.data.split("|");
-                    $('#' + inputname).val(names[0]); // item_code
-                    $('#' + item).val(names[1]); // inventory_name
-                    $('#' + hsn).val(names[2]); // hsn
-                    $('#' + qty).val(names[3]); // qty (default 1)
-                    $('#' + discount).val(names[4]); // default_discount
-                    $('#' + rate).val(names[5]); // sales_rate
-                    $('#' + uom).val(names[7]); // units
-                    $('#' + description).val(names[8]); // sales_information_description
-                    $('#' + taxrate).val(names[6] || '0'); // tax rate
-
-                    calculateTotalTaxAmount();
-                    updateTaxFields();
-                    discountamt(inputname);
-                    subtotal();
-                    calculatePFPercentage();
-                    calculateFreightPercentage();
-                    updateTotalInWords();
-                    updatePFAmount();
-                    updateFreightPercentage();
-                    updatePFPercentage();
-                }
-            },
-            change: function (event, ui) {
-                if (!ui.item && !$('#' + inputname).val()) {
-                    clearRelatedFields(inputname, item, description, godown, qty, rate, uom, discount, taxrate, hsn);
-                }
-            },
-            open: function () {
-                console.log("Dropdown opened for " + inputname);
-            }
-        });
-    }
-
-    // Autocomplete for item
-    function initializeItemAutocomplete(inputname, description, godown, qty, rate, uom, discount, taxrate, hsn, itemcode) {
-        let input = inputname.split("_");
-        let id_val = input[1];
-
-        $('#' + inputname).autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "{% url 'getitemscodedetails' %}",
-                    dataType: "json",
-                    type: "POST",
-                    data: {
-                        name_startsWith: request.term,
-                        itemsdetails: input,
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function (data) {
-                        console.log("Response for " + inputname + ":", data);
-                        if (data.length === 0) {
-                            response([{ label: "No results found", value: "" }]);
-                        } else {
-                            response($.map(data, function (item) {
-                                var code = item.split("|");
-                                return {
-                                    label: code[0],
-                                    value: code[0],
-                                    data: item
-                                };
-                            }));
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("AJAX error for " + inputname + ":", error);
-                        response([]);
-                    }
-                });
-            },
-            autoFocus: true,
-            minLength: 1,
-            select: function (event, ui) {
-                if (ui.item.value !== "") {
-                    var names = ui.item.data.split("|");
-                    $('#' + inputname).val(names[0]);
-                    $('#' + description).val(names[1]);
-                    $('#' + godown).val(names[2]);
-                    $('#' + qty).val('1');
-                    $('#' + rate).val(names[8]);
-                    $('#' + uom).val(names[10]);
-                    $('#' + discount).val(names[6]);
-                    $('#' + taxrate).val(names[7]);
-                    $('#' + hsn).val(names[5]);
-                    $('#' + itemcode).val(names[11]);
-
-                    calculateTotalTaxAmount();
-                    updateTaxFields();
-                    discountamt(inputname);
-                    subtotal();
-                    calculatePFPercentage();
-                    calculateFreightPercentage();
-                    updateTotalInWords();
-                    updatePFAmount();
-                    updateFreightPercentage();
-                    updatePFPercentage();
-                }
-            },
-            change: function (event, ui) {
-                if (!ui.item && !$('#' + inputname).val()) {
-                    clearRelatedFields(inputname, itemcode, description, godown, qty, rate, uom, discount, taxrate, hsn);
-                }
-            },
-            open: function () {
-                console.log("Dropdown opened for " + inputname);
-            }
-        });
-    }
-
-    // Initialize autocomplete for initial row
-    initializeItemCodeAutocomplete('itemcode_0', 'item_0', 'description_0', 'godown_0', 'qty_0', 'rate_0', 'uom_0', 'discount_0', 'taxrate_0', 'hsn_0');
-    initializeItemAutocomplete('item_0', 'description_0', 'godown_0', 'qty_0', 'rate_0', 'uom_0', 'discount_0', 'taxrate_0', 'hsn_0', 'itemcode_0');
-
-    // Handle dynamically added rows
-    $(document).on('click', '.add-btn', function () {
-        var i = $('.add-row').length;
-        var experiencecontent = `
-            <tr class="add-row">
-                <input type="hidden" name="iid[]" class="iid" value="${i}">
-                <td><input type="text" class="form-control" style="width: 120px;" name="itemcode_${i}" id="itemcode_${i}"></td>
-                <td><input type="text" class="form-control" name="item_${i}" id="item_${i}" placeholder=" "></td>
-                <td><input type="text" class="form-control" name="hsn_${i}" id="hsn_${i}"></td>
-                <td><input type="text" class="form-control" name="qty_${i}" id="qty_${i}"></td>
-                <td><input type="text" class="form-control" name="uom_${i}" id="uom_${i}"></td>
-                <td><input type="text" class="form-control" name="rate_${i}" id="rate_${i}"></td>
-                <td><input type="text" class="form-control" name="discount_${i}" id="discount_${i}"></td>
-                <td><input type="number" class="form-control taxrate_${i}" name="taxrate_${i}" id="taxrate_${i}" required></td>
-                <td><input type="text" class="form-control taxamt" name="taxamt_${i}" id="taxamt_${i}" readonly></td>
-                <td><input type="text" class="form-control totalamt" name="total_${i}" id="total_${i}" readonly></td>
-                <td class="add-remove text-end">
-                    <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
-                    <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
-                </td>
-            </tr>`;
-        
-        $("#append_table > tbody").append(experiencecontent);
-
-        // Attach autocomplete
-        initializeItemCodeAutocomplete(`itemcode_${i}`, `item_${i}`, `description_${i}`, `godown_${i}`, `qty_${i}`, `rate_${i}`, `uom_${i}`, `discount_${i}`, `taxrate_${i}`, `hsn_${i}`);
-        initializeItemAutocomplete(`item_${i}`, `description_${i}`, `godown_${i}`, `qty_${i}`, `rate_${i}`, `uom_${i}`, `discount_${i}`, `taxrate_${i}`, `hsn_${i}`, `itemcode_${i}`);
-
-        // Attach event listeners to the new inputs
-        $(`#qty_${i}, #rate_${i}, #discount_${i}, #taxrate_${i}`).on('keyup', function () {
-            calculateRow(i);
-        });
-
-        // Optional: recalculate immediately to initialize tax if needed
-        calculateRow(i);
-    });
-
-    // Handle row removal
-    $(document).on('click', '.remove-btn', function () {
-        $(this).closest('.add-row').remove();
-        calculateTotalTaxAmount();
-        subtotal();
-        updateTotalInWords();
-    });
-
-    // Datepicker initialization
-    $('#quotation_date, #expiry_date').datepicker({
+    $(document).ready(function () {
+    // Initialize datepickers
+    $('.datetimepicker').datepicker({
         dateFormat: 'dd-mm-yy',
         minDate: 0
     });
@@ -1641,263 +717,552 @@ $(document).ready(function () {
     // Set default dates
     const today = new Date();
     const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
-    $('#quotation_date, #expiry_date').val(formattedDate);
+    $('#sales_order_date, #buyer_order_date, #due_date').val(formattedDate);
 
-    // Customer selection
+    // Track row count properly
+    let rowCounter = 0;
+
+    // Clear related fields helper
+    function clearRelatedFields(index) {
+        $(`#itemcode_${index}`).val('');
+        $(`#item_${index}`).val('');
+        $(`#hsn_${index}`).val('');
+        $(`#qty_${index}`).val('');
+        $(`#uom_${index}`).val('');
+        $(`#rate_${index}`).val('');
+        $(`#discount_${index}`).val('');
+        $(`#taxrate_${index}`).val('');
+        $(`#taxamt_${index}`).val('');
+        $(`#total_${index}`).val('');
+        calculateTotalTaxAmount();
+        subtotal();
+        updateTotalInWords();
+    }
+
+    // Autocomplete for itemcode
+    function initializeItemCodeAutocomplete(index) {
+        $(`#itemcode_${index}`).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "{% url 'getitemscodedetails' %}",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: ['itemcode', index],
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        if (data.length === 0) {
+                            response([{ label: "No results found", value: "" }]);
+                        } else {
+                            response($.map(data, function (item) {
+                                var code = item.split("|");
+                                return {
+                                    label: code[0],
+                                    value: code[0],
+                                    data: item
+                                };
+                            }));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX error:", error);
+                        response([]);
+                    }
+                });
+            },
+            autoFocus: true,
+            minLength: 1,
+            select: function (event, ui) {
+                if (ui.item.value !== "") {
+                    var names = ui.item.data.split("|");
+                    $(`#itemcode_${index}`).val(names[0]); // item_code
+                    $(`#item_${index}`).val(names[1]); // inventory_name
+                    $(`#hsn_${index}`).val(names[2]); // hsn
+                    $(`#qty_${index}`).val(names[3] || '1'); // qty
+                    $(`#discount_${index}`).val(names[4] || '0'); // discount
+                    $(`#rate_${index}`).val(names[5] || '0'); // rate
+                    $(`#taxrate_${index}`).val(names[6] || '0'); // tax rate
+                    $(`#uom_${index}`).val(names[7]); // units
+
+                    calculateRow(index);
+                    calculateTotalTaxAmount();
+                    updateTaxFields();
+                    subtotal();
+                    updateTotalInWords();
+                }
+                return false;
+            },
+            change: function (event, ui) {
+                if (!ui.item && !$(`#itemcode_${index}`).val()) {
+                    clearRelatedFields(index);
+                }
+            }
+        });
+    }
+
+    // Autocomplete for item name
+    function initializeItemAutocomplete(index) {
+        $(`#item_${index}`).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "{% url 'getitemscodedetails' %}",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        name_startsWith: request.term,
+                        itemsdetails: ['item', index],
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        if (data.length === 0) {
+                            response([{ label: "No results found", value: "" }]);
+                        } else {
+                            response($.map(data, function (item) {
+                                var code = item.split("|");
+                                return {
+                                    label: code[1],
+                                    value: code[1],
+                                    data: item
+                                };
+                            }));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX error:", error);
+                        response([]);
+                    }
+                });
+            },
+            autoFocus: true,
+            minLength: 1,
+            select: function (event, ui) {
+                if (ui.item.value !== "") {
+                    var names = ui.item.data.split("|");
+                    $(`#itemcode_${index}`).val(names[0]);
+                    $(`#item_${index}`).val(names[1]);
+                    $(`#hsn_${index}`).val(names[2]);
+                    $(`#qty_${index}`).val(names[3] || '1');
+                    $(`#discount_${index}`).val(names[4] || '0');
+                    $(`#rate_${index}`).val(names[5] || '0');
+                    $(`#taxrate_${index}`).val(names[6] || '0');
+                    $(`#uom_${index}`).val(names[7]);
+
+                    calculateRow(index);
+                    calculateTotalTaxAmount();
+                    updateTaxFields();
+                    subtotal();
+                    updateTotalInWords();
+                }
+                return false;
+            },
+            change: function (event, ui) {
+                if (!ui.item && !$(`#item_${index}`).val()) {
+                    clearRelatedFields(index);
+                }
+            }
+        });
+    }
+
+    // Initialize autocomplete for initial row
+    initializeItemCodeAutocomplete(0);
+    initializeItemAutocomplete(0);
+
+    // Add new row
+    $(document).on('click', '.add-btn', function () {
+        rowCounter++;
+        var i = rowCounter;
+        
+        var experiencecontent = `
+            <tr class="add-row">
+                <input type="hidden" name="iid[]" class="iid" value="${i}">
+                <td><input type="text" class="form-control" style="width: 120px;" name="itemcode_${i}" id="itemcode_${i}" required></td>
+                <td><input type="text" class="form-control" name="item_${i}" id="item_${i}" placeholder=" "></td>
+                <td><input type="text" class="form-control" name="hsn_${i}" id="hsn_${i}"></td>
+                <td><input type="text" class="form-control" name="qty_${i}" id="qty_${i}"></td>
+                <td><input type="text" class="form-control" name="uom_${i}" id="uom_${i}"></td>
+                <td><input type="text" class="form-control" name="rate_${i}" id="rate_${i}"></td>
+                <td><input type="text" class="form-control" name="discount_${i}" id="discount_${i}"></td>
+                <td><input type="number" class="form-control taxrate_${i}" name="taxrate_${i}" id="taxrate_${i}" step="0.001" required></td>
+                <td><input type="text" class="form-control taxamt" name="taxamt_${i}" id="taxamt_${i}" readonly></td>
+                <td><input type="text" class="form-control totalamt" name="total_${i}" id="total_${i}" readonly></td>
+                <td class="add-remove text-end">
+                    <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
+                    <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
+                </td>
+                <td hidden><input type="date" class="form-control" id="date_${i}" name="date_${i}"></td>
+            </tr>`;
+        
+        $("#append_table > tbody").append(experiencecontent);
+
+        // Initialize autocomplete for new row
+        initializeItemCodeAutocomplete(i);
+        initializeItemAutocomplete(i);
+
+        // Attach event listeners
+        $(`#qty_${i}, #rate_${i}, #discount_${i}, #taxrate_${i}`).on('input', function () {
+            calculateRow(i);
+        });
+    });
+
+    // Remove row
+    $(document).on('click', '.remove-btn', function () {
+        $(this).closest('.add-row').remove();
+        calculateTotalTaxAmount();
+        updateTaxFields();
+        subtotal();
+        updateTotalInWords();
+    });
+
+    // Quotation selection
+    let selectedQuotationId = null;
     $('#customer_Name').on('input', function () {
         var input = this.value;
         var list = $('#customer_Name_list').find('option');
+        var shipTo = $('#shipping_address');
+        selectedQuotationId = null;
+
         for (var i = 0; i < list.length; i++) {
             if (list[i].value === input) {
                 $('#customer_id').val(list[i].dataset.id);
                 $('#contact_person_name').val(list[i].dataset.contact_person);
-                $('#contact_person_email').val(list[i].dataset.email);
-                $('#destination').val(list[i].dataset.address);
+                $('#freight_amount').val(list[i].dataset.freight_amount || '0.00');
+                $('#packaging_forwording_amount').val(list[i].dataset.p_and_f_amount || '0.00');
+                $('#freight_percentage').val(list[i].dataset.freight_percentage || '0.00');
+                $('#packaging_forwording_percentage').val(list[i].dataset.p_and_f_percentage || '0.00');
+                $('#destination').val(list[i].dataset.destination);
                 $('#customer_code').val(list[i].dataset.customer_code);
-                $('#q_ser_type').val(list[i].dataset.service_type);
+                $('#igst').val(list[i].dataset.q_igstval || '0.00');
+                $('#sgst').val(list[i].dataset.q_sgstval || '0.00');
+                $('#cgst').val(list[i].dataset.q_cgstval || '0.00');
+
+                $("#place_of_supply").val(list[i].dataset.supplyplace);
+                $("#gst_option").val(list[i].dataset.gst_option);
+                $("#customer_Name_id").val(list[i].dataset.cname);
+                $("#payment_term").val(list[i].dataset.q_payment_terms);
+                
+                selectedQuotationId = list[i].dataset.id_quotation;
+
+                shipTo.html('<option value="" selected hidden disabled>Select Shipping Address</option>');
+                if (list[i].dataset.shipping_address1) {
+                    shipTo.append(`<option value="${list[i].dataset.shipping_address1}">${list[i].dataset.shipping_address1}</option>`);
+                }
+                if (list[i].dataset.shipping_address2) {
+                    shipTo.append(`<option value="${list[i].dataset.shipping_address2}">${list[i].dataset.shipping_address2}</option>`);
+                }
+                if (list[i].dataset.shipping_address3) {
+                    shipTo.append(`<option value="${list[i].dataset.shipping_address3}">${list[i].dataset.shipping_address3}</option>`);
+                }
+
+                const customerId = list[i].dataset.cname;
+                fetchShippingAddresses(customerId);
                 break;
             }
         }
+
+        if (selectedQuotationId) {
+            fetchQuotationItems(selectedQuotationId);
+        }
+
+        toggleFreightFields();
+        togglePfFields();
+        updateTaxFields();
+        subtotal();
+        updateTotalInWords();
     });
 
-    // Email validation
-    function isValidEmail(email) {
-        if (email.toLowerCase() === 'na' || email.toLowerCase() === 'nan') return true;
-        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailPattern.test(email);
+    // Fetch quotation items
+    function fetchQuotationItems(quotationId) {
+        fetch(`/get-quotation-items/${quotationId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = $('#quotation-items-body');
+                tbody.html('');
+                rowCounter = 0;
+                
+                data.forEach((item, index) => {
+                    rowCounter = index;
+                    const row = `
+                        <tr class="add-row">
+                            <input type="hidden" name="iid[]" class="iid" value="${index}">
+                            <td><input type="text" style="width: 120px;" class="form-control" name="itemcode_${index}" id="itemcode_${index}" value="${item.q_item_code}" required></td>
+                            <td><input type="text" class="form-control" name="item_${index}" id="item_${index}" value="${item.q_description_goods}"></td>
+                            <td><input type="text" class="form-control" name="hsn_${index}" id="hsn_${index}" value="${item.q_hsn}"></td>
+                            <td><input type="text" class="form-control" name="qty_${index}" id="qty_${index}" value="${item.q_qantity}"></td>
+                            <td><input type="text" class="form-control" name="uom_${index}" id="uom_${index}" value="${item.q_uom}"></td>
+                            <td><input type="text" class="form-control" name="rate_${index}" id="rate_${index}" value="${item.q_unit_price}"></td>
+                            <td><input type="text" class="form-control" name="discount_${index}" id="discount_${index}" value="${item.q_discount}"></td>
+                            <td><input type="number" class="form-control taxrate_${index}" name="taxrate_${index}" id="taxrate_${index}" value="${item.q_tax_rate}" step="0.001" required></td>
+                            <td><input type="text" class="form-control taxamt" name="taxamt_${index}" id="taxamt_${index}" value="${item.q_tax_amount}" readonly></td>
+                            <td><input type="text" class="form-control totalamt" name="total_${index}" id="total_${index}" value="${item.q_total}" readonly></td>
+                            <td class="add-remove text-end">
+                                <a href="javascript:void(0);" class="add-btn me-2"><i class="fas fa-plus-circle"></i></a>
+                                <a href="javascript:void(0);" class="remove-btn"><i class="fe fe-trash-2"></i></a>
+                            </td>
+                            <td hidden><input type="date" class="form-control" id="date_${index}" name="date_${index}"></td>
+                        </tr>`;
+                    tbody.append(row);
+
+                    // Initialize autocomplete
+                    initializeItemCodeAutocomplete(index);
+                    initializeItemAutocomplete(index);
+
+                    // Attach event listeners
+                    $(`#qty_${index}, #rate_${index}, #discount_${index}, #taxrate_${index}`).on('input', function () {
+                        calculateRow(index);
+                    });
+                });
+
+                calculateTotalTaxAmount();
+                updateTaxFields();
+                toggleFreightFields();
+                togglePfFields();
+                subtotal();
+                updateTotalInWords();
+            });
     }
 
-    $('#contact_person_email').on('input', function () {
-        var email = this.value;
-        var errorMsg = $('#email-error-message');
-        if (!isValidEmail(email) && email !== "") {
-            errorMsg.show();
-            this.setCustomValidity('Invalid email address');
-        } else {
-            errorMsg.hide();
-            this.setCustomValidity('');
-        }
+    // Fetch shipping addresses
+    function fetchShippingAddresses(customerId) {
+        if (!customerId) return;
+        const url = "/get_shipping_address/?customer_id=" + customerId;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const shipTo = $('#shipping_address');
+                shipTo.html('<option value="" selected hidden disabled>Select Shipping Address</option>');
+                if (data.shipping_addresses && data.shipping_addresses.length > 0) {
+                    data.shipping_addresses.forEach(address => {
+                        shipTo.append(`<option value="${address.value}">${address.value}</option>`);
+                    });
+                    if (data.place_of_supply) {
+                        $("#place_of_supply").val(data.place_of_supply);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching shipping addresses:', error);
+            });
+    }
+
+    $('#customer_Name_id').on('change', function () {
+        const customerId = this.value;
+        fetchShippingAddresses(customerId);
     });
 
-    $('#invoice_form').on('submit', function (event) {
-        if (!isValidEmail($('#contact_person_email').val())) {
-            event.preventDefault();
-        }
-    });
-
-    // Freight and Packaging field toggling
+    // Toggle freight fields
     function toggleFreightFields() {
         const freightAmount = parseFloat($('#freight_amount').val()) || 0;
         const freightPercentage = parseFloat($('#freight_percentage').val()) || 0;
-        $('#freight_amount_gst_row').toggle(freightAmount > 0);
-        $('#freight_percentage_gst_row').toggle(freightPercentage > 0);
-        $('#freight_percentage').prop('disabled', freightAmount > 0);
-        $('#freight_amount').prop('disabled', freightPercentage > 0);
+        
+        if (freightAmount > 0) {
+            $('#freight_amount_gst_row').show();
+            $('#freight_percentage_gst_row').hide();
+            $('#freight_percentage').prop('disabled', true).val('0.00');
+            updateFreightAmount();
+        } else if (freightPercentage > 0) {
+            $('#freight_percentage_gst_row').show();
+            $('#freight_amount_gst_row').hide();
+            $('#freight_amount').prop('disabled', true).val('0.00');
+            updateFreightPercentage();
+        } else {
+            $('#freight_amount_gst_row').hide();
+            $('#freight_percentage_gst_row').hide();
+            $('#freight_percentage').prop('disabled', false);
+            $('#freight_amount').prop('disabled', false);
+            $('#fr_amount').val('0.00');
+            $('#fr_percentage').val('0.00');
+        }
     }
 
+    // Toggle P&F fields
     function togglePfFields() {
         const pfAmount = parseFloat($('#packaging_forwording_amount').val()) || 0;
         const pfPercentage = parseFloat($('#packaging_forwording_percentage').val()) || 0;
-        $('#pfamtgst').toggle(pfAmount > 0);
-        $('#pfpergst').toggle(pfPercentage > 0);
-        $('#packaging_forwording_percentage').prop('disabled', pfAmount > 0);
-        $('#packaging_forwording_amount').prop('disabled', pfPercentage > 0);
+        
+        if (pfAmount > 0) {
+            $('#pfamtgst').show();
+            $('#pfpergst').hide();
+            $('#packaging_forwording_percentage').prop('disabled', true).val('0.00');
+            updatePFAmount();
+        } else if (pfPercentage > 0) {
+            $('#pfpergst').show();
+            $('#pfamtgst').hide();
+            $('#packaging_forwording_amount').prop('disabled', true).val('0.00');
+            updatePFPercentage();
+        } else {
+            $('#pfamtgst').hide();
+            $('#pfpergst').hide();
+            $('#packaging_forwording_percentage').prop('disabled', false);
+            $('#packaging_forwording_amount').prop('disabled', false);
+            $('#pf_amount').val('0.00');
+            $('#pf_percentage').val('0.00');
+        }
     }
 
-    $('#freight_amount, #freight_percentage').on('input', toggleFreightFields);
-    $('#packaging_forwording_amount, #packaging_forwording_percentage').on('input', togglePfFields);
-    toggleFreightFields();
-    togglePfFields();
-
-    // Calculations
-function calculateTotalTaxAmount() {
-    let totalTaxAmount = 0;
-    $('.taxamt').each(function () {
-        let taxAmt = parseFloat($(this).val()) || 0;
-        totalTaxAmount += taxAmt;
-    });
-    $('#total_tax_amount').val(totalTaxAmount.toFixed(2));
-    updateTaxFields(); // Important!
-}
-
-
-function updateTaxFields() {
-    const gstOption = $('#gst_option').val();
-    const totalTaxAmount = parseFloat($('#total_tax_amount').val()) || 0;
-
-    if (gstOption === 'Interstate') {
-        $('#igst').val(totalTaxAmount.toFixed(2));
-        $('#cgst').val('0.00');
-        $('#sgst').val('0.00');
-    } else if (gstOption === 'Intrastate') {
-        const halfTax = (totalTaxAmount / 2).toFixed(2);
-        $('#cgst').val(halfTax);
-        $('#sgst').val(halfTax);
-        $('#igst').val('0.00');
-    } else {
-        $('#cgst, #sgst, #igst').val('0.00');
+    // Freight and P&F calculations
+    function updateFreightAmount() {
+        const frAmount = parseFloat($('#freight_amount').val()) || 0;
+        const gstAmount = frAmount * 0.18;
+        const totalFreight = frAmount + gstAmount;
+        $('#fr_amount').val(totalFreight.toFixed(2));
+        subtotal();
     }
 
-    subtotal(); // recalculate final total with tax
-}
+    function updateFreightPercentage() {
+        const subtotalVal = parseFloat($('#subtotal').val()) || 0;
+        const frPercentage = parseFloat($('#freight_percentage').val()) || 0;
+        const frAmount = (subtotalVal * frPercentage) / 100;
+        const gstAmount = frAmount * 0.18;
+        const totalFreight = frAmount + gstAmount;
+        $('#fr_percentage').val(totalFreight.toFixed(2));
+        subtotal();
+    }
 
     function updatePFAmount() {
-        var pfAmount = parseFloat($('#packaging_forwording_amount').val()) || 0;
-        var gstAmount = (pfAmount * 0.18).toFixed(2);
-        $('#pf_amount').val((pfAmount + parseFloat(gstAmount)).toFixed(2));
-        updateTotalInWords();
-    }
-
-    function updateFreightAmount() {
-        var frAmount = parseFloat($('#freight_amount').val()) || 0;
-        var gstAmount = (frAmount * 0.18).toFixed(2);
-        $('#fr_amount').val((frAmount + parseFloat(gstAmount)).toFixed(2));
-        updateTotalInWords();
-    }
-
-    function calculatePFPercentage() {
-        var subtotal = parseFloat($('#subtotal').val()) || 0;
-        var percentage = parseFloat($('#packaging_forwording_percentage').val()) || 0;
-        var pfAmount = (subtotal * percentage) / 100;
-        var gstAmount = (pfAmount * 0.18).toFixed(2);
-        $('#pf_percentage').val((pfAmount + parseFloat(gstAmount)).toFixed(2));
-        updateTotalInWords();
-    }
-
-    function calculateFreightPercentage() {
-        var subtotal = parseFloat($('#subtotal').val()) || 0;
-        var percentage = parseFloat($('#freight_percentage').val()) || 0;
-        var frAmount = (subtotal * percentage) / 100;
-        var gstAmount = (frAmount * 0.18).toFixed(2);
-        $('#fr_percentage').val((frAmount + parseFloat(gstAmount)).toFixed(2));
-        updateTotalInWords();
-    }
-
-    function discountamt(inputname) {
-        let input = inputname.split("_");
-        let id_val = input[1];
-        let rate = parseFloat($('#rate_' + id_val).val()) || 0;
-        let discount = parseFloat($('#discount_' + id_val).val()) || 0;
-        let qty = parseFloat($('#qty_' + id_val).val()) || 0;
-        let item_rate = $('#item_rate').val();
-
-        let total = rate - (rate * discount / 100);
-        let totalamt = total * qty;
-        let taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
-        let taxamt = totalamt * taxrate / 100;
-
-        if (item_rate === 'tax_exclusive') {
-            $('#total_' + id_val).val(totalamt.toFixed(2));
-            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
-        } else {
-            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
-            $('#total_' + id_val).val((totalamt - taxamt).toFixed(2));
-        }
-
+        const pfAmount = parseFloat($('#packaging_forwording_amount').val()) || 0;
+        const gstAmount = pfAmount * 0.18;
+        const totalPf = pfAmount + gstAmount;
+        $('#pf_amount').val(totalPf.toFixed(2));
         subtotal();
-        calculateTotalTaxAmount();
-        updateTotalInWords();
     }
 
-    function qty(inputname) {
-        let input = inputname.split("_");
-        let id_val = input[1];
-        let rate = parseFloat($('#rate_' + id_val).val()) || 0;
-        let qty = parseFloat($('#qty_' + id_val).val()) || 0;
-        let discount = parseFloat($('#discount_' + id_val).val()) || 0;
-        let item_rate = $('#item_rate').val();
-
-        let total = rate - (rate * discount / 100);
-        let totalamt = total * qty;
-        let taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
-        let taxamt = totalamt * taxrate / 100;
-
-        if (item_rate === 'tax_exclusive') {
-            $('#total_' + id_val).val(totalamt.toFixed(2));
-            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
-        } else {
-            $('#taxamt_' + id_val).val(taxamt.toFixed(2));
-            $('#total_' + id_val).val((totalamt - taxamt).toFixed(2));
-        }
-
+    function updatePFPercentage() {
+        const subtotalVal = parseFloat($('#subtotal').val()) || 0;
+        const pfPercentage = parseFloat($('#packaging_forwording_percentage').val()) || 0;
+        const pfAmount = (subtotalVal * pfPercentage) / 100;
+        const gstAmount = pfAmount * 0.18;
+        const totalPf = pfAmount + gstAmount;
+        $('#pf_percentage').val(totalPf.toFixed(2));
         subtotal();
-        calculateTotalTaxAmount();
-        updateTotalInWords();
     }
 
-        function isGstSelected() {
-    return $('#gst_option').val() !== '';
-}
-
-function rate(inputname) {
-    const input = inputname.split("_");
-    const id_val = input[1];
-
-    if (!isGstSelected()) {
-        alert("Please select GST type first.");
-        return;
-    }
-
-    const rate = parseFloat($('#rate_' + id_val).val()) || 0;
-    const qty = parseFloat($('#qty_' + id_val).val()) || 0;
-    const discount = parseFloat($('#discount_' + id_val).val()) || 0;
-    const taxrate = parseFloat($('#taxrate_' + id_val).val()) || 0;
-    const item_rate = $('#item_rate').val();
-
-    const discounted_rate = rate - (rate * discount / 100);
-    const base_amount = discounted_rate * qty;
-    const tax_amount = base_amount * taxrate / 100;
-
-    if (item_rate === 'tax_exclusive') {
-        $('#total_' + id_val).val(base_amount.toFixed(2));
-        $('#taxamt_' + id_val).val(tax_amount.toFixed(2));
-    } else {
-        // Tax inclusive: extract base amount from total
-        const base = base_amount / (1 + taxrate / 100);
-        const tax = base_amount - base;
-        $('#total_' + id_val).val(base.toFixed(2));
-        $('#taxamt_' + id_val).val(tax.toFixed(2));
-    }
-
-    subtotal();                 // update subtotal
-    calculateTotalTaxAmount();  // update total tax
-    updateTotalInWords();       // update in words
-}
-
-
-function subtotal() {
-    let totalamt = 0;
-    $('.totalamt').each(function () {
-        totalamt += parseFloat($(this).val()) || 0;
-    });
-    $('#subtotal').val(totalamt.toFixed(2));
-
-    let taxamt = 0;
-    $('.taxamt').each(function () {
-        taxamt += parseFloat($(this).val()) || 0;
+    // Event listeners
+    $('#freight_amount, #freight_percentage').on('input', function () {
+        toggleFreightFields();
     });
 
-    let adjustment = parseFloat($('#adjustment').val()) || 0;
-    let pf_amount = parseFloat($('#pf_amount').val()) || 0;
-    let fr_amount = parseFloat($('#fr_amount').val()) || 0;
-    let pf_percentage = parseFloat($('#pf_percentage').val()) || 0;
-    let fr_percentage = parseFloat($('#fr_percentage').val()) || 0;
-    let sale_of_good = parseFloat($('#sale_of_good').val()) || 0;
+    $('#packaging_forwording_amount, #packaging_forwording_percentage').on('input', function () {
+        togglePfFields();
+    });
 
-    let finalamt = totalamt + taxamt + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
-    $('#totalamt').val(finalamt.toFixed(2));
+    // Row calculations
+    function calculateRow(index) {
+        const rate = parseFloat($(`#rate_${index}`).val()) || 0;
+        const qty = parseFloat($(`#qty_${index}`).val()) || 0;
+        const discount = parseFloat($(`#discount_${index}`).val()) || 0;
+        const taxrate = parseFloat($(`#taxrate_${index}`).val()) || 0;
+        const item_rate = $('#item_rate').val();
 
-    updateTotalInWords();
-}
+        const discounted_rate = rate - (rate * discount / 100);
+        const base_amount = discounted_rate * qty;
+        const tax_amount = base_amount * taxrate / 100;
 
+        if (item_rate === 'tax_exclusive') {
+            $(`#total_${index}`).val(base_amount.toFixed(2));
+            $(`#taxamt_${index}`).val(tax_amount.toFixed(2));
+        } else {
+            const base = base_amount / (1 + taxrate / 100);
+            const tax = base_amount - base;
+            $(`#total_${index}`).val(base.toFixed(2));
+            $(`#taxamt_${index}`).val(tax.toFixed(2));
+        }
 
+        calculateTotalTaxAmount();
+        updateTaxFields();
+        subtotal();
+    }
+
+    // Attach event listeners to initial row
+    $('#qty_0, #rate_0, #discount_0, #taxrate_0').on('input', function () {
+        calculateRow(0);
+    });
+
+    // Calculate total tax amount
+    function calculateTotalTaxAmount() {
+        let totalTaxAmount = 0;
+        $('.taxamt').each(function () {
+            totalTaxAmount += parseFloat($(this).val()) || 0;
+        });
+        $('#total_tax_amount').val(totalTaxAmount.toFixed(2));
+    }
+
+    // Update tax fields based on GST option
+    function updateTaxFields() {
+        const gstOption = $('#gst_option').val();
+        const totalTaxAmount = parseFloat($('#total_tax_amount').val()) || 0;
+
+        if (gstOption === 'Interstate') {
+            $('#igst').val(totalTaxAmount.toFixed(2));
+            $('#cgst').val('0.00');
+            $('#sgst').val('0.00');
+        } else if (gstOption === 'Intrastate') {
+            const halfTax = totalTaxAmount / 2;
+            $('#cgst').val(halfTax.toFixed(2));
+            $('#sgst').val(halfTax.toFixed(2));
+            $('#igst').val('0.00');
+        } else {
+            $('#cgst, #sgst, #igst').val('0.00');
+        }
+        subtotal();
+    }
+
+    $('#gst_option').on('change', function () {
+        updateTaxFields();
+    });
+
+    $('#place_of_supply').on('change', function () {
+        updateTaxFields();
+    });
+
+    // Calculate subtotal and final amount
+    function subtotal() {
+        let totalamt = 0;
+        $('.totalamt').each(function () {
+            totalamt += parseFloat($(this).val()) || 0;
+        });
+        $('#subtotal').val(totalamt.toFixed(2));
+
+        // Update percentage-based freight and P&F after subtotal changes
+        const freightPercentage = parseFloat($('#freight_percentage').val()) || 0;
+        const pfPercentage = parseFloat($('#packaging_forwording_percentage').val()) || 0;
+        
+        if (freightPercentage > 0) {
+            updateFreightPercentage();
+        }
+        if (pfPercentage > 0) {
+            updatePFPercentage();
+        }
+
+        let cgst = parseFloat($('#cgst').val()) || 0;
+        let sgst = parseFloat($('#sgst').val()) || 0;
+        let igst = parseFloat($('#igst').val()) || 0;
+        let adjustment = parseFloat($('#adjustment').val()) || 0;
+        let pf_amount = parseFloat($('#pf_amount').val()) || 0;
+        let fr_amount = parseFloat($('#fr_amount').val()) || 0;
+        let pf_percentage = parseFloat($('#pf_percentage').val()) || 0;
+        let fr_percentage = parseFloat($('#fr_percentage').val()) || 0;
+        let sale_of_good = parseFloat($('#sale_of_good').val()) || 0;
+
+        let finalamt = totalamt + cgst + sgst + igst + adjustment + pf_amount + fr_amount + pf_percentage + fr_percentage + sale_of_good;
+        $('#totalamt').val(finalamt.toFixed(2));
+
+        updateTotalInWords();
+    }
+
+    $('#adjustment').on('input', function () {
+        subtotal();
+    });
+
+    // Convert number to words
     function test(n) {
         if (n < 0) return false;
         const single_digit = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
         const double_digit = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
         const below_hundred = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
-        if (n === 0) return 'Zero Rupees';
+        if (n === 0) return 'Zero Rupees Only.';
 
         function translate(n) {
             let word = "";
@@ -1926,161 +1291,61 @@ function subtotal() {
         let result = translate(parseInt(integerPart)).trim() + ' Rupees';
         if (decimalPart) {
             decimalPart = decimalPart.padEnd(2, '0');
-            result += ' and ' + translate(parseInt(decimalPart)) + ' Paise';
+            result += ' and ' + translate(parseInt(decimalPart)).trim() + ' Paise';
         }
-        return result.trim() + '.';
+        return result.trim() + ' Only.';
     }
 
     function updateTotalInWords() {
         const totalAmt = parseFloat($('#totalamt').val()) || 0;
-        $('#totalamt_word').val(isNaN(totalAmt) ? '' : test(totalAmt));
+        $('#totalamt_word').val(test(totalAmt));
     }
-
-    $('#freight_amount, #freight_percentage, #packaging_forwording_amount, #packaging_forwording_percentage, #gst_option, #igst').on('input', function () {
-        subtotal();
-        updateTotalInWords();
-    });
-
-$('#gst_option, #item_rate').on('change', function () {
-    $('.add-row').each(function (index) {
-        rate(`rate_${index}`);
-    });
-});
-$('#gst_option').on('change', function () {
-    $('.add-row').each(function (index, row) {
-        const indexId = $(row).find('input[id^="rate_"]').attr('id').split("_")[1];
-        rate(`rate_${indexId}`);  // Recalculate each row
-    });
-});
-
-$('#adjustment, #packaging_forwording_amount, #freight_amount, #packaging_forwording_percentage, #freight_percentage').on('input', function () {
-    calculatePFPercentage();
-    calculateFreightPercentage();
-    updateFreightAmount();
-    updatePFAmount();
-    
-    subtotal();
-});
-
-
-function calculateRow(index) {
-    const rate = parseFloat($('#rate_' + index).val()) || 0;
-    const qty = parseFloat($('#qty_' + index).val()) || 0;
-    const discount = parseFloat($('#discount_' + index).val()) || 0;
-    const taxrate = parseFloat($('#taxrate_' + index).val()) || 0;
-    const item_rate = $('#item_rate').val();
-
-    const discounted_rate = rate - (rate * discount / 100);
-    const base_amount = discounted_rate * qty;
-    const tax_amount = base_amount * taxrate / 100;
-
-    if (item_rate === 'tax_exclusive') {
-        $('#total_' + index).val(base_amount.toFixed(2));
-        $('#taxamt_' + index).val(tax_amount.toFixed(2));
-    } else {
-        const base = base_amount / (1 + taxrate / 100);
-        const tax = base_amount - base;
-        $('#total_' + index).val(base.toFixed(2));
-        $('#taxamt_' + index).val(tax.toFixed(2));
-    }
-
-    subtotal();
-    calculateTotalTaxAmount();
-}
-$('#qty_0, #rate_0, #discount_0, #taxrate_0').on('keyup', function () {
-    calculateRow(0);
-});
-
-});
-</script>
-
-<script>
-$(document).ready(function () {
-    // Initialize datepickers
-    $('.datetimepicker').datepicker({
-        dateFormat: 'dd-mm-yy',
-        minDate: 0
-    });
-
-    // Set default dates
-    const today = new Date();
-    const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
-    $('#sales_order_date, #buyer_order_date, #due_date').val(formattedDate);
 
     // Form validation
     $('#sales_order_form').validate({
         rules: {
             order_confirmation_no: "required",
             payment_term: "required",
-            customer_Name_id: "required",
+            customer_Name: "required",
             so_date: "required",
             place_of_supply: "required",
             destination: "required",
-            contact_person_name: "required",
+            customer_code: "required",
+            sales_person: "required",
             transporter_name: "required",
             invoice_type: "required",
             delivery_type: "required",
             buyer_order_no: "required",
             buyer_order_date: "required",
-            gst_option: "required",
-            'qty_0': "required",
-            'rate_0': "required",
-            'taxrate_0': "required",
-            'itemcode_0': "required",
+            gst_option: "required"
         },
-        messages: {
-            order_confirmation_no: "Order confirmation no is required",
-            payment_term: "Payment Term is required",
-            customer_Name_id: "Customer Name is required",
-            so_date: "Sales Order Date is required",
-            place_of_supply: "Place of Supply is required",
-            destination: "Destination is required",
-            contact_person_name: "Sales Person is required",
-            transporter_name: "Dispatch Through is required",
-            invoice_type: "Invoice Type is required",
-            delivery_type: "Delivery Type is required",
-            buyer_order_no: "Buyer Order No is required",
-            buyer_order_date: "Buyer Order Date is required",
-            gst_option: "GST option is required",
-            'qty_0': "Quantity is required",
-            'rate_0': "Unit Price is required",
-            'taxrate_0': "Tax Rate is required",
-            'itemcode_0': "Item Code is required",
-        },
-        highlight: function(element) {
+        highlight: function (element) {
             $(element).addClass('is-invalid');
         },
-        unhighlight: function(element) {
+        unhighlight: function (element) {
             $(element).removeClass('is-invalid');
         },
         errorElement: 'span',
         errorClass: 'invalid-feedback',
-        errorPlacement: function(error, element) {
-            if (element.is('select')) {
-                error.insertAfter(element.closest('.form-group'));
-            } else {
-                error.insertAfter(element);
-            }
+        errorPlacement: function (error, element) {
+            error.insertAfter(element);
         },
-        invalidHandler: function(event, validator) {
-            var errors = validator.numberOfInvalids();
-            if (errors) {
+        invalidHandler: function (event, validator) {
+            if (validator.numberOfInvalids()) {
                 $("html, body").animate({
                     scrollTop: $(validator.errorList[0].element).offset().top - 100
                 }, 500);
             }
-        },
-        submitHandler: function(form) {
-            var email = $('#contact_person_email').val();
-            if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
-                alert('Invalid email address.');
-                return false;
-            }
-            form.submit();
         }
     });
 
+    // Initialize
+    toggleFreightFields();
+    togglePfFields();
+    calculateTotalTaxAmount();
+    updateTaxFields();
+    subtotal();
+    updateTotalInWords();
 });
 </script>
-
 {% endblock custom_js %}
