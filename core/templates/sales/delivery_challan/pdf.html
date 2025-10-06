@@ -65,6 +65,10 @@ padding-right: 5px;
         padding-top: 20px; 
         padding-bottom: 37px;
     }
+    td p {
+        margin: 0;
+        padding: 2px 0;
+    }
 
 </style>
 
@@ -73,8 +77,8 @@ padding-right: 5px;
 <div class="pdfarea-pdf ">
     {% for count in count_page %}
     <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;">
-        <img src="../../static/assets/img/logo-png.png" style="width: 160px; margin-left: 10px; border-radius: 10px;" />
-        <div style="flex-grow: 1; padding-left: 90px;">
+        {% comment %} <img src="../../static/assets/img/logo-png.png" style="width: 160px; margin-left: 10px; border-radius: 10px;" /> {% endcomment %}
+        <div style="flex-grow: 1; text-align: center;">
             <span class="bold" style="font-size: 30px; ">DELIVERY CHALLAN</span>
         </div>
     </div>
@@ -136,7 +140,7 @@ padding-right: 5px;
                 <td colspan="2" style="border-bottom: 0px">
                    <b>SHIP TO</b><br>
                         <b>{{company_name|upper}}</b><br>
-                      <p>{{shipping_1_street}}, {{shipping_1_city}}, {{shipping_1_state}}, {{shipping_1_pincode}}</p>
+                        <p>{{shipping_1_street}}, {{shipping_1_city}}, {{shipping_1_state}}, {{shipping_1_pincode}}</p>
                           <span class="label">GSTIN/UIN</span>: <span class="content">{{shipping_1_gst_uin}}</span><br>
                           <span class="label">STATE</span>: <span class="content">{{shipping_1_state}}</span><br>
                           <span class="label">CONTACT</span>: <span class="content">{{shipping_1_contact_number}}</span><br>
