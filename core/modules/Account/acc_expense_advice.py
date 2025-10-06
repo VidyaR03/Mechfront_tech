@@ -174,7 +174,7 @@ def get_vendor_expenses(request):
                 'id', 'ae_invoice_date', 'ae_vendor_name', 'ae_invoice_no', 'all_total', 'ae_due_amount'
             )
             data_list = list(data)
-            print("00000000000000", data_list)
+            # print("00000000000000", data_list)
             return JsonResponse(data_list, safe=False, encoder=DjangoJSONEncoder)
     except Exception as e:
         print(e, "DDDD")
@@ -305,7 +305,7 @@ def fnedit_expense_advice(request, expense_advice_id):
         expense_advice_object.ea_reference = request.POST['reference']
 
         expense_advice_object.save()
-        print("Cheque Date in DB:", expense_advice_object.ea_cheque_date)
+        # print("Cheque Date in DB:", expense_advice_object.ea_cheque_date)
 
         # Handle associated items
         max_row = int(request.POST.get('row_count'))

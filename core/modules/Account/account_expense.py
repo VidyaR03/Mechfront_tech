@@ -74,7 +74,7 @@ def add_account_expense_data(request):
         }
         expense_object = Account_Expense(**expense_data)
         expense_object.save()
-        print(expense_object)
+        # print(expense_object)
         latest_quotation_id = Account_Expense.objects.latest('id')
         i = 0
         max_row = int(request.POST.get('iid[]'))
@@ -92,7 +92,7 @@ def add_account_expense_data(request):
                 ae_total = request.POST.get(f'total_{i}'),
                 ae_quotation_id = latest_quotation_id.id
             )
-            print(ae_item)
+            # print(ae_item)
 
             ae_item.save()
             i = i+1

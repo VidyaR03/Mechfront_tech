@@ -1095,8 +1095,10 @@ function subtotal() {
     }
 
     $('#freight_amount, #freight_percentage, #packaging_forwording_amount, #packaging_forwording_percentage, #gst_option, #igst').on('input', function () {
-        subtotal();
-        updateTotalInWords();
+
+    
+    subtotal();
+    updateTotalInWords();
     });
 
 $('#gst_option, #item_rate').on('change', function () {
@@ -1112,6 +1114,10 @@ $('#gst_option').on('change', function () {
 });
 
 $('#adjustment, #packaging_forwording_amount, #freight_amount, #packaging_forwording_percentage, #freight_percentage').on('input', function () {
+    calculatePFPercentage();
+    calculateFreightPercentage();
+    updateFreightAmount();
+    updatePFAmount();
     subtotal();
 });
 

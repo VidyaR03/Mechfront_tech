@@ -1179,7 +1179,6 @@ Ecoway
         });
     };
         updatePFAmount();
-        updateFreightAmount();
         subtotal();
 
         calculateTotalTaxAmount();
@@ -1955,6 +1954,11 @@ $('#gst_option').on('change', function () {
 });
 
 $('#adjustment, #packaging_forwording_amount, #freight_amount, #packaging_forwording_percentage, #freight_percentage').on('input', function () {
+    calculatePFPercentage();
+    calculateFreightPercentage();
+    updateFreightAmount();
+    updatePFAmount();
+    
     subtotal();
 });
 

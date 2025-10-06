@@ -951,8 +951,10 @@ $(document).ready(function () {
 
     $('#freight_amount, #freight_percentage').on('input', toggleFreightFields);
     $('#packaging_forwording_amount, #packaging_forwording_percentage').on('input', togglePfFields);
+    
     toggleFreightFields();
     togglePfFields();
+
 
     // Calculations
 function calculateTotalTaxAmount() {
@@ -1200,7 +1202,14 @@ $('#gst_option').on('change', function () {
 });
 
 $('#adjustment, #packaging_forwording_amount, #freight_amount, #packaging_forwording_percentage, #freight_percentage').on('input', function () {
+    calculatePFPercentage();
+    calculateFreightPercentage();
+    updateFreightAmount();
+    updatePFAmount();
+    
     subtotal();
+    
+
 });
 
 

@@ -60,7 +60,7 @@ def fn_analytics_view(request):
 
 
     
-    print(f'{Invoice_lab_pen},{Invoice_lab},{Invoice_manufact},{Invoice_manufact_pen}',"PPPPPPPPPP")
+    # print(f'{Invoice_lab_pen},{Invoice_lab},{Invoice_manufact},{Invoice_manufact_pen}',"PPPPPPPPPP")
 
     # Pass the data to the template
     context = {
@@ -109,10 +109,10 @@ def fn_analytics_view(request):
     
     sales_order_data = sales_order.objects.all()
     for i in range(1,13):
-        print(i)
+        # print(i)
         start_date = datetime(2024, i, 1) + timedelta()
         if i != 12:
-            print(i, '_____________')
+            # print(i, '_____________')
             last_date = datetime(2024, i+1, 1) + timedelta(days=-1)
         else:
             last_date = datetime(2025, 1, 1) + timedelta(days=-1)
@@ -186,7 +186,7 @@ def get_quotation_data(request):
         _, num_days = calendar.monthrange(start_date.year, start_date.month)
         end_date = start_date + timedelta(days=num_days - 1)
     # Fetch relevant invoice data based on the service type
-    print(start_date, end_date)
+    # print(start_date, end_date)
     total = Leads.objects.all().count()
     if service_type == 'Lab':
         received = quotation.objects.filter(q_ser_type='Lab', q_status='Received', q_date__gte=start_date, q_date__lte=end_date).count()
@@ -200,7 +200,7 @@ def get_quotation_data(request):
     
     # Prepare data for the pie chart
     series = [total, received, sent]
-    print(service_type,duration,series)
+    # print(service_type,duration,series)
     labels = ['Total Leads', 'Received', 'Sent']
     
     return JsonResponse({'series': series, 'labels': labels})
