@@ -58,6 +58,10 @@ table.signtbl tr td {
             padding: 100px;
             padding-top: 0px;
         }
+        td p {
+        margin: 0;
+        padding: 2px 0;
+    }
 
 </style>
 {% endblock custom_css %}
@@ -84,8 +88,8 @@ table.signtbl tr td {
         <div class="pdfarea">
         {% for count in count_page %}
         <div style="display: flex; align-items: center; margin-top: 15px; justify-content: center;">
-            <img src="../../static/assets/img/logo-png.png" style="width: 160px; margin-left: 10px; border-radius: 10px;" />
-            <div style="flex-grow: 1; padding-left: 90px;">
+            {% comment %} <img src="../../static/assets/img/logo-png.png" style="width: 160px; margin-left: 10px; border-radius: 10px;" /> {% endcomment %}
+            <div style="flex-grow: 1; text-align: center;">
                 <span class="bold" style="font-size: 30px; ">DELIVERY CHALLAN</span>
             </div>
         </div>
