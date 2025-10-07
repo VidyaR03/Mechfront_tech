@@ -1883,7 +1883,7 @@ def download_inventory_excel(request):
     sheet.cell(row=3, column=1, value=date_range).font = Font(size=10, bold=True)
 
     # Headers
-    headers = ['Company Name',  'MM NUMBER','ITEM DESCRIPTION','OPENING BALANCE','CLOSING BALANCE','INWARD','OUTWARD','RATE', 'AMOUNT']
+    headers = ['Company Name',  'MM NUMBER','ITEM DESCRIPTION','OPENING BALANCE','INWARD','OUTWARD','CLOSING BALANCE','RATE', 'AMOUNT']
     sheet.append([])
     sheet.append(headers)
 
@@ -1894,9 +1894,9 @@ def download_inventory_excel(request):
             item['item_code'],
             item['inventory_name'],
             item['opening_stock_quantity'] or 0,
-            item['available_balance_quantity'] or 0,
             item['total_inward_quantity'] or 0,
             item['total_outward_quantity'] or 0,
+            item['available_balance_quantity'] or 0,
             0,
             0
             # item['purchase_rate'],
