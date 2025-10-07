@@ -186,7 +186,7 @@ def edit_payment_received_data(request, id):
             due_amt = request.POST.get(f'dueamount{i}')
             customer_name = request.POST.get(f'customername{i}')
 
-            dueamount = (float(invoiceamount)- 100) -  float(payment) 
+            dueamount = float(invoiceamount) -  float(payment) 
             # print(due_amt,total,'_____')
             total += float(due_amt)
             inv_amt = Invoice.objects.get(id=request.POST.get(f'invoiceno{i}'))
