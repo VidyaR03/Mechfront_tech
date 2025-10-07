@@ -240,6 +240,8 @@ def get_customer_invoice_details(request):
 
 
 def payment_pdf(request, id):
+    print("bbbbbbbbbbbppppppppppppppppp")
+
     payment = get_object_or_404(payment_received, id=id)
     print(payment,"ppppppppppppppppp")
     company_name = payment.payment_received_customer.company_name
