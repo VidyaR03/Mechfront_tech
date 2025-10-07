@@ -3,6 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.db.models import Q
 from datetime import datetime
+
+import inflect
 from core.modules import template_path
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,7 +17,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 from core.models import  customer,  vendor, Invoice, payment_received, payment_received_item
 from core.modules.login.login import login_required
 from django.contrib import messages
-
+from django.http import HttpResponse
+from django.contrib import messages
+from django.template.loader import get_template
+from weasyprint import HTML
 
 @login_required
 def paymentreceived_list_view(request):
@@ -267,3 +272,45 @@ def payment_pdf(request, id):
     return render(request, template_path.payment_received_pdf,context)
 
 
+
+@login_required
+def download_payment_pdf(request, id):
+    payment = get_object_or_404(payment_received, id=id)
+    company_name = payment.payment_received_customer.company_name
+    deposit_to = payment.payment_received_customer.company_name
+
+    # Fetch first payment item
+    payment_item_data = payment_received_item.objects.filter(payment_received_id=id).first()
+    if not payment_item_data:
+        messages.error(request, "No payment item found for this payment ID.")
+        return redirect('payment_received_list')
+
+    # Convert amount to words
+    p = inflect.engine()
+    amount_in_words = p.number_to_words(payment_item_data.invoiceamount).title()
+
+    context = {
+        'deposit_name': company_name.upper(),
+        'deposit_to': deposit_to.upper(),
+        'payment': payment,
+        'date': payment_item_data.invoicedate,
+        'invoice_amt': payment_item_data.invoiceamount,
+        'dueamount': payment_item_data.dueamount,
+        'payment_item_data': payment_item_data,
+        'amount_in_words': amount_in_words.replace(",", ""),
+    }
+
+    # Load HTML template
+    template = get_template('sales/payment_received/payment_received_pdf.html')
+    html_string = template.render(context)
+
+    # Generate PDF
+    base_url = request.build_absolute_uri('/')
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Payment_{payment.id}.pdf"'
+
+    try:
+        HTML(string=html_string, base_url=base_url).write_pdf(response)
+        return response
+    except Exception as e:
+        return HttpResponse(f'Error generating PDF: {str(e)}')

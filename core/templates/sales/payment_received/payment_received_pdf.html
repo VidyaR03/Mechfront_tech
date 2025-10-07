@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Payment Received PDF</title>
+<style>
+@media print {
+    @page {
+        size: A4;
+        margin: 5px;
+    }
+    body {
+        font-size: 11px;
+        font-family: Calibri;
+    }
+}
+body {
+    font-family: Calibri;
+    font-size: 12px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Calibri;
+    line-height: 1.2;
+}
+td, th {
+    border: 1px solid black;
+    padding: 4px 8px;
+    font-family: Calibri;
+}
+td p {
+    margin: 0;
+    padding: 2px 0;
+}
+.header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.section-title {
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.no-border td {
+    border: none;
+}
+</style>
+</head>
+<body>
+
+<div class="pdfarea">
+    <div class="header">PAYMENT RECEIVED</div>
+
+    <!-- Pay From / Pay To Details -->
+    <table>
+        <tr>
+            <td><strong>Pay From</strong><br>{{ deposit_name }}</td>
+            <td><strong>Pay To</strong><br>{{ deposit_to }}</td>
+        </tr>
+        <tr>
+            <td><strong>Reference Number</strong><br>{{ payment.payment_received_reference }}</td>
+            <td><strong>Payment Mode</strong><br>{{ payment.payment_received_payment_mode }}</td>
+        </tr>
+        <tr>
+            <td><strong>Cheque / Transaction Date</strong><br>{{ date|date:"d-m-Y" }}</td>
+            <td><strong>Beneficiary Bank</strong><br>ICICI BANK LTD</td>
+        </tr>
+        <tr>
+            <td><strong>Electronic Payment Type</strong><br>{{ payment.payment_received_payment_mode }}</td>
+            <td><strong>Bank Location</strong><br>INDIA</td>
+        </tr>
+    </table>
+
+    <!-- Payment Details -->
+    <div class="section-title">Payment Details</div>
+    <table>
+        <tr>
+            <th>Document</th>
+            <th>Payment Date</th>
+            <th>Payment Amount (INR)</th>
+            <th>Due Amount (INR)</th>
+        </tr>
+        <tr>
+            <td>Invoice / Receipt</td>
+            <td>{{ date|date:"d-m-Y" }}</td>
+            <td>{{ invoice_amt|floatformat:2 }}</td>
+            <td>{{ dueamount|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td><strong>SUM TOTAL</strong></td>
+            <td>&nbsp;</td>
+            <td>{{ invoice_amt|floatformat:2 }}</td>
+            <td>{{ dueamount|floatformat:2 }}</td>
+        </tr>
+    </table>
+
+    <!-- Amount in Words -->
+    <div class="section-title">Amount in Words</div>
+    <p>INR {{ amount_in_words }}</p>
+
+    <!-- Footer / Notes -->
+    <div class="section-title">Notes</div>
+    <p>This is a computer-generated payment receipt and does not require a signature.</p>
+
+</div>
+</body>
+</html>

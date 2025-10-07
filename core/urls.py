@@ -275,6 +275,8 @@ urlpatterns = [
     path('credit_note_pdf/<int:id>/', views.credit_show_pdf, name='credit_note_pdf'),
     path('payment_show_pdf/<int:id>/', views.payment_pdf, name='payment_show_pdf'),
     path('purchase_ord_show_pdf/<int:id>/', views.purchase_show_pdf, name='purchase_ord_show_pdf'),
+    path('payment/<int:id>/download/', views.download_payment_pdf, name='download_payment_pdf'),
+
 
     path('invoice_show_pdf/<int:id>/', views.invoice_pdf, name='invoice_show_pdf'),
     
