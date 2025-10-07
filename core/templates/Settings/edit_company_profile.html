@@ -204,7 +204,11 @@ CRM
                                      <div class="col-md-3">
                                         <div class="form-group">
                                         <label>Phone</label>
-                                           <input type="text" class="form-control" name="phone" id="phone" value="{{form.phone}}" placeholder="Phone">
+                                           <!-- <input type="text" class="form-control" name="phone" id="phone" value="{{form.phone}}" placeholder="Phone"> -->
+                                           <input type="text" class="form-control" name="phone" id="phone" 
+                                                value="{{ form.phone }}" placeholder="Phone"
+                                                pattern="^[0-9]{10}$" title="Enter a 10-digit phone number" required>
+
                                         </div>
                                      </div>
                                 
