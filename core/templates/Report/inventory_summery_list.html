@@ -109,9 +109,9 @@
                                   <th>ITEM DESCRIPTION</th>
                                   <!-- <th>QUANTITY</th> -->
                                   <th>OPENING BALANCE</th>
-                                  <th>CLOSING BALANCE</th>
                                   <th>INWARD</th>
                                   <th>OUTWARD</th>
+                                  <th>CLOSING BALANCE</th>
                                   <th>RATE</th>
                                   <th>AMOUNT</th>
                               </tr>
@@ -126,9 +126,9 @@
                                   <td> <a href="#" style="color: blue;">{{ item.inventory_name|upper}}</a></td>
                                   <!-- <td>{{ item.opening_rate }}</td> -->
                                   <td>{{ item.opening_stock_quantity }}</td>
-                                <td>{{ item.available_balance_quantity|default:"0" }}</td>
                                   <td>{{item.total_inward_quantity|default:"0"}}</td>
                                   <td>{{item.total_outward_quantity|default:"0"}}</td>
+                                  <td>{{ item.available_balance_quantity|default:"0" }}</td>
                                   <td>0</td>
                                   <td>0</td>
                                   <!-- <td>{{ item.purchase_rate }}</td>
