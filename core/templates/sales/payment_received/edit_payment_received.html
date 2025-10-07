@@ -87,7 +87,7 @@
                                     <div class="form-group"> <label>Date</label>
                                         <div> <input class="form-control datetimepicker" type="text" name="date"
                                                 id="date"
-                                                value="{{payment_received_instance.payment_received_date | date:'Y-m-d'}}">
+                                                value="{{payment_received_instance.payment_received_date | date:'d-m-Y'}}">
                                         </div>
                                     </div>
                                 </div>
@@ -307,8 +307,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="upload-sign">
-                                                    <div class="form-group float-end mb-0"> <button
-                                                            class="btn btn-primary" type="submit">Cancel</button> </div>
+                                                    <div class="form-group float-end mb-0"> <a
+                                                                href="{% url 'payment_received_list' %}"
+                                                                class="btn btn-primary">Cancel</a> </div>
                                                     <div class="form-group float-end mb-0"> <button
                                                             class="btn btn-primary" type="submit" id="btn_submit"
                                                             name="btn_submit">Save </button> </div>
