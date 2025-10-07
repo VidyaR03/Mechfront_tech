@@ -79,6 +79,8 @@ def edit_company_profile(request, employee_id):
     }
     if request.method == 'POST':
         profile_photo = request.FILES.get('profile_photo')
+        upload_sign = request.FILES.get('upload_sign') 
+        upload_QR_code = request.FILES.get('upload_QR_code') 
         company_name = request.POST.get('company_name') 
         fiscal_year = request.POST.get('fiscal_year') 
         industry = request.POST.get('industry') 
@@ -89,46 +91,94 @@ def edit_company_profile(request, employee_id):
         email = request.POST.get('email') 
         phone = request.POST.get('phone') 
         com_website = request.POST.get('com_website') 
-        upload_sign = request.FILES.get('upload_sign') 
-        upload_QR_code = request.FILES.get('upload_QR_code') 
         status = request.POST.get('status') 
         gst_number = request.POST.get('gst_number') 
         pan_number = request.POST.get('pan_number') 
         tan_number = request.POST.get('tan_number') 
         cin_number = request.POST.get('cin_number') 
         organization_type = request.POST.get('organization_type') 
-        
-        
-        company_instance.profile_photo = profile_photo
+
         company_instance.company_name = company_name
-        company_instance.fiscal_year=fiscal_year
-        company_instance.industry=industry
-        company_instance.currency=currency
-        company_instance.address1=address1
+        company_instance.fiscal_year = fiscal_year
+        company_instance.industry = industry
+        company_instance.currency = currency
+        company_instance.address1 = address1
         company_instance.address2 = address2
         company_instance.pincode = pincode
         company_instance.email = email
         company_instance.phone = phone
-        company_instance.com_website=com_website
-        company_instance.upload_sign=upload_sign
-        company_instance.upload_QR_code=upload_QR_code
-        company_instance.status=status
-        company_instance.gst_number=gst_number
+        company_instance.com_website = com_website
+        company_instance.status = status
+        company_instance.gst_number = gst_number
         company_instance.pan_number = pan_number
         company_instance.tan_number = tan_number
         company_instance.cin_number = cin_number
         company_instance.organization_type = organization_type
-        
-        if not profile_photo:
+
+        if profile_photo:
             company_instance.profile_photo = profile_photo
-        if not upload_sign:
+        if upload_sign:
             company_instance.upload_sign = upload_sign
-        if not upload_QR_code :
+        if upload_QR_code:
             company_instance.upload_QR_code = upload_QR_code
+
         company_instance.save()
         return redirect('fn_company_profile_List')
 
+
     return render(request, template_path.comapny_profile_edit_path,context) 
+
+
+# if request.method == 'POST':
+#     profile_photo = request.FILES.get('profile_photo')
+#     upload_sign = request.FILES.get('upload_sign')
+#     upload_QR_code = request.FILES.get('upload_QR_code')
+
+#     company_name = request.POST.get('company_name') 
+#     fiscal_year = request.POST.get('fiscal_year') 
+#     industry = request.POST.get('industry') 
+#     currency = request.POST.get('currency') 
+#     address1 = request.POST.get('address1') 
+#     address2 = request.POST.get('address2') 
+#     pincode = request.POST.get('pincode') 
+#     email = request.POST.get('email') 
+#     phone = request.POST.get('phone') 
+#     com_website = request.POST.get('com_website') 
+#     status = request.POST.get('status') 
+#     gst_number = request.POST.get('gst_number') 
+#     pan_number = request.POST.get('pan_number') 
+#     tan_number = request.POST.get('tan_number') 
+#     cin_number = request.POST.get('cin_number') 
+#     organization_type = request.POST.get('organization_type') 
+
+#     # Assign non-file fields
+#     company_instance.company_name = company_name
+#     company_instance.fiscal_year = fiscal_year
+#     company_instance.industry = industry
+#     company_instance.currency = currency
+#     company_instance.address1 = address1
+#     company_instance.address2 = address2
+#     company_instance.pincode = pincode
+#     company_instance.email = email
+#     company_instance.phone = phone
+#     company_instance.com_website = com_website
+#     company_instance.status = status
+#     company_instance.gst_number = gst_number
+#     company_instance.pan_number = pan_number
+#     company_instance.tan_number = tan_number
+#     company_instance.cin_number = cin_number
+#     company_instance.organization_type = organization_type
+
+#     # Only update images if a new file is uploaded
+#     if profile_photo:
+#         company_instance.profile_photo = profile_photo
+#     if upload_sign:
+#         company_instance.upload_sign = upload_sign
+#     if upload_QR_code:
+#         company_instance.upload_QR_code = upload_QR_code
+
+#     company_instance.save()
+#     return redirect('fn_company_profile_List')
 
 
 @login_required
