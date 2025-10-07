@@ -49,6 +49,7 @@ from django.contrib.auth.decorators import user_passes_test
 from core.modules.Leads.leads import *
 
 
+from core.modules.Sales.payment_received import payment_pdf
 
 
 

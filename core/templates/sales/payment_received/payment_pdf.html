@@ -41,8 +41,11 @@ CRM
                 <h3 class="page-title">
                     <a href="{% url 'payment_received_list'  %}" style="margin-right: 10px;"><i class="fa fa-arrow-left" data-bs-toggle="tooltip" title="" data-bs-original-title="Back" aria-label="fa fa-arrow-left"></i></a> View Payment Received
 
-                    <button id="download-button" class="btn btn-white text-black-50 shadow-none" style="float: right;"><i class="fa fa-download"></i> Download</button>
-                    
+                    <a href="{% url 'payment_show_pdf' payment.id %}" 
+   class="btn btn-white text-black-50 shadow-none" style="float: right;">
+    <i class="fa fa-download"></i> Download
+</a>
+
                 </h3>
             </div>
         </div>
