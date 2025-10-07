@@ -2076,7 +2076,7 @@ def inventory_overview_csv(request):
                     'out_free': qty if is_free else 0,       
                     'in_free': 0,
                     'bill_no': inv.inv_number or inv.id,
-                    'bill_date': inv.invoice_date.strftime('%d-%m-%Y') if inv.invoice_date else '',
+                    'bill_date': inv.invoice_date.strftime('%d-%b-%Y') if inv.invoice_date else '',
                 })
 
         purchase_invoices = Purchase_Invoice.objects.filter(
@@ -2122,7 +2122,7 @@ def inventory_overview_csv(request):
                     'out_free': 0,
                     'in_free': qty if is_free else 0,
                     'bill_no': p_inv.purchase_invoice_PO_no ,
-                    'bill_date': p_inv.purchase_invoice_date.strftime('%d-%m-%Y') if p_inv.purchase_invoice_date else '',
+                    'bill_date': p_inv.purchase_invoice_date.strftime('%d-%b-%Y') if p_inv.purchase_invoice_date else '',
                 })
     grouped_data = {}
 
