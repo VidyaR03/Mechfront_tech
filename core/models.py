@@ -13,7 +13,7 @@ class customer(models.Model):
     lead_id = models.CharField(max_length=20,default=0)
 
     gst_treatment = models.CharField(max_length=200)
-    gst_number = models.CharField(max_length=15, unique=True,blank=True, null=True)
+    gst_number = models.CharField(max_length=15,blank=True, null=True)
     state = models.CharField(max_length=200)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     pan_number = models.CharField(max_length=10, blank=True, null=True)

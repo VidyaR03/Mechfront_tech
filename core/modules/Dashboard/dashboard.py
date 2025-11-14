@@ -223,7 +223,6 @@ def log_out(request):
     return redirect('loginPage') 
 
 
-
 def dashboard(request):
     return render(request,template_path.dash)
 
