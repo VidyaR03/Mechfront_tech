@@ -502,6 +502,7 @@ class inventory(models.Model):
     purchase = models.CharField(max_length=255)
     purchase_information_description = models.CharField(max_length=512)
     opening_stock_quantity = models.CharField(max_length=512, default=0)
+    available_stock_quantity = models.CharField(max_length=512, default=0)
     opening_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     unit_per_case = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     stock_account = models.CharField(max_length=512, default=0,null=True,blank=True)

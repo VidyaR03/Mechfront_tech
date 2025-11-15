@@ -223,7 +223,10 @@ def inventory_overview(request, id):
         # Update the new balance in the entry without changing the original quantity field
         entry['balance'] = balance_stock
 
-    available_quantity = balance_stock  
+    available_quantity = balance_stock 
+    inventory_entity_data.available_stock_quantity = str(available_quantity)
+    inventory_entity_data.save()
+
 
     context = {
         "inventory_entity_data": inventory_entity_data,

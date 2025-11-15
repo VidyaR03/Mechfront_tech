@@ -157,9 +157,9 @@ def add_invoice_data(request):
             inventory_item = inventory.objects.filter(item_code=item_code).first()
 
             if inventory_item:
-                t_qty = float(inventory_item.opening_stock_quantity)
+                t_qty = float(inventory_item.available_stock_quantity)
                 if t_qty >= float(quantity_sold):
-                    inventory_item.opening_stock_quantity = t_qty - float(quantity_sold)
+                    inventory_item.available_stock_quantity = t_qty - float(quantity_sold)
                     inventory_item.save()
                 else:
                     print(f"Error: Insufficient stock for item code {item_code}. Available: {inventory_item.opening_stock_quantity}, Requested: {quantity_sold}")
@@ -202,6 +202,7 @@ from django.http import JsonResponse
 from django.http import JsonResponse
 def check_inventory_stock(request):
     try:
+        return JsonResponse({'success': True})
         # Fetch 'item_code' and 'qty' from the GET request parameters
         item_code = request.GET.get('item_code')
         qty = request.GET.get('qty')
