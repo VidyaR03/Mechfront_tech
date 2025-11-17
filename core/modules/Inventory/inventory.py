@@ -214,14 +214,14 @@ def inventory_overview(request, id):
 
     # Recalculate balance for each entry
     balance_stock = inventory_entity_data.available_stock_quantity
-    for entry in combined_data:
-        if entry['particular'] == 'Purchase':
-            balance_stock += float(entry['quantity'])
-        elif entry['particular'] == 'Sales':
-            balance_stock -= float(entry['quantity'])
+    # for entry in combined_data:
+    #     if entry['particular'] == 'Purchase':
+    #         balance_stock += float(entry['quantity'])
+    #     elif entry['particular'] == 'Sales':
+    #         balance_stock -= float(entry['balance_stock'])
 
         # Update the new balance in the entry without changing the original quantity field
-        entry['balance'] = balance_stock
+        # entry['balance'] = balance_stock
 
     available_quantity = balance_stock 
     inventory_entity_data.available_stock_quantity = str(available_quantity)
