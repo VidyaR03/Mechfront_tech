@@ -209,24 +209,20 @@ def inventory_overview(request, id):
                 })
 
 
-    # Sort combined data by date and priority ('Sales' comes after 'Purchase')
-    combined_data = sorted(
-        combined_data,
-        key=lambda x: (x['date'], 0 if x['particular'] == 'Purchase' else 1)
-    )
-    sales_available = inventory_entity_data.available_stock_quantity
-    # Recalculate balance for each entry
-    # Start balance from opening stock, not from available_stock_quantity
-    balance_stock = opening_stock_quantity
+    balance_stock = float(opening_stock_quantity)
 
     for entry in combined_data:
+
         if entry['particular'] == 'Purchase':
+            # Increase running balance
             balance_stock += float(entry['quantity'])
+            entry['balance'] = balance_stock
+
         elif entry['particular'] == 'Sales':
-            sales_available -= float(entry['quantity'])
+            # Only DISPLAY balance for this row (do not change running balance)
+            entry['balance'] = balance_stock - float(entry['quantity'])
 
-        entry['balance'] = balance_stock
-
+    # Final available quantity is still the running balance
     available_quantity = balance_stock
 
 
