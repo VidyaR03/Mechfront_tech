@@ -210,20 +210,23 @@ def inventory_overview(request, id):
 
 
     # Sort combined data by date and priority ('Sales' comes after 'Purchase')
-    combined_data = sorted(combined_data, key=lambda x: (x['date'], 0 if x['particular'] == 'Purchase' else 1))
+    combined_data = sorted(
+        combined_data,
+        key=lambda x: (x['date'], 0 if x['particular'] == 'Purchase' else 1)
+    )
 
     # Recalculate balance for each entry
-    balance_stock = inventory_entity_data.available_stock_quantity
-    # for entry in combined_data:
-    #     if entry['particular'] == 'Purchase':
-    #         balance_stock += float(entry['quantity'])
-    #     elif entry['particular'] == 'Sales':
-    #         balance_stock -= float(entry['balance_stock'])
+    balance_stock = float(inventory_entity_data.available_stock_quantity)
 
-        # Update the new balance in the entry without changing the original quantity field
-        # entry['balance'] = balance_stock
+    for entry in combined_data:
+        if entry['particular'] == 'Purchase':
+            balance_stock += float(entry['quantity'])
+        elif entry['particular'] == 'Sales':
+            balance_stock -= float(entry['quantity'])  # FIXED
 
-    available_quantity = balance_stock 
+        entry['balance'] = balance_stock
+
+    available_quantity = balance_stock
     inventory_entity_data.available_stock_quantity = str(available_quantity)
     inventory_entity_data.save()
 
