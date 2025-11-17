@@ -214,7 +214,7 @@ def inventory_overview(request, id):
         combined_data,
         key=lambda x: (x['date'], 0 if x['particular'] == 'Purchase' else 1)
     )
-
+    sales_available = inventory_entity_data.available_stock_quantity
     # Recalculate balance for each entry
     # Start balance from opening stock, not from available_stock_quantity
     balance_stock = opening_stock_quantity
@@ -223,7 +223,7 @@ def inventory_overview(request, id):
         if entry['particular'] == 'Purchase':
             balance_stock += float(entry['quantity'])
         elif entry['particular'] == 'Sales':
-            balance_stock = float(entry['quantity'])
+            sales_available -= float(entry['quantity'])
 
         entry['balance'] = balance_stock
 
