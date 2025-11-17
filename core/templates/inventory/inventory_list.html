@@ -78,6 +78,7 @@
                     <th>Sales Rate</th>
                     <th>Purchase Rate</th>
                     <th>Godown</th>
+                    <th>Opening Stock</th>
                     <th>Stock in Hand</th>
                     <th>Actions</th>
                   </tr>
@@ -98,6 +99,7 @@
                     <td>{{ t.purchase_rate }}</td>
                     <td class="city">{{ t.inventory_godown.city_name }}</td>
                     <td>{{ t.opening_stock_quantity }}</td>
+                    <td>{{ t.available_stock_quantity }}</td>
                     <td>
                       <div class="btn-group" role="group">
                         <a href="{% url 'edit_inventory' id=t.id %}" class="btn btn-sm btn-outline-success me-1 btn-rounded" role="button">
