@@ -176,7 +176,7 @@ def inventory_overview(request, id):
         )
 
         for item in items:
-            total_purchase_quantity = float(item.purchase_invoice_qantity)
+            total_purchase_quantity = float(item.purchase_invoice_qantity or 0)
             total_rate = item.purchase_invoice_unit_price
             average_rate = total_rate
 
@@ -209,19 +209,36 @@ def inventory_overview(request, id):
                 })
 
 
-    balance_stock = float(opening_stock_quantity)
+# Sort Purchase first, then Sales, both by date
+    combined_data_sorted = sorted(
+        combined_data,
+        key=lambda x: (
+            0 if x['particular'] == 'Purchase' else 1,
+            x['date']
+        )
+    )
 
-    for entry in combined_data:
+    # START balance from opening stock
+    running_balance = float(opening_stock_quantity)
+
+    # RUNNING BALANCE CALCULATION (correct method)
+    for entry in combined_data_sorted:
+
+        qty = float(entry['quantity'])
 
         if entry['particular'] == 'Purchase':
-            balance_stock += float(entry['quantity'])
-            entry['balance'] = balance_stock
+            running_balance += qty
 
         elif entry['particular'] == 'Sales':
-            temp_balance = balance_stock - float(entry['quantity'])
-            # Do not allow negative balance display
-            entry['balance'] = temp_balance if temp_balance >= 0 else 0
-    available_quantity = balance_stock
+            running_balance -= qty
+            if running_balance < 0:
+                running_balance = 0    # avoid negative stock display
+
+        entry['balance'] = running_balance
+
+    # Final available qty
+    available_quantity = running_balance
+
 
 
     context = {
@@ -229,7 +246,9 @@ def inventory_overview(request, id):
         "gstEnabled": True,
         "invoice_data": invoice_data,
         "purchase_invoice_data": purchase_invoice_data,
-        "combined_data": combined_data,
+        # "combined_data": combined_data,
+        "combined_data" : combined_data_sorted,
+
         "available_quantity": available_quantity,
         "opening_stock_quantity": opening_stock_quantity,
         "total_quantity": total_quantity,
@@ -243,7 +262,9 @@ def inventory_overview(request, id):
 
         # --- Overview ---
         writer.writerow(["Overview"])
-        writer.writerow(["Item Code","Item Name","Unit","Type","HSN","Tax Type","Sales Rate","Purchase Rate", "Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
+        writer.writerow(["Item Code","Item Name","Unit","Type","HSN","Tax Type","Sales Rate","Purchase Rate", 
+                        "Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
+
         writer.writerow([
             inventory_entity_data.item_code,
             inventory_entity_data.inventory_name,
@@ -256,18 +277,19 @@ def inventory_overview(request, id):
             opening_stock_quantity,
             available_quantity,
             total_quantity,
-            context["purchase_total_quantity"]
+            sum(float(item.purchase_invoice_qantity) for item in purchase_invoice_items_data)
         ])
         writer.writerow([])
 
         # --- Sales Table ---
         writer.writerow(["Sales"])
         writer.writerow(["Invoice No", "Date", "Customer", "Quantity", "Unit", "Rate", "Balance"])
+
         for row in invoice_data:
             writer.writerow([
-                getattr(row["invoice"], "formatted_id", row["invoice"].id),
-                row["invoice"].invoice_date,
-                getattr(row["invoice"].invoice_customer_name_customer, "customer", ""),  # ✅ FIXED
+                getattr(row["invoice"], "inv_number", row["invoice"].id),
+                row["invoice"].invoice_date.strftime("%d-%m-%Y"),
+                getattr(row["invoice"].invoice_customer_name_customer, "customer", ""),
                 row["total_quantity_used"],
                 row["unit"],
                 row["average_rate"],
@@ -278,11 +300,11 @@ def inventory_overview(request, id):
         # --- Purchase Table ---
         writer.writerow(["Purchase"])
         writer.writerow(["Invoice No", "Date", "Vendor", "Quantity", "Unit", "Rate", "Balance"])
+
         for row in purchase_invoice_data:
             writer.writerow([
-                getattr(row["purchase_invoice"], "formatted_id", row["purchase_invoice"].id),
-
-                row["invoice_date"],
+                getattr(row["purchase_invoice"], "purchase_invoice_PO_no", row["purchase_invoice"].id),
+                row["invoice_date"].strftime("%d-%m-%Y"),
                 getattr(row["purchase_invoice"].purchase_invoice_vendor_name, "company_name", ""),
                 row["quantity"],
                 row["unit"],
@@ -291,32 +313,34 @@ def inventory_overview(request, id):
             ])
         writer.writerow([])
 
-        # --- Sales/Purchase Combined ---
+        # --- Combined Sorted Ledger ---
         writer.writerow(["Sales/Purchase Combined"])
         writer.writerow(["Particular", "Date", "Invoice No/Vendor", "Quantity", "Unit", "Rate", "Balance"])
-        for row in combined_data:
+
+        for row in combined_data_sorted:
             writer.writerow([
                 row["particular"],
-                row["date"],
+                row["date"].strftime("%d-%m-%Y"),
                 row.get("invoice_no", row.get("customer_vendor")),
                 row["quantity"],
                 row["unit"],
                 row["rate"],
                 row["balance"]
             ])
-        writer.writerow([])
 
         return response
 
-    # ✅ EXCEL DOWNLOAD
     if download_excel:
         wb = Workbook()
 
-        # --- Overview Sheet ---
+        # --- Overview ---
         ws1 = wb.active
         ws1.title = "Overview"
-        ws1.append(["Item Code","Item Name","Unit","Type","HSN","Tax Type","Sales Rate","Purchase Rate","Opening Stock", "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
         
+        ws1.append(["Item Code","Item Name","Unit","Type","HSN","Tax Type",
+                    "Sales Rate","Purchase Rate","Opening Stock", 
+                    "Available Stock", "Total Sales Qty", "Total Purchase Qty"])
+
         ws1.append([
             inventory_entity_data.item_code,
             inventory_entity_data.inventory_name,
@@ -326,21 +350,21 @@ def inventory_overview(request, id):
             inventory_entity_data.tax_type,
             inventory_entity_data.sales_rate,
             inventory_entity_data.purchase_rate,
-
             opening_stock_quantity,
             available_quantity,
             total_quantity,
-            context["purchase_total_quantity"]
+            sum(float(item.purchase_invoice_qantity) for item in purchase_invoice_items_data)
         ])
 
         # --- Sales Sheet ---
         ws2 = wb.create_sheet("Sales")
         ws2.append(["Invoice No", "Date", "Customer", "Quantity", "Unit", "Rate", "Balance"])
+
         for row in invoice_data:
             ws2.append([
                 getattr(row["invoice"], "inv_number", row["invoice"].id),
-                row["invoice"].invoice_date,
-                getattr(row["invoice"].invoice_customer_name_customer, "customer", ""),  
+                row["invoice"].invoice_date.strftime("%d-%m-%Y"),
+                getattr(row["invoice"].invoice_customer_name_customer, "customer", ""),
                 row["total_quantity_used"],
                 row["unit"],
                 row["average_rate"],
@@ -350,10 +374,11 @@ def inventory_overview(request, id):
         # --- Purchase Sheet ---
         ws3 = wb.create_sheet("Purchase")
         ws3.append(["Invoice No", "Date", "Vendor", "Quantity", "Unit", "Rate", "Balance"])
+
         for row in purchase_invoice_data:
             ws3.append([
                 getattr(row["purchase_invoice"], "purchase_invoice_PO_no", row["purchase_invoice"].id),
-                row["invoice_date"],
+                row["invoice_date"].strftime("%d-%m-%Y"),
                 getattr(row["purchase_invoice"].purchase_invoice_vendor_name, "company_name", ""),
                 row["quantity"],
                 row["unit"],
@@ -361,13 +386,14 @@ def inventory_overview(request, id):
                 row["balance"]
             ])
 
-        # --- Combined Sheet ---
+        # --- Combined Ledger ---
         ws4 = wb.create_sheet("Sales_Purchase")
         ws4.append(["Particular", "Date", "Invoice No/Vendor", "Quantity", "Unit", "Rate", "Balance"])
-        for row in combined_data:
+
+        for row in combined_data_sorted:
             ws4.append([
                 row["particular"],
-                row["date"],
+                row["date"].strftime("%d-%m-%Y"),
                 row.get("invoice_no", row.get("customer_vendor")),
                 row["quantity"],
                 row["unit"],
@@ -375,21 +401,17 @@ def inventory_overview(request, id):
                 row["balance"]
             ])
 
-        # Auto column width adjustment
+        # Auto column width
         for sheet in [ws1, ws2, ws3, ws4]:
             for col in sheet.columns:
-                max_length = 0
-                col_letter = get_column_letter(col[0].column)
-                for cell in col:
-                    try:
-                        if cell.value:
-                            max_length = max(max_length, len(str(cell.value)))
-                    except:
-                        pass
-                sheet.column_dimensions[col_letter].width = max_length + 2
+                max_len = max(len(str(cell.value)) for cell in col if cell.value)
+                sheet.column_dimensions[get_column_letter(col[0].column)].width = max_len + 2
 
-        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
         response['Content-Disposition'] = f'attachment; filename=inventory_{inventory_entity_data.item_code}.xlsx'
+
         wb.save(response)
         return response
 
@@ -455,7 +477,7 @@ def inventory_data_add(request):
             # 'gst_option': request.POST['gst_option'],
             'godown_name_old':request.POST['godown'],
             # 'Tax_rate': request.POST['Tax_rate'],
-            # 'inventory_godown': request.POST['inv_godown'],
+            'available_stock_quantity': request.POST['opening_stock'],
             'inventory_godown':godown.objects.filter(id=request.POST['inv_godown']).first(),
             'vendor_name':vendor.objects.filter(id=request.POST['company_name']).first(),
 
@@ -482,6 +504,9 @@ def inventory_edit(request, id):
     company_name = vendor.objects.all()
 
     if request.method == 'POST':
+        movement = float(inventory_item.available_stock_quantity) - float(inventory_item.opening_stock_quantity)
+        new_opening_stock = float(request.POST['opening_stock'])
+        new_available_stock = new_opening_stock + movement
         try:
             # Vendor selection
             vendor_id = request.POST.get('company_name')
@@ -512,6 +537,9 @@ def inventory_edit(request, id):
             inventory_item.vendor_name = vendor_obj
             inventory_item.godown_name_old = request.POST.get('godown') or ''
             inventory_item.inventory_godown = inv_godown_obj
+            inventory_item.available_stock_quantity = new_available_stock
+
+
 
             # Save changes
             inventory_item.save()
