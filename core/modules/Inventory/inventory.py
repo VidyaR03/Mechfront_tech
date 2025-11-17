@@ -214,15 +214,13 @@ def inventory_overview(request, id):
     for entry in combined_data:
 
         if entry['particular'] == 'Purchase':
-            # Increase running balance
             balance_stock += float(entry['quantity'])
             entry['balance'] = balance_stock
 
         elif entry['particular'] == 'Sales':
-            # Only DISPLAY balance for this row (do not change running balance)
-            entry['balance'] = balance_stock - float(entry['quantity'])
-
-    # Final available quantity is still the running balance
+            temp_balance = balance_stock - float(entry['quantity'])
+            # Do not allow negative balance display
+            entry['balance'] = temp_balance if temp_balance >= 0 else 0
     available_quantity = balance_stock
 
 
