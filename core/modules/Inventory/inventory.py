@@ -96,7 +96,7 @@ def inventory_overview(request, id):
         except ValueError:
             opening_stock_quantity = 0
 
-    current_stock = opening_stock_quantity
+    current_stock = inventory_entity_data.available_stock_quantity
     invoices = Invoice.objects.filter(
     id__in=invoice_items.objects.filter(invoice_item_code=inventory_entity_data.item_code).values_list('invoice_id', flat=True),
     invoice_date__range=(start_date, end_date)
