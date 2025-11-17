@@ -107,7 +107,7 @@ def inventory_overview(request, id):
         invoice_id__in=invoices.values_list('id', flat=True)
     )
 
-    print(current_stock, "current_stock")
+    # print(current_stock, "current_stock")
     
     total_quantity = sum(float(item.invoice_qantity) for item in invoice_items_data)
  
@@ -213,7 +213,7 @@ def inventory_overview(request, id):
     combined_data = sorted(combined_data, key=lambda x: (x['date'], 0 if x['particular'] == 'Purchase' else 1))
 
     # Recalculate balance for each entry
-    balance_stock = opening_stock_quantity
+    balance_stock = inventory_entity_data.available_stock_quantity
     for entry in combined_data:
         if entry['particular'] == 'Purchase':
             balance_stock += float(entry['quantity'])
