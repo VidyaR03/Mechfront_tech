@@ -151,6 +151,7 @@ def add_invoice_data(request):
         i = 0
         max_row = int(request.POST.get('iid[]',0))
         # print(max_row)
+
         while i <= max_row:
             item_code = request.POST.get(f'itemcode_{i}')
             quantity_sold = float(request.POST.get(f'qty_{i}'))
@@ -158,13 +159,18 @@ def add_invoice_data(request):
 
             if inventory_item:
                 t_qty = float(inventory_item.available_stock_quantity)
-                if t_qty >= float(quantity_sold):
-                    inventory_item.available_stock_quantity = t_qty - float(quantity_sold)
-                    inventory_item.save()
-                else:
-                    print(f"Error: Insufficient stock for item code {item_code}. Available: {inventory_item.opening_stock_quantity}, Requested: {quantity_sold}")
+
+                if t_qty < quantity_sold:
+                    print(f"Error: Insufficient stock for item {item_code}. Available: {t_qty}, Requested: {quantity_sold}")
+                    i += 1
+                    continue  # ← IMPORTANT FIX
+
+                inventory_item.available_stock_quantity = t_qty - quantity_sold
+                inventory_item.save()
             else:
                 print(f"Error: Item with code {item_code} not found in inventory.")
+
+            i += 1
                     
             invoice_item = invoice_items(
                 invoice_item_code = request.POST.get(f'itemcode_{i}'),
