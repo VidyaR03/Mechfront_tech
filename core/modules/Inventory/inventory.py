@@ -107,7 +107,7 @@ def inventory_overview(request, id):
         invoice_id__in=invoices.values_list('id', flat=True)
     )
 
-
+    print(current_stock, "current_stock")
     
     total_quantity = sum(float(item.invoice_qantity) for item in invoice_items_data)
  
