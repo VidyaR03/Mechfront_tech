@@ -138,6 +138,7 @@
                                                     <option value="" hidden>Select Delivery Type</option>
 
                                                     <option value="PAID">PAID</option>
+                                                    <option value="By Road">By Road</option>
 
                                                     <option value="TO PAY">TO PAY</option>
 
@@ -859,7 +860,7 @@ $(document).ready(function () {
     // Datepicker initialization
     $('#quotation_date, #expiry_date').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     });
 
     // Set default dates
@@ -1228,7 +1229,7 @@ $(document).ready(function () {
     // Initialize datepickers
     $('.datetimepicker').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     });
 
     // Set default dates

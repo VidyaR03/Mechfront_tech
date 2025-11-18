@@ -796,7 +796,7 @@ function checkDuplicateQuotationNumber(quotationNumber) {
         // Initialize the datepicker with the desired format and set minDate to today
         $(expiryDateInput).datepicker({
             dateFormat: 'dd-mm-yy',
-            minDate: 0, // Prevent selection of dates before today
+            minDate: -365, // Prevent selection of dates before today
             beforeShow: function(input, inst) {
                 // Convert the existing value back to a Date object
                 const existingDateParts = expiryDateInput.value.split('-');

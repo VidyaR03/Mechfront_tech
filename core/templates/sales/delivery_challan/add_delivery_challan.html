@@ -214,6 +214,8 @@ Ecoway
                                             <select class="form-control" name="delivery_type" id="delivery_type" required>
                                                 <option value="" hidden>Select Delivery Type</option>
                                                 <option value="PAID">PAID</option>
+                                                <option value="By Road">By Road</option>
+
                                                 <option value="TO PAY">TO PAY</option>
                                                 <option value="DOOR DELIVERY">DOOR DELIVERY</option>
                                                 <option value="SELF COLLECTION">SELF COLLECTION</option>
@@ -535,11 +537,11 @@ $(document).ready(function() {
     
     $('#invoice_date, #buyer_order_date').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     }).val(formattedDate);
     $('#due_date, #buyer_order_date').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     }).val(formattedDate);
 
     // Initialize autocomplete for the initial row
@@ -1007,7 +1009,7 @@ $(document).ready(function () {
     // Initialize datepickers
     $('.datetimepicker').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     });
 
     // Set default dates

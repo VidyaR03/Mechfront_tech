@@ -82,7 +82,7 @@ CRM
                                                             placeholder="DD-MM-YYYY" 
                                                             pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" 
                                                             required 
-                                                            readonly
+                                                            
                                                             value="{{ current_date }}">
                                                 </span>
                                             </div>
@@ -274,7 +274,7 @@ CRM
                                                         placeholder="DD-MM-YYYY" 
                                                         pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" 
                                                         required 
-                                                        readonly
+                                                        
                                                         value="{{ current_date }}">
                                         </div>
                                     </div>
@@ -301,7 +301,7 @@ CRM
                                                         placeholder="DD-MM-YYYY" 
                                                         pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" 
                                                         required 
-                                                        readonly
+                                                        
                                                         value="{{ current_date }}">
                                         </div>
                                     </div>
@@ -884,7 +884,7 @@ $(document).ready(function () {
     // Datepicker initialization
     $('#quotation_date, #expiry_date').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     });
 
     // Set default dates
@@ -1250,7 +1250,7 @@ $(document).ready(function () {
     // Initialize datepickers
     $('.datetimepicker').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     });
 
     // Set default dates

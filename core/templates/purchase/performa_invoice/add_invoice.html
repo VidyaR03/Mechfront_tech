@@ -71,13 +71,13 @@ Ecoway - Add Invoice
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label class="required">Invoice Date</label>
-                                            <input class="form-control datetimepicker" type="text" name="invoice_date" id="invoice_date" value="{{current_date}}" required readonly>
+                                            <input class="form-control datetimepicker" type="text" name="invoice_date" id="invoice_date" value="{{current_date}}" required >
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label class="required">Due Date</label>
-                                            <input class="form-control datetimepicker" type="text" name="due_date" id="due_date" value="{{current_date}}" required readonly>
+                                            <input class="form-control datetimepicker" type="text" name="due_date" id="due_date" value="{{current_date}}" required >
                                         </div>
                                     </div>
 
@@ -557,11 +557,11 @@ $(document).ready(function() {
     
     $('#invoice_date, #buyer_order_date').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     }).val(formattedDate);
     $('#due_date, #buyer_order_date').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     }).val(formattedDate);
 
     // Initialize autocomplete for the initial row
@@ -1029,7 +1029,7 @@ $(document).ready(function () {
     // Initialize datepickers
     $('.datetimepicker').datepicker({
         dateFormat: 'dd-mm-yy',
-        minDate: 0
+        minDate: -365
     });
 
     // Set default dates
