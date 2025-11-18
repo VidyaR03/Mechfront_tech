@@ -713,21 +713,17 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const expiryDateInput = document.getElementById("order_date");
+document.addEventListener("DOMContentLoaded", function() {
+    const expiryDateInput = document.getElementById("order_date");
 
-        // Set the current date as the default value in DD-MM-YYYY format
-        const today = new Date();
-        const formattedDate = `${('0' + today.getDate()).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
-        expiryDateInput.value = formattedDate;
-
-        // Initialize the datepicker with the desired format and set minDate to today
-        $(expiryDateInput).datepicker({
-            dateFormat: 'dd-mm-yy',
-            minDate: -365
-        });
+    // Initialize datepicker allowing FULL back date selection
+    $(expiryDateInput).datepicker({
+        dateFormat: 'dd-mm-yy',
+        minDate: null   
     });
+});
 </script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

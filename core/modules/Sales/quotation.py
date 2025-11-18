@@ -74,13 +74,28 @@ def add_quotation_data(request):
         q_date = datetime.strptime(q_date_str, '%d-%m-%Y').date()
 
         q_quotation_number = generate_quotation_number()
+        customer_input = request.POST.get('customer_Name', '')  # example: "12-ABC Company"
+
+        if '-' not in customer_input:
+            messages.error(request, "Invalid customer format.")
+            return redirect(request.path)
+
+        customer_id = customer_input.split("-")[0]  # "12"
+
+        if not customer_id.isdigit():
+            messages.error(request, "Invalid customer ID.")
+            return redirect(request.path)
+
+
         # print(q_quotation_number,"qn........")
         quotation_data = {
             'q_date':q_date,
             'q_quotation_number':q_quotation_number,
             # 'q_date':request.POST['quotation_date'],
             'q_payment_terms':request.POST['payment_term'],
-            'q_customer_name':customer.objects.filter(id=request.POST['customer_id']).first(),
+            # 'q_customer_name':customer.objects.filter(id=request.POST['customer_id']).first(),
+            'q_customer_name' :customer.objects.filter(id=int(customer_id)).first(),
+            
             'q_expiry_date':q_expiry_date,
             'q_supply_place':request.POST['place_of_supply'],
             'q_destination':request.POST['destination'],

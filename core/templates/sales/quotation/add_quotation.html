@@ -47,6 +47,12 @@ Ecoway
 {% block main_content %}
 <div class="page-wrapper" style="min-height: 333px; padding-top: 0px !important;">
     <div class="content container-fluid">
+        {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
         <div class="page-header invoices-page-header">
             <div class="row align-items-center">
                 <div class="col">
