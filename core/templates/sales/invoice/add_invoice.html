@@ -397,7 +397,13 @@ Ecoway - Add Invoice
                                                     <td><input type="text" class="form-control" name="itemcode_0" id="itemcode_0"></td>
                                                     <td><input type="text" class="form-control" name="item_0" id="item_0"></td>
                                                     <td><input type="text" class="form-control" name="hsn_0" id="hsn_0"></td>
-                                                    <td><input type="number" class="form-control qty" name="qty_0" id="qty_0" min="1" step="1" onkeyup="qty('qty_0');checkStockQuantity('itemcode_0', 'qty_0');"></td>
+                                                    <td>
+    <input type="number" class="form-control qty" name="qty_0" id="qty_0"
+           min="1" step="1"
+           onkeyup="qty('qty_0');checkStockQuantity('itemcode_0','qty_0');">
+    <small id="qty_error_qty_0" class="text-danger d-none">Insufficient stock</small>
+</td>
+
                                                     <td><input type="text" class="form-control" name="uom_0" id="uom_0"></td>
                                                     <td><input type="number" class="form-control rate" name="rate_0" id="rate_0" min="0" step="0.01" onkeyup="rate('rate_0');"></td>
                                                     <td><input type="number" class="form-control discount" name="discount_0" id="discount_0" min="0" max="100" step="0.01" onkeyup="discountamt('discount_0');"></td>
@@ -682,30 +688,69 @@ function initializeItemCodeAutocomplete(index) {
 }
 
 // Stock Quantity Check
+// function checkStockQuantity(itemCodeFieldId, qtyFieldId) {
+//     const itemCode = $(`#${itemCodeFieldId}`).val();
+//     const qty = $(`#${qtyFieldId}`).val();
+//     if (itemCode && qty) {
+//         $.ajax({
+//             url: '{% url "check_inventory_stock" %}',
+//             method: 'GET',
+//             data: { item_code: itemCode, qty: qty },
+//             success: function(response) {
+//                 if (!response.success) {
+//                     toastr.error(`Insufficient stock! Available: ${response.available_qty}`, "Stock Warning");
+//                     $(`#${qtyFieldId}`).val(0);
+//                     subtotal();
+//                     calculateTotalTaxAmount();
+//                     updateTotalInWords();
+//                 }
+//             },
+//             error: function(xhr, status, error) {
+//                 console.error("Stock check error:", error);
+//                 toastr.error(`Error checking stock: ${error}`, "Error");
+//             }
+//         });
+//     }
+// }
+
 function checkStockQuantity(itemCodeFieldId, qtyFieldId) {
     const itemCode = $(`#${itemCodeFieldId}`).val();
     const qty = $(`#${qtyFieldId}`).val();
-    if (itemCode && qty) {
-        $.ajax({
-            url: '{% url "check_inventory_stock" %}',
-            method: 'GET',
-            data: { item_code: itemCode, qty: qty },
-            success: function(response) {
-                if (!response.success) {
-                    toastr.error(`Insufficient stock! Available: ${response.available_qty}`, "Stock Warning");
-                    $(`#${qtyFieldId}`).val(0);
-                    subtotal();
-                    calculateTotalTaxAmount();
-                    updateTotalInWords();
+    const errorBox = $(`#qty_error_${qtyFieldId}`);
+
+    if (!itemCode || !qty) return;
+
+    $.ajax({
+        url: '{% url "check_inventory_stock" %}',
+        method: 'GET',
+        data: { item_code: itemCode, qty: qty },
+        success: function(response) {
+            const qtyField = $(`#${qtyFieldId}`);
+
+            if (!response.success) {
+                // Show red text below qty field
+                errorBox.removeClass("d-none");
+                errorBox.text(`Only ${response.available_qty} units available`);
+
+                qtyField.addClass("is-invalid");
+
+                // Disable SAVE
+                $("#btn_submit").prop("disabled", true);
+            } 
+            else {
+                // Hide error
+                errorBox.addClass("d-none");
+                qtyField.removeClass("is-invalid");
+
+                // Enable Save only if no errors left
+                if ($(".is-invalid").length === 0) {
+                    $("#btn_submit").prop("disabled", false);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error("Stock check error:", error);
-                toastr.error(`Error checking stock: ${error}`, "Error");
             }
-        });
-    }
+        }
+    });
 }
+
 
 // Customer Selection
 $('#customer_Name').on('input', function() {
@@ -771,7 +816,17 @@ function fetchQuotationItems(quotationId) {
                     <td><input type="text" class="form-control" name="itemcode_${index}" id="itemcode_${index}" value="${item.dc_item_code}"></td>
                     <td><input type="text" class="form-control" name="item_${index}" id="item_${index}" value="${item.dc_description_goods}"></td>
                     <td><input type="text" class="form-control" name="hsn_${index}" id="hsn_${index}" value="${item.dc_hsn}"></td>
-                    <td><input type="number" class="form-control qty" name="qty_${index}" id="qty_${index}" value="${item.dc_qantity}" min="1" step="1" onkeyup="qty('qty_${index}');checkStockQuantity('itemcode_${index}', 'qty_${index}');"></td>
+                  
+
+<td>
+    <input type="number" class="form-control qty" name="qty_${index}" id="qty_${index}"
+           value="${item.dc_qantity}" 
+           min="1" step="1"
+           onkeyup="qty('qty_${index}');checkStockQuantity('itemcode_${index}','qty_${index}');">
+    <small id="qty_error_qty_${index}" class="text-danger d-none">Insufficient stock</small>
+</td>
+
+
                     <td><input type="text" class="form-control" name="uom_${index}" id="uom_${index}" value="${item.dc_uom}"></td>
                     <td><input type="number" class="form-control rate" name="rate_${index}" id="rate_${index}" value="${item.dc_unit_price}" min="0" step="0.01" onkeyup="rate('rate_${index}');"></td>
                     <td><input type="number" class="form-control discount" name="discount_${index}" id="discount_${index}" value="${item.dc_discount}" min="0" max="100" step="0.01" onkeyup="discountamt('discount_${index}');"></td>
@@ -804,7 +859,12 @@ $('#append_table').on('click', '.add-btn', function() {
             <td><input type="text" class="form-control" name="itemcode_${i}" id="itemcode_${i}"></td>
             <td><input type="text" class="form-control" name="item_${i}" id="item_${i}"></td>
             <td><input type="text" class="form-control" name="hsn_${i}" id="hsn_${i}"></td>
-            <td><input type="number" class="form-control qty" name="qty_${i}" id="qty_${i}" min="1" step="1" onkeyup="qty('qty_${i}');checkStockQuantity('itemcode_${i}', 'qty_${i}');"></td>
+           <td>
+    <input type="number" class="form-control qty" name="qty_${i}" id="qty_${i}"
+           min="1" step="1"
+           onkeyup="qty('qty_${i}');checkStockQuantity('itemcode_${i}','qty_${i}');">
+    <small id="qty_error_qty_${i}" class="text-danger d-none">Insufficient stock</small>
+</td>
             <td><input type="text" class="form-control" name="uom_${i}" id="uom_${i}"></td>
             <td><input type="number" class="form-control rate" name="rate_${i}" id="rate_${i}" min="0" step="0.01" onkeyup="rate('rate_${i}');"></td>
             <td><input type="number" class="form-control discount" name="discount_${i}" id="discount_${i}" min="0" max="100" step="0.01" onkeyup="discountamt('discount_${i}');"></td>
@@ -1120,13 +1180,21 @@ $(document).ready(function () {
             }
         },
         submitHandler: function(form) {
-            var email = $('#contact_person_email').val();
-            if (email && email.toLowerCase() !== 'na' && email.toLowerCase() !== 'nan' && !isValidEmail(email)) {
-                alert('Invalid email address.');
-                return false;
-            }
-            form.submit();
-        }
+
+    if ($(".is-invalid").length > 0) {
+        toastr.error("Please fix stock errors before submitting.");
+        
+        // scroll to first error
+        $('html, body').animate({
+            scrollTop: $(".is-invalid:first").offset().top - 150
+        }, 400);
+
+        return false;
+    }
+
+    form.submit();
+}
+
     });
 
     $('#customer_id_select').on('change', function() {
@@ -1178,4 +1246,17 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+    // Function to show the toast message
+    function showToastMessage(message, type) {
+      toastr[type](message);
+    }
+  
+    // Check if a message exists and show it as a toast
+    {% if messages %}
+      {% for message in messages %}
+        showToastMessage('{{ message }}', '{{ message.tags }}');
+      {% endfor %}
+    {% endif %}
+  </script>
 {% endblock custom_js %}
