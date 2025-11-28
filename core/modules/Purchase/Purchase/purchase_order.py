@@ -278,34 +278,39 @@ def delete_purchase_order_data(request, id):
 
     return redirect('purchase_order_list')
 
-
-
 @login_required
 def purchase_show_pdf(request, id):
     purchase_ord = get_object_or_404(Purchase_order, id=id)
-    purchase_ord_item_data = purchase_order_items.objects.filter(purchase_order_id = id)
-    sum_total = purchase_order_items.objects.filter(purchase_order_id=id).aggregate(total=Sum('po_total'))['total']
-    # Set to 0 if no items are found or the total is None
-    sum_total = sum_total or 0
-    gst_percentage = 0
+    purchase_ord_item_data = purchase_order_items.objects.filter(purchase_order_id=id)
 
-    total_gst = float(purchase_ord.po_igstval) + float(purchase_ord.po_cgstval) + float(purchase_ord.po_sgstval)
+    sum_total = purchase_order_items.objects.filter(purchase_order_id=id).aggregate(
+        total=Sum('po_total')
+    )['total'] or 0
 
-    # Calculate GST percentage
-    if purchase_ord.po_total:  # Ensure po_total is not zero or None
-        gst_percentage = (total_gst / float(purchase_ord.po_total)) * 100
+    # Safe GST values
+    total_gst = (
+        float(purchase_ord.po_igstval or 0) +
+        float(purchase_ord.po_cgstval or 0) +
+        float(purchase_ord.po_sgstval or 0)
+    )
+
+    # Safe total
+    po_total = float(purchase_ord.po_total or 0)
+
+    # Safe GST % calculation
+    if po_total > 0:
+        gst_percentage = (total_gst / po_total) * 100
     else:
-        gst_percentage = 0  # or handle the division by zero case appropriately
+        gst_percentage = 0
 
     context = {
-        'purchase_ord':purchase_ord,
-        'purchase_ord_item_data':purchase_ord_item_data,
-         'sum_total': sum_total,
-         'gst_percentage': gst_percentage
-        }
-    return render(request, template_path.purchase_order_pdf,context)
+        'purchase_ord': purchase_ord,
+        'purchase_ord_item_data': purchase_ord_item_data,
+        'sum_total': sum_total,
+        'gst_percentage': gst_percentage
+    }
 
-
+    return render(request, template_path.purchase_order_pdf, context)
 
 # def purchsae_download_pdf(request, id):
 #     purchase_ord = get_object_or_404(Purchase_order, id=id)
